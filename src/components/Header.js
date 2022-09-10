@@ -19,7 +19,7 @@ const Header = (props) => {
             >
                 <Image
                     source={props.leftSource}
-                    style={{height:R.fontSize.Size8,width:R.fontSize.Size14,transform:[{rotate:'90deg'}]}}
+                    style={{height:R.fontSize.Size20,width:R.fontSize.Size20}}
                     resizeMode={'contain'}
                 />
             </Pressable>

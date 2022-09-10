@@ -50,7 +50,7 @@ const TalentScreen = (props) => {
         <SafeAreaView style={{flex: 1}}>
           <Header
             onPress={() => props.navigation.goBack()}
-            leftSource={R.images.chevronDown}
+            leftSource={R.images.chevronBack}
           />
           <View style={Styles.mainView}>
             <View style={{flex: 1}}>
@@ -165,7 +165,7 @@ const TalentScreen = (props) => {
             </View>
 
             <AppButton
-              onPress={() => props.navigation.navigate('HomeScreen')}
+              onPress={() => props.navigation.navigate('HomeMenu')}
               marginHorizontal={R.fontSize.Size35}
               title={'Proceed'}
             />

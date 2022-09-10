@@ -7,6 +7,7 @@ import CustomCardView from './CustomCardView';
 import CustomCardTextInput from './CustomCardTextInput';
 import CustomMaleFemale from './CustomMaleFemale';
 import CustomTimeCard from './CustomTimeCard';
+import ShadowHeader from './shadowHeader';
 
 export{
     StoryScreen,
@@ -17,6 +18,7 @@ export{
     CustomCardView,
     CustomCardTextInput,
     CustomMaleFemale,
-    CustomTimeCard
+    CustomTimeCard,
+    ShadowHeader
 
 }

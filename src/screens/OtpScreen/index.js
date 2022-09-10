@@ -52,7 +52,7 @@ const OtpScreen = (props) => {
         <SafeAreaView style={{flex: 1}}>
           <Header
             onPress={() => props.navigation.goBack()}
-            leftSource={R.images.chevronDown}
+            leftSource={R.images.chevronBack}
           />
           <View style={Styles.mainView}>
             <ScrollView

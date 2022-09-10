@@ -4,7 +4,7 @@ import {View, TouchableOpacity, Text, PermissionsAndroid,Image} from 'react-nati
 import {navigationRef} from './NavigationService';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-// import {createDrawerNavigator} from 'react-navigation-drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import LoginScreen from '../screens/LoginScreen';
 import OtpScreen from '../screens/OtpScreen';
@@ -14,10 +14,10 @@ import TalentScreen from '../screens/TalentScreen';
 import HomeScreen from '../screens/HomeScreen';
 import Menu from '../screens/Menu';
 import R from '../res/R';
-import MyTabBar from '../screens/MyTabBar';
+import CustomTabBar from '../screens/CustomTabBar';
 
 const Stack = createStackNavigator();
-// const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const AppNavigator = props => {
@@ -58,7 +58,12 @@ const AppNavigator = props => {
         />
         <Stack.Screen
           name="HomeScreen"
-          component={OnCustomTabs}
+          component={HomeScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="HomeMenu"
+          component={Home}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
@@ -70,8 +75,8 @@ function Home({route}) {
   return (
     <Drawer.Navigator
       drawerContent={props => <Menu {...props} />}
-      initialRouteName="Create">
-      <Drawer.Screen name="Dashboard" component={OnCustomTabs} />
+      initialRouteName="HomeScreen">
+      <Drawer.Screen name="Dashboard" component={OnCustomTabs} options={{headerShown:false}}/>
     </Drawer.Navigator>
   );
 }
@@ -106,7 +111,7 @@ const OnCustomTabs = props => {
   );
 };
 
-const CustomTabBar = props => {
+const CustomTabBar1 = props => {
   const [select, setSelect] = useState('HomeScreen');
 
 const navigateToFirstScreen = () => {
@@ -237,79 +242,6 @@ const navigateToFirstScreen = () => {
     </View>
   );
 };
-
-const CustomTabs = props => {
-  
-    <Tab.Navigator
-      lazy={true}
-      screenOptions={TabBarScreenOptions}
-      tabBar={props => <MyTabBar {...props} />}
-      tabBarOptions={tabBarOptionsParent}>
-      <Tab.Screen name="HomeScreen" component={HomeScreen} />
-      <Tab.Screen name="SearchPage" component={HomeScreen} />
-      <Tab.Screen name="ChatPage" component={HomeScreen} />
-      <Tab.Screen name="ProfilePage" component={HomeScreen} />
-    </Tab.Navigator>;
-  
-};
-
-const MyTabs = CustomTabs;
-const tabBarOptionsParent = {
-  activeTintColor: R.colors.appColor,
-  inactiveTintColor: R.colors.placeHolderColor,
-};
-
-const TabBarScreenOptions = ({route}) => ({
-  tabBarIcon: ({focused, color, size}) => {
-    switch (route.name) {
-      case 'HomeScreen':
-        return (
-          <Image
-            resizeMode="center"
-            source={
-              focused ? R.images.activeMaleIcon : R.images.inactiveMaleIcon
-            }
-          />
-        );
-        break;
-      case 'SearchPage':
-        return (
-          <Image
-            resizeMode="center"
-            source={
-              focused ? R.images.activeMaleIcon : R.images.inactiveMaleIcon
-            }
-          />
-        );
-        break;
-      case 'ChatPage':
-        return (
-          <Image
-            resizeMode="center"
-            source={
-              focused ? R.images.activeMaleIcon : R.images.inactiveMaleIcon
-            }
-          />
-        );
-        break;
-      case 'ProfilePage':
-        return (
-          <Image
-            resizeMode="center"
-            source={
-              focused ? R.images.activeMaleIcon : R.images.inactiveMaleIcon
-            }
-          />
-        );
-        break;
-      default:
-        return;
-        break;
-    }
-  },
-});
-
-
 
 
 export default AppNavigator;
