@@ -1,6 +1,6 @@
 
 
-import React from 'react';
+import * as React from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -10,6 +10,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import AppNavigator from './src/navigator/AppNavigator';
 import LoginScreen from './src/screens/LoginScreen';
 import TalentScreen from './src/screens/TalentScreen';
 
@@ -20,8 +21,8 @@ const App = () => {
   
 
   return (
-     
-        <TalentScreen/>
+     <AppNavigator
+     />
      
   );
 };

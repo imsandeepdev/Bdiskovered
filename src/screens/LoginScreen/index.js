@@ -35,15 +35,13 @@ const LoginScreen = (props) => {
               <View>
                 <Text style={Styles.welcomeText}>{'Welcome'}</Text>
                 <Text style={Styles.phoneText}>{'Enter Phone Number'}</Text>
-                <View
-                style={{marginTop:R.fontSize.Size30}}
-                >
+                <View style={{marginTop: R.fontSize.Size30}}>
                   <CustomTextInput
-                  countryCode={'+91'}
-                  maxLength={10}
-                  placeholder={'Mobile No'}
-                  value={mobNo}
-                  onChangeText={(no)=>setMobNo(no)}
+                    countryCode={'+91'}
+                    maxLength={10}
+                    placeholder={'Mobile No'}
+                    value={mobNo}
+                    onChangeText={no => setMobNo(no)}
                   />
                 </View>
                 <View
@@ -58,6 +56,7 @@ const LoginScreen = (props) => {
                     {'Don’t have an account ?'}
                   </Text>
                   <Pressable
+                    onPress={() => props.navigation.navigate('UserTypeScreen')}
                     style={({pressed}) => [
                       {
                         padding: R.fontSize.Size4,
@@ -77,9 +76,10 @@ const LoginScreen = (props) => {
                 </View>
               </View>
             </View>
-            <AppButton 
-            marginHorizontal={R.fontSize.Size35}
-            title={'Sign In'} 
+            <AppButton
+              onPress={() => props.navigation.navigate('OtpScreen')}
+              marginHorizontal={R.fontSize.Size35}
+              title={'Sign In'}
             />
           </View>
         </SafeAreaView>

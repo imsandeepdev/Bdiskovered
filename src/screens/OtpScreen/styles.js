@@ -3,8 +3,7 @@ import R from '../../res/R';
 
 const Styles = StyleSheet.create({
   mainView: {
-    flex:1,
-    paddingHorizontal:R.fontSize.Size20
+    flex:1
   },
   titleText: {
     fontFamily: R.fonts.regular,

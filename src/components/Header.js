@@ -18,7 +18,7 @@ const Header = (props) => {
             }]}
             >
                 <Image
-                    source={R.images.chevronDown}
+                    source={props.leftSource}
                     style={{height:R.fontSize.Size8,width:R.fontSize.Size14,transform:[{rotate:'90deg'}]}}
                     resizeMode={'contain'}
                 />

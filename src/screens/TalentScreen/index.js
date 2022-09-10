@@ -48,7 +48,10 @@ const TalentScreen = (props) => {
     return (
       <StoryScreen>
         <SafeAreaView style={{flex: 1}}>
-          <Header onPress={() => console.log('Pressed')} />
+          <Header
+            onPress={() => props.navigation.goBack()}
+            leftSource={R.images.chevronDown}
+          />
           <View style={Styles.mainView}>
             <View style={{flex: 1}}>
               <FlatList
@@ -161,7 +164,11 @@ const TalentScreen = (props) => {
               />
             </View>
 
-            <AppButton marginHorizontal={R.fontSize.Size35} title={'Proceed'} />
+            <AppButton
+              onPress={() => props.navigation.navigate('HomeScreen')}
+              marginHorizontal={R.fontSize.Size35}
+              title={'Proceed'}
+            />
           </View>
         </SafeAreaView>
       </StoryScreen>
