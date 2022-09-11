@@ -16,6 +16,12 @@ const images = {
 
   // Home
   menuIcon: require('./images/menuIcon.png'),
+  filterIcon: require('./images/filterIcon.png'),
+  bellIcon: require('./images/Bell.png'),
+  cancleIcon: require('./images/cancle.png'),
+
+  makePaymentIcon: require('./images/makePaymentIcon.png'),
+
   // Drawer
   helpIcon: require('./images/helpIcon.png'),
   faqIcon: require('./images/FaqIcon.png'),
@@ -25,7 +31,12 @@ const images = {
   // BottomTab
   activeHomeIcon: require('./images/activeHomeIcon.png'),
   inActiveSearchIcon: require('./images/inActiveSearchIcon.png'),
+  activeAddIcon: require('./images/addIcon.png'),
   inActiveAddIcon: require('./images/inActiveAddIcon.png'),
+
+  // Payment Result
+  paymentSuccessIcon: require('./images/paymentSuccessIcon.png'),
+  paymentFailedIcon: require('./images/paymentFaildIcon.png'),
 };
 
 export {images};

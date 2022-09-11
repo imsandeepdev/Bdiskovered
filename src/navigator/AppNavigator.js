@@ -15,6 +15,8 @@ import HomeScreen from '../screens/HomeScreen';
 import Menu from '../screens/Menu';
 import R from '../res/R';
 import CustomTabBar from '../screens/CustomTabBar';
+import SubscriptionScreen from '../screens/SubscriptionScreen';
+import PaymentResultScreen from '../screens/PaymentResultScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -66,6 +68,11 @@ const AppNavigator = props => {
           component={Home}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="PaymentResultScreen"
+          component={PaymentResultScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -85,8 +92,7 @@ const OnCustomTabs = props => {
   return (
     <Tab.Navigator
       tabBar={props => <CustomTabBar {...props} />}
-      initialRouteName="HomeScreen"
-      >
+      initialRouteName="HomeScreen">
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}
@@ -99,7 +105,7 @@ const OnCustomTabs = props => {
       />
       <Tab.Screen
         name="UploadScreen"
-        component={HomeScreen}
+        component={SubscriptionScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen
@@ -107,141 +113,11 @@ const OnCustomTabs = props => {
         component={HomeScreen}
         options={{headerShown: false}}
       />
+     
     </Tab.Navigator>
   );
 };
 
-const CustomTabBar1 = props => {
-  const [select, setSelect] = useState('HomeScreen');
-
-const navigateToFirstScreen = () => {
-  props.navigation.navigate('HomeScreen');
-  setSelect('HomeScreen');
-};
-
-  const navigateToSecondScreen = () => {
-    props.navigation.navigate('SearchScreen');
-    setSelect('SearchScreen');
-  };
-
-  const navigateToThirdScreen = () => {
-    props.navigation.navigate('UploadScreen');
-    setSelect('UploadScreen');
-  };
-
-  const navigateToFourScreen = () => {
-    props.navigation.navigate('ProfileScreen');
-    setSelect('ProfileScreen');
-  };
- 
-
-  return (
-    <View style={{backgroundColor: R.colors.white}}>
-      <View
-        style={{
-          justifyContent: 'space-around',
-          height: R.fontSize.Size60,
-          flexDirection: 'row',
-        }}>
-        <TouchableOpacity
-          onPress={navigateToFirstScreen}
-          activeOpacity={0.6}
-          style={{
-            height: R.fontSize.Size60,
-            paddingVertical: R.fontSize.Size5,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexGrow: 1,
-          }}>
-          <Image
-            source={
-              select === 'HomeScreen'
-                ? R.images.activeMaleIcon
-                : R.images.inactiveMaleIcon
-            }
-            resizeMode={'contain'}
-            style={{
-              height: R.fontSize.EXXXLarge,
-              width: R.fontSize.EXXXLarge,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={navigateToSecondScreen}
-          activeOpacity={0.6}
-          style={{
-            height: R.fontSize.Size60,
-            paddingVertical: R.fontSize.Size5,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexGrow: 1,
-          }}>
-          <Image
-            source={
-              select === 'SearchScreen'
-                ? R.images.activeMaleIcon
-                : R.images.inactiveMaleIcon
-            }
-            resizeMode={'contain'}
-            style={{
-              height: R.fontSize.EXXXLarge,
-              width: R.fontSize.EXXXLarge,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={navigateToThirdScreen}
-          activeOpacity={0.6}
-          style={{
-            height: R.fontSize.Size60,
-            paddingVertical: R.fontSize.Size5,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexGrow: 1,
-          }}>
-          <Image
-            source={
-              select === 'UploadScreen'
-                ? R.images.activeMaleIcon
-                : R.images.inactiveMaleIcon
-            }
-            resizeMode={'contain'}
-            style={{
-              height: R.fontSize.EXXXLarge,
-              width: R.fontSize.EXXXLarge,
-            }}
-          />
-        </TouchableOpacity>
-
-
-        <TouchableOpacity
-          onPress={navigateToFourScreen}
-          activeOpacity={0.6}
-          style={{
-            height: R.fontSize.Size60,
-            paddingVertical: R.fontSize.Size5,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexGrow: 1,
-          }}>
-          <Image
-            source={
-              select === 'ProfileScreen'
-                ? R.images.activeMaleIcon
-                : R.images.inactiveMaleIcon
-            }
-            resizeMode={'contain'}
-            style={{
-              height: R.fontSize.EXXXLarge,
-              width: R.fontSize.EXXXLarge,
-            }}
-          />
-        </TouchableOpacity>
-        
-      </View>
-    </View>
-  );
-};
 
 
 export default AppNavigator;

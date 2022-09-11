@@ -107,7 +107,7 @@ const CustomTabBar = props => {
           <Image
             source={
               select === 'UploadScreen'
-                ? R.images.activeHomeIcon
+                ? R.images.activeAddIcon
                 : R.images.inActiveAddIcon
             }
             resizeMode={'contain'}

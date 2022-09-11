@@ -8,6 +8,8 @@ import CustomCardTextInput from './CustomCardTextInput';
 import CustomMaleFemale from './CustomMaleFemale';
 import CustomTimeCard from './CustomTimeCard';
 import ShadowHeader from './shadowHeader';
+import CustomCardLine from './CustomCardLine';
+import SubscriptionCard from './SubscriptionCard';
 
 export{
     StoryScreen,
@@ -19,6 +21,8 @@ export{
     CustomCardTextInput,
     CustomMaleFemale,
     CustomTimeCard,
-    ShadowHeader
+    ShadowHeader,
+    CustomCardLine,
+    SubscriptionCard
 
 }

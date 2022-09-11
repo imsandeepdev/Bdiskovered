@@ -8,12 +8,34 @@ import {
   Dimensions,
   Pressable,
   TextInput,
+  Modal,
+  ScrollView
 } from 'react-native';
-import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader} from '../../components';
+import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine} from '../../components';
 
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
+
+const TailentList = [
+  {
+    id: '1',
+    name: 'Music',
+  },
+  {
+    id: '2',
+    name: 'Dance',
+  },
+  {
+    id: '3',
+    name: 'Fashion',
+  },
+  {
+    id: '4',
+    name: 'Music',
+  },
+  
+];
 
 const ConnectedUsers = [
   {
@@ -73,7 +95,88 @@ const PopularList = [
   },
 ];
 
+const CustomHeading = (props) => {
+  return (
+    <View
+      style={{
+        marginTop: R.fontSize.Size45,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+      <Text
+        style={{
+          fontFamily: R.fonts.regular,
+          fontSize: R.fontSize.Size18,
+          fontWeight: '700',
+          color: R.colors.primaryTextColor,
+        }}>
+        {props.leftTitle}
+      </Text>
+      <Pressable
+      onPress={props.rightOnPress}
+      style={({pressed}) => [{
+        padding:R.fontSize.Size4,
+        opacity: pressed ? 0.5:1
+      }]}
+      >
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            fontSize: R.fontSize.Size12,
+            color: R.colors.appColor,
+            fontWeight: '700',
+          }}>
+          {props.buttonTitle}
+        </Text>
+      </Pressable>
+    </View>
+  );
+}
+
 const HomeScreen = (props) => {
+
+
+  const [modalPicker, setModalPicker] = useState(false);
+  const [tailentList, setTailentList] = useState([
+    {
+      id: '1',
+      name: 'Music',
+    },
+    {
+      id: '2',
+      name: 'Dance',
+    },
+    {
+      id: '3',
+      name: 'Fashion',
+    },
+    {
+      id: '4',
+      name: 'Music',
+    },
+  ]);
+
+  useEffect(()=>{
+      let arr = tailentList.map((item, index) => {
+        item.selected = false;
+        return {...item};
+      });
+      console.log('ARRNEWITEM', arr);
+      setTailentList(arr);
+  },[props.navigation])
+
+   const onCallSelectedTailent = (item, ind) => {
+     const dummyData = tailentList;
+     let arr = dummyData.map((item, index) => {
+       if (ind == index) {
+         item.selected = !item.selected;
+       }
+       return {...item};
+     });
+     console.log('arr return', arr);
+     setTailentList(arr);
+   };
 
   return (
     <StoryScreen>
@@ -81,36 +184,18 @@ const HomeScreen = (props) => {
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
           leftSource={R.images.menuIcon}
+          rightSource={R.images.filterIcon}
+          rightSourceOnPress={() => setModalPicker(true)}
+          rightSource2={R.images.bellIcon}
+          rightSourceOnPress2={() => console.log('Bell')}
         />
         <View style={{flex: 1, marginHorizontal: R.fontSize.Size20}}>
-          <View
-            style={{
-              marginTop: R.fontSize.Size45,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size18,
-                fontWeight: '700',
-                color: R.colors.primaryTextColor,
-              }}>
-              {'Connected User'}
-            </Text>
-            <Pressable>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size12,
-                  color: R.colors.appColor,
-                  fontWeight: '700',
-                }}>
-                {'View All'}
-              </Text>
-            </Pressable>
-          </View>
+          <CustomHeading
+            leftTitle={'Connected User'}
+            buttonTitle={'View All'}
+            rightOnPress={() => console.log('view')}
+          />
+
           <View
             style={{
               marginTop: R.fontSize.Size30,
@@ -118,75 +203,28 @@ const HomeScreen = (props) => {
             }}>
             {ConnectedUsers.map((item, index) => {
               return (
-                <View
-                  key={index}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: R.fontSize.Size20,
-                  }}>
-                  <View
-                    style={{
-                      height: R.fontSize.Size60,
-                      width: R.fontSize.Size60,
-                      overflow: 'hidden',
-                      borderRadius: R.fontSize.Size30,
-                    }}>
+                <View key={index} style={Styles.connectedUserMainView}>
+                  <View style={Styles.connectedUserView}>
                     <Image
                       source={{
                         uri: item?.source,
                       }}
-                      style={{
-                        height: R.fontSize.Size60,
-                        width: R.fontSize.Size60,
-                      }}
+                      style={Styles.connectedUserImage}
                       resizeMode={'cover'}
                     />
                   </View>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size14,
-                      color: R.colors.placeholderTextColor,
-                      fontWeight: '400',
-                      textAlign: 'center',
-                      marginTop: R.fontSize.Size10,
-                    }}
-                    numberOfLines={1}>
+                  <Text style={Styles.connectedUserText} numberOfLines={1}>
                     {item?.name}
                   </Text>
                 </View>
               );
             })}
           </View>
-          <View
-            style={{
-              marginTop: R.fontSize.Size45,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size18,
-                fontWeight: '700',
-                color: R.colors.primaryTextColor,
-              }}>
-              {'Most Popular'}
-            </Text>
-            <Pressable>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size12,
-                  color: R.colors.appColor,
-                  fontWeight: '700',
-                }}>
-                {'View All'}
-              </Text>
-            </Pressable>
-          </View>
+          <CustomHeading
+            leftTitle={'Most Popular'}
+            buttonTitle={'View All'}
+            rightOnPress={() => console.log('view')}
+          />
           <View
             style={{
               marginTop: R.fontSize.Size30,
@@ -194,55 +232,24 @@ const HomeScreen = (props) => {
             }}>
             {PopularList.map((item, index) => {
               return (
-                <View
-                  key={index}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: R.fontSize.Size20,
-                  }}>
-                  <View
-                    style={{
-                      height: R.fontSize.Size130,
-                      width: R.fontSize.Size140,
-                      overflow: 'hidden',
-                      borderRadius: R.fontSize.Size8,
-                    }}>
+                <View key={index} style={Styles.connectedUserMainView}>
+                  <View style={Styles.mostPopularView}>
                     <Image
                       source={{
                         uri: item?.videoImg,
                       }}
-                      style={{
-                        height: R.fontSize.Size130,
-                        width: R.fontSize.Size140,
-                      }}
+                      style={Styles.mostPopularImage}
                       resizeMode={'cover'}
                     />
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: R.fontSize.Size15,
-                    }}>
+                  <View style={Styles.mostPopularBottomView}>
                     <Image
                       source={{uri: item.source}}
-                      style={{
-                        height: R.fontSize.Size25,
-                        width: R.fontSize.Size25,
-                        borderRadius: R.fontSize.Size15,
-                      }}
+                      style={Styles.mostPopularBottomImage}
                       resizeMode={'cover'}
                     />
                     <Text
-                      style={{
-                        flex: 1,
-                        marginLeft: R.fontSize.Size10,
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size14,
-                        color: R.colors.placeholderTextColor,
-                        fontWeight: '400',
-                      }}
+                      style={Styles.mostPopularBottomText}
                       numberOfLines={1}>
                       {item?.name}
                     </Text>
@@ -251,33 +258,139 @@ const HomeScreen = (props) => {
               );
             })}
           </View>
-          <View
-            style={{
-              marginTop: R.fontSize.Size45,
-            }}>
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size18,
-                fontWeight: '700',
-                color: R.colors.primaryTextColor,
-              }}>
-              {'Suggested Post'}
-            </Text>
-          </View>
-          <View
-          style={{marginTop:R.fontSize.Size30}}
-          >
+          <CustomHeading leftTitle={'Suggested Post'} />
+          <View style={{marginTop: R.fontSize.Size30}}>
             <Image
               source={{
                 uri: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
               }}
-              style={{height:screenHeight/3.5,width:'100%'}}
+              style={{height: screenHeight / 3.5, width: '100%'}}
               resizeMode={'cover'}
             />
           </View>
         </View>
       </SafeAreaView>
+      <Modal
+        visible={modalPicker}
+        transparent={true}
+        onRequestClose={() => setModalPicker(false)}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: R.colors.modelBackground,
+            justifyContent: 'flex-end',
+          }}>
+          <View
+            style={{
+              height: screenHeight / 1.6,
+              backgroundColor: R.colors.white,
+              borderTopLeftRadius: R.fontSize.Size8,
+              borderTopRightRadius: R.fontSize.Size8,
+              paddingVertical: R.fontSize.Size30,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row-reverse',
+                marginHorizontal: R.fontSize.Size20,
+              }}>
+              <Pressable
+                onPress={() => setModalPicker(false)}
+                style={({pressed}) => [
+                  {
+                    padding: R.fontSize.Size6,
+                    opacity: pressed ? 0.5 : 1,
+                  },
+                ]}>
+                <Image
+                  source={R.images.cancleIcon}
+                  style={{height: R.fontSize.Size10, width: R.fontSize.Size10}}
+                  resizeMode={'contain'}
+                />
+              </Pressable>
+            </View>
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1}}
+              showsVerticalScrollIndicator={false}>
+              <View
+                style={{
+                  flex: 1,
+                  marginHorizontal: R.fontSize.Size20,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size18,
+                    fontWeight: '700',
+                    color: R.colors.primaryTextColor,
+                  }}>
+                  {'Filter'}
+                </Text>
+
+                <View style={{flex: 1, marginVertical: R.fontSize.Size20}}>
+                  <CustomCardLine
+                    onPress={() => console.log('down')}
+                    title={'35 - 50 $'}
+                    rightIcon={R.images.chevronDown}
+                  />
+                  <CustomCardLine title={'Location'} />
+                  <CustomCardLine
+                    onPress={() => console.log('down')}
+                    title={'Age 25 - 35'}
+                    rightIcon={R.images.chevronDown}
+                  />
+
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      paddingVertical: R.fontSize.Size10,
+                    }}>
+                    {tailentList.map((item, index) => {
+                      return (
+                        <Pressable
+                          onPress={() => onCallSelectedTailent(item,index)}
+                          key={index}
+                          style={({pressed}) => [
+                            {
+                              marginTop: R.fontSize.Size6,
+                              paddingHorizontal: R.fontSize.Size15,
+                              paddingVertical: R.fontSize.Size5,
+                              borderRadius: R.fontSize.Size8,
+                              backgroundColor: item.selected ? R.colors.appColor : R.colors.placeholderTextColor,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginRight: R.fontSize.Size10,
+                              opacity: pressed ? 0.5 : 1,
+                            },
+                          ]}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              color: item.selected ? R.colors.white : R.colors.placeHolderColor,
+                              fontSize: R.fontSize.Size14,
+                              fontWeight: '400',
+                            }}>
+                            {item?.name}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <CustomCardLine
+                    onPress={() => console.log('down')}
+                    title={'Above 3.5 Stars'}
+                    rightIcon={R.images.chevronDown}
+                  />
+                </View>
+
+                <View>
+                  <AppButton title={'Apply'} />
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </StoryScreen>
   );
 };
