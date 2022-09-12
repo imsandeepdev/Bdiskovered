@@ -2,15 +2,29 @@ import * as react from 'react';
 import {useState, useEffect} from 'react';
 import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput} from 'react-native';
 import { CustomTextInput, StoryScreen, AppButton } from '../../components';
+import {connect, useDispatch} from 'react-redux';
 
 import R from '../../res/R';
 import Styles from './styles';
+import { CreateOTPRequest } from '../../actions/createOTP.action';
 const screenHeight = Dimensions.get('screen').height;
 
 const LoginScreen = (props) => {
 
+  const dispatch = useDispatch()
   const [mobNo, setMobNo] = useState('')
 
+  const onCallCreateOTP = () => {
+    let data = {
+      mobile: '+918947915820',
+      device_token:
+        'cO2stOGoRpOGAnruOLGUan:APA91bGIlY_kqTLba2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
+    };
+    dispatch(CreateOTPRequest(data, response=>{
+      console.log('RESPONSE CREATE OTP',response)
+    }))
+
+  }
 
     return (
       <StoryScreen>
@@ -77,7 +91,7 @@ const LoginScreen = (props) => {
               </View>
             </View>
             <AppButton
-              onPress={() => props.navigation.navigate('OtpScreen')}
+              onPress={() => onCallCreateOTP()}
               marginHorizontal={R.fontSize.Size35}
               title={'Sign In'}
             />
