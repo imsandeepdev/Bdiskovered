@@ -37,6 +37,10 @@ const images = {
   // Payment Result
   paymentSuccessIcon: require('./images/paymentSuccessIcon.png'),
   paymentFailedIcon: require('./images/paymentFaildIcon.png'),
+
+  // Profile
+  profileEditIcon: require('./images/editProfileIcon.png'),
+  chatIcon: require('./images/chatIcon.png'),
 };
 
 export {images};

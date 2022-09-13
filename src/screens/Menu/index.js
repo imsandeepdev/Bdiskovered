@@ -68,23 +68,24 @@ const Menu = props => {
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <CustomMenuButton
-            onPress={()=>console.log('help')}
+            onPress={() => console.log('help')}
             leftSource={R.images.helpIcon}
             title={'Help'}
           />
           <CustomMenuButton
-            onPress={()=>console.log('faq')}
+            onPress={() => console.log('faq')}
             leftSource={R.images.faqIcon}
             title={'FAQ'}
           />
           <CustomMenuButton
-            onPress={()=>console.log('signout')}
+            onPress={() => console.log('signout')}
             leftSource={R.images.signoutIcon}
             title={'Sign Out'}
           />
         </View>
         <View style={{height: R.fontSize.Size80, justifyContent: 'center'}}>
           <Pressable
+            onPress={() => props.navigation.navigate('SubscriptionScreen')}
             style={({pressed}) => [
               {
                 flexDirection: 'row',

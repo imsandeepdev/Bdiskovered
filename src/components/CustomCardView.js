@@ -14,7 +14,7 @@ const CustomCardView = (props) => {
           style={({pressed}) => [
             {
               marginHorizontal: props.marginHorizontal ?? 0,
-              height: R.fontSize.Size50,
+              height: props.cardHeight ?? R.fontSize.Size50,
               flexDirection: 'row',
               alignItems: 'center',
               borderRadius: R.fontSize.Size5,
@@ -29,6 +29,7 @@ const CustomCardView = (props) => {
               shadowOpacity: 0.2,
               shadowRadius: 2.84,
               elevation: 5,
+              // paddingVertical : props.paddingVertical ?? R.fontSize.Size16,
               paddingHorizontal: R.fontSize.Size15,
               opacity: pressed ? 0.5 : 1,
               marginBottom: props.marginBottom ?? R.fontSize.Size20,
@@ -38,9 +39,9 @@ const CustomCardView = (props) => {
             <Text
               style={{
                 fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size15,
+                fontSize: props.fontSize ?? R.fontSize.Size15,
                 color: props.TextColor ?? R.colors.white,
-                fontWeight: '700',
+                fontWeight: props.fontWeight ?? '700',
               }}>
               {props.title}
             </Text>
@@ -48,7 +49,7 @@ const CustomCardView = (props) => {
           <View>
             <Image
               source={props.rightIcon}
-              style={{height: R.fontSize.Size12, width: R.fontSize.Size12}}
+              style={{height: props.Iconheight ?? R.fontSize.Size12, width: props.Iconwidth ?? R.fontSize.Size12}}
               resizeMode={'contain'}
             />
           </View>

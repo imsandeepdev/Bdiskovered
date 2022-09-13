@@ -61,17 +61,15 @@ const SubscriptionScreen = props => {
 
   const onCallPayment = () => {
     setModalPicker(false)
-    props.navigation.navigate('PaymentResultScreen');
+    props.navigation.navigate('CardScreen');
   }
   
   return (
     <StoryScreen>
       <SafeAreaView style={{flex: 1}}>
-        <ShadowHeader
-          onPress={() => props.navigation.toggleDrawer()}
-          leftSource={R.images.menuIcon}
-          rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() => console.log('Bell')}
+        <Header
+          onPress={() => props.navigation.goBack()}
+          leftSource={R.images.chevronBack}
         />
         <View style={{flex: 1}}>
           <ScrollView
@@ -428,9 +426,7 @@ const SubscriptionScreen = props => {
                 </View>
                 <View>
                   <AppButton
-                    onPress={() =>
-                        onCallPayment()
-                    }
+                    onPress={() => onCallPayment()}
                     title={'Make Payment'}
                   />
                 </View>

@@ -17,6 +17,9 @@ import R from '../res/R';
 import CustomTabBar from '../screens/CustomTabBar';
 import SubscriptionScreen from '../screens/SubscriptionScreen';
 import PaymentResultScreen from '../screens/PaymentResultScreen';
+import CardScreen from '../screens/CardScreen';
+import UpdateProfileScreen from '../screens/UpdateProfileScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -73,6 +76,26 @@ const AppNavigator = props => {
           component={PaymentResultScreen}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="CardScreen"
+          component={CardScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UpdateProfileScreen"
+          component={UpdateProfileScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SubscriptionScreen"
+          component={SubscriptionScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -105,15 +128,14 @@ const OnCustomTabs = props => {
       />
       <Tab.Screen
         name="UploadScreen"
-        component={SubscriptionScreen}
+        component={HomeScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen
         name="ProfileScreen"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{headerShown: false}}
       />
-     
     </Tab.Navigator>
   );
 };
