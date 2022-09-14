@@ -9,13 +9,34 @@ import {
   Pressable,
   TextInput,
   Modal,
-  ScrollView
+  ScrollView,
+  FlatList
 } from 'react-native';
 import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine} from '../../components';
-
+// import Video from 'react-native-video';
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
+
+const SuggestedList = [
+  {
+    id: '1',
+    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
+  },
+  {
+    id: '2',
+    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
+  },
+  {
+    id: '3',
+    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
+  },
+  {
+    id: '4',
+    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
+  },
+];
+
 
 const TailentList = [
   {
@@ -103,6 +124,7 @@ const CustomHeading = (props) => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginHorizontal: R.fontSize.Size20,
       }}>
       <Text
         style={{
@@ -114,12 +136,13 @@ const CustomHeading = (props) => {
         {props.leftTitle}
       </Text>
       <Pressable
-      onPress={props.rightOnPress}
-      style={({pressed}) => [{
-        padding:R.fontSize.Size4,
-        opacity: pressed ? 0.5:1
-      }]}
-      >
+        onPress={props.rightOnPress}
+        style={({pressed}) => [
+          {
+            padding: R.fontSize.Size4,
+            opacity: pressed ? 0.5 : 1,
+          },
+        ]}>
         <Text
           style={{
             fontFamily: R.fonts.regular,
@@ -189,85 +212,107 @@ const HomeScreen = (props) => {
           rightSource2={R.images.bellIcon}
           rightSourceOnPress2={() => console.log('Bell')}
         />
-        <View style={{flex: 1, marginHorizontal: R.fontSize.Size20}}>
-          <CustomHeading
-            leftTitle={'Connected User'}
-            buttonTitle={'View All'}
-            rightOnPress={() => console.log('view')}
-          />
+        <View style={{flex: 1}}>
+      
+          <FlatList
+            style={{flex: 1}}
+            nestedScrollEnabled
+            ListHeaderComponent={
+              <View>
+                <CustomHeading
+                  leftTitle={'Connected User'}
+                  buttonTitle={'View All'}
+                  rightOnPress={() => console.log('view')}
+                />
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size30,
+                      flexDirection: 'row',
+                      marginHorizontal: R.fontSize.Size20,
+                    }}>
+                    {ConnectedUsers.map((item, index) => {
+                      return (
+                        <View key={index} style={Styles.connectedUserMainView}>
+                          <View style={Styles.connectedUserView}>
+                            <Image
+                              source={{
+                                uri: item?.source,
+                              }}
+                              style={Styles.connectedUserImage}
+                              resizeMode={'cover'}
+                            />
+                          </View>
+                          <Text
+                            style={Styles.connectedUserText}
+                            numberOfLines={1}>
+                            {item?.name}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+                <CustomHeading
+                  leftTitle={'Most Popular'}
+                  buttonTitle={'View All'}
+                  rightOnPress={() => console.log('view')}
+                />
 
-          <View
-            style={{
-              marginTop: R.fontSize.Size30,
-              flexDirection: 'row',
-            }}>
-            {ConnectedUsers.map((item, index) => {
-              return (
-                <View key={index} style={Styles.connectedUserMainView}>
-                  <View style={Styles.connectedUserView}>
-                    <Image
-                      source={{
-                        uri: item?.source,
-                      }}
-                      style={Styles.connectedUserImage}
-                      resizeMode={'cover'}
-                    />
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size30,
+                      flexDirection: 'row',
+                      marginHorizontal: R.fontSize.Size20,
+                    }}>
+                    {PopularList.map((item, index) => {
+                      return (
+                        <View key={index} style={Styles.connectedUserMainView}>
+                          <View style={Styles.mostPopularView}>
+                            <Image
+                              source={{
+                                uri: item?.videoImg,
+                              }}
+                              style={Styles.mostPopularImage}
+                              resizeMode={'cover'}
+                            />
+                          </View>
+                          <View style={Styles.mostPopularBottomView}>
+                            <Image
+                              source={{uri: item.source}}
+                              style={Styles.mostPopularBottomImage}
+                              resizeMode={'cover'}
+                            />
+                            <Text
+                              style={Styles.mostPopularBottomText}
+                              numberOfLines={1}>
+                              {item?.name}
+                            </Text>
+                          </View>
+                        </View>
+                      );
+                    })}
                   </View>
-                  <Text style={Styles.connectedUserText} numberOfLines={1}>
-                    {item?.name}
-                  </Text>
+                </ScrollView>
+                <CustomHeading leftTitle={'Suggested Post'} />
+              </View>
+            }
+            data={SuggestedList}
+            renderItem={({item, index}) => {
+              return (
+                <View key={index} style={{marginTop: R.fontSize.Size30}}>
+                  <Image
+                    source={{
+                      uri: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
+                    }}
+                    style={{height: screenHeight / 2, width: '100%'}}
+                    resizeMode={'cover'}
+                  />
                 </View>
               );
-            })}
-          </View>
-          <CustomHeading
-            leftTitle={'Most Popular'}
-            buttonTitle={'View All'}
-            rightOnPress={() => console.log('view')}
+            }}
           />
-          <View
-            style={{
-              marginTop: R.fontSize.Size30,
-              flexDirection: 'row',
-            }}>
-            {PopularList.map((item, index) => {
-              return (
-                <View key={index} style={Styles.connectedUserMainView}>
-                  <View style={Styles.mostPopularView}>
-                    <Image
-                      source={{
-                        uri: item?.videoImg,
-                      }}
-                      style={Styles.mostPopularImage}
-                      resizeMode={'cover'}
-                    />
-                  </View>
-                  <View style={Styles.mostPopularBottomView}>
-                    <Image
-                      source={{uri: item.source}}
-                      style={Styles.mostPopularBottomImage}
-                      resizeMode={'cover'}
-                    />
-                    <Text
-                      style={Styles.mostPopularBottomText}
-                      numberOfLines={1}>
-                      {item?.name}
-                    </Text>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-          <CustomHeading leftTitle={'Suggested Post'} />
-          <View style={{marginTop: R.fontSize.Size30}}>
-            <Image
-              source={{
-                uri: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
-              }}
-              style={{height: screenHeight / 3.5, width: '100%'}}
-              resizeMode={'cover'}
-            />
-          </View>
         </View>
       </SafeAreaView>
       <Modal
@@ -348,7 +393,7 @@ const HomeScreen = (props) => {
                     {tailentList.map((item, index) => {
                       return (
                         <Pressable
-                          onPress={() => onCallSelectedTailent(item,index)}
+                          onPress={() => onCallSelectedTailent(item, index)}
                           key={index}
                           style={({pressed}) => [
                             {
@@ -356,7 +401,9 @@ const HomeScreen = (props) => {
                               paddingHorizontal: R.fontSize.Size15,
                               paddingVertical: R.fontSize.Size5,
                               borderRadius: R.fontSize.Size8,
-                              backgroundColor: item.selected ? R.colors.appColor : R.colors.placeholderTextColor,
+                              backgroundColor: item.selected
+                                ? R.colors.appColor
+                                : R.colors.placeholderTextColor,
                               alignItems: 'center',
                               justifyContent: 'center',
                               marginRight: R.fontSize.Size10,
@@ -366,7 +413,9 @@ const HomeScreen = (props) => {
                           <Text
                             style={{
                               fontFamily: R.fonts.regular,
-                              color: item.selected ? R.colors.white : R.colors.placeHolderColor,
+                              color: item.selected
+                                ? R.colors.white
+                                : R.colors.placeHolderColor,
                               fontSize: R.fontSize.Size14,
                               fontWeight: '400',
                             }}>

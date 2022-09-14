@@ -20,6 +20,7 @@ import PaymentResultScreen from '../screens/PaymentResultScreen';
 import CardScreen from '../screens/CardScreen';
 import UpdateProfileScreen from '../screens/UpdateProfileScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import UploadVideoScreen from '../screens/UploadVideoScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -96,6 +97,11 @@ const AppNavigator = props => {
           component={SubscriptionScreen}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="UploadVideoScreen"
+          component={UploadVideoScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -128,7 +134,7 @@ const OnCustomTabs = props => {
       />
       <Tab.Screen
         name="UploadScreen"
-        component={HomeScreen}
+        component={UploadVideoScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen

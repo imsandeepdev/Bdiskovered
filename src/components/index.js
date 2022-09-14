@@ -10,6 +10,8 @@ import CustomTimeCard from './CustomTimeCard';
 import ShadowHeader from './shadowHeader';
 import CustomCardLine from './CustomCardLine';
 import SubscriptionCard from './SubscriptionCard';
+import VideoCard from './VideoCard';
+import CustomLineTextInput from './CustomLineTextInput';
 
 export{
     StoryScreen,
@@ -23,6 +25,8 @@ export{
     CustomTimeCard,
     ShadowHeader,
     CustomCardLine,
-    SubscriptionCard
+    SubscriptionCard,
+    VideoCard,
+    CustomLineTextInput
 
 }
