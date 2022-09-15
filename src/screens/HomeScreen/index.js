@@ -10,13 +10,47 @@ import {
   TextInput,
   Modal,
   ScrollView,
-  FlatList
+  FlatList,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform
 } from 'react-native';
-import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard} from '../../components';
+import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard, CustomLineTextInput} from '../../components';
 // import Video from 'react-native-video';
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
+
+const persnalDetails = [
+  {
+    id: '1',
+    title: 'Age 24',
+  },
+  {
+    id: '2',
+    title: 'Female',
+  },
+  {
+    id: '3',
+    title: 'Gurugram',
+  },
+];
+
+const timeDetails = [
+  {
+    id: '1',
+    title: 'Gigs',
+  },
+  {
+    id: '2',
+    title: 'Full Time',
+  },
+  {
+    id: '3',
+    title: 'Internship',
+  },
+];
 
 const SuggestedList = [
   {
@@ -161,7 +195,7 @@ const HomeScreen = (props) => {
 
 
   const [modalPicker, setModalPicker] = useState(false);
-  const [modalVideoDetail, setModalVideoDetail] = useState(false)
+  const [modalType, setModalType] = useState('')
   const [tailentList, setTailentList] = useState([
     {
       id: '1',
@@ -202,6 +236,11 @@ const HomeScreen = (props) => {
      setTailentList(arr);
    };
 
+  const onCallModal = (type) => {
+    setModalType(type)
+    setModalPicker(true);
+  }
+
   return (
     <StoryScreen>
       <SafeAreaView style={{flex: 1}}>
@@ -209,12 +248,11 @@ const HomeScreen = (props) => {
           onPress={() => props.navigation.toggleDrawer()}
           leftSource={R.images.menuIcon}
           rightSource={R.images.filterIcon}
-          rightSourceOnPress={() => setModalPicker(true)}
+          rightSourceOnPress={() => onCallModal('filterModal')}
           rightSource2={R.images.bellIcon}
           rightSourceOnPress2={() => console.log('Bell')}
         />
         <View style={{flex: 1}}>
-      
           <FlatList
             style={{flex: 1}}
             nestedScrollEnabled
@@ -308,7 +346,9 @@ const HomeScreen = (props) => {
                     marginTop: R.fontSize.Size30,
                     height: screenHeight / 2.5,
                   }}>
-                  <VideoCard />
+                  <VideoCard
+                    eyeonPress={() => onCallModal('videoDetailModal')}
+                  />
                   <View
                     style={{
                       flexDirection: 'row',
@@ -332,7 +372,12 @@ const HomeScreen = (props) => {
                           </Text>
                         </Text>
                         <View
-                        style={{width:1, height:R.fontSize.Size14, backgroundColor:R.colors.placeHolderColor, marginHorizontal:R.fontSize.Size10}}
+                          style={{
+                            width: 1,
+                            height: R.fontSize.Size14,
+                            backgroundColor: R.colors.placeHolderColor,
+                            marginHorizontal: R.fontSize.Size10,
+                          }}
                         />
                         <Text
                           style={{
@@ -424,90 +469,275 @@ const HomeScreen = (props) => {
                 />
               </Pressable>
             </View>
-            <ScrollView
-              contentContainerStyle={{flexGrow: 1}}
-              showsVerticalScrollIndicator={false}>
-              <View
-                style={{
-                  flex: 1,
-                  marginHorizontal: R.fontSize.Size20,
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size18,
-                    fontWeight: '700',
-                    color: R.colors.primaryTextColor,
-                  }}>
-                  {'Filter'}
-                </Text>
-
-                <View style={{flex: 1, marginVertical: R.fontSize.Size20}}>
-                  <CustomCardLine
-                    onPress={() => console.log('down')}
-                    title={'35 - 50 $'}
-                    rightIcon={R.images.chevronDown}
-                  />
-                  <CustomCardLine title={'Location'} />
-                  <CustomCardLine
-                    onPress={() => console.log('down')}
-                    title={'Age 25 - 35'}
-                    rightIcon={R.images.chevronDown}
-                  />
-
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
+              style={{flex: 1}}>
+              <ScrollView
+                contentContainerStyle={{flexGrow: 1}}
+                showsVerticalScrollIndicator={false}>
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                   <View
                     style={{
-                      flexWrap: 'wrap',
-                      flexDirection: 'row',
-                      paddingVertical: R.fontSize.Size10,
+                      flex: 1,
+                      marginHorizontal: R.fontSize.Size20,
                     }}>
-                    {tailentList.map((item, index) => {
-                      return (
-                        <Pressable
-                          onPress={() => onCallSelectedTailent(item, index)}
-                          key={index}
-                          style={({pressed}) => [
-                            {
-                              marginTop: R.fontSize.Size6,
-                              paddingHorizontal: R.fontSize.Size15,
-                              paddingVertical: R.fontSize.Size5,
-                              borderRadius: R.fontSize.Size8,
-                              backgroundColor: item.selected
-                                ? R.colors.appColor
-                                : R.colors.placeholderTextColor,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              marginRight: R.fontSize.Size10,
-                              opacity: pressed ? 0.5 : 1,
-                            },
-                          ]}>
+                    {modalType == 'filterModal' ? (
+                      <View style={{flex: 1}}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size18,
+                            fontWeight: '700',
+                            color: R.colors.primaryTextColor,
+                          }}>
+                          {'Filter'}
+                        </Text>
+
+                        <View
+                          style={{flex: 1, marginVertical: R.fontSize.Size20}}>
+                          <CustomCardLine
+                            onPress={() => console.log('down')}
+                            title={'35 - 50 $'}
+                            rightIcon={R.images.chevronDown}
+                          />
+                          <CustomLineTextInput placeholder={'Location'} />
+
+                          <CustomCardLine
+                            onPress={() => console.log('down')}
+                            title={'Age 25 - 35'}
+                            rightIcon={R.images.chevronDown}
+                          />
+
+                          <View
+                            style={{
+                              flexWrap: 'wrap',
+                              flexDirection: 'row',
+                              paddingVertical: R.fontSize.Size10,
+                            }}>
+                            {tailentList.map((item, index) => {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    onCallSelectedTailent(item, index)
+                                  }
+                                  key={index}
+                                  style={({pressed}) => [
+                                    {
+                                      marginTop: R.fontSize.Size6,
+                                      paddingHorizontal: R.fontSize.Size15,
+                                      paddingVertical: R.fontSize.Size5,
+                                      borderRadius: R.fontSize.Size8,
+                                      backgroundColor: item.selected
+                                        ? R.colors.appColor
+                                        : R.colors.placeholderTextColor,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      marginRight: R.fontSize.Size10,
+                                      opacity: pressed ? 0.5 : 1,
+                                    },
+                                  ]}>
+                                  <Text
+                                    style={{
+                                      fontFamily: R.fonts.regular,
+                                      color: item.selected
+                                        ? R.colors.white
+                                        : R.colors.placeHolderColor,
+                                      fontSize: R.fontSize.Size14,
+                                      fontWeight: '400',
+                                    }}>
+                                    {item?.name}
+                                  </Text>
+                                </Pressable>
+                              );
+                            })}
+                          </View>
+                          <CustomCardLine
+                            onPress={() => console.log('down')}
+                            title={'Above 3.5 Stars'}
+                            rightIcon={R.images.chevronDown}
+                          />
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={{flex: 1}}>
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <View
+                            style={{
+                              height: R.fontSize.Size30,
+                              width: R.fontSize.Size30,
+                              overflow: 'hidden',
+                              borderRadius: R.fontSize.Size20,
+                            }}>
+                            <Image
+                              source={{
+                                uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX3JYxD4c-TLNXds0sV9Nie80zzS_TxeWapkUpNrSVC1TxN5rzzsZjCOMzVfXkh2xYOvY&usqp=CAU',
+                              }}
+                              style={{
+                                height: R.fontSize.Size30,
+                                width: R.fontSize.Size30,
+                              }}
+                              resizeMode={'cover'}
+                            />
+                          </View>
                           <Text
                             style={{
                               fontFamily: R.fonts.regular,
-                              color: item.selected
-                                ? R.colors.white
-                                : R.colors.placeHolderColor,
-                              fontSize: R.fontSize.Size14,
-                              fontWeight: '400',
+                              fontSize: R.fontSize.Size24,
+                              fontWeight: '700',
+                              color: R.colors.primaryTextColor,
+                              flex: 1,
+                              marginHorizontal: R.fontSize.Size14,
                             }}>
-                            {item?.name}
+                            {'Video Title Heading'}
                           </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                  <CustomCardLine
-                    onPress={() => console.log('down')}
-                    title={'Above 3.5 Stars'}
-                    rightIcon={R.images.chevronDown}
-                  />
-                </View>
+                        </View>
+                        <View style={{marginTop: R.fontSize.Size30}}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size12,
+                              fontWeight: '400',
+                              color: R.colors.primaryTextColor,
+                            }}>
+                            {`Video description Video descriptionVideo descriptionVidVideo description Video description Video description   `}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexWrap: 'wrap',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginTop: R.fontSize.Size30,
+                          }}>
+                          {persnalDetails.map((item, index) => {
+                            return (
+                              <View
+                                key={index}
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  marginRight: R.fontSize.Size14,
+                                }}>
+                                <View
+                                  style={{
+                                    height: R.fontSize.Size10,
+                                    width: R.fontSize.Size10,
+                                    backgroundColor: R.colors.appColor,
+                                    borderRadius: R.fontSize.Size10,
+                                  }}
+                                />
+                                <Text
+                                  style={{
+                                    fontFamily: R.fonts.regular,
+                                    fontSize: R.fontSize.Size14,
+                                    fontWeight: '700',
+                                    color: R.colors.primaryTextColor,
+                                    marginLeft: R.fontSize.Size8,
+                                  }}>
+                                  {item.title}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
 
-                <View>
-                  <AppButton title={'Apply'} />
-                </View>
-              </View>
-            </ScrollView>
+                        <View
+                          style={{
+                            flexWrap: 'wrap',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginTop: R.fontSize.Size20,
+                          }}>
+                          {tailentList.map((item, index) => {
+                            return (
+                              <View
+                                key={index}
+                                style={{
+                                  alignItems: 'center',
+                                  marginRight: R.fontSize.Size14,
+                                  justifyContent: 'center',
+                                  paddingHorizontal: R.fontSize.Size20,
+                                  paddingVertical: R.fontSize.Size6,
+                                  backgroundColor:
+                                    R.colors.placeholderTextColor,
+                                  borderRadius: R.fontSize.Size8,
+                                  marginBottom: R.fontSize.Size6,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontFamily: R.fonts.regular,
+                                    fontSize: R.fontSize.Size14,
+                                    fontWeight: '700',
+                                    color: R.colors.primaryTextColor,
+                                    marginLeft: R.fontSize.Size8,
+                                  }}>
+                                  {item.name}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+
+                        <View style={{marginTop: R.fontSize.Size30}}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontWeight: '700',
+                              fontSize: R.fontSize.Size18,
+                              color: R.colors.primaryTextColor,
+                            }}>
+                            {'Available for :'}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            marginTop: R.fontSize.Size30,
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                          }}>
+                          {timeDetails.map((item, index) => {
+                            return (
+                              <View
+                                key={index}
+                                style={{
+                                  alignItems: 'center',
+                                  marginRight: R.fontSize.Size10,
+                                  justifyContent: 'center',
+                                  paddingHorizontal: R.fontSize.Size20,
+                                  paddingVertical: R.fontSize.Size6,
+                                  backgroundColor: R.colors.appColor,
+                                  borderRadius: R.fontSize.Size8,
+                                  marginBottom: R.fontSize.Size6,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontFamily: R.fonts.regular,
+                                    fontSize: R.fontSize.Size14,
+                                    fontWeight: '700',
+                                    color: R.colors.white,
+                                    marginLeft: R.fontSize.Size8,
+                                  }}>
+                                  {item.title}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                </TouchableWithoutFeedback>
+              </ScrollView>
+            </KeyboardAvoidingView>
+
+            <View style={{paddingVertical: R.fontSize.Size10}}>
+              <AppButton
+                title={modalType == 'filterModal' ? 'Apply' : 'Connect Now'}
+                marginHorizontal={R.fontSize.Size55}
+              />
+            </View>
           </View>
         </View>
       </Modal>

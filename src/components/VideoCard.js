@@ -90,7 +90,12 @@ const VideoCard = props => {
             </View>
           </View>
           <View>
-            <Pressable>
+            <Pressable
+            onPress={props.eyeonPress}
+            style={({pressed})=>[{
+              opacity: pressed ?0.5:1
+            }]}
+            >
               <Image
                 source={R.images.eyeIcon}
                 style={{height: R.fontSize.Size25, width: R.fontSize.Size25}}

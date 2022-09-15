@@ -1,6 +1,20 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {View, TextInput, Pressable, Image, Text, SafeAreaView, Modal, Dimensions,ScrollView} from 'react-native';
+import {
+  View,
+  TextInput,
+  Pressable,
+  Image,
+  Text,
+  SafeAreaView,
+  Modal,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
+} from 'react-native';
 import {CustomCardView, Header, StoryScreen,AppButton, CustomCardTextInput}from '../../components'
 import R from '../../res/R';
 
@@ -117,68 +131,77 @@ const [cardExpiry, setCardExpiry] = useState('');
                   />
                 </Pressable>
               </View>
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                showsVerticalScrollIndicator={false}>
-                <View
-                  style={{
-                    flex: 1,
-                    marginHorizontal: R.fontSize.Size20,
-                  }}>
-                  <View>
-                    <Text
+              <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
+                style={{flex: 1}}>
+                <ScrollView
+                  contentContainerStyle={{flexGrow: 1}}
+                  showsVerticalScrollIndicator={false}>
+                  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                    <View
                       style={{
-                        fontFamily: R.fonts.regular,
-                        color: R.colors.primaryTextColor,
-                        fontWeight: '400',
-                        fontSize: R.fontSize.Size15,
+                        flex: 1,
+                        marginHorizontal: R.fontSize.Size20,
                       }}>
-                      {'Card Details'}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        color: R.colors.primaryTextColor,
-                        fontWeight: '700',
-                        fontSize: R.fontSize.Size18,
-                        marginTop: R.fontSize.Size10,
-                      }}>
-                      {`Enter your card details ( Debit Card )`}
-                    </Text>
-                  </View>
-                  <View style={{flex: 1, marginTop: R.fontSize.Size30}}>
-                    <CustomCardTextInput
-                      value={cardNo}
-                      onChangeText={cardNo => setCardNo(cardNo)}
-                      placeholder={'Enter Card Number'}
-                      keyboardType={'number-pad'}
-                    />
-                    <CustomCardTextInput
-                      value={cardHolderName}
-                      onChangeText={holderName => setCardHolderName(holderName)}
-                      placeholder={'Enter Card Holder Name'}
-                    />
-                    <CustomCardTextInput
-                      value={cardCVV}
-                      onChangeText={cvv => setCardCVV(cvv)}
-                      placeholder={'Enter CVV'}
-                      keyboardType={'number-pad'}
-                    />
-                    <CustomCardTextInput
-                      value={cardExpiry}
-                      onChangeText={expiryDate => setCardExpiry(expiryDate)}
-                      placeholder={'Enter Expiry MM/YY'}
-                      keyboardType={'number-pad'}
-                    />
-                  </View>
-                  <View>
-                    <AppButton
-                      onPress={() => onCallPayment()}
-                      title={'Make Payment'}
-                    />
-                  </View>
-                </View>
-              </ScrollView>
+                      <View>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '400',
+                            fontSize: R.fontSize.Size15,
+                          }}>
+                          {'Card Details'}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                            fontSize: R.fontSize.Size18,
+                            marginTop: R.fontSize.Size10,
+                          }}>
+                          {`Enter your card details ( Debit Card )`}
+                        </Text>
+                      </View>
+                      <View style={{flex: 1, marginTop: R.fontSize.Size30}}>
+                        <CustomCardTextInput
+                          value={cardNo}
+                          onChangeText={cardNo => setCardNo(cardNo)}
+                          placeholder={'Enter Card Number'}
+                          keyboardType={'number-pad'}
+                        />
+                        <CustomCardTextInput
+                          value={cardHolderName}
+                          onChangeText={holderName =>
+                            setCardHolderName(holderName)
+                          }
+                          placeholder={'Enter Card Holder Name'}
+                        />
+                        <CustomCardTextInput
+                          value={cardCVV}
+                          onChangeText={cvv => setCardCVV(cvv)}
+                          placeholder={'Enter CVV'}
+                          keyboardType={'number-pad'}
+                        />
+                        <CustomCardTextInput
+                          value={cardExpiry}
+                          onChangeText={expiryDate => setCardExpiry(expiryDate)}
+                          placeholder={'Enter Expiry MM/YY'}
+                          keyboardType={'number-pad'}
+                        />
+                      </View>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </ScrollView>
+              </KeyboardAvoidingView>
+              <View style={{paddingVertical: R.fontSize.Size10}}>
+                <AppButton
+                  onPress={() => onCallPayment()}
+                  title={'Make Payment'}
+                  marginHorizontal={R.fontSize.Size55}
+                />
+              </View>
             </View>
           </View>
         </Modal>

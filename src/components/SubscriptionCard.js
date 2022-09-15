@@ -10,7 +10,9 @@ const SubscriptionCard = (props) => {
         style={{
           overflow: 'hidden',
           paddingBottom: R.fontSize.Size4,
-          paddingRight: R.fontSize.Size2,
+          paddingRight: R.fontSize.Size4,
+          paddingLeft: R.fontSize.Size2,
+          borderRadius: R.fontSize.Size5,
           marginTop: props.marginTop,
         }}>
         <View
@@ -69,7 +71,7 @@ const SubscriptionCard = (props) => {
                   fontSize: R.fontSize.Size22,
                   color: R.colors.primaryTextColor,
                   fontWeight: '700',
-                    marginRight:R.fontSize.Size5
+                  marginRight: R.fontSize.Size5,
                 }}>
                 {props.noText}
               </Text>
@@ -110,9 +112,7 @@ const SubscriptionCard = (props) => {
               </Pressable>
             </View>
           </View>
-          {
-            props.bottomButton
-          }
+          {props.bottomButton}
         </View>
       </View>
     );

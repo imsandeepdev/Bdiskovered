@@ -6,13 +6,18 @@ const images = {
   // Login
   chevronDown: require('./images/chevron_down.png'),
   // UserType
-  checkWhiteIcon: require('./images/checkWhite.png'),
+  checkWhiteIcon: require('./images/whiteCheckIcon.png'),
+  checkTermsIcon: require('./images/checkIcon.png'),
+  unCheckTermsIcon: require('./images/unCheckIcon.png'),
+
   // Signup
   activeMaleIcon: require('./images/activeMale.png'),
   inactiveMaleIcon: require('./images/inactiveMale.png'),
   activeFemaleIcon: require('./images/activeFemale.png'),
   inactiveFemaleIcon: require('./images/inactiveFemale.png'),
   uploadIcon: require('./images/uploadIcon.png'),
+  checkOrangeIcon: require('./images/orangeCheckIcon.png'),
+  checkGreyIcon: require('./images/greyCheckIcon.png'),
 
   // Home
   menuIcon: require('./images/menuIcon.png'),

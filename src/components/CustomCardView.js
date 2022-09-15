@@ -6,8 +6,10 @@ const CustomCardView = (props) => {
       <View
         style={{
           overflow: 'hidden',
-          paddingBottom: 3,
-          paddingRight: 2,
+          paddingBottom: R.fontSize.Size4,
+          paddingRight: R.fontSize.Size4,
+          paddingLeft: R.fontSize.Size2,
+          borderRadius: R.fontSize.Size5,
         }}>
         <Pressable
           onPress={props.onPress}
@@ -49,7 +51,10 @@ const CustomCardView = (props) => {
           <View>
             <Image
               source={props.rightIcon}
-              style={{height: props.Iconheight ?? R.fontSize.Size12, width: props.Iconwidth ?? R.fontSize.Size12}}
+              style={{
+                height: props.Iconheight ?? R.fontSize.Size12,
+                width: props.Iconwidth ?? R.fontSize.Size12,
+              }}
               resizeMode={'contain'}
             />
           </View>

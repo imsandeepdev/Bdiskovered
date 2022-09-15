@@ -1,6 +1,6 @@
 import * as react from 'react';
 import {useState, useEffect} from 'react';
-import {Text, View, Pressable, Image, SafeAreaView,TextInput, FlatList} from 'react-native';
+import {Text, View, Pressable, Image, SafeAreaView,TextInput, FlatList,ScrollView} from 'react-native';
 import { StoryScreen, Header, AppButton, CustomCardView, CustomTimeCard } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
@@ -55,6 +55,7 @@ const TalentScreen = (props) => {
           <View style={Styles.mainView}>
             <View style={{flex: 1}}>
               <FlatList
+                contentContainerStyle={{flexGrow:1}}
                 data={data}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
@@ -163,12 +164,13 @@ const TalentScreen = (props) => {
                 }
               />
             </View>
-
-            <AppButton
-              onPress={() => props.navigation.navigate('HomeMenu')}
-              marginHorizontal={R.fontSize.Size35}
-              title={'Proceed'}
-            />
+            <View style={{paddingVertical:R.fontSize.Size16}}>
+              <AppButton
+                onPress={() => props.navigation.navigate('HomeMenu')}
+                marginHorizontal={R.fontSize.Size35}
+                title={'Proceed'}
+              />
+            </View>
           </View>
         </SafeAreaView>
       </StoryScreen>

@@ -7,8 +7,10 @@ const CustomMaleFemale = (props) => {
       <View
         style={{
           overflow: 'hidden',
-          paddingBottom: 3,
-          paddingRight: 2,
+          paddingBottom: R.fontSize.Size4,
+          paddingRight: R.fontSize.Size4,
+          paddingLeft: R.fontSize.Size2,
+          borderRadius: R.fontSize.Size5,
         }}>
         <View
           style={{

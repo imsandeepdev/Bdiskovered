@@ -6,9 +6,10 @@ const CustomCardTextInput = (props) => {
       <View
         style={{
           overflow: 'hidden',
-          paddingBottom: 3,
-          paddingRight: 2,
-          
+          paddingBottom: R.fontSize.Size4,
+          paddingRight: R.fontSize.Size4,
+          paddingLeft: R.fontSize.Size2,
+          borderRadius: R.fontSize.Size5,
         }}>
         <Pressable
           onPress={props.onPress}
@@ -53,7 +54,7 @@ const CustomCardTextInput = (props) => {
           <View>
             <Image
               source={props.rightIcon}
-              style={{height: R.fontSize.Size12, width: R.fontSize.Size12}}
+              style={{height: R.fontSize.Size14, width: R.fontSize.Size14}}
               resizeMode={'contain'}
             />
           </View>

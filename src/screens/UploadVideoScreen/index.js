@@ -10,6 +10,9 @@ import {
   Modal,
   Dimensions,
   ScrollView,
+  KeyboardAvoidingView,TouchableWithoutFeedback,
+  Platform,
+  Keyboard
 } from 'react-native';
 import {
   CustomCardView,
@@ -69,6 +72,14 @@ const UploadVideoScreen = props => {
           rightSource2={R.images.bellIcon}
           rightSourceOnPress2={() => console.log('Bell')}
         />
+        <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
+              style={{flex: 1}}>
+              <ScrollView
+                contentContainerStyle={{flexGrow: 1}}
+                showsVerticalScrollIndicator={false}>
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            
         <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
           <View style={{marginTop: R.fontSize.Size45}}>
             <Text
@@ -136,6 +147,7 @@ const UploadVideoScreen = props => {
               {VideoType.map((item, index) => {
                 return (
                   <Pressable
+                  key={index}
                     style={({pressed}) => [
                       {
                         opacity: pressed ? 0.5 : 1,
@@ -160,7 +172,10 @@ const UploadVideoScreen = props => {
             </View>
           </View>
         </View>
-        <View style={{marginBottom: R.fontSize.Size40}}>
+        </TouchableWithoutFeedback>
+        </ScrollView>
+        </KeyboardAvoidingView>
+        <View style={{paddingVertical: R.fontSize.Size30}}>
           <AppButton title={'Create Post'} />
         </View>
       </SafeAreaView>

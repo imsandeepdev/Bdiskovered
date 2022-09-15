@@ -367,7 +367,7 @@ PODS:
     - React-Core
   - RNGestureHandler (2.6.0):
     - React-Core
-  - RNReanimated (1.13.2):
+  - RNReanimated (1.13.4):
     - React-Core
   - RNScreens (3.17.0):
     - React-Core
@@ -592,7 +592,7 @@ SPEC CHECKSUMS:
   ReactCommon: 095366164a276d91ea704ce53cb03825c487a3f2
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
   RNGestureHandler: 920eb17f5b1e15dae6e5ed1904045f8f90e0b11e
-  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
+  RNReanimated: c1b56d030d1616239861534d9adb531f8cffab68
   RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196

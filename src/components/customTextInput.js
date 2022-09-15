@@ -6,8 +6,10 @@ const CustomTextInput = (props) => {
       <View
         style={{
           overflow: 'hidden',
-          paddingBottom: 3,
-          paddingRight: 2,
+          paddingBottom: R.fontSize.Size4,
+          paddingRight: R.fontSize.Size4,
+          paddingLeft: R.fontSize.Size2,
+          borderRadius: R.fontSize.Size5,
         }}>
         <View
           style={{
@@ -81,7 +83,7 @@ const CustomTextInput = (props) => {
               }}>
               {props.countryCode}
             </Text>
-            <View style={{marginLeft: R.fontSize.Size25, flex: 1}}>
+            <View style={{marginLeft: R.fontSize.Size20, flex: 1}}>
               <TextInput
                 style={{
                   height: '100%',
@@ -96,6 +98,13 @@ const CustomTextInput = (props) => {
                 keyboardType={'number-pad'}
                 value={props.value}
                 onChangeText={props.onChangeText}
+              />
+            </View>
+            <View>
+              <Image
+                source={props.rightIcon}
+                style={{height: R.fontSize.Size14, width: R.fontSize.Size14}}
+                resizeMode={'contain'}
               />
             </View>
           </View>
