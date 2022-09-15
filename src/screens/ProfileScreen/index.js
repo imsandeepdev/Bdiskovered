@@ -50,7 +50,7 @@ const timeDetails = [
     }
 ]
 
-const ProfileScreen = () => {
+const ProfileScreen = (props) => {
 
 
 

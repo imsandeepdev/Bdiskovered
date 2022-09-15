@@ -48,7 +48,7 @@ const CustomMenuButton = (props) => {
     );
 }
 
-const Menu = props => {
+const Menu = (props) => {
   
 
   return (

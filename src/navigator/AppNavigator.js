@@ -21,6 +21,7 @@ import CardScreen from '../screens/CardScreen';
 import UpdateProfileScreen from '../screens/UpdateProfileScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import UploadVideoScreen from '../screens/UploadVideoScreen';
+import VideoScreen from '../screens/VideoScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -100,6 +101,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="UploadVideoScreen"
           component={UploadVideoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="VideoScreen"
+          component={VideoScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

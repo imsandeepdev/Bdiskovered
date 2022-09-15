@@ -71,6 +71,7 @@ const LoginScreen = (props) => {
                   </Text>
                   <Pressable
                     onPress={() => props.navigation.navigate('UserTypeScreen')}
+                    // onPress={() => props.navigation.navigate('VideoScreen')}
                     style={({pressed}) => [
                       {
                         padding: R.fontSize.Size4,

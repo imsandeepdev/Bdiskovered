@@ -2,6 +2,8 @@ const colors = {
   lightWhite: '#f1f1f1',
   lightBlack: '#666666',
   white: '#ffffff',
+  black: '#000000',
+
   backgroundColor: '#ffffff',
   placeHolderColor: '#707070',
   placeholderTextColor: '#C2C2C2',

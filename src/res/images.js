@@ -19,6 +19,11 @@ const images = {
   filterIcon: require('./images/filterIcon.png'),
   bellIcon: require('./images/Bell.png'),
   cancleIcon: require('./images/cancle.png'),
+  musicIcon: require('./images/musicIcon.png'),
+  eyeIcon: require('./images/eyeIcon.png'),
+  ratingBarIcon: require('./images/ratingBarIcon.png'),
+  greyAppIcon: require('./images/greyAppIcon.png'),
+  redHeartIcon: require('./images/redHeartIcon.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 

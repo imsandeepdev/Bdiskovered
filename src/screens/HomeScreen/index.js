@@ -12,7 +12,7 @@ import {
   ScrollView,
   FlatList
 } from 'react-native';
-import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine} from '../../components';
+import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard} from '../../components';
 // import Video from 'react-native-video';
 import R from '../../res/R';
 import Styles from './styles';
@@ -161,6 +161,7 @@ const HomeScreen = (props) => {
 
 
   const [modalPicker, setModalPicker] = useState(false);
+  const [modalVideoDetail, setModalVideoDetail] = useState(false)
   const [tailentList, setTailentList] = useState([
     {
       id: '1',
@@ -301,14 +302,84 @@ const HomeScreen = (props) => {
             data={SuggestedList}
             renderItem={({item, index}) => {
               return (
-                <View key={index} style={{marginTop: R.fontSize.Size30}}>
-                  <Image
+                <View
+                  key={index}
+                  style={{
+                    marginTop: R.fontSize.Size30,
+                    height: screenHeight / 2.5,
+                  }}>
+                  <VideoCard />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: R.fontSize.Size20,
+                      marginHorizontal: R.fontSize.Size12,
+                      alignItems: 'center',
+                    }}>
+                    <View style={{flex: 1}}>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size12,
+                            fontWeight: '700',
+                            color: R.colors.placeHolderColor,
+                          }}>
+                          {'Liked By '}
+                          <Text style={{color: R.colors.appColor}}>
+                            {'455'}
+                          </Text>
+                        </Text>
+                        <View
+                        style={{width:1, height:R.fontSize.Size14, backgroundColor:R.colors.placeHolderColor, marginHorizontal:R.fontSize.Size10}}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size12,
+                            fontWeight: '700',
+                            color: R.colors.placeHolderColor,
+                          }}>
+                          {'Average Like '}
+                          <Text style={{color: R.colors.appColor}}>
+                            {'82%'}
+                          </Text>
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        marginHorizontal: R.fontSize.Size15,
+                        alignItems: 'center',
+                      }}>
+                      <Image
+                        source={R.images.greyAppIcon}
+                        style={{
+                          height: R.fontSize.Size30,
+                          width: R.fontSize.Size30,
+                        }}
+                        resizeMode={'contain'}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size12,
+                          fontWeight: '400',
+                          color: R.colors.placeHolderColor,
+                        }}
+                        numberOfLines={1}>
+                        {'Connect'}
+                      </Text>
+                    </View>
+                  </View>
+                  {/* <Image
                     source={{
                       uri: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
                     }}
                     style={{height: screenHeight / 2, width: '100%'}}
                     resizeMode={'cover'}
-                  />
+                  /> */}
                 </View>
               );
             }}
