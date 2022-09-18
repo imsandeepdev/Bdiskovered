@@ -8,27 +8,43 @@ import R from '../../res/R';
 import Styles from './styles';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
 const screenHeight = Dimensions.get('screen').height;
+import Toast from 'react-native-simple-toast';
+
 
 const LoginScreen = (props) => {
 
   const dispatch = useDispatch()
   const [mobNo, setMobNo] = useState('')
   const [countyModalPicker,setCountyModalPicker] = useState(false)
-  const [countyCode, setCountyCode] = useState('')
+  const [countryCode, setCountryCode] = useState('91')
   const [countyFlag, setCountyFlag] = useState('');
 
 
   const onCallCreateOTP = () => {
     let data = {
-      mobile: '+918947915820',
+      // mobile: '+918947915820',
+      mobile: `${countryCode}${mobNo}`,
       device_token:
-        'cO2stOGoRpOGAnruOLGUan:APA91bGIlY_kqTLba2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
+        'cO2stOGoRpOGAnruOLGUan:APA91bGIdddlY_kqTLbaw2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
     };
     dispatch(CreateOTPRequest(data, response=>{
-      props.navigation.navigate('OtpScreen')
-      console.log('RESPONSE CREATE OTP',response)
-    }))
+      console.log('RESPONSE CREATE OTP', response);
 
+      if(response.status == 'success')
+      {
+      props.navigation.navigate('OtpScreen', {
+        loginValue: data,
+        fromScreen: 'LoginScreen',
+        mobValue: mobNo,
+        countryCode: countryCode,
+      });
+      Toast.show(response.message, Toast.SHORT)
+      }
+      else
+      {
+      Toast.show(response.message, Toast.SHORT);
+      }
+    }))
   }
 
     return (
@@ -64,7 +80,7 @@ const LoginScreen = (props) => {
                       <CustomTextInput
                         onChangeCounty={() => setCountyModalPicker(true)}
                         countryFlag={countyFlag != '' ? countyFlag : 'in'}
-                        countryCode={countyCode != '' ? `+ ${countyCode}` : '+91'}
+                        countryCode={countryCode != '' ? `+ ${countryCode}` : '91'}
                         maxLength={10}
                         placeholder={'Mobile No'}
                         value={mobNo}
@@ -114,8 +130,8 @@ const LoginScreen = (props) => {
           </KeyboardAvoidingView>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              // onPress={() => onCallCreateOTP()}
-              onPress={() => props.navigation.navigate('OtpScreen')}
+              onPress={() => onCallCreateOTP()}
+              // onPress={() => props.navigation.navigate('OtpScreen')}
               marginHorizontal={R.fontSize.Size35}
               title={'Sign In'}
             />
@@ -146,7 +162,7 @@ const LoginScreen = (props) => {
                 onSelect={country => {
                   console.log(country);
                   setCountyModalPicker(false);
-                  setCountyCode(country?.callingCode[0]);
+                  setCountryCode(country?.callingCode[0]);
                   let flagName = (country?.flag).slice(5);
                   setCountyFlag(country?.cca2)
                   console.log('FlagName',flagName)

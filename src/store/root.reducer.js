@@ -5,9 +5,14 @@ import {persistReducer} from 'redux-persist';
 import createOTPRoot from '../reducers/createOTP.reducer';
 import signUpRoot from '../reducers/signUp.reducer';
 
+const authPersistConfig = {
+  storage: AsyncStorage,
+  key: 'auth',
+};
+
 export default combineReducers({
   
 createOTPRoot,
-signUpRoot
+auth: persistReducer(authPersistConfig,signUpRoot)
 
 });

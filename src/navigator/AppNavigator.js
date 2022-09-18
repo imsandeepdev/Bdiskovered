@@ -22,6 +22,7 @@ import UpdateProfileScreen from '../screens/UpdateProfileScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import UploadVideoScreen from '../screens/UploadVideoScreen';
 import VideoScreen from '../screens/VideoScreen';
+import TalentFinishScreen from '../screens/TalentFinishScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -106,6 +107,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="VideoScreen"
           component={VideoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TalentFinishScreen"
+          component={TalentFinishScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

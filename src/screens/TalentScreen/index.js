@@ -55,7 +55,7 @@ const TalentScreen = (props) => {
           <View style={Styles.mainView}>
             <View style={{flex: 1}}>
               <FlatList
-                contentContainerStyle={{flexGrow:1}}
+                contentContainerStyle={{flexGrow: 1}}
                 data={data}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
@@ -164,9 +164,9 @@ const TalentScreen = (props) => {
                 }
               />
             </View>
-            <View style={{paddingVertical:R.fontSize.Size16}}>
+            <View style={{paddingVertical: R.fontSize.Size16}}>
               <AppButton
-                onPress={() => props.navigation.navigate('HomeMenu')}
+                onPress={() => props.navigation.navigate('TalentFinishScreen')}
                 marginHorizontal={R.fontSize.Size35}
                 title={'Proceed'}
               />

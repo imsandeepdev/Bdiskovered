@@ -17,7 +17,8 @@ import { StoryScreen, Header, AppButton } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
 import {connect, useDispatch} from 'react-redux';
-import { SignUpRequest } from '../../actions/signUp.action';
+import { SignInRequest, SignUpRequest } from '../../actions/signUp.action';
+import Toast from 'react-native-simple-toast';
 
 
 const OtpScreen = (props) => {
@@ -35,23 +36,121 @@ const OtpScreen = (props) => {
 
   useEffect(()=>{
 
+    console.log('SIGNUPVALUE', props.route.params?.signupValue);
     // setSignUpData(props.route.params?.signupValue);
     // console.log(signUpData)
   },[props.navigation])
 
+  const onCallCheckVerify = () => {
+    props.route.params?.fromScreen == 'SignUpScreen'
+    ?
+      onCallSignUpVerify()
+    :
+      onCallLoginVerify()
+  }
 
-  const onCallVerify = () => {
+  const onCallLoginVerify = () => {
+      let tempval = otpArray.toString();
+      const otpValue = tempval.replace(/\,/g, '');
+      let loginData = props.route.params?.loginValue;
+      let data = {
+        ...loginData,
+        otp: otpValue,
+      };
+      console.log('LOGINDATA',data)
+      dispatch(SignInRequest(data, response =>{
+          console.log('LOGIN RES', response)
+          if(response.status == 'success')
+          {
+            props.navigation.replace('HomeMenu')
+            Toast.show(response.message, Toast.SHORT);
+          }
+          else
+          {
+          Toast.show(response.message, Toast.SHORT);
+          }
+        })
+      )
+
+  }
+
+  const onCallSignUpVerify = () => {
+    props.route.params?.userTypeVerify == 'tailentViewer'?
+    onCallTailentViewerVerify():
+    onCallCompanyVerify()
+  }
+
+  const onCallCompanyVerify = () => {
+     let tempval = otpArray.toString();
+     const otpValue = tempval.replace(/\,/g, '');
+    let signUpData = props.route.params?.signupValue;
+    let dataType = 'formdata';
+     let formData = new FormData();
+     formData.append('device_token', 'dsghh');
+     formData.append('email', signUpData?.email);
+     formData.append('device_ip', signUpData?.device_ip);
+     formData.append('user_type', signUpData?.user_type);
+     formData.append('company_name', signUpData?.company_name);
+     formData.append('company_type', signUpData?.company_type);
+     formData.append('license_number', signUpData?.license_number);
+     formData.append(
+       'company_registration_id',
+       signUpData?.company_registration_id,
+     );
+     formData.append('owner_name', signUpData?.owner_name);
+     formData.append('company_address', signUpData?.company_address);
+     formData.append('otp', otpValue)
+     formData.append(
+       'document',
+       signUpData?.document.path == null || signUpData?.document?.path == null
+         ? ''
+         : {
+             uri:
+               Platform.OS === 'android'
+                 ? signUpData?.document?.path
+                 : signUpData?.document?.path?.replace('file://', ''),
+             type: signUpData?.document?.mime,
+             name: signUpData?.document?.filename ?? 'image.jpg',
+           },
+     );
+    console.log('Company Request for Signup',formData)
+    dispatch(
+      SignUpRequest(formData, dataType, response => {
+        console.log('ResponseForBusiness', response);
+        if(response.status == 'success')
+        {
+          props.navigation.navigate('TalentFinishScreen');
+          Toast.show(response.message, Toast.SHORT);
+        }
+        else
+        {
+          Toast.show(response.message, Toast.SHORT);
+        }
+      }),
+    );
+  }
+
+
+  const onCallTailentViewerVerify = () => {
 
     let tempval = otpArray.toString();
     const otpValue = tempval.replace(/\,/g, '');
     let signUpData = props.route.params?.signupValue;
+
     let data = {
       ...signUpData,
       otp:otpValue
     }
+    let dataType = 'jsondata';
     console.log('SIGNUP',data)
-    dispatch(SignUpRequest(data, response => {
-      console.log('Response', response)
+    dispatch(SignUpRequest(data,dataType,response => {
+      console.log('ResponseOnTailentViewer', response)
+       if (response.status == 'success') {
+         props.navigation.navigate(props.route.params?.userType == 'Viewer' ? 'TalentFinishScreen' : 'TalentScreen');
+         Toast.show(response.message, Toast.SHORT);
+       } else {
+         Toast.show(response.message, Toast.SHORT);
+       }
     }))
 
   }
@@ -227,7 +326,7 @@ const OtpScreen = (props) => {
           </View>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              onPress={() => onCallVerify()}
+              onPress={() => onCallCheckVerify()}
               marginHorizontal={R.fontSize.Size55}
               title={'Verify'}
             />

@@ -5,10 +5,12 @@ import {Config} from '../config';
 import Toast from 'react-native-simple-toast';
 
 
-const RequestPostFetch = ({url, body}) =>
+const RequestPostFetch = ({url, body, datatype}) =>
   new Promise((resolve, reject) => {
     const headerAuth = {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      Accept: 'application/json',
+      'Content-Type': datatype=='formdata' ? 'multipart/form-data' : 'application/x-www-form-urlencoded;charset=UTF-8',
+      // 'Content-Type':  datatype=='formdata' && 'multipart/form-data',
     };
     const headers = headerAuth;
 
@@ -23,7 +25,7 @@ const RequestPostFetch = ({url, body}) =>
     const config = {
       method: 'POST',
       headers,
-      body: formBody,
+      body: datatype=='formdata' ? body : formBody,
     };
     const requestUrl = Config.API_URL + url;
 

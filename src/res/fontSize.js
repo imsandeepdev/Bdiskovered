@@ -76,6 +76,8 @@ const fontSize = {
   Size260: normalize(260),
   Size270: normalize(270),
   Size300: normalize(300),
+  Size320: normalize(320),
+
   Size500: normalize(500),
 };
 

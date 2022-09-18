@@ -22,10 +22,14 @@ import moment from 'moment';
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
+const screenWidth = Dimensions.get('screen').width;
+
 import CountryPicker from 'react-native-country-picker-modal';
 import {connect, useDispatch} from 'react-redux';
 import Toast from 'react-native-simple-toast';
-import DocumentPicker from 'react-native-document-picker';
+import FilePicker from 'react-native-document-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+
 
 
 
@@ -57,15 +61,19 @@ const SignupScreen = (props) => {
     const [userType, setUserType] = useState('')
     const [onFocusName, setOnFocusName] = useState('')
 
-
+    const [companyUserNameStatue, setCompanyUserNameStatus] = useState(false);
     const [companyName, setCompanyName] = useState('')
     const [companyType, setCompanyType] = useState('')   
     const [companytradeNo, setCompanyTradeNo] = useState('') 
     const [companyRegId, setCompanyRegId] = useState('')
+    const [companyMailStatue, setCompanyMailStatus] = useState(false);
     const [companyMail, setCompanyMail] = useState('')
+    const [companyPhoneStatue, setCompanyPhoneStatus] = useState(false);
     const [companyMob, setCompanyMob] = useState('')
     const [companyOwnerName, setCompanyOwnerName] = useState('')
 
+    const [documentPic, setDocumentPic] = useState([])
+    const [documentModalPicker, setDocumentModalPicker] = useState(false);
     const [countyModalPicker, setCountyModalPicker] = useState(false);
     const [countryCode, setCountryCode] = useState('91');
     const [countryFlag, setCountryFlag] = useState('');
@@ -108,18 +116,29 @@ const SignupScreen = (props) => {
             onFocusName == 'userName' && setUserNameStatus(true);
             onFocusName == 'userEmail' && setUserMailStatus(true);
             onFocusName == 'userPhone' && setUserPhoneStatus(true);
-
+            onFocusName == 'companyUserName' && setCompanyUserNameStatus(true);
+            onFocusName == 'companyMail' && setCompanyMailStatus(true);
+            onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
+          }
+          else
+          {
+             onFocusName == 'userName' && setUserNameStatus(false);
+             onFocusName == 'userEmail' && setUserMailStatus(false);
+             onFocusName == 'userPhone' && setUserPhoneStatus(false);
+             onFocusName == 'companyUserName' && setCompanyUserNameStatus(false);
+             onFocusName == 'companyMail' && setCompanyMailStatus(false);
+             onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
           }
         });
     };
 
     
- 
+//  For Tailent and Viewer
     const onCallSetUserNameValue = (value) => {
       console.log('On Focus', onFocusName)
       let userVerifyAPI = Config.verifyUsernameAPI
       setUserName(value);
-      value.length > 4
+      value.length > 2
         ? onCheckVerifyAPI(value, userVerifyAPI)
         : setUserNameStatus(false);
     }
@@ -140,6 +159,35 @@ const SignupScreen = (props) => {
       value.length >= 9
         ? onCheckVerifyAPI(value, phoneVerifyAPI)
         : setUserPhoneStatus(false);
+    };
+
+    // For Business 
+
+    const onCallSetCompanyUserNameValue = value => {
+      console.log('On Focus', onFocusName);
+      let userVerifyAPI = Config.verifyUsernameAPI;
+      setCompanyName(value);
+      value.length > 2
+        ? onCheckVerifyAPI(value, userVerifyAPI)
+        : setCompanyUserNameStatus(false);
+    };
+
+    const onCallSetCompanyEmailValue = value => {
+      console.log('On Focus', onFocusName);
+      let mailVerifyAPI = Config.verifyEmailAPI;
+      setCompanyMail(value);
+      value.length > 5
+        ? onCheckVerifyAPI(value, mailVerifyAPI)
+        : setCompanyMailStatus(false);
+    };
+
+    const onCallSetCompanyPhoneValue = value => {
+      console.log('On Focus', onFocusName);
+      let phoneVerifyAPI = Config.verifyMobileAPI;
+      setCompanyMob(value);
+      value.length >= 9
+        ? onCheckVerifyAPI(value, phoneVerifyAPI)
+        : setCompanyPhoneStatus(false);
     };
 
 const isTailentViewerDetailsValid = () => {
@@ -199,8 +247,18 @@ const isBusinessSignUpDetailsValid = () => {
         'Please Enter Valid Email Id',
       ) &&
       CommonFunctions.isBlank(companyMob.trim(), 'Please Enter Mobile No') &&
-      CommonFunctions.isBlank(companyOwnerName.trim(), 'Please Enter Company Owner Name') 
+      CommonFunctions.isBlank(companyOwnerName.trim(), 'Please Enter Company Owner Name') &&
+      onCheckDocument()
     );
+}
+
+const onCheckDocument = () => {
+  if(documentPic.length == 0)
+  {
+    Toast.show('Please Upload Valid Document Image File',Toast.SHORT);
+    return false;
+  }
+  return true;
 }
 
 
@@ -208,7 +266,7 @@ const isBusinessSignUpDetailsValid = () => {
       if (props.route.params?.from == 'Business')
       {
         if (isBusinessSignUpDetailsValid()) {
-          // onCallForBusinessCreateOTP();
+          onCallForBusinessCreateOTP();
           console.log("FOR BUSINESS")
         }
       }
@@ -220,8 +278,9 @@ const isBusinessSignUpDetailsValid = () => {
       }
     }
 
-    const onCallBusinessSignUpAPI = () => {
-      let data = {
+    const onCallForBusinessCreateOTP = () => {
+  
+      let signUpData = {
         device_token: '2wewe',
         email: companyMail,
         device_ip: deviceId,
@@ -232,33 +291,77 @@ const isBusinessSignUpDetailsValid = () => {
         company_registration_id: companyRegId,
         owner_name: companyOwnerName,
         company_address: '',
-        document: '',
+        document: documentPic,
       };
 
-      console.log('DATA',data)
+      let data = {
+         mobile: `${countryCode}${companyMob}`,
+         number_available: '0',
+         device_token: 'sjdusadhouisodjswesd3budedksaheedeff2d',
+       };
+       dispatch(
+         CreateOTPRequest(data, response => {
+           console.log('RESPONSE', response);
+           if(response.status == 'success')
+           {
+              props.navigation.navigate('OtpScreen', {
+                signupValue: signUpData,
+                countryCode: countryCode,
+                mobValue: companyMob,
+                fromScreen: 'SignUpScreen',
+                userTypeVerify: 'Company',
+                userType: props.route.params?.from,
+              });
+            Toast.show(response?.message, Toast.SHORT);
 
+           }
+           else
+           {
+            Toast.show(response?.message, Toast.SHORT);
+           }
+         })
+       )
     }
 
-     const onCallUserTailentSignUpAPI = () => {
-       let data = {
-         username: userName,
-         gender: onGender,
-         birth: dob,
-         email: eMail,
-         name: fullName,
-         device_token: 'jkjk22',
-         device_ip: deviceId,
-         user_type: userType,
-         device_name: deviceName,
-       };
+    // const onCallBusinessSignUpAPI = () => {
+    //   let data = {
+    //     device_token: '2wewe',
+    //     email: companyMail,
+    //     device_ip: deviceId,
+    //     user_type: userType,
+    //     company_name: companyName,
+    //     company_type: companyType,
+    //     license_number: companytradeNo,
+    //     company_registration_id: companyRegId,
+    //     owner_name: companyOwnerName,
+    //     company_address: '',
+    //     document: '',
+    //   };
 
-      console.log('DATA', data);
-      dispatch(SignUpRequest(data, response =>{
-        console.log('RESPONSE', response)
-      }))
+    //   console.log('DATA',data)
+
+    // }
+
+    //  const onCallUserTailentSignUpAPI = () => {
+    //    let data = {
+    //      username: userName,
+    //      gender: onGender,
+    //      birth: dob,
+    //      email: eMail,
+    //      name: fullName,
+    //      device_token: 'jkjk22',
+    //      device_ip: deviceId,
+    //      user_type: userType,
+    //      device_name: deviceName,
+    //    };
+
+    //   console.log('DATA', data);
+    //   dispatch(SignUpRequest(data, response =>{
+    //     console.log('RESPONSE', response)
+    //   }))
       
 
-     };
+    //  };
 
 
      const onCallForTailentViewerCreateOTP = () => {
@@ -274,22 +377,72 @@ const isBusinessSignUpDetailsValid = () => {
          device_name: deviceName,
        };
        let data = {
-         mobile: mobNo,
+         mobile: `${countryCode}${mobNo}`,
          number_available: '0',
-         device_token: 'sjdusadhouisodjswesd3budedksaheed2',
+         device_token: 'sjdusadhouisodjswesddd3buiededkssaheed2s',
        };
        dispatch(
          CreateOTPRequest(data, response => {
            console.log('RESPONSE', response);
-           props.navigation.navigate('OtpScreen', {
-             signupValue: signupData,
-             countryCode: countryCode,
-             mobValue: mobNo,
-           });
+           if(response?.status == 'success')
+           {
+            props.navigation.navigate('OtpScreen', {
+              signupValue: signupData,
+              countryCode: countryCode,
+              mobValue: mobNo,
+              fromScreen: 'SignUpScreen',
+              userTypeVerify: 'tailentViewer',
+              userType: props.route.params?.from,
+            });
+            Toast.show(response?.message, Toast.SHORT);
+           }
+           else
+           {
+            Toast.show(response?.message, Toast.SHORT);
+           }
+          
          }),
        );
      };
 
+    const handleFilePicker = () => {
+      setDocumentModalPicker(true)
+    };
+
+    const onSelectPicker = params => {
+    if (params == 'camera') {
+      ImagePicker.openCamera({
+        width: 400,
+        height: 400,
+        cropping: true,
+      }).then(image => {
+        console.log("IMAGE",image)
+        setDocumentPic(image);
+        setDocumentModalPicker(false);
+      });
+    } else if (params == 'gallery') {
+      ImagePicker.openPicker({
+        width: 400,
+        height: 400,
+        cropping: true,
+      }).then(image => {
+        console.log('IMAGE', image);
+        setDocumentPic(image);
+        setDocumentModalPicker(false);
+      });
+    }
+  }
+
+    //  const handleFilePicker = async() => {
+    //     try{
+    //       await FilePicker.pick({
+    //         presentationStyle: 'fullScreen'
+    //       })
+    //     }
+    //     catch(err) {
+    //       console.log('ErrorFilePicker', err)
+    //     }
+    //  }
 
     return (
       <StoryScreen>
@@ -410,8 +563,16 @@ const isBusinessSignUpDetailsValid = () => {
                         <View style={{marginTop: R.fontSize.Size30}}>
                           <CustomCardTextInput
                             value={companyName}
-                            onChangeText={cname => setCompanyName(cname)}
+                            onChangeText={cname =>
+                              onCallSetCompanyUserNameValue(cname)
+                            }
                             placeholder={'Company Name'}
+                            onFocus={() => setOnFocusName('companyUserName')}
+                            rightIcon={
+                              companyUserNameStatue
+                                ? R.images.checkOrangeIcon
+                                : R.images.checkGreyIcon
+                            }
                           />
                           <CustomCardTextInput
                             value={companyType}
@@ -432,8 +593,16 @@ const isBusinessSignUpDetailsValid = () => {
                           />
                           <CustomCardTextInput
                             value={companyMail}
-                            onChangeText={email => setCompanyMail(email)}
+                            onChangeText={email =>
+                              onCallSetCompanyEmailValue(email)
+                            }
                             placeholder={'Company Email Address'}
+                            onFocus={() => setOnFocusName('companyMail')}
+                            rightIcon={
+                              companyMailStatue
+                                ? R.images.checkOrangeIcon
+                                : R.images.checkGreyIcon
+                            }
                           />
                           <CustomTextInput
                             onChangeCounty={() => setCountyModalPicker(true)}
@@ -444,9 +613,16 @@ const isBusinessSignUpDetailsValid = () => {
                             maxLength={10}
                             placeholder={'Mobile No'}
                             value={companyMob}
-                            onChangeText={mobno => setCompanyMob(mobno)}
+                            onChangeText={mobno =>
+                              onCallSetCompanyPhoneValue(mobno)
+                            }
                             marginBottom={R.fontSize.Size20}
-                            rightIcon={R.images.checkGreyIcon}
+                            rightIcon={
+                              companyPhoneStatue
+                                ? R.images.checkOrangeIcon
+                                : R.images.checkGreyIcon
+                            }
+                            onFocus={() => setOnFocusName('companyPhone')}
                           />
 
                           <CustomCardTextInput
@@ -457,10 +633,21 @@ const isBusinessSignUpDetailsValid = () => {
                             placeholder={'Owner Name'}
                           />
                           <CustomCardView
-                            title={'Upload Trade / Commercial License'}
+                            onPress={() => handleFilePicker()}
+                            title={documentPic.length == 0 ? 'Upload Trade / Commercial License' : `${documentPic?.filename}`}
                             TextColor={R.colors.placeholderTextColor}
                             rightIcon={R.images.uploadIcon}
+                            marginBottom = {R.fontSize.Size4}
                           />
+                          <View>
+                            {documentPic.path != null && (
+                              <Image
+                                source={{uri: documentPic.path}}
+                                style={{width: '100%', height: screenWidth}}
+                                resizeMode={'contain'}
+                              />
+                            )}
+                          </View>
                         </View>
                       )}
                     </View>
@@ -573,6 +760,126 @@ const isBusinessSignUpDetailsValid = () => {
                 }}
               />
             </SafeAreaView>
+          </View>
+        </Modal>
+        <Modal
+          visible={documentModalPicker}
+          transparent={true}
+          onRequestClose={() => setDocumentModalPicker(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: R.colors.modelBackground,
+              justifyContent: 'flex-end',
+            }}>
+            <View
+              style={{
+                paddingVertical: R.fontSize.Size25,
+                paddingHorizontal: R.fontSize.Size20,
+                backgroundColor: R.colors.white,
+                paddingBottom: R.fontSize.Size20,
+              }}>
+              <View
+                style={{alignItems: 'center', marginBottom: R.fontSize.Size5}}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size14,
+                    color: R.colors.primaryTextColor,
+                    fontWeight: '700',
+                  }}>
+                  {'Select Image From Camera / Gallery'}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginVertical: R.fontSize.Size10,
+                }}>
+                <Pressable
+                  onPress={() => onSelectPicker('gallery')}
+                  style={({pressed}) => [
+                    {
+                      width: R.fontSize.Size140,
+                      height: R.fontSize.Size45,
+                      borderRadius: R.fontSize.Size4,
+                      opacity: pressed ? 0.5 : 1,
+                      backgroundColor: R.colors.appColor,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginHorizontal: R.fontSize.Size20,
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      color: R.colors.white,
+                      fontSize: R.fontSize.Size14,
+                      fontWeight: '700',
+                    }}>
+                    {'Gallery'}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => onSelectPicker('camera')}
+                  style={({pressed}) => [
+                    {
+                      width: R.fontSize.Size140,
+                      height: R.fontSize.Size45,
+                      borderRadius: R.fontSize.Size4,
+                      opacity: pressed ? 0.5 : 1,
+                      backgroundColor: R.colors.appColor,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginHorizontal: R.fontSize.Size20,
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      color: R.colors.white,
+                      fontSize: R.fontSize.Size14,
+                      fontWeight: '700',
+                    }}>
+                    {'Camera'}
+                  </Text>
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  alignItems: 'center',
+                  marginBottom: R.fontSize.Size30,
+                  marginTop: R.fontSize.Size10,
+                }}>
+                <Pressable
+                  onPress={() => setDocumentModalPicker(false)}
+                  style={({pressed}) => [
+                    {
+                      width: R.fontSize.Size320,
+                      height: R.fontSize.Size45,
+                      borderRadius: R.fontSize.Size4,
+                      opacity: pressed ? 0.5 : 1,
+                      borderWidth: 1,
+                      borderColor: R.colors.appColor,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginHorizontal: R.fontSize.Size20,
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      color: R.colors.appColor,
+                      fontSize: R.fontSize.Size14,
+                      fontWeight: '700',
+                    }}>
+                    {'Cancel'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
           </View>
         </Modal>
       </StoryScreen>

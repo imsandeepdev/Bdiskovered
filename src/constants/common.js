@@ -11,3 +11,8 @@ export const create_OTP_error = 'create_OTP_error';
 export const sign_Up = 'sign_Up';
 export const sign_Up_success = 'sign_Up_success';
 export const sign_Up_error = 'sign_Up_error';
+
+// signIn
+export const sign_In = 'sign_In';
+export const sign_In_success = 'sign_In_success';
+export const sign_In_error = 'sign_In_error';
