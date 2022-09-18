@@ -27,6 +27,6 @@ export{
     CustomCardLine,
     SubscriptionCard,
     VideoCard,
-    CustomLineTextInput
+    CustomLineTextInput,
 
 }

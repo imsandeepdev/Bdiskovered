@@ -4,6 +4,7 @@ import {Text, View, Pressable, Image, SafeAreaView,TextInput,ScrollView} from 'r
 import { StoryScreen, Header, AppButton, CustomCardView } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
+import Toast from 'react-native-simple-toast';
 
 const AccountType = [
     {id:'1', title:'Business'},
@@ -26,7 +27,23 @@ const UserTypeScreen = (props) => {
             setSelectedUser(item?.id)
             setUserType(item?.title)
         }
+    }
 
+    
+
+    const onCallProcess = () => {
+      if (userType == '') {
+        Toast.show('Please Select Account Type', Toast.SHORT);
+      }
+      else if(!acceptTerms){
+        Toast.show('Please Agree Terms and Condition', Toast.SHORT);
+      }
+      else
+      {
+      props.navigation.navigate('SignupScreen', {
+        from: userType,
+      });
+      }
     }
 
     return (
@@ -71,7 +88,7 @@ const UserTypeScreen = (props) => {
                             : R.colors.primaryTextColor
                         }
                         rightIcon={
-                          selectedUser == item?.id && R.images.checkWhiteIcon
+                           R.images.checkWhiteIcon
                         }
                         Iconheight={R.fontSize.Size16}
                         Iconwidth={R.fontSize.Size16}
@@ -122,11 +139,7 @@ const UserTypeScreen = (props) => {
           style={{paddingVertical:R.fontSize.Size16}}
           >
             <AppButton
-              onPress={() =>
-                props.navigation.navigate('SignupScreen', {
-                  from: userType,
-                })
-              }
+              onPress={() => onCallProcess()}
               marginHorizontal={R.fontSize.Size55}
               title={'Proceed'}
             />

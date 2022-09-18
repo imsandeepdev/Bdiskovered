@@ -13,36 +13,283 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
-  Platform
+  Platform,
+  Modal
 } from 'react-native';
 import { CustomTextInput, StoryScreen, AppButton, Header, CustomCardTextInput, CustomMaleFemale, CustomCardView } from '../../components';
+import CalendarPicker from 'react-native-calendar-picker';
+import moment from 'moment';
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
+import CountryPicker from 'react-native-country-picker-modal';
+import {connect, useDispatch} from 'react-redux';
+import Toast from 'react-native-simple-toast';
+import DocumentPicker from 'react-native-document-picker';
+
+
+
+import DeviceInfo from 'react-native-device-info';
+import { SignUpRequest } from '../../actions/signUp.action';
+import { CreateOTPRequest } from '../../actions/createOTP.action';
+import { Config } from '../../config';
+import CommonFunctions from '../../utils/CommonFuntions';
+
+
 
 const SignupScreen = (props) => {
 
     const RegisterType = 'Business'
-
+    const dispatch = useDispatch()
+    
+    const [userNameStatue, setUserNameStatus] = useState(false)
     const [userName, setUserName] = useState('')
     const [fullName, setFullName] = useState('')
+    const [userMailStatue, setUserMailStatus] = useState(false);
     const [eMail, setEMail] = useState('')
+    const [userPhoneStatue, setUserPhoneStatus] = useState(false);
     const [mobNo, setMobNo] = useState('')
-    const [dob, setDOB] = useState('')
-    const [onGender, setOnGender] = useState('male')
+    const [dob, setDOB] = useState('Date of Birth')
+    const [onGender, setOnGender] = useState('')
+    const [calenderPicker, setCalenderPicker] = useState(false)
+    const [deviceName, setDeviceName] = useState('')
+    const [deviceId, setDeviceId] = useState('');
+    const [userType, setUserType] = useState('')
+    const [onFocusName, setOnFocusName] = useState('')
+
 
     const [companyName, setCompanyName] = useState('')
-    const [companytype, setCompanyType] = useState('')   
+    const [companyType, setCompanyType] = useState('')   
     const [companytradeNo, setCompanyTradeNo] = useState('') 
     const [companyRegId, setCompanyRegId] = useState('')
     const [companyMail, setCompanyMail] = useState('')
     const [companyMob, setCompanyMob] = useState('')
     const [companyOwnerName, setCompanyOwnerName] = useState('')
 
+    const [countyModalPicker, setCountyModalPicker] = useState(false);
+    const [countryCode, setCountryCode] = useState('91');
+    const [countryFlag, setCountryFlag] = useState('');
+
     useEffect(()=>{
         console.log(props.route.params?.from);
+        setUserType(props.route.params?.from);
+        DeviceInfo.getDeviceName().then(deviceName => {
+            setDeviceName(deviceName);
+            console.log('DEVICE NAME', deviceName);
+        });
+        var uniqueId = DeviceInfo.getUniqueId();
+        setDeviceId(uniqueId?._3);
+        console.log('DEVICE ID',uniqueId?._3);
 
     },[props.navigation])
+
+    const onDateChange = (date) => {
+      // setDOB(date)
+      console.log(date)
+      let dateFormat = moment(date).format('L')
+      setDOB(dateFormat)
+      setCalenderPicker(false)
+    }
+
+    const onCheckVerifyAPI = (value, verifyAPI) => {
+      let data = {
+        username: value,
+      };
+      const config = {
+        method: 'POST',
+        body: data,
+      };
+      console.log('DATA', data);
+      fetch(`${Config.API_URL}${verifyAPI}`, config)
+        .then(res => res.json())
+        .then(response => {
+          console.log('Check User Name Response', response);
+          if (response.status == 'success') {
+            onFocusName == 'userName' && setUserNameStatus(true);
+            onFocusName == 'userEmail' && setUserMailStatus(true);
+            onFocusName == 'userPhone' && setUserPhoneStatus(true);
+
+          }
+        });
+    };
+
+    
+ 
+    const onCallSetUserNameValue = (value) => {
+      console.log('On Focus', onFocusName)
+      let userVerifyAPI = Config.verifyUsernameAPI
+      setUserName(value);
+      value.length > 4
+        ? onCheckVerifyAPI(value, userVerifyAPI)
+        : setUserNameStatus(false);
+    }
+
+    const onCallSetUserEmailValue = value => {
+      console.log('On Focus', onFocusName);
+      let mailVerifyAPI = Config.verifyEmailAPI;
+      setEMail(value);
+      (value.length > 5)
+        ? onCheckVerifyAPI(value, mailVerifyAPI)
+        : setUserMailStatus(false);
+    };
+
+    const onCallSetUserPhoneValue = value => {
+      console.log('On Focus', onFocusName);
+      let phoneVerifyAPI = Config.verifyMobileAPI;
+      setMobNo(value);
+      value.length >= 9
+        ? onCheckVerifyAPI(value, phoneVerifyAPI)
+        : setUserPhoneStatus(false);
+    };
+
+const isTailentViewerDetailsValid = () => {
+  return (
+    CommonFunctions.isBlank(userName.trim(), 'Please Enter Valid User Name') &&
+    CommonFunctions.isFalse(
+      userNameStatue,
+      'Please Enter Valid User Name Status',
+    ) &&
+    CommonFunctions.isBlank(fullName.trim(), 'Please Enter Valid Full Name') &&
+    CommonFunctions.isBlank(eMail.trim(), 'Please Enter Email') &&
+    CommonFunctions.isFalse(
+      userMailStatue,
+      'Please Enter Valid Email Id Status',
+    ) &&
+    CommonFunctions.isEmailValid(eMail.trim(), 'Please Enter Valid Email Id') &&
+    CommonFunctions.isBlank(mobNo.trim(), 'Please Enter Mobile No') &&
+    CommonFunctions.isFalse(
+      userPhoneStatue,
+      'Please Enter Valid Mobile No Status',
+    ) &&
+    onCheckDOB() &&
+    CommonFunctions.isBlank(onGender.trim(), 'Please Select Your Gender')
+  );
+};
+
+const onCheckDOB = () => {
+  if(dob == 'Date of Birth')
+  {
+    Toast.show('Please Select Your Valid Date of Birth',Toast.SHORT);
+    return false;
+  }
+  return true;
+}
+
+const isBusinessSignUpDetailsValid = () => {
+    return (
+      CommonFunctions.isBlank(
+        companyName.trim(),
+        'Please Enter Valid Company Name',
+      ) &&
+      CommonFunctions.isBlank(
+        companyType.trim(),
+        'Please Enter Valid Company Type',
+      ) &&
+      CommonFunctions.isBlank(
+        companytradeNo.trim(),
+        'Please Enter Valid Company Trade Licence Number',
+      ) &&
+      CommonFunctions.isBlank(
+        companyRegId.trim(),
+        'Please Enter Valid Company Registration Id',
+      ) &&
+      CommonFunctions.isBlank(companyMail.trim(), 'Please Enter Email') &&
+      CommonFunctions.isEmailValid(
+        companyMail.trim(),
+        'Please Enter Valid Email Id',
+      ) &&
+      CommonFunctions.isBlank(companyMob.trim(), 'Please Enter Mobile No') &&
+      CommonFunctions.isBlank(companyOwnerName.trim(), 'Please Enter Company Owner Name') 
+    );
+}
+
+
+    const onCallSignUpAPI = () => {
+      if (props.route.params?.from == 'Business')
+      {
+        if (isBusinessSignUpDetailsValid()) {
+          // onCallForBusinessCreateOTP();
+          console.log("FOR BUSINESS")
+        }
+      }
+      else
+      {
+        if (isTailentViewerDetailsValid()) {
+          onCallForTailentViewerCreateOTP();
+        }
+      }
+    }
+
+    const onCallBusinessSignUpAPI = () => {
+      let data = {
+        device_token: '2wewe',
+        email: companyMail,
+        device_ip: deviceId,
+        user_type: userType,
+        company_name: companyName,
+        company_type: companyType,
+        license_number: companytradeNo,
+        company_registration_id: companyRegId,
+        owner_name: companyOwnerName,
+        company_address: '',
+        document: '',
+      };
+
+      console.log('DATA',data)
+
+    }
+
+     const onCallUserTailentSignUpAPI = () => {
+       let data = {
+         username: userName,
+         gender: onGender,
+         birth: dob,
+         email: eMail,
+         name: fullName,
+         device_token: 'jkjk22',
+         device_ip: deviceId,
+         user_type: userType,
+         device_name: deviceName,
+       };
+
+      console.log('DATA', data);
+      dispatch(SignUpRequest(data, response =>{
+        console.log('RESPONSE', response)
+      }))
+      
+
+     };
+
+
+     const onCallForTailentViewerCreateOTP = () => {
+       let signupData = {
+         username: userName,
+         gender: onGender,
+         birth: dob,
+         email: eMail,
+         name: fullName,
+         device_token: 'jkjk22',
+         device_ip: deviceId,
+         user_type: userType,
+         device_name: deviceName,
+       };
+       let data = {
+         mobile: mobNo,
+         number_available: '0',
+         device_token: 'sjdusadhouisodjswesd3budedksaheed2',
+       };
+       dispatch(
+         CreateOTPRequest(data, response => {
+           console.log('RESPONSE', response);
+           props.navigation.navigate('OtpScreen', {
+             signupValue: signupData,
+             countryCode: countryCode,
+             mobValue: mobNo,
+           });
+         }),
+       );
+     };
+
 
     return (
       <StoryScreen>
@@ -78,9 +325,16 @@ const SignupScreen = (props) => {
                         <View style={{marginTop: R.fontSize.Size30}}>
                           <CustomCardTextInput
                             value={userName}
-                            onChangeText={username => setUserName(username)}
+                            onChangeText={username =>
+                              onCallSetUserNameValue(username)
+                            }
                             placeholder={'User Name'}
-                            rightIcon={R.images.checkOrangeIcon}
+                            rightIcon={
+                              userNameStatue
+                                ? R.images.checkOrangeIcon
+                                : R.images.checkGreyIcon
+                            }
+                            onFocus={() => setOnFocusName('userName')}
                           />
                           <CustomCardTextInput
                             value={fullName}
@@ -89,44 +343,64 @@ const SignupScreen = (props) => {
                           />
                           <CustomCardTextInput
                             value={eMail}
-                            onChangeText={mail => setEMail(mail)}
+                            onChangeText={mail => onCallSetUserEmailValue(mail)}
                             placeholder={'Email'}
-                            rightIcon={R.images.checkGreyIcon}
+                            rightIcon={
+                              userMailStatue
+                                ? R.images.checkOrangeIcon
+                                : R.images.checkGreyIcon
+                            }
+                            onFocus={() => setOnFocusName('userEmail')}
                           />
                           <CustomTextInput
-                            countryCode={'+91'}
+                            onChangeCounty={() => setCountyModalPicker(true)}
+                            countryFlag={countryFlag != '' ? countryFlag : 'in'}
+                            countryCode={
+                              countryCode != '' ? `+${countryCode}` : '+91'
+                            }
                             maxLength={10}
                             placeholder={'Mobile No'}
                             value={mobNo}
-                            onChangeText={no => setMobNo(no)}
+                            onChangeText={no => onCallSetUserPhoneValue(no)}
                             marginBottom={R.fontSize.Size20}
-                            rightIcon={R.images.checkGreyIcon}
+                            rightIcon={
+                              userPhoneStatue
+                                ? R.images.checkOrangeIcon
+                                : R.images.checkGreyIcon
+                            }
+                            onFocus={() => setOnFocusName('userPhone')}
                           />
-                          <CustomCardTextInput
-                            value={dob}
-                            onChangeText={dob => setDOB(dob)}
-                            placeholder={'Date of Birth'}
+
+                          <CustomCardView
+                            onPress={() => setCalenderPicker(!calenderPicker)}
+                            title={dob}
+                            TextColor={
+                              dob == 'Date of Birth'
+                                ? R.colors.placeholderTextColor
+                                : R.colors.primaryTextColor
+                            }
                           />
+
                           <CustomMaleFemale
-                            maleOnPress={() => setOnGender('male')}
+                            maleOnPress={() => setOnGender('Male')}
                             maleIcon={
-                              onGender == 'male'
+                              onGender == 'Male'
                                 ? R.images.activeMaleIcon
                                 : R.images.inactiveMaleIcon
                             }
                             maleTextColor={
-                              onGender == 'male'
+                              onGender == 'Male'
                                 ? R.colors.appColor
                                 : R.colors.placeholderTextColor
                             }
-                            feMaleOnPress={() => setOnGender('female')}
+                            feMaleOnPress={() => setOnGender('Female')}
                             feMaleIcon={
-                              onGender == 'female'
+                              onGender == 'Female'
                                 ? R.images.activeFemaleIcon
                                 : R.images.inactiveFemaleIcon
                             }
                             feMaleTextColor={
-                              onGender == 'female'
+                              onGender == 'Female'
                                 ? R.colors.appColor
                                 : R.colors.placeholderTextColor
                             }
@@ -140,7 +414,7 @@ const SignupScreen = (props) => {
                             placeholder={'Company Name'}
                           />
                           <CustomCardTextInput
-                            value={companytype}
+                            value={companyType}
                             onChangeText={ctype => setCompanyType(ctype)}
                             placeholder={'Company Type'}
                           />
@@ -162,13 +436,19 @@ const SignupScreen = (props) => {
                             placeholder={'Company Email Address'}
                           />
                           <CustomTextInput
-                            countryCode={'+91'}
+                            onChangeCounty={() => setCountyModalPicker(true)}
+                            countryFlag={countryFlag != '' ? countryFlag : 'in'}
+                            countryCode={
+                              countryCode != '' ? `+ ${countryCode}` : '+91'
+                            }
                             maxLength={10}
                             placeholder={'Mobile No'}
                             value={companyMob}
                             onChangeText={mobno => setCompanyMob(mobno)}
                             marginBottom={R.fontSize.Size20}
+                            rightIcon={R.images.checkGreyIcon}
                           />
+
                           <CustomCardTextInput
                             value={companyOwnerName}
                             onChangeText={ownerName =>
@@ -191,12 +471,110 @@ const SignupScreen = (props) => {
           </View>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              onPress={() => props.navigation.navigate('OtpScreen')}
+              onPress={() => onCallSignUpAPI()}
               marginHorizontal={R.fontSize.Size55}
               title={'Proceed'}
             />
           </View>
         </SafeAreaView>
+        <Modal
+          visible={calenderPicker}
+          transparent={true}
+          onRequestClose={() => setCalenderPicker(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: R.colors.modelBackground,
+              justifyContent: 'flex-end',
+            }}>
+            <View
+              style={{
+                height: screenHeight / 2,
+                backgroundColor: R.colors.white,
+                borderTopLeftRadius: R.fontSize.Size8,
+                borderTopRightRadius: R.fontSize.Size8,
+                paddingVertical: R.fontSize.Size15,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row-reverse',
+                  marginHorizontal: R.fontSize.Size20,
+                  marginBottom: R.fontSize.Size10,
+                }}>
+                <Pressable
+                  onPress={() => setCalenderPicker(false)}
+                  style={({pressed}) => [
+                    {
+                      padding: R.fontSize.Size6,
+                      opacity: pressed ? 0.5 : 1,
+                    },
+                  ]}>
+                  <Image
+                    source={R.images.cancleIcon}
+                    style={{
+                      height: R.fontSize.Size10,
+                      width: R.fontSize.Size10,
+                    }}
+                    resizeMode={'contain'}
+                  />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  marginHorizontal: R.fontSize.Size20,
+                }}>
+                <CalendarPicker
+                  startFromMonday={true}
+                  onDateChange={onDateChange}
+                  selectedDayColor={R.colors.appColor}
+                  todayBackgroundColor={R.colors.appColor}
+                  todayTextStyle={{color: R.colors.white, fontWeight: '700'}}
+                  textStyle={{
+                    fontFamily: R.fonts.regular,
+                    color: R.colors.primaryTextColor,
+                    fontSize: R.fontSize.Size12,
+                    fontWeight: '400',
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={countyModalPicker}
+          transparent={true}
+          onRequestClose={() => setCountyModalPicker(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: R.colors.modelBackground,
+              justifyContent: 'center',
+            }}>
+            <SafeAreaView
+              style={{
+                flex: 1,
+                paddingHorizontal: R.fontSize.Size20,
+                paddingVertical: R.fontSize.Size50,
+                borderWidth: 1,
+              }}>
+              <CountryPicker
+                visible={countyModalPicker}
+                withFilter={true}
+                withFlag={true}
+                withCallingCode={true}
+                onSelect={country => {
+                  console.log(country);
+                  setCountyModalPicker(false);
+                  setCountryCode(country?.callingCode[0]);
+                  let flagName = (country?.flag).slice(5);
+                  setCountryFlag(flagName);
+                  console.log('FlagName', flagName);
+                }}
+              />
+            </SafeAreaView>
+          </View>
+        </Modal>
       </StoryScreen>
     );
 }

@@ -78,7 +78,7 @@ const Menu = (props) => {
             title={'FAQ'}
           />
           <CustomMenuButton
-            onPress={() => console.log('signout')}
+            onPress={() => props.navigation.replace('LoginScreen')}
             leftSource={R.images.signoutIcon}
             title={'Sign Out'}
           />

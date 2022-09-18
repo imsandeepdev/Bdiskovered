@@ -1,9 +1,9 @@
 import * as react from 'react';
 import {useState, useEffect} from 'react';
-import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput,ScrollView,TouchableWithoutFeedback,KeyboardAvoidingView, Keyboard,Platform} from 'react-native';
+import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput,ScrollView,TouchableWithoutFeedback,KeyboardAvoidingView, Keyboard,Platform,Modal} from 'react-native';
 import { CustomTextInput, StoryScreen, AppButton } from '../../components';
 import {connect, useDispatch} from 'react-redux';
-
+import CountryPicker from 'react-native-country-picker-modal';
 import R from '../../res/R';
 import Styles from './styles';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
@@ -13,6 +13,10 @@ const LoginScreen = (props) => {
 
   const dispatch = useDispatch()
   const [mobNo, setMobNo] = useState('')
+  const [countyModalPicker,setCountyModalPicker] = useState(false)
+  const [countyCode, setCountyCode] = useState('')
+  const [countyFlag, setCountyFlag] = useState('');
+
 
   const onCallCreateOTP = () => {
     let data = {
@@ -58,7 +62,9 @@ const LoginScreen = (props) => {
                     <Text style={Styles.phoneText}>{'Enter Phone Number'}</Text>
                     <View style={{marginTop: R.fontSize.Size30}}>
                       <CustomTextInput
-                        countryCode={'+91'}
+                        onChangeCounty={() => setCountyModalPicker(true)}
+                        countryFlag={countyFlag != '' ? countyFlag : 'in'}
+                        countryCode={countyCode != '' ? `+ ${countyCode}` : '+91'}
                         maxLength={10}
                         placeholder={'Mobile No'}
                         value={mobNo}
@@ -115,6 +121,41 @@ const LoginScreen = (props) => {
             />
           </View>
         </SafeAreaView>
+        <Modal
+          visible={countyModalPicker}
+          transparent={true}
+          onRequestClose={() => setCountyModalPicker(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: R.colors.modelBackground,
+              justifyContent: 'center',
+            }}>
+            <SafeAreaView
+              style={{
+                flex: 1,
+                paddingHorizontal: R.fontSize.Size20,
+                paddingVertical: R.fontSize.Size50,
+                borderWidth: 1,
+              }}>
+              <CountryPicker
+                visible={countyModalPicker}
+                withFilter={true}
+                withFlag={true}
+                withCallingCode={true}
+                onSelect={country => {
+                  console.log(country);
+                  setCountyModalPicker(false);
+                  setCountyCode(country?.callingCode[0]);
+                  let flagName = (country?.flag).slice(5);
+                  setCountyFlag(country?.cca2)
+                  console.log('FlagName',flagName)
+                }}
+               
+              />
+            </SafeAreaView>
+          </View>
+        </Modal>
       </StoryScreen>
     );
 }

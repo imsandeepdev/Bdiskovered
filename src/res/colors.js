@@ -15,6 +15,8 @@ const colors = {
   PrimaryApp_color: '#FA5B00',
   SecondaryApp_color: '#f78614',
   whatsAppColor: '#25D366',
+  cardColor: '#292C46',
+  cardColor1: '#00AE99',
 };
 
 export {colors};

@@ -14,10 +14,13 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform
+  Platform,
+  ImageBackground,
 } from 'react-native';
 import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard, CustomLineTextInput} from '../../components';
-// import Video from 'react-native-video';
+
+import Slider from 'react-native-custom-slider';
+
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
@@ -194,6 +197,7 @@ const CustomHeading = (props) => {
 const HomeScreen = (props) => {
 
 
+  const [sliderValue, setSliderValue] = useState(0); 
   const [modalPicker, setModalPicker] = useState(false);
   const [modalType, setModalType] = useState('')
   const [tailentList, setTailentList] = useState([
@@ -352,11 +356,77 @@ const HomeScreen = (props) => {
                   <View
                     style={{
                       flexDirection: 'row',
-                      marginTop: R.fontSize.Size20,
+                      marginTop: R.fontSize.Size10,
                       marginHorizontal: R.fontSize.Size12,
                       alignItems: 'center',
                     }}>
                     <View style={{flex: 1}}>
+                      <View style={{marginBottom: R.fontSize.Size6}}>
+                        <Slider
+                          value={sliderValue}
+                          minimumValue={0}
+                          maximumValue={100}
+                          customMinimumTrack={
+                            <View>
+                              <Image
+                                source={R.images.ratingBarIcon}
+                                style={{
+                                  height: R.fontSize.Size20,
+                                  width: '100%',
+                                }}
+                                resizeMode={'contain'}
+                              />
+                            </View>
+                          }
+                          customMaximumTrack={
+                            <View>
+                              <Image
+                                source={R.images.ratingBarIcon}
+                                style={{
+                                  height: R.fontSize.Size20,
+                                  width: '100%',
+                                }}
+                                resizeMode={'contain'}
+                              />
+                            </View>
+                          }
+                          minimumTrackTintColor={R.colors.white}
+                          maximumTrackTintColor={R.colors.white}
+                          onValueChange={val => setSliderValue(val)}
+                          customThumb={
+                            <View
+                              style={{
+                                // width: R.fontSize.Size40,
+                                // borderWidth:1,
+                                overflow: 'hidden',
+                                top: 8,
+                                left: 0,
+                                right: 0,
+                                // marginBottom: R.fontSize.Size2,
+                                // marginRight: -R.fontSize.Size2,
+                              }}>
+                              <ImageBackground
+                                source={R.images.redHeartIcon}
+                                style={{
+                                  width: R.fontSize.Size35,
+                                  height: R.fontSize.Size35,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                resizeMode={'contain'}>
+                                <Text
+                                  style={{
+                                    color: R.colors.white,
+                                    fontSize: R.fontSize.Size8,
+                                    height: R.fontSize.Size20,
+                                  }}>
+                                  {Math.floor(sliderValue)}
+                                </Text>
+                              </ImageBackground>
+                            </View>
+                          }
+                        />
+                      </View>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text
@@ -403,6 +473,7 @@ const HomeScreen = (props) => {
                         style={{
                           height: R.fontSize.Size30,
                           width: R.fontSize.Size30,
+                          marginBottom: R.fontSize.Size6,
                         }}
                         resizeMode={'contain'}
                       />

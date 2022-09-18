@@ -16,9 +16,13 @@ import {
 import { StoryScreen, Header, AppButton } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
+import {connect, useDispatch} from 'react-redux';
+import { SignUpRequest } from '../../actions/signUp.action';
+
 
 const OtpScreen = (props) => {
 
+    const dispatch = useDispatch()
     const [otpNo, setOtpNo] = useState('')
     const [otpArray, setOtpArray] = useState([])
     const firstTextInputRef = useRef(null);
@@ -27,6 +31,31 @@ const OtpScreen = (props) => {
     const fourthTextInputRef = useRef(null);
     const fifthTextInputRef = useRef(null);
     const sixTextInputRef = useRef(null);
+    // const [signUpData, setSignUpData] = useState()
+
+  useEffect(()=>{
+
+    // setSignUpData(props.route.params?.signupValue);
+    // console.log(signUpData)
+  },[props.navigation])
+
+
+  const onCallVerify = () => {
+
+    let tempval = otpArray.toString();
+    const otpValue = tempval.replace(/\,/g, '');
+    let signUpData = props.route.params?.signupValue;
+    let data = {
+      ...signUpData,
+      otp:otpValue
+    }
+    console.log('SIGNUP',data)
+    dispatch(SignUpRequest(data, response => {
+      console.log('Response', response)
+    }))
+
+  }
+
 
     const onOtpChange = index => {
       return value => {
@@ -96,7 +125,7 @@ const OtpScreen = (props) => {
                         ]}>
                         {`on your number `}
                         <Text style={{color: R.colors.appColor}}>
-                          {'+91 6526367673'}
+                          {`+${props.route.params?.countryCode} ${props.route.params?.mobValue}`}
                         </Text>
                       </Text>
                     </View>
@@ -198,7 +227,7 @@ const OtpScreen = (props) => {
           </View>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              onPress={() => props.navigation.navigate('TalentScreen')}
+              onPress={() => onCallVerify()}
               marginHorizontal={R.fontSize.Size55}
               title={'Verify'}
             />

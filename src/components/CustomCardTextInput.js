@@ -49,6 +49,7 @@ const CustomCardTextInput = (props) => {
               value={props.value}
               onChangeText={props.onChangeText}
               keyboardType={props.keyboardType ?? 'default'}
+              onFocus={props.onFocus}
             />
           </View>
           <View>

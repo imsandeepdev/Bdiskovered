@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {View, Text, Image, Pressable, Dimensions} from 'react-native';
+import { useState } from 'react';
+import {View, Text, Image, Pressable, Dimensions, TouchableOpacity} from 'react-native';
 
 import Video from 'react-native-video';
 import R from '../res/R';
@@ -11,7 +12,19 @@ const videoData =
 const VideoCard = props => {
   let videoRef;
 
+  const [play, setPlay] = useState(true);
+
+
   const onBuffer = () => {};
+
+    const handlePlayPause = () => {
+      if (play) {
+        return setPlay(false)
+      }
+      setPlay(true)
+      // setTimeout(() => setShowControls(false), 2000)
+    }
+
   return (
     <View style={{flex: 1}}>
       <Video
@@ -24,6 +37,7 @@ const VideoCard = props => {
         onBuffer={onBuffer}
         //   onError={this.videoError} // Callback when video cannot be loaded
         setControls={true}
+        paused={!play}
         controls={true}
         style={{
           height: '100%',
@@ -91,11 +105,12 @@ const VideoCard = props => {
           </View>
           <View>
             <Pressable
-            onPress={props.eyeonPress}
-            style={({pressed})=>[{
-              opacity: pressed ?0.5:1
-            }]}
-            >
+              onPress={props.eyeonPress}
+              style={({pressed}) => [
+                {
+                  opacity: pressed ? 0.5 : 1,
+                },
+              ]}>
               <Image
                 source={R.images.eyeIcon}
                 style={{height: R.fontSize.Size25, width: R.fontSize.Size25}}
@@ -105,6 +120,31 @@ const VideoCard = props => {
           </View>
         </View>
       </View>
+
+      <View style={{position: 'absolute', top: 0, left: 0, right: 0, alignItems:'center', justifyContent:'center',height:'100%'}}>
+        <TouchableOpacity 
+        style={{
+          height:R.fontSize.Size50,
+          width:R.fontSize.Size50,
+          borderRadius:R.fontSize.Size30,
+          backgroundColor:R.colors.placeHolderColor
+        
+        }}
+        onPress={handlePlayPause}>
+          {play ? (
+            <Image
+              source={R.images.paymentFailedIcon}
+              style={{height: 42, width: 42}}
+            />
+          ) : (
+            <Image
+              source={R.images.paymentSuccessIcon}
+              style={{height: 45, width: 45}}
+            />
+          )}
+        </TouchableOpacity>
+      </View>
+
       <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
         <View
           style={{
@@ -127,10 +167,9 @@ const VideoCard = props => {
               fontWeight: '400',
               color: R.colors.lightWhite,
               marginTop: R.fontSize.Size5,
-              width: screenWidth/2
+              width: screenWidth / 2,
             }}
-            numberOfLines={3}
-            >
+            numberOfLines={3}>
             {`DEscriptionDEscriptionDEscriptionDEDEscriptionDEscriptionDEscription..`}
           </Text>
         </View>
