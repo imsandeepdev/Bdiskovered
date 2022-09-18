@@ -47,18 +47,48 @@ const RequestPostFetch = ({url, body, datatype}) =>
         if (responseJson.status == 'success') {
           resolve(responseJson);
         } else {
-          Toast.show(responseJson.Message, Toast.SHORT);
+          Toast.show(responseJson.message, Toast.SHORT);
           reject(responseJson);
         }
       })
       .catch(error => {
-        reject(error);
+        // reject(error);
         console.log('ERRORONAPI', error);
         Toast.show('Check Internet Connection', Toast.SHORT);
       });
   });
 
 
+  const getRequest = ({url,  body}) =>
+    new Promise((resolve, reject) => {
+     
+      const headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      };
+      const config  = {
+      method: 'GET',
+      headers,
+    };
+      const requestUrl = Config.API_URL + url;
+      console.log('Print ==> ', config, ' ==> ', requestUrl);
+      fetch(requestUrl, config)
+        .then(response => response.json())
+        .then(responseJson => {
+          if(responseJson.status == 'success') {
+            resolve(responseJson);
+          } else {
+            Toast.show(responseJson.message, Toast.SHORT);
+            reject(responseJson);
+          }
+        })
+        .catch(error => {
+            console.log('ERRORONAPI', error);
+            Toast.show('Check Internet Connection', Toast.SHORT);
+        });
+    });
+
   export default {
     RequestPostFetch,
+    getRequest
   };

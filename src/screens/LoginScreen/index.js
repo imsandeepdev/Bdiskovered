@@ -9,6 +9,7 @@ import Styles from './styles';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
 const screenHeight = Dimensions.get('screen').height;
 import Toast from 'react-native-simple-toast';
+import CommonFunctions from '../../utils/CommonFuntions';
 
 
 const LoginScreen = (props) => {
@@ -20,31 +21,41 @@ const LoginScreen = (props) => {
   const [countyFlag, setCountyFlag] = useState('');
 
 
-  const onCallCreateOTP = () => {
-    let data = {
-      // mobile: '+918947915820',
-      mobile: `${countryCode}${mobNo}`,
-      device_token:
-        'cO2stOGoRpOGAnruOLGUan:APA91bGIdddlY_kqTLbaw2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
-    };
-    dispatch(CreateOTPRequest(data, response=>{
-      console.log('RESPONSE CREATE OTP', response);
+  const isValid = () => {
+    return(
+      CommonFunctions.isBlank(mobNo.trim(), 'Please Enter Registered Mobile Number')
+    )
+  }
 
-      if(response.status == 'success')
-      {
-      props.navigation.navigate('OtpScreen', {
-        loginValue: data,
-        fromScreen: 'LoginScreen',
-        mobValue: mobNo,
-        countryCode: countryCode,
-      });
-      Toast.show(response.message, Toast.SHORT)
-      }
-      else
-      {
-      Toast.show(response.message, Toast.SHORT);
-      }
-    }))
+
+
+  const onCallCreateOTP = () => {
+    if(isValid())
+    {
+      let data = {
+        // mobile: '+918947915820',
+        mobile: `${countryCode}${mobNo}`,
+        device_token:
+          'cO2stOGoRpOGAnruOLGUan:APA91bGIdddlY_kqTLbaw2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
+      };
+      dispatch(
+        CreateOTPRequest(data, response => {
+          console.log('RESPONSE CREATE OTP', response);
+
+          if (response.status == 'success') {
+            props.navigation.navigate('OtpScreen', {
+              loginValue: data,
+              fromScreen: 'LoginScreen',
+              mobValue: mobNo,
+              countryCode: countryCode,
+            });
+            Toast.show(response.message, Toast.SHORT);
+          } else {
+            Toast.show(response.message, Toast.SHORT);
+          }
+        }),
+      );
+    }
   }
 
     return (

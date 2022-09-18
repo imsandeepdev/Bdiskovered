@@ -19,28 +19,43 @@ import {
 } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
+import {connect, useDispatch} from 'react-redux';
+import { GetTailentRequest } from '../../actions/getTailent.action';
+
 
 const TalentFinishScreen = props => {
+
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [selected, setSelected] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [selectetTailent, setSelectedTailent] = useState([]);
   const [selectTime, setSelectTime] = useState('Full');
-  const [data, setData] = useState([
-    {id: '1', title: 'Music'},
-    {id: '2', title: 'Art'},
-    {id: '3', title: 'Dance'},
-    {id: '4', title: 'Fashion'},
-  ]);
+  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    let arr = data.map((item, index) => {
-      item.selected = false;
-      return {...item};
-    });
-    console.log('ARRNEWITEM', arr);
-    setData(arr);
-  }, [props.navigation]);
+ useEffect(() => {
+   onCallGetTailentAPI();
+ }, [props.navigation]);
+
+ const onCallGetTailentAPI = () => {
+   setLoading(true);
+   console.log('Gettailent');
+   dispatch(
+     GetTailentRequest(response => {
+       console.log('GET TAILENT RES', response);
+       if (response.status == 'success') {
+         let arr = response.data.map((item, index) => {
+           item.selected = false;
+           return {...item};
+         });
+         console.log('UPDATEARR', arr);
+         setData(arr);
+         setLoading(false);
+       }
+     }),
+   );
+ };
 
   const onCallUserSelect = (item, ind) => {
     const dummyData = data;
@@ -93,7 +108,7 @@ const TalentFinishScreen = props => {
                   </Text>
                 </View>
               }
-              keyExtractor={item => item.id}
+              keyExtractor={(item, index) => index}
               renderItem={({item, index}) => {
                 return (
                   <CustomCardView
@@ -105,7 +120,7 @@ const TalentFinishScreen = props => {
                         ? R.colors.PrimaryApp_color
                         : R.colors.white
                     }
-                    title={item.title}
+                    title={item?.talent}
                     TextColor={
                       item.selected == true
                         ? R.colors.white

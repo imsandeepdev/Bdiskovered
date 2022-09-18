@@ -23,6 +23,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import UploadVideoScreen from '../screens/UploadVideoScreen';
 import VideoScreen from '../screens/VideoScreen';
 import TalentFinishScreen from '../screens/TalentFinishScreen';
+import {connect, useDispatch} from 'react-redux';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -30,15 +31,26 @@ const Tab = createBottomTabNavigator();
 
 const AppNavigator = props => {
 
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState('LoginScreen');
 
+  useEffect(()=>{
+
+    console.log(props.authToken)
+    const initialRouteName = props.authToken ? 'HomeMenu' : 'LoginScreen';
+    setInitialRoute(initialRouteName);
+
+  },[]);
  
   
 
   return (
     <NavigationContainer ref={navigationRef} linking={props.linking}>
-      <Stack.Navigator initialRouteName={initialRoute}>
+      <Stack.Navigator
+        initialRouteName={initialRoute}
+        // initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
+        screenOptions={{gestureEnabled: false}}>
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}
@@ -158,6 +170,8 @@ const OnCustomTabs = props => {
   );
 };
 
+const mapStatetoProps = (state, props) => ({
+  authToken: state.auth.authToken,
+});
 
-
-export default AppNavigator;
+export default connect(mapStatetoProps)(AppNavigator);

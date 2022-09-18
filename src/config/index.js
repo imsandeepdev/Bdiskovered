@@ -7,5 +7,7 @@ export const Config = {
   verifyEmailAPI: 'user/verify_email',
   verifyUsernameAPI: 'user/verify_username',
   verifyMobileAPI: 'user/verify_mobile',
+  tailentProfileRegAPI: 'profile/create',
+  getTailentAPI: 'talent/get-talent',
 };
 
