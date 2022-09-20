@@ -5,6 +5,8 @@ const images = {
 
   // Login
   chevronDown: require('./images/chevron_down.png'),
+  SplashIcon: require('./images/splash_img.png'),
+
   // UserType
   checkWhiteIcon: require('./images/whiteCheckIcon.png'),
   checkTermsIcon: require('./images/checkIcon.png'),

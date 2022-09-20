@@ -28,7 +28,7 @@ const Styles = StyleSheet.create({
   },
   mostPopularView: {
     height: R.fontSize.Size130,
-    width: R.fontSize.Size140,
+    width: R.fontSize.Size160,
     overflow: 'hidden',
     borderRadius: R.fontSize.Size8,
   },
@@ -48,7 +48,7 @@ const Styles = StyleSheet.create({
   },
   mostPopularBottomText: {
     flex: 1,
-    marginLeft: R.fontSize.Size10,
+    marginHorizontal: R.fontSize.Size10,
     fontFamily: R.fonts.regular,
     fontSize: R.fontSize.Size14,
     color: R.colors.placeholderTextColor,

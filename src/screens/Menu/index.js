@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { StoryScreen } from '../../components';
 import R from '../../res/R';
+import {connect, useDispatch} from 'react-redux';
+import { UserSignOutRequest } from '../../actions/signUp.action';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -50,6 +52,17 @@ const CustomMenuButton = (props) => {
 
 const Menu = (props) => {
   
+  const dispatch = useDispatch()
+
+  const onCallLogout = () => {
+
+    let data = {
+      access_token: props.authToken
+    }
+    dispatch(UserSignOutRequest(data,response=>{
+      console.log('LOGOUT RES', response)
+    }))
+  }
 
   return (
     <StoryScreen>
@@ -78,7 +91,8 @@ const Menu = (props) => {
             title={'FAQ'}
           />
           <CustomMenuButton
-            onPress={() => props.navigation.replace('LoginScreen')}
+            // onPress={() => onCallLogout()}
+            onPress = {() => props.navigation.navigate('LoginScreen')}
             leftSource={R.images.signoutIcon}
             title={'Sign Out'}
           />
@@ -120,6 +134,8 @@ const Menu = (props) => {
   );
 };
 
+const mapStatetoProps = (state, props) => ({
+  authToken: state.auth.authToken,
+});
 
-
-export default Menu;
+export default connect (mapStatetoProps)(Menu);

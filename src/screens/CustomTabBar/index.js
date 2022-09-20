@@ -1,7 +1,9 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {TouchableOpacity,Image,View,Text} from 'react-native';
 import R from '../../res/R';
+import { useDispatch, connect } from 'react-redux';
+import { Config } from '../../config';
 
 const CustomTabBar = props => {
   const [select, setSelect] = useState('HomeScreen');
@@ -25,6 +27,10 @@ const CustomTabBar = props => {
     props.navigation.navigate('ProfileScreen');
     setSelect('ProfileScreen');
   };
+
+  useEffect(()=>{
+    console.log(props.userProfile?.Profile?.name)
+  },[])
 
   return (
     <View
@@ -128,22 +134,54 @@ const CustomTabBar = props => {
             alignItems: 'center',
             flexGrow: 1,
           }}>
-          <Image
-            source={
-              select === 'ProfileScreen'
-                ? R.images.activeHomeIcon
-                : R.images.inActiveAddIcon
-            }
-            resizeMode={'contain'}
+          <View
             style={{
-              height: R.fontSize.Size28,
-              width: R.fontSize.Size28,
-            }}
-          />
+              height: R.fontSize.Size40,
+              width: R.fontSize.Size40,
+              borderRadius: R.fontSize.Size20,
+              backgroundColor:R.colors.lightWhite,
+              borderWidth: 2,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderColor:
+                select === 'ProfileScreen'
+                  ? R.colors.appColor
+                  : R.colors.placeholderTextColor,
+            }}>
+            {props.userProfile?.Profile?.avatar != null ||
+            props.userProfile?.Profile?.avatar != '' ? (
+              <Image
+                source={{
+                  uri: `${Config.API_URL}${props.userProfile?.Profile?.avatar.slice(22)}`,
+                }}
+                resizeMode={'cover'}
+                style={{
+                  height: R.fontSize.Size35,
+                  width: R.fontSize.Size35,
+                  borderRadius:R.fontSize.Size20
+
+                }}
+              />
+            ) : (
+              <Text
+              style={{
+                fontFamily:R.fonts.regular,
+                fontSize:R.fontSize.Size20,
+                fontWeight:'700',
+                color: select === 'ProfileScreen' ?  R.colors.appColor : R.colors.placeHolderColor
+              }}
+              >{((props.userProfile?.Profile?.name[0] ?? "#") + '').toLocaleUpperCase()}</Text>
+            )}
+          </View>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default CustomTabBar
+const mapStateToProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
+});
+
+
+export default connect(mapStateToProps)(CustomTabBar)

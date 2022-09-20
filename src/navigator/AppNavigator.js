@@ -24,6 +24,10 @@ import UploadVideoScreen from '../screens/UploadVideoScreen';
 import VideoScreen from '../screens/VideoScreen';
 import TalentFinishScreen from '../screens/TalentFinishScreen';
 import {connect, useDispatch} from 'react-redux';
+import SplashScreen from '../screens/SplashScreen';
+import UserViewAllScreen from '../screens/UserViewAllScreen';
+import PopularViewAllScreen from '../screens/PopularViewAllScreen';
+import ConnectedProfileScreen from '../screens/ConnectedProfileScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -33,12 +37,12 @@ const AppNavigator = props => {
 
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
-  const [initialRoute, setInitialRoute] = useState('LoginScreen');
+  const [initialRoute, setInitialRoute] = useState('SplashScreen');
 
   useEffect(()=>{
 
     console.log(props.authToken)
-    const initialRouteName = props.authToken ? 'HomeMenu' : 'LoginScreen';
+    const initialRouteName = props.authToken != '' ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
 
   },[]);
@@ -48,9 +52,14 @@ const AppNavigator = props => {
   return (
     <NavigationContainer ref={navigationRef} linking={props.linking}>
       <Stack.Navigator
-        initialRouteName={initialRoute}
-        // initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
+        // initialRouteName={initialRoute}
+        initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
         screenOptions={{gestureEnabled: false}}>
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="LoginScreen"
           component={LoginScreen}
@@ -124,6 +133,21 @@ const AppNavigator = props => {
         <Stack.Screen
           name="TalentFinishScreen"
           component={TalentFinishScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="UserViewAllScreen"
+          component={UserViewAllScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="PopularViewAllScreen"
+          component={PopularViewAllScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ConnectedProfileScreen"
+          component={ConnectedProfileScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

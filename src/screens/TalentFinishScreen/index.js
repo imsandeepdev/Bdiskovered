@@ -21,6 +21,9 @@ import R from '../../res/R';
 import Styles from './styles';
 import {connect, useDispatch} from 'react-redux';
 import { GetTailentRequest } from '../../actions/getTailent.action';
+import { UserSelectionFinishRequest } from '../../actions/tailentProfileCreate.action';
+import CommonFunctions from '../../utils/CommonFuntions';
+import Toast from 'react-native-simple-toast';
 
 
 const TalentFinishScreen = props => {
@@ -30,7 +33,7 @@ const TalentFinishScreen = props => {
   const [selectedUser, setSelectedUser] = useState('');
   const [selected, setSelected] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [selectetTailent, setSelectedTailent] = useState([]);
+  const [selectedTailent, setSelectedTailent] = useState([]);
   const [selectTime, setSelectTime] = useState('Full');
   const [data, setData] = useState([]);
 
@@ -66,8 +69,46 @@ const TalentFinishScreen = props => {
       return {...item};
     });
     console.log('arr return', arr);
+    let tempArray = [];
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].selected) {
+        tempArray.push(arr[i].talent);
+      }
+    }
+    console.log(tempArray);
+    setSelectedTailent(tempArray);
     setData(arr);
   };
+
+  const onCheckCondition = () => {
+    return (
+      CommonFunctions.isBlank(
+        selectedTailent.toString(),
+        'Please select type of talent to view ',
+      ) 
+    );
+  };
+
+const onCallFinish = () => {
+  if (onCheckCondition()) {
+    let data = {
+      category: selectedTailent.toString()
+    };
+    console.log('DATA', data);
+    dispatch(
+      UserSelectionFinishRequest(data, response => {
+        console.log('TAILENT FINISH SCREEN CREATE RES', response);
+        if (response.status) {
+          props.navigation.navigate('HomeMenu');
+          Toast.show(response.message, Toast.SHORT);
+        } else {
+          Toast.show(response.message, Toast.SHORT);
+        }
+      }),
+    );
+  }
+};
+
 
   return (
     <StoryScreen>
@@ -134,7 +175,7 @@ const TalentFinishScreen = props => {
           </View>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              onPress={() => props.navigation.navigate('HomeMenu')}
+              onPress={() => onCallFinish()}
               marginHorizontal={R.fontSize.Size35}
               title={'Finish'}
             />

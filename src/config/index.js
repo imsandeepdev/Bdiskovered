@@ -7,7 +7,12 @@ export const Config = {
   verifyEmailAPI: 'user/verify_email',
   verifyUsernameAPI: 'user/verify_username',
   verifyMobileAPI: 'user/verify_mobile',
-  tailentProfileRegAPI: 'profile/create',
+  tailentProfileCreateAPI: 'profile/create',
   getTailentAPI: 'talent/get-talent',
+  userSignOutAPI: 'user/signout',
+  getProfileAPI: 'profile/getprofile',
+  userSelectionFinishAPI: 'user/category-selection',
+  showAllPostAPI: 'post',
+  profileUpdateAPI: 'profile/update',
 };
 

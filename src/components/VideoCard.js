@@ -29,11 +29,11 @@ const VideoCard = props => {
     <View style={{flex: 1}}>
       <Video
         source={{
-          uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          uri: props.videoUrl,
         }}
-        ref={ref => {
-          this.player = ref;
-        }}
+        // ref={ref => {
+        //   this.player = ref;
+        // }}
         onBuffer={onBuffer}
         //   onError={this.videoError} // Callback when video cannot be loaded
         setControls={true}
@@ -62,7 +62,7 @@ const VideoCard = props => {
             }}>
             <Image
               source={{
-                uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX3JYxD4c-TLNXds0sV9Nie80zzS_TxeWapkUpNrSVC1TxN5rzzsZjCOMzVfXkh2xYOvY&usqp=CAU',
+                uri: props.userImage,
               }}
               style={{
                 height: R.fontSize.Size30,
@@ -80,7 +80,7 @@ const VideoCard = props => {
                 color: R.colors.white,
               }}
               numberOfLines={1}>
-              {'Video Title'}
+              {props.userName}
             </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
@@ -99,7 +99,7 @@ const VideoCard = props => {
                   color: R.colors.lightWhite,
                   marginHorizontal: R.fontSize.Size5,
                 }}>
-                {'Track Name . Artist Name'}
+                {props.videoCat}
               </Text>
             </View>
           </View>
@@ -112,7 +112,7 @@ const VideoCard = props => {
                 },
               ]}>
               <Image
-                source={R.images.eyeIcon}
+                source={props.eyeIcon}
                 style={{height: R.fontSize.Size25, width: R.fontSize.Size25}}
                 resizeMode={'contain'}
               />
@@ -121,16 +121,24 @@ const VideoCard = props => {
         </View>
       </View>
 
-      <View style={{position: 'absolute', top: 0, left: 0, right: 0, alignItems:'center', justifyContent:'center',height:'100%'}}>
-        <TouchableOpacity 
+      <View
         style={{
-          height:R.fontSize.Size50,
-          width:R.fontSize.Size50,
-          borderRadius:R.fontSize.Size30,
-          backgroundColor:R.colors.placeHolderColor
-        
-        }}
-        onPress={handlePlayPause}>
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+        }}>
+        <TouchableOpacity
+          style={{
+            height: R.fontSize.Size50,
+            width: R.fontSize.Size50,
+            borderRadius: R.fontSize.Size30,
+            backgroundColor: R.colors.placeHolderColor,
+          }}
+          onPress={handlePlayPause}>
           {play ? (
             <Image
               source={R.images.paymentFailedIcon}
@@ -158,7 +166,7 @@ const VideoCard = props => {
               fontWeight: '700',
               color: R.colors.white,
             }}>
-            {'Music'}
+            {props.bottomTitle}
           </Text>
           <Text
             style={{
@@ -167,10 +175,10 @@ const VideoCard = props => {
               fontWeight: '400',
               color: R.colors.lightWhite,
               marginTop: R.fontSize.Size5,
-              width: screenWidth / 2,
+              width: screenWidth / 1.2,
             }}
             numberOfLines={3}>
-            {`DEscriptionDEscriptionDEscriptionDEDEscriptionDEscriptionDEscription..`}
+            {props.bottomDiscription}
           </Text>
         </View>
       </View>

@@ -5,7 +5,10 @@ import {
   sign_Up_error,
   sign_In,
   sign_In_success,
-  sign_In_error
+  sign_In_error,
+  user_SignOut,
+  user_SignOut_success,
+  user_SignOut_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -41,6 +44,24 @@ export const SignInSuccess = payload => {
 export const SignInError = error => {
   return {
     type: sign_In_error,
+    payload: error,
+  };
+};
+
+export const UserSignOut = () => {
+  return {
+    type: user_SignOut,
+  };
+};
+export const UserSignOutSuccess = payload => {
+  return {
+    type: user_SignOut_success,
+    payload,
+  };
+};
+export const UserSignOutError = error => {
+  return {
+    type: user_SignOut_error,
     payload: error,
   };
 };
@@ -87,6 +108,29 @@ export const SignInRequest = (
       })
       .catch(error => {
         dispatch(SignInError(error));
+        failed?.(error);
+      });
+  };
+};
+
+
+export const UserSignOutRequest = (
+  data,
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(UserSignOut());
+    Api.getRequest({
+      body: data,
+      url: Config.userSignOutAPI,
+    })
+      .then(response => {
+        dispatch(UserSignOutSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(UserSignOutError(error));
         failed?.(error);
       });
   };

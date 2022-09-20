@@ -16,14 +16,18 @@ import {
   Keyboard,
   Platform,
   ImageBackground,
+  StatusBar,
 } from 'react-native';
 import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard, CustomLineTextInput} from '../../components';
-
+import Toast from 'react-native-simple-toast';
 import Slider from 'react-native-custom-slider';
-
+import {useDispatch, connect} from 'react-redux';
 import R from '../../res/R';
 import Styles from './styles';
+import { ShowAllPostRequest } from '../../actions/showAllPost.action';
+import { Config } from '../../config';
 const screenHeight = Dimensions.get('screen').height;
+
 
 const persnalDetails = [
   {
@@ -197,8 +201,10 @@ const CustomHeading = (props) => {
 const HomeScreen = (props) => {
 
 
+  const dispatch = useDispatch()
   const [sliderValue, setSliderValue] = useState(0); 
   const [modalPicker, setModalPicker] = useState(false);
+  const [loading,setLoading] = useState(false)
   const [modalType, setModalType] = useState('')
   const [tailentList, setTailentList] = useState([
     {
@@ -219,6 +225,10 @@ const HomeScreen = (props) => {
     },
   ]);
 
+  const [allVideoPostList, setAllVideoPostList] = useState([])
+
+
+
   useEffect(()=>{
       let arr = tailentList.map((item, index) => {
         item.selected = false;
@@ -226,7 +236,21 @@ const HomeScreen = (props) => {
       });
       console.log('ARRNEWITEM', arr);
       setTailentList(arr);
+
+      const unsubscribe = props.navigation.addListener('focus', () => {
+        screenFocus();
+      });
+      return unsubscribe;
+
+  
   },[props.navigation])
+
+  const screenFocus = () => {
+    Platform.OS === 'android' &&
+      StatusBar.setBackgroundColor(R.colors.appColor, true);
+    StatusBar.setBarStyle('dark-content', true);
+    onCallShowAllPost();
+  };
 
    const onCallSelectedTailent = (item, ind) => {
      const dummyData = tailentList;
@@ -245,8 +269,23 @@ const HomeScreen = (props) => {
     setModalPicker(true);
   }
 
+  const onCallShowAllPost = () => {
+    setLoading(true)
+
+    dispatch(ShowAllPostRequest(response => {
+      console.log('SHOW ALL POST RES', response)
+      if(response.status=='success')
+      {
+        setAllVideoPostList(response?.Post)
+        setLoading(false);
+      }
+    }))
+
+  
+  }
+
   return (
-    <StoryScreen>
+    <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
@@ -265,7 +304,9 @@ const HomeScreen = (props) => {
                 <CustomHeading
                   leftTitle={'Connected User'}
                   buttonTitle={'View All'}
-                  rightOnPress={() => console.log('view')}
+                  rightOnPress={() =>
+                    props.navigation.navigate('UserViewAllScreen')
+                  }
                 />
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View
@@ -276,7 +317,17 @@ const HomeScreen = (props) => {
                     }}>
                     {ConnectedUsers.map((item, index) => {
                       return (
-                        <View key={index} style={Styles.connectedUserMainView}>
+                        <Pressable
+                          key={index}
+                          onPress={() =>
+                            props.navigation.navigate('ConnectedProfileScreen')
+                          }
+                          style={({pressed}) => [
+                            Styles.connectedUserMainView,
+                            {
+                              opacity: pressed ? 0.5 : 1,
+                            },
+                          ]}>
                           <View style={Styles.connectedUserView}>
                             <Image
                               source={{
@@ -291,7 +342,7 @@ const HomeScreen = (props) => {
                             numberOfLines={1}>
                             {item?.name}
                           </Text>
-                        </View>
+                        </Pressable>
                       );
                     })}
                   </View>
@@ -299,7 +350,7 @@ const HomeScreen = (props) => {
                 <CustomHeading
                   leftTitle={'Most Popular'}
                   buttonTitle={'View All'}
-                  rightOnPress={() => console.log('view')}
+                  rightOnPress={() => props.navigation.navigate('PopularViewAllScreen')}
                 />
 
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -308,22 +359,25 @@ const HomeScreen = (props) => {
                       marginTop: R.fontSize.Size30,
                       flexDirection: 'row',
                       marginHorizontal: R.fontSize.Size20,
+                      alignItems:'center'
                     }}>
-                    {PopularList.map((item, index) => {
+                    {allVideoPostList.map((item, index) => {
                       return (
                         <View key={index} style={Styles.connectedUserMainView}>
                           <View style={Styles.mostPopularView}>
-                            <Image
-                              source={{
-                                uri: item?.videoImg,
-                              }}
-                              style={Styles.mostPopularImage}
-                              resizeMode={'cover'}
+                            <VideoCard
+                              videoUrl={`${Config.API_URL}${item?.post.slice(
+                                22,
+                              )}`}
                             />
                           </View>
                           <View style={Styles.mostPopularBottomView}>
                             <Image
-                              source={{uri: item.source}}
+                              source={{
+                                uri: `${Config.API_URL}${item?.avatar.slice(
+                                  22,
+                                )}`,
+                              }}
                               style={Styles.mostPopularBottomImage}
                               resizeMode={'cover'}
                             />
@@ -341,17 +395,24 @@ const HomeScreen = (props) => {
                 <CustomHeading leftTitle={'Suggested Post'} />
               </View>
             }
-            data={SuggestedList}
+            data={allVideoPostList}
             renderItem={({item, index}) => {
               return (
                 <View
                   key={index}
                   style={{
                     marginTop: R.fontSize.Size30,
-                    height: screenHeight / 2.5,
+                    height: screenHeight / 2,
                   }}>
                   <VideoCard
                     eyeonPress={() => onCallModal('videoDetailModal')}
+                    eyeIcon={R.images.eyeIcon}
+                    videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
+                    userImage={`${Config.API_URL}${item?.avatar.slice(22)}`}
+                    userName={item?.username}
+                    videoCat={item?.category}
+                    bottomTitle={item?.title}
+                    bottomDiscription={item?.bio}
                   />
                   <View
                     style={{
@@ -438,7 +499,7 @@ const HomeScreen = (props) => {
                           }}>
                           {'Liked By '}
                           <Text style={{color: R.colors.appColor}}>
-                            {'455'}
+                            {item?.total_likes != '' ? item?.total_likes : '0'}
                           </Text>
                         </Text>
                         <View
@@ -458,7 +519,9 @@ const HomeScreen = (props) => {
                           }}>
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
-                            {'82%'}
+                            {item?.total_rating != ''
+                              ? `${item?.total_rating}%`
+                              : '0%'}
                           </Text>
                         </Text>
                       </View>

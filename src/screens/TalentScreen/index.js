@@ -8,6 +8,9 @@ const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 import {connect, useDispatch} from 'react-redux';
 import { GetTailentRequest } from '../../actions/getTailent.action';
+import Toast from 'react-native-simple-toast';
+import CommonFunctions from '../../utils/CommonFuntions';
+import { TailentProfileCreateRequest } from '../../actions/tailentProfileCreate.action';
 
 
 const PriceList = [
@@ -33,17 +36,104 @@ const PriceList = [
   },
 ];
 
+const CustomTimeRow = (props) => {
+  return (
+    <View style={{flexDirection: 'row',alignItems:'center', marginBottom:R.fontSize.Size10}}>
+      <Pressable
+        onPress={props.leftOnPress}
+        style={({pressed}) => [
+          {
+            opacity: pressed ? 0.5 : 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: screenWidth / 2.5,
+          },
+        ]}>
+        <Image
+          source={props.leftImageSource}
+          style={{
+            height: R.fontSize.Size30,
+            width: R.fontSize.Size30,
+          }}
+          resizeMode={'contain'}
+        />
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+            color: props.leftTextColor,
+            marginHorizontal: R.fontSize.Size12,
+          }}>
+          {props.leftTitle}
+        </Text>
+      </Pressable>
+
+      { 
+      props.rightStatus &&     
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+          alignItems: 'center',
+        }}>
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            color: R.colors.primaryTextColor,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '400',
+          }}>
+          {'USD'}
+        </Text>
+        <TextInput
+          style={{
+            width: R.fontSize.Size60,
+            height: R.fontSize.Size20,
+            marginHorizontal: R.fontSize.Size6,
+            textAlign: 'center',
+            borderBottomWidth: 1,
+            borderColor: R.colors.appColor,
+          }}
+          placeholder={'00'}
+          placeholderTextColor={R.colors.placeholderTextColor}
+          value={props.rightValue}
+          onChangeText={props.rightOnChangeText}
+          keyboardType={'number-pad'}
+        />
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            color: R.colors.primaryTextColor,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '400',
+          }}>
+          {props.rightDayHours}
+        </Text>
+      </View>
+      }
+    </View>
+  );
+}
+
+
 const TalentScreen = (props) => {
 
     const dispatch = useDispatch()
-    const [modalPicker, setModalPicker] = useState(false)
-    const [selectPrice, setSelectPrice] = useState('')
     const [loading, setLoading] = useState(false)
-    const [selected, setSelected] = useState(false)
-    const [acceptTerms, setAcceptTerms] = useState(false)
-    const [selectetTailent, setSelectedTailent] = useState([])
-    const [selectTime, setSelectTime] = useState('Full')
-    const [data,setData] = useState([])
+    const [selectFullTime, setSelectFullTime] = useState(false)
+    const [fullTimeText, setFullTimeText] = useState('')
+    const [partTimeText, setPartTimeText] = useState('');
+    const [gigsText, setGigsText] = useState('');
+    const [fullTimePrice, setFullTimePrice] = useState('');
+    const [selectPartTime, setSelectPartTime] = useState(false);
+    const [partTimePrice, setPartTimePrice] = useState('');
+    const [selectGigs, setSelectGigs] = useState(false);
+    const [gigsPrice, setGigsPrice] = useState('');
+    const [selectCategory, setSelectCategory] = useState([]);
+    const [data,setData] = useState([]);
+
+
 
     useEffect(()=>{
         onCallGetTailentAPI();
@@ -67,24 +157,116 @@ const TalentScreen = (props) => {
       }))
     }
 
+    const onCheckCondition = () => {
+    return (
+      CommonFunctions.isBlank(
+        selectCategory.toString(),
+        'Please Select Your Talent Category',
+      ) &&
+      CommonFunctions.isFalse(
+        selectFullTime || selectPartTime || selectGigs,
+        'Please Select Any Time',
+      ) &&
+      oncheckFullTime() &&
+      oncheckPartTime() && 
+      oncheckGigs()
+    );
+    }
+
+    const oncheckFullTime = () => {
+      if(selectFullTime && fullTimePrice == '')
+      {
+        Toast.show('Please Enter Full Time Price');
+        return false;
+      }
+      return true;
+    }
+
+     const oncheckPartTime = () => {
+       if (selectPartTime && partTimePrice == '') {
+         Toast.show('Please Enter Part Time Price');
+         return false;
+       }
+       return true;
+     };
+
+      const oncheckGigs = () => {
+        if (selectGigs && gigsPrice == '') {
+          Toast.show('Please Enter Gigs Price');
+          return false;
+        }
+        return true;
+      };
+   
+
+    const onCallCreateTailentProfile = () => {
+      if(onCheckCondition())
+      {
+           let data = {
+             gigs_amount: gigsPrice,
+             full_time_amount: fullTimePrice,
+             part_time_amount: partTimePrice,
+             category: selectCategory.toString(),
+             job_type1: selectFullTime ? 'Full Time' : '',
+             job_type2: selectPartTime ? 'Part Time' : '',
+             job_type3: selectGigs ? 'Gigs' : '',
+           };
+           console.log('DATA', data);
+           dispatch(TailentProfileCreateRequest(data,response =>{
+            console.log('TAILENT PROFILE CREATE RES', response)
+            if(response.status)
+            {
+              props.navigation.navigate('TalentFinishScreen');
+              Toast.show(response.message, Toast.SHORT)
+            }
+            else
+            {
+              Toast.show(response.message, Toast.SHORT);
+            }
+           }))
+      }
+    }
+
+
     const onCallUserSelect = (item,ind) => {
         const dummyData = data
         let arr = dummyData.map((item,index)=>{
             if(ind == index)
             {
-                item.selected = !item.selected
+              item.selected = !item.selected
             }
             return{...item}
         })
         console.log('arr return',arr)
+        let tempArray = []
+        for(let i=0; i<arr.length; i++)
+        {
+          if(arr[i].selected)
+          {
+            tempArray.push(arr[i].talent)
+          }
+        }
+        console.log(tempArray)
+        setSelectCategory(tempArray)
         setData(arr)
     }
 
-    const onCallSelectPrice = (item) => {
-
-        setSelectPrice(item)
-        setModalPicker(false)
+   
+    const onCallFullTimeRow = () => {
+      setSelectFullTime(!selectFullTime)
+      setFullTimePrice('')
     }
+
+    const onCallPartTimeRow = () => {
+      setSelectPartTime(!selectPartTime);
+      setPartTimePrice('');
+    };
+
+    const onCallGigsRow = () => {
+      setSelectGigs(!selectGigs);
+      setGigsPrice('');
+    };
+    
 
     return (
       <StoryScreen loading={loading}>
@@ -154,63 +336,73 @@ const TalentScreen = (props) => {
                         marginTop: R.fontSize.Size10,
                         marginHorizontal: R.fontSize.Size5,
                       }}>
-                      <CustomTimeCard
-                        fullTimeOnPress={() => setSelectTime('Full')}
-                        fullTimeTextColor={
-                          selectTime == 'Full'
-                            ? R.colors.appColor
-                            : R.colors.placeholderTextColor
-                        }
-                        partTimeOnPress={() => setSelectTime('Part')}
-                        partTimeTextColor={
-                          selectTime == 'Part'
-                            ? R.colors.appColor
-                            : R.colors.placeholderTextColor
-                        }
-                        gigsOnPress={() => setSelectTime('Gigs')}
-                        gigsTextColor={
-                          selectTime == 'Gigs'
-                            ? R.colors.appColor
-                            : R.colors.placeholderTextColor
-                        }
-                      />
-                      <CustomCardView
-                        onPress={() => setModalPicker(true)}
-                        title={selectPrice != '' ? selectPrice : 'Select Price'}
-                        TextColor={R.colors.placeholderTextColor}
-                        rightIcon={R.images.chevronDown}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        marginTop: R.fontSize.Size45,
-                        marginHorizontal: R.fontSize.Size5,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={[Styles.termsText]}>
-                        {'Want to customise this part later?'}
-                      </Text>
-                      <Pressable
-                        onPress={() =>
-                          props.navigation.navigate('TalentFinishScreen')
-                        }
-                        style={({pressed}) => [
-                          {
-                            opacity: pressed ? 0.5 : 1,
-                          },
-                        ]}>
+                      <View>
                         <Text
                           style={{
                             fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                            color: R.colors.appColor,
+                            fontWeight: '900',
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.black,
                           }}>
-                          Skip
+                          {'Open For'}
                         </Text>
-                      </Pressable>
+                        <View style={{marginTop: R.fontSize.Size10}}>
+                          <CustomTimeRow
+                            leftOnPress={() => onCallFullTimeRow()}
+                            leftImageSource={
+                              selectFullTime
+                                ? R.images.checkTermsIcon
+                                : R.images.unCheckTermsIcon
+                            }
+                            leftTitle={'Full Time'}
+                            leftTextColor={
+                              selectFullTime
+                                ? R.colors.appColor
+                                : R.colors.placeholderTextColor
+                            }
+                            rightStatus={selectFullTime}
+                            rightValue={fullTimePrice}
+                            rightOnChangeText={price => setFullTimePrice(price)}
+                            rightDayHours={'/ Day'}
+                          />
+                          <CustomTimeRow
+                            leftOnPress={() => onCallPartTimeRow()}
+                            leftImageSource={
+                              selectPartTime
+                                ? R.images.checkTermsIcon
+                                : R.images.unCheckTermsIcon
+                            }
+                            leftTitle={'Part Time'}
+                            leftTextColor={
+                              selectPartTime
+                                ? R.colors.appColor
+                                : R.colors.placeholderTextColor
+                            }
+                            rightStatus={selectPartTime}
+                            rightValue={partTimePrice}
+                            rightOnChangeText={price => setPartTimePrice(price)}
+                            rightDayHours={'/ Hours'}
+                          />
+                          <CustomTimeRow
+                            leftOnPress={() => onCallGigsRow()}
+                            leftImageSource={
+                              selectGigs
+                                ? R.images.checkTermsIcon
+                                : R.images.unCheckTermsIcon
+                            }
+                            leftTitle={'Gigs'}
+                            leftTextColor={
+                              selectGigs
+                                ? R.colors.appColor
+                                : R.colors.placeholderTextColor
+                            }
+                            rightStatus={selectGigs}
+                            rightValue={gigsPrice}
+                            rightOnChangeText={price => setGigsPrice(price)}
+                            rightDayHours={'/ Hours'}
+                          />
+                        </View>
+                      </View>
                     </View>
                   </View>
                 }
@@ -218,104 +410,13 @@ const TalentScreen = (props) => {
             </View>
             <View style={{paddingVertical: R.fontSize.Size16}}>
               <AppButton
-                onPress={() => props.navigation.navigate('TalentFinishScreen')}
+                onPress={() => onCallCreateTailentProfile()}
                 marginHorizontal={R.fontSize.Size35}
                 title={'Proceed'}
               />
             </View>
           </View>
         </SafeAreaView>
-        <Modal
-          visible={modalPicker}
-          transparent={true}
-          onRequestClose={() => setModalPicker(false)}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: R.colors.modelBackground,
-              justifyContent: 'flex-end',
-            }}>
-            <View
-              style={{
-                paddingVertical: R.fontSize.Size25,
-                paddingHorizontal: R.fontSize.Size20,
-                backgroundColor: R.colors.white,
-                paddingBottom: R.fontSize.Size20,
-                height: screenHeight / 2.5,
-              }}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size14,
-                  fontWeight: '700',
-                  color: R.colors.primaryTextColor,
-                }}>
-                {'Select Your Price'}
-              </Text>
-              <View
-                style={{
-                  flex: 1,
-                  marginVertical: R.fontSize.Size8,
-                  marginHorizontal: R.fontSize.Size20,
-                }}>
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  data={PriceList}
-                  keyExtractor={item => item?.id}
-                  renderItem={({item, index}) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          borderBottomWidth: 1,
-                          marginBottom: R.fontSize.Size5,
-                          borderColor: R.colors.placeholderTextColor,
-                        }}>
-                        <Pressable
-                          onPress={() => onCallSelectPrice(item?.Price)}
-                          style={({pressed}) => [
-                            {
-                              opacity: pressed ? 0.5 : 1,
-                              height: R.fontSize.Size40,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            },
-                          ]}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              color: R.colors.placeHolderColor,
-                              fontSize: R.fontSize.Size14,
-                              fontWeight: '500',
-                            }}>
-                            {item?.Price}
-                          </Text>
-                        </Pressable>
-                      </View>
-                    );
-                  }}
-                />
-              </View>
-              <Pressable
-                onPress={() => setModalPicker(false)}
-                style={({pressed}) => [
-                  {
-                    height: R.fontSize.Size40,
-                    borderWidth: 1,
-                    opacity: pressed ? 0.5 : 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderColor: R.colors.appColor,
-                    borderRadius: R.fontSize.Size5,
-                    marginBottom: R.fontSize.Size10,
-                    marginHorizontal: R.fontSize.Size20,
-                  },
-                ]}>
-                <Text>{'Cancel'}</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
       </StoryScreen>
     );
 }

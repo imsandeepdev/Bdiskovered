@@ -23,6 +23,17 @@ const Header = (props) => {
                     resizeMode={'contain'}
                 />
             </Pressable>
+            <View
+            style={{flex:1, marginHorizontal:R.fontSize.Size20,justifyContent:'center'}}
+            >
+                <Text 
+                style={{fontFamily:R.fonts.regular,
+                color:R.colors.primaryTextColor,
+                fontSize:R.fontSize.Size16,
+                fontWeight:'700',
+                }}
+                >{props.title}</Text>
+            </View>
 
         </View>
     )

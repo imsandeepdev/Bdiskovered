@@ -9,6 +9,7 @@ const AppButton = (props) => {
           borderRadius: R.fontSize.Size8,
           backgroundColor: R.colors.appColor,
           marginHorizontal: props.marginHorizontal ?? R.fontSize.Size20,
+          paddingHorizontal: props.paddingHorizontal 
         }}>
         <Pressable
           onPress={props.onPress}
