@@ -634,10 +634,14 @@ const onCheckDocument = () => {
                           />
                           <CustomCardView
                             onPress={() => handleFilePicker()}
-                            title={documentPic.length == 0 ? 'Upload Trade / Commercial License' : `${documentPic?.filename}`}
+                            title={
+                              documentPic.length == 0
+                                ? 'Upload Trade / Commercial License'
+                                : `${documentPic?.filename}`
+                            }
                             TextColor={R.colors.placeholderTextColor}
                             rightIcon={R.images.uploadIcon}
-                            marginBottom = {R.fontSize.Size4}
+                            marginBottom={R.fontSize.Size4}
                           />
                           <View>
                             {documentPic.path != null && (
@@ -717,6 +721,8 @@ const onCheckDocument = () => {
                   selectedDayColor={R.colors.appColor}
                   todayBackgroundColor={R.colors.appColor}
                   todayTextStyle={{color: R.colors.white, fontWeight: '700'}}
+                  minDate={new Date('1920,1,1')}
+                  maxDate={new Date(moment().format('YYYY,MM,DD'))}
                   textStyle={{
                     fontFamily: R.fonts.regular,
                     color: R.colors.primaryTextColor,

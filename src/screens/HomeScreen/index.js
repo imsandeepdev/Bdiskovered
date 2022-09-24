@@ -22,10 +22,12 @@ import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCar
 import Toast from 'react-native-simple-toast';
 import Slider from 'react-native-custom-slider';
 import {useDispatch, connect} from 'react-redux';
+import SwiperFlatList from 'react-native-swiper-flatlist';
 import R from '../../res/R';
 import Styles from './styles';
 import { ShowAllPostRequest } from '../../actions/showAllPost.action';
 import { Config } from '../../config';
+import { VideoRatingRequest } from '../../actions/videoRating.action';
 const screenHeight = Dimensions.get('screen').height;
 
 
@@ -202,6 +204,12 @@ const HomeScreen = (props) => {
 
 
   const dispatch = useDispatch()
+  const [currIndex, setCurrIndex] = useState(0)
+  const [videoPlayPause, setVideoPlayPause] = useState(false)
+  const [videoModalDetail, setVideoModalDetail] = useState({})
+  const [videoModalPersonalDetail, setVideoModalPersonalDetail] = useState([]);
+  const [videoModalTalentDetail, setVideoModalTalentDetail] = useState([]);
+  const [videoModalAvailableDetail, setVideoModalAvailableDetail] = useState([]);
   const [sliderValue, setSliderValue] = useState(0); 
   const [modalPicker, setModalPicker] = useState(false);
   const [loading,setLoading] = useState(false)
@@ -227,6 +235,19 @@ const HomeScreen = (props) => {
 
   const [allVideoPostList, setAllVideoPostList] = useState([])
 
+  
+    useEffect(() => {
+      const blur = props.navigation.addListener('blur', () => {
+        setVideoPlayPause(true);
+      });
+
+      const focus = props.navigation.addListener('focus', () => {
+        setVideoPlayPause(false);
+      });
+
+      return blur, focus;
+    }, [props.navigation]);
+  
 
 
   useEffect(()=>{
@@ -264,9 +285,20 @@ const HomeScreen = (props) => {
      setTailentList(arr);
    };
 
-  const onCallModal = (type) => {
+  const onCallModal = (type,item) => {
     setModalType(type)
     setModalPicker(true);
+    if(type == 'videoDetailModal')
+    {
+      setVideoModalDetail(item)
+      setVideoModalPersonalDetail([item?.birth, item?.gender, 'gurugram'])
+      setVideoModalTalentDetail([item?.category])
+      setVideoModalAvailableDetail([
+        item?.job_type1,
+        item?.job_type2,
+        item?.job_type3,
+      ]);
+    }
   }
 
   const onCallShowAllPost = () => {
@@ -284,6 +316,20 @@ const HomeScreen = (props) => {
   
   }
 
+  const onChangeIndex = ({index}) => {
+    setCurrIndex(index)
+  }
+
+  const onCallVideoRatingAPI = (PercentLike,PostId) => {
+    let data = {
+      postId:PostId,
+      percentage_like:`${PercentLike}%`
+    }
+    dispatch(VideoRatingRequest(data,response=>{
+      console.log('VIDEO RATING RES',response)
+    }))
+  }
+
   return (
     <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
@@ -296,175 +342,181 @@ const HomeScreen = (props) => {
           rightSourceOnPress2={() => console.log('Bell')}
         />
         <View style={{flex: 1}}>
-          <FlatList
+          <SwiperFlatList
+            vertical={true}
             style={{flex: 1}}
             nestedScrollEnabled
-            ListHeaderComponent={
-              <View>
-                <CustomHeading
-                  leftTitle={'Connected User'}
-                  buttonTitle={'View All'}
-                  rightOnPress={() =>
-                    props.navigation.navigate('UserViewAllScreen')
-                  }
-                />
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size30,
-                      flexDirection: 'row',
-                      marginHorizontal: R.fontSize.Size20,
-                    }}>
-                    {ConnectedUsers.map((item, index) => {
-                      return (
-                        <Pressable
-                          key={index}
-                          onPress={() =>
-                            props.navigation.navigate('ConnectedProfileScreen')
-                          }
-                          style={({pressed}) => [
-                            Styles.connectedUserMainView,
-                            {
-                              opacity: pressed ? 0.5 : 1,
-                            },
-                          ]}>
-                          <View style={Styles.connectedUserView}>
-                            <Image
-                              source={{
-                                uri: item?.source,
-                              }}
-                              style={Styles.connectedUserImage}
-                              resizeMode={'cover'}
-                            />
-                          </View>
-                          <Text
-                            style={Styles.connectedUserText}
-                            numberOfLines={1}>
-                            {item?.name}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
-                </ScrollView>
-                <CustomHeading
-                  leftTitle={'Most Popular'}
-                  buttonTitle={'View All'}
-                  rightOnPress={() => props.navigation.navigate('PopularViewAllScreen')}
-                />
+            // ListHeaderComponent={
+            //   <View>
+            //     <CustomHeading
+            //       leftTitle={'Connected User'}
+            //       buttonTitle={'View All'}
+            //       rightOnPress={() =>
+            //         props.navigation.navigate('UserViewAllScreen')
+            //       }
+            //     />
+            //     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            //       <View
+            //         style={{
+            //           marginTop: R.fontSize.Size30,
+            //           flexDirection: 'row',
+            //           marginHorizontal: R.fontSize.Size20,
+            //         }}>
+            //         {ConnectedUsers.map((item, index) => {
+            //           return (
+            //             <Pressable
+            //               key={index}
+            //               onPress={() =>
+            //                 props.navigation.navigate('ConnectedProfileScreen')
+            //               }
+            //               style={({pressed}) => [
+            //                 Styles.connectedUserMainView,
+            //                 {
+            //                   opacity: pressed ? 0.5 : 1,
+            //                 },
+            //               ]}>
+            //               <View style={Styles.connectedUserView}>
+            //                 <Image
+            //                   source={{
+            //                     uri: item?.source,
+            //                   }}
+            //                   style={Styles.connectedUserImage}
+            //                   resizeMode={'cover'}
+            //                 />
+            //               </View>
+            //               <Text
+            //                 style={Styles.connectedUserText}
+            //                 numberOfLines={1}>
+            //                 {item?.name}
+            //               </Text>
+            //             </Pressable>
+            //           );
+            //         })}
+            //       </View>
+            //     </ScrollView>
+            //     <CustomHeading
+            //       leftTitle={'Most Popular'}
+            //       buttonTitle={'View All'}
+            //       rightOnPress={() => props.navigation.navigate('PopularViewAllScreen')}
+            //     />
 
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size30,
-                      flexDirection: 'row',
-                      marginHorizontal: R.fontSize.Size20,
-                      alignItems:'center'
-                    }}>
-                    {allVideoPostList.map((item, index) => {
-                      return (
-                        <View key={index} style={Styles.connectedUserMainView}>
-                          <View style={Styles.mostPopularView}>
-                            <VideoCard
-                              videoUrl={`${Config.API_URL}${item?.post.slice(
-                                22,
-                              )}`}
-                            />
-                          </View>
-                          <View style={Styles.mostPopularBottomView}>
-                            <Image
-                              source={{
-                                uri: `${Config.API_URL}${item?.avatar.slice(
-                                  22,
-                                )}`,
-                              }}
-                              style={Styles.mostPopularBottomImage}
-                              resizeMode={'cover'}
-                            />
-                            <Text
-                              style={Styles.mostPopularBottomText}
-                              numberOfLines={1}>
-                              {item?.name}
-                            </Text>
-                          </View>
-                        </View>
-                      );
-                    })}
-                  </View>
-                </ScrollView>
-                <CustomHeading leftTitle={'Suggested Post'} />
-              </View>
-            }
+            //     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            //       <View
+            //         style={{
+            //           marginTop: R.fontSize.Size30,
+            //           flexDirection: 'row',
+            //           marginHorizontal: R.fontSize.Size20,
+            //           alignItems:'center'
+            //         }}>
+            //         {allVideoPostList.map((item, index) => {
+            //           return (
+            //             <View key={index} style={Styles.connectedUserMainView}>
+            //               <View style={Styles.mostPopularView}>
+            //                 <VideoCard
+            //                   videoUrl={`${Config.API_URL}${item?.post.slice(
+            //                     22,
+            //                   )}`}
+            //                 />
+            //               </View>
+            //               <View style={Styles.mostPopularBottomView}>
+            //                 <Image
+            //                   source={{
+            //                     uri: `${Config.API_URL}${item?.avatar.slice(
+            //                       22,
+            //                     )}`,
+            //                   }}
+            //                   style={Styles.mostPopularBottomImage}
+            //                   resizeMode={'cover'}
+            //                 />
+            //                 <Text
+            //                   style={Styles.mostPopularBottomText}
+            //                   numberOfLines={1}>
+            //                   {item?.name}
+            //                 </Text>
+            //               </View>
+            //             </View>
+            //           );
+            //         })}
+            //       </View>
+            //     </ScrollView>
+            //     <CustomHeading leftTitle={'Suggested Post'} />
+            //   </View>
+            // }
             data={allVideoPostList}
+            keyExtractor={(item, index) => index.toString()}
+            onChangeIndex={onChangeIndex}
             renderItem={({item, index}) => {
               return (
                 <View
                   key={index}
                   style={{
-                    marginTop: R.fontSize.Size30,
-                    height: screenHeight / 2,
+                    height: (screenHeight - R.fontSize.Size190)
                   }}>
-                  <VideoCard
-                    eyeonPress={() => onCallModal('videoDetailModal')}
-                    eyeIcon={R.images.eyeIcon}
-                    videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
-                    userImage={`${Config.API_URL}${item?.avatar.slice(22)}`}
-                    userName={item?.username}
-                    videoCat={item?.category}
-                    bottomTitle={item?.title}
-                    bottomDiscription={item?.bio}
-                  />
+                  <View
+                    style={{
+                      flex: 1
+                    }}>
+                    <VideoCard
+                      eyeonPress={() => onCallModal('videoDetailModal', item)}
+                      eyeIcon={R.images.eyeIcon}
+                      videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
+                      userImage={`${Config.API_URL}${item?.avatar.slice(22)}`}
+                      userName={item?.username}
+                      videoCat={item?.category}
+                      bottomTitle={item?.title}
+                      bottomDiscription={item?.bio}
+                      // paused={currIndex !== index}
+                      paused={true}
+                    />
+                  </View>
                   <View
                     style={{
                       flexDirection: 'row',
-                      marginTop: R.fontSize.Size10,
+                      marginVertical: R.fontSize.Size5,
                       marginHorizontal: R.fontSize.Size12,
                       alignItems: 'center',
                     }}>
                     <View style={{flex: 1}}>
                       <View style={{marginBottom: R.fontSize.Size6}}>
                         <Slider
-                          value={sliderValue}
+                          value={sliderValue[index]}
                           minimumValue={0}
                           maximumValue={100}
                           customMinimumTrack={
-                            <View>
-                              <Image
-                                source={R.images.ratingBarIcon}
-                                style={{
-                                  height: R.fontSize.Size20,
-                                  width: '100%',
-                                }}
-                                resizeMode={'contain'}
-                              />
-                            </View>
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.appColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
                           }
                           customMaximumTrack={
-                            <View>
-                              <Image
-                                source={R.images.ratingBarIcon}
-                                style={{
-                                  height: R.fontSize.Size20,
-                                  width: '100%',
-                                }}
-                                resizeMode={'contain'}
-                              />
-                            </View>
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.placeholderTextColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
                           }
                           minimumTrackTintColor={R.colors.white}
                           maximumTrackTintColor={R.colors.white}
                           onValueChange={val => setSliderValue(val)}
+                          onSlidingComplete={value => {
+                            console.log('SLIDE COMPLETE', value.toFixed(0));
+                            onCallVideoRatingAPI(
+                              value.toFixed(0),
+                              item?.postID,
+                            );
+                          }}
                           customThumb={
                             <View
                               style={{
-                                // width: R.fontSize.Size40,
-                                // borderWidth:1,
                                 overflow: 'hidden',
-                                top: 8,
+                                top: 5,
                                 left: 0,
                                 right: 0,
-                                // marginBottom: R.fontSize.Size2,
-                                // marginRight: -R.fontSize.Size2,
                               }}>
                               <ImageBackground
                                 source={R.images.redHeartIcon}
@@ -481,7 +533,7 @@ const HomeScreen = (props) => {
                                     fontSize: R.fontSize.Size8,
                                     height: R.fontSize.Size20,
                                   }}>
-                                  {Math.floor(sliderValue)}
+                                  {sliderValue.toFixed(0)}
                                 </Text>
                               </ImageBackground>
                             </View>
@@ -552,13 +604,6 @@ const HomeScreen = (props) => {
                       </Text>
                     </View>
                   </View>
-                  {/* <Image
-                    source={{
-                      uri: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
-                    }}
-                    style={{height: screenHeight / 2, width: '100%'}}
-                    resizeMode={'cover'}
-                  /> */}
                 </View>
               );
             }}
@@ -703,16 +748,18 @@ const HomeScreen = (props) => {
                               overflow: 'hidden',
                               borderRadius: R.fontSize.Size20,
                             }}>
-                            <Image
+                            {/* <Image
                               source={{
-                                uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX3JYxD4c-TLNXds0sV9Nie80zzS_TxeWapkUpNrSVC1TxN5rzzsZjCOMzVfXkh2xYOvY&usqp=CAU',
+                                uri: `${Config.API_URL}${videoModalDetail?.avatar.slice(
+                                  22,
+                                )}`,
                               }}
                               style={{
                                 height: R.fontSize.Size30,
                                 width: R.fontSize.Size30,
                               }}
                               resizeMode={'cover'}
-                            />
+                            /> */}
                           </View>
                           <Text
                             style={{
@@ -723,7 +770,7 @@ const HomeScreen = (props) => {
                               flex: 1,
                               marginHorizontal: R.fontSize.Size14,
                             }}>
-                            {'Video Title Heading'}
+                            {videoModalDetail?.title}
                           </Text>
                         </View>
                         <View style={{marginTop: R.fontSize.Size30}}>
@@ -734,7 +781,7 @@ const HomeScreen = (props) => {
                               fontWeight: '400',
                               color: R.colors.primaryTextColor,
                             }}>
-                            {`Video description Video descriptionVideo descriptionVidVideo description Video description Video description   `}
+                            {videoModalDetail?.description}
                           </Text>
                         </View>
                         <View
@@ -744,7 +791,7 @@ const HomeScreen = (props) => {
                             alignItems: 'center',
                             marginTop: R.fontSize.Size30,
                           }}>
-                          {persnalDetails.map((item, index) => {
+                          {videoModalPersonalDetail.map((item, index) => {
                             return (
                               <View
                                 key={index}
@@ -769,7 +816,7 @@ const HomeScreen = (props) => {
                                     color: R.colors.primaryTextColor,
                                     marginLeft: R.fontSize.Size8,
                                   }}>
-                                  {item.title}
+                                  {item}
                                 </Text>
                               </View>
                             );
@@ -783,7 +830,8 @@ const HomeScreen = (props) => {
                             alignItems: 'center',
                             marginTop: R.fontSize.Size20,
                           }}>
-                          {tailentList.map((item, index) => {
+                          {videoModalTalentDetail.map((item, index) => {
+                            console.log('ITEM', item);
                             return (
                               <View
                                 key={index}
@@ -806,7 +854,7 @@ const HomeScreen = (props) => {
                                     color: R.colors.primaryTextColor,
                                     marginLeft: R.fontSize.Size8,
                                   }}>
-                                  {item.name}
+                                  {item}
                                 </Text>
                               </View>
                             );
@@ -831,7 +879,7 @@ const HomeScreen = (props) => {
                             alignItems: 'center',
                             flexDirection: 'row',
                           }}>
-                          {timeDetails.map((item, index) => {
+                          {videoModalAvailableDetail.map((item, index) => {
                             return (
                               <View
                                 key={index}
@@ -841,7 +889,8 @@ const HomeScreen = (props) => {
                                   justifyContent: 'center',
                                   paddingHorizontal: R.fontSize.Size20,
                                   paddingVertical: R.fontSize.Size6,
-                                  backgroundColor: R.colors.appColor,
+                                  backgroundColor:
+                                    item != '' && R.colors.appColor,
                                   borderRadius: R.fontSize.Size8,
                                   marginBottom: R.fontSize.Size6,
                                 }}>
@@ -853,7 +902,7 @@ const HomeScreen = (props) => {
                                     color: R.colors.white,
                                     marginLeft: R.fontSize.Size8,
                                   }}>
-                                  {item.title}
+                                  {item}
                                 </Text>
                               </View>
                             );

@@ -8,6 +8,8 @@ import getTailentRoot from '../reducers/getTailent.reducer';
 import tailentProfileRoot from '../reducers/tailentProfileCreate.reducer';
 import showAllPostRoot from '../reducers/showAllPost.reducer';
 import getProfileDetailsRoot from '../reducers/getProfile.reducer';
+import videoRateRoot from '../reducers/videoRating.reducer';
+import uploadNewVideoRoot from '../reducers/uploadNewVideo.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -22,5 +24,7 @@ getTailentRoot,
 tailentProfileRoot,
 showAllPostRoot,
 getProfileDetailsRoot,
+videoRateRoot,
+uploadNewVideoRoot
 
 });

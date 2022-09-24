@@ -10,6 +10,7 @@ import { CreateOTPRequest } from '../../actions/createOTP.action';
 const screenHeight = Dimensions.get('screen').height;
 import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
+// import messaging from '@react-native-firebase/messaging';
 
 
 const LoginScreen = (props) => {
@@ -19,6 +20,11 @@ const LoginScreen = (props) => {
   const [countyModalPicker,setCountyModalPicker] = useState(false)
   const [countryCode, setCountryCode] = useState('91')
   const [countyFlag, setCountyFlag] = useState('');
+  const [fcmToken, setFcmToken] = useState('');
+
+  // useEffect(()=>{
+  //   checkToken()
+  // },[])
 
 
   const isValid = () => {
@@ -49,7 +55,7 @@ const LoginScreen = (props) => {
               mobValue: mobNo,
               countryCode: countryCode,
             });
-            Toast.show(response.message, Toast.SHORT);
+            Toast.show(response.OTP, Toast.LONG);
           } else {
             Toast.show(response.message, Toast.SHORT);
           }
@@ -57,6 +63,14 @@ const LoginScreen = (props) => {
       );
     }
   }
+
+  // const checkToken = async () => {
+  //   const token = await messaging().getToken();
+  //   if (token) {
+  //     console.debug('FCM Token', token);
+  //     setFcmToken(token);
+  //   }
+  // };
 
     return (
       <StoryScreen>

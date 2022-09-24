@@ -28,6 +28,8 @@ import SplashScreen from '../screens/SplashScreen';
 import UserViewAllScreen from '../screens/UserViewAllScreen';
 import PopularViewAllScreen from '../screens/PopularViewAllScreen';
 import ConnectedProfileScreen from '../screens/ConnectedProfileScreen';
+import { GetProfileDetailsRequest } from '../actions/getProfile.action';
+import SearchScreen from '../screens/SearchScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -41,6 +43,12 @@ const AppNavigator = props => {
 
   useEffect(()=>{
 
+    if(props.authToken)
+    {
+      dispatch(GetProfileDetailsRequest(response=>{
+        console.log("PROFILE DETAIL ON APP NAVIGATOR",response)
+      }))
+    }
     console.log(props.authToken)
     const initialRouteName = props.authToken != '' ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
@@ -150,6 +158,11 @@ const AppNavigator = props => {
           component={ConnectedProfileScreen}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="UploadScreen"
+          component={UploadVideoScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -177,7 +190,7 @@ const OnCustomTabs = props => {
       />
       <Tab.Screen
         name="SearchScreen"
-        component={HomeScreen}
+        component={SearchScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen
@@ -196,6 +209,7 @@ const OnCustomTabs = props => {
 
 const mapStatetoProps = (state, props) => ({
   authToken: state.auth.authToken,
+   userType: state.auth.userType,
 });
 
 export default connect(mapStatetoProps)(AppNavigator);

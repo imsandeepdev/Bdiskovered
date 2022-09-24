@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {View, Text, Image, Pressable, Dimensions, TouchableOpacity} from 'react-native';
 
 import Video from 'react-native-video';
@@ -10,20 +10,21 @@ const videoData =
   'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
 const VideoCard = props => {
-  let videoRef;
+  const videoRef = useRef(null)
 
   const [play, setPlay] = useState(true);
 
 
-  const onBuffer = () => {};
+  const onBuffer = (e) => {
+    console.log('Buffering',e)
+  };
 
-    const handlePlayPause = () => {
-      if (play) {
-        return setPlay(false)
-      }
-      setPlay(true)
-      // setTimeout(() => setShowControls(false), 2000)
+  const handlePlayPause = () => {
+    if (play) {
+      return setPlay(false)
     }
+    setPlay(true)
+  }
 
   return (
     <View style={{flex: 1}}>
@@ -34,11 +35,14 @@ const VideoCard = props => {
         // ref={ref => {
         //   this.player = ref;
         // }}
+        ref={videoRef}
         onBuffer={onBuffer}
         //   onError={this.videoError} // Callback when video cannot be loaded
-        setControls={true}
-        paused={!play}
+        // setControls={true}
+        paused={props.paused}
         controls={true}
+        resizeMode={'cover'}
+        repeat
         style={{
           height: '100%',
           width: '100%',
@@ -121,7 +125,7 @@ const VideoCard = props => {
         </View>
       </View>
 
-      <View
+      {/* <View
         style={{
           position: 'absolute',
           top: 0,
@@ -151,7 +155,7 @@ const VideoCard = props => {
             />
           )}
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
         <View

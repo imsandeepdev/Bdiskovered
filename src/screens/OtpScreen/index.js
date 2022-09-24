@@ -273,7 +273,7 @@ const OtpScreen = (props) => {
                               width: R.fontSize.Size45,
                               marginTop:
                                 Platform.OS === 'android'
-                                  ? R.fontSize.Size5
+                                  ? R.fontSize.Size4
                                   : 0,
                               textAlign: 'center',
                             }}

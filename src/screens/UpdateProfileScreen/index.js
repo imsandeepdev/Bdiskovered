@@ -146,6 +146,7 @@ const UpdateProfileScreen = (props) => {
             leftSource={R.images.chevronBack}
             title={'Update Profile'}
           />
+
           <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}>
@@ -163,7 +164,7 @@ const UpdateProfileScreen = (props) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  {profilePic.path != null ? (
+                  {profilePic.path != null || profilePic.path != '' ? (
                     <Image
                       source={{
                         uri: profilePic?.path,
@@ -236,7 +237,7 @@ const UpdateProfileScreen = (props) => {
                     justifyContent: 'center',
                   }}>
                   <AppButton
-                    onPress={()=> onCallUpdateProfile()}
+                    onPress={() => onCallUpdateProfile()}
                     title={'Update Profile'}
                     textColor={R.colors.white}
                     paddingHorizontal={R.fontSize.Size30}
@@ -353,6 +354,8 @@ const UpdateProfileScreen = (props) => {
                   selectedDayColor={R.colors.appColor}
                   todayBackgroundColor={R.colors.appColor}
                   todayTextStyle={{color: R.colors.white, fontWeight: '700'}}
+                  minDate={new Date('1920,1,1')}
+                  maxDate={new Date(moment().format('YYYY,MM,DD'))}
                   textStyle={{
                     fontFamily: R.fonts.regular,
                     color: R.colors.primaryTextColor,
@@ -488,4 +491,10 @@ const UpdateProfileScreen = (props) => {
     );
 }
 
-export default UpdateProfileScreen;
+const mapStateToProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+export default connect(mapStateToProps) (UpdateProfileScreen);

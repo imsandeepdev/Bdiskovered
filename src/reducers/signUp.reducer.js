@@ -15,6 +15,7 @@ const initial_state = {
   signUpInit: {},
   signInInit: {},
   authToken: null,
+  userType: '',
   error: '',
 };
 
@@ -31,6 +32,7 @@ const reducer = (state = initial_state, {type, payload}) => {
         loading: false,
         authToken: payload.token,
         signUpInit: payload,
+        userType: payload.data.user_type,
         error: '',
       };
     case sign_Up_error:
@@ -47,6 +49,7 @@ const reducer = (state = initial_state, {type, payload}) => {
       return {
         loading: false,
         authToken: payload.token,
+        userType: payload.data.user_type,
         signInInit: payload,
         error: '',
       };

@@ -14,6 +14,7 @@ import { StoryScreen } from '../../components';
 import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
 import { UserSignOutRequest } from '../../actions/signUp.action';
+import Toast from 'react-native-simple-toast';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -54,13 +55,38 @@ const Menu = (props) => {
   
   const dispatch = useDispatch()
 
-  const onCallLogout = () => {
 
-    let data = {
-      access_token: props.authToken
-    }
-    dispatch(UserSignOutRequest(data,response=>{
-      console.log('LOGOUT RES', response)
+  const onLogout = () => {
+    Alert.alert(
+      'Logout!',
+      'Are you sure want to logout?',
+      [
+        {
+          text: 'LOGOUT',
+          onPress: () => onCallLogout(),
+        },
+        {
+          text: 'CANCEL',
+        },
+      ],
+      {
+        cancelable: true,
+      },
+    );
+  };
+
+  const onCallLogout = () => {
+    dispatch(UserSignOutRequest(response=>{
+      console.log('LOGOUT RES', response);
+      if(response.status == 'success')
+      {
+        Toast.show(response.message,Toast.SHORT);
+        props.navigation.navigate('LoginScreen');
+      }
+      else
+      {
+        Toast.show(response.message, Toast.SHORT);
+      }
     }))
   }
 
@@ -91,8 +117,8 @@ const Menu = (props) => {
             title={'FAQ'}
           />
           <CustomMenuButton
-            // onPress={() => onCallLogout()}
-            onPress = {() => props.navigation.navigate('LoginScreen')}
+            onPress={() => onLogout()}
+            // onPress = {() => props.navigation.navigate('LoginScreen')}
             leftSource={R.images.signoutIcon}
             title={'Sign Out'}
           />

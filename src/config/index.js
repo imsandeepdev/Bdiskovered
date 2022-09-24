@@ -1,5 +1,5 @@
 export const Config = {
-  API_URL: 'https://bdiskovered.shunyaekai.com/',
+  API_URL: 'https://bdiskovered.shunyaekai.tech/',
 
   createOTPAPI: 'user/createOTP',
   signInAPI: 'user/signin',
@@ -14,5 +14,7 @@ export const Config = {
   userSelectionFinishAPI: 'user/category-selection',
   showAllPostAPI: 'post',
   profileUpdateAPI: 'profile/update',
+  videoRatingAPI: 'post/rating',
+  uploadNewVideoAPI: 'post/upload',
 };
 

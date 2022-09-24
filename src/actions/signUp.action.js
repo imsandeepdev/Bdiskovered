@@ -115,14 +115,13 @@ export const SignInRequest = (
 
 
 export const UserSignOutRequest = (
-  data,
+  
   success?: () => void,
   failed?: () => void,
 ) => {
   return dispatch => {
     dispatch(UserSignOut());
-    Api.getRequest({
-      body: data,
+    Api.MultiPostFetch({
       url: Config.userSignOutAPI,
     })
       .then(response => {

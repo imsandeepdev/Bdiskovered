@@ -51,3 +51,13 @@ export const getProfile_Details_error = 'getProfile_Details_error';
 export const profile_Update = 'profile_Update';
 export const profile_Update_success = 'profile_Update_success';
 export const profile_Update_error = 'profile_Update_error';
+
+// video_Rating
+export const video_Rating = 'video_Rating';
+export const video_Rating_success = 'video_Rating_success';
+export const video_Rating_error = 'video_Rating_error';
+
+// upload_NewVideo
+export const upload_NewVideo = 'upload_NewVideo';
+export const upload_NewVideo_success = 'upload_NewVideo_success';
+export const upload_NewVideo_error = 'upload_NewVideo_error';
