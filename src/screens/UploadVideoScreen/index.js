@@ -27,7 +27,8 @@ import {
 import { connect, Connect, useDispatch} from 'react-redux';
 import R from '../../res/R';
 import ImagePicker from 'react-native-image-crop-picker';
-import { Video } from 'react-native-compressor';
+import { Video, Image as ImageCompressor } from 'react-native-compressor';
+
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
@@ -137,12 +138,14 @@ const onSelectPicker = params => {
     });
   } else if (params == 'gallery') {
     ImagePicker.openPicker({
-      mediaType: 'video',
+      mediaType: 'any',
       width: screenWidth,
       height: screenHeight,
       cropping: false,
     }).then(video => {
       console.log('VIDEODETAILS', video);
+      let videoURL = video.path?.replace('file://', '');
+      console.log("VIDEOP",videoURL)
       setVideoPath({
         uri:
           Platform.OS === 'android'
@@ -151,20 +154,12 @@ const onSelectPicker = params => {
         type: video.mime,
         name: video.filename ?? 'video.MP4',
       });
-      const result = Video.compress(
-        video.path,
-        {
-          compressionMethod: 'auto',
-        },
-        progress => {
-          if (backgroundMode) {
-            console.log('Compression Progress: ', progress);
-          } else {
-            console.log('Compression Progress: ', progress);
-          }
-        },
-      );
-      console.log("RESULT",result)
+      const Result = ImageCompressor.compress(`${videoURL}`, {
+        maxWidth: 1000,
+        quality: 0.8,
+      });
+     
+      // console.log("RESULT",Result)
       // setVideoPath(video)
       setPickerModal(false);
     });
