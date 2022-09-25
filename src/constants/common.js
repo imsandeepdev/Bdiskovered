@@ -61,3 +61,13 @@ export const video_Rating_error = 'video_Rating_error';
 export const upload_NewVideo = 'upload_NewVideo';
 export const upload_NewVideo_success = 'upload_NewVideo_success';
 export const upload_NewVideo_error = 'upload_NewVideo_error';
+
+// subscriberGetPlan
+export const subscriber_GetPlans = 'subscriber_GetPlans';
+export const subscriber_GetPlans_success = 'subscriber_GetPlans_success';
+export const subscriber_GetPlans_error = 'subscriber_GetPlans_error';
+
+// getCustomPlan
+export const getCustom_Plan = 'getCustom_Plan';
+export const getCustom_Plan_success = 'getCustom_Plan_success';
+export const getCustom_Plan_error = 'getCustom_Plan_error';

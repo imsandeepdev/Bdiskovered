@@ -163,7 +163,10 @@ const [profilePic, setProfilePic] = useState([]);
       if(response.status=='success')
       {
         setProfileDetails(response.Profile)
-        setTalentArray([response.Profile?.category])
+        let tempTalentArray = response.Profile?.category;
+       let useTalentArray = tempTalentArray.split(',');
+       console.log('useTalentArray', useTalentArray);
+        setTalentArray(useTalentArray)
         setPersonalArray([response.Profile?.gender, response.Profile?.birth, 'Guru']);
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
@@ -379,7 +382,7 @@ const [profilePic, setProfilePic] = useState([]);
                         borderColor: R.colors.placeHolderColor,
                         backgroundColor: R.colors.lightWhite,
                       }}>
-                      {profilePic?.path != '' ? (
+                      {profilePic?.path != '' || profilePic?.path != null ? (
                         <Image
                           source={{
                             uri: profilePic?.path,
@@ -587,44 +590,51 @@ const [profilePic, setProfilePic] = useState([]);
                   })}
                 </View>
 
-                <View style={{marginTop: R.fontSize.Size30}}>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      fontWeight: '700',
-                      fontSize: R.fontSize.Size18,
-                      color: R.colors.primaryTextColor,
-                    }}>
-                    {'Available for :'}
-                  </Text>
-                </View>
+                {profileDetails?.job_type1 != null &&
+                  profileDetails?.job_type2 != null &&
+                  profileDetails?.job_type3 != null && (
+                    <View style={{marginTop: R.fontSize.Size30}}>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontWeight: '700',
+                          fontSize: R.fontSize.Size18,
+                          color: R.colors.primaryTextColor,
+                        }}>
+                        {'Available for :'}
+                      </Text>
+                    </View>
+                  )}
 
                 <View
                   style={{
                     marginTop: R.fontSize.Size20,
                     alignItems: 'center',
                   }}>
-                  {profileDetails?.job_type1 != '' && (
-                    <CustomTimeRow
-                      leftTitle={profileDetails?.job_type1}
-                      rightText={profileDetails?.full_time_amount}
-                      rightDayHours={'/ Day'}
-                    />
-                  )}
-                  {profileDetails?.job_type2 != '' && (
-                    <CustomTimeRow
-                      leftTitle={profileDetails?.job_type2}
-                      rightText={profileDetails?.part_time_amount}
-                      rightDayHours={'/ Hours'}
-                    />
-                  )}
-                  {profileDetails?.job_type3 != '' && (
-                    <CustomTimeRow
-                      leftTitle={profileDetails?.job_type3}
-                      rightText={profileDetails?.gigs_amount}
-                      rightDayHours={'/ Hours'}
-                    />
-                  )}
+                  {profileDetails?.job_type1 != '' ||
+                    (profileDetails?.job_type1 != null && (
+                      <CustomTimeRow
+                        leftTitle={profileDetails?.job_type1}
+                        rightText={profileDetails?.full_time_amount}
+                        rightDayHours={'/ Day'}
+                      />
+                    ))}
+                  {profileDetails?.job_type2 != '' ||
+                    (profileDetails?.job_type2 != null && (
+                      <CustomTimeRow
+                        leftTitle={profileDetails?.job_type2}
+                        rightText={profileDetails?.part_time_amount}
+                        rightDayHours={'/ Hours'}
+                      />
+                    ))}
+                  {profileDetails?.job_type3 != '' ||
+                    (profileDetails?.job_type3 != null && (
+                      <CustomTimeRow
+                        leftTitle={profileDetails?.job_type3}
+                        rightText={profileDetails?.gigs_amount}
+                        rightDayHours={'/ Hours'}
+                      />
+                    ))}
                 </View>
 
                 <View

@@ -292,7 +292,10 @@ const HomeScreen = (props) => {
     {
       setVideoModalDetail(item)
       setVideoModalPersonalDetail([item?.birth, item?.gender, 'gurugram'])
-      setVideoModalTalentDetail([item?.category])
+      let tempTalentArray = item?.category;
+      let useTalentArray = tempTalentArray.split(',');
+      console.log('useTalentArray', useTalentArray);
+      setVideoModalTalentDetail(useTalentArray);
       setVideoModalAvailableDetail([
         item?.job_type1,
         item?.job_type2,
@@ -533,7 +536,7 @@ const HomeScreen = (props) => {
                                     fontSize: R.fontSize.Size8,
                                     height: R.fontSize.Size20,
                                   }}>
-                                  {sliderValue.toFixed(0)}
+                                  {'0'}
                                 </Text>
                               </ImageBackground>
                             </View>
@@ -861,6 +864,7 @@ const HomeScreen = (props) => {
                           })}
                         </View>
 
+                      
                         <View style={{marginTop: R.fontSize.Size30}}>
                           <Text
                             style={{
@@ -872,6 +876,7 @@ const HomeScreen = (props) => {
                             {'Available for :'}
                           </Text>
                         </View>
+                        
                         <View
                           style={{
                             marginTop: R.fontSize.Size30,
@@ -890,7 +895,8 @@ const HomeScreen = (props) => {
                                   paddingHorizontal: R.fontSize.Size20,
                                   paddingVertical: R.fontSize.Size6,
                                   backgroundColor:
-                                    item != '' && R.colors.appColor,
+                                    item != '' ||
+                                    (item != null && R.colors.appColor),
                                   borderRadius: R.fontSize.Size8,
                                   marginBottom: R.fontSize.Size6,
                                 }}>

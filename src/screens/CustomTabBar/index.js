@@ -139,7 +139,7 @@ const CustomTabBar = props => {
               height: R.fontSize.Size40,
               width: R.fontSize.Size40,
               borderRadius: R.fontSize.Size20,
-              backgroundColor:R.colors.lightWhite,
+              backgroundColor: R.colors.lightWhite,
               borderWidth: 2,
               alignItems: 'center',
               justifyContent: 'center',
@@ -148,30 +148,32 @@ const CustomTabBar = props => {
                   ? R.colors.appColor
                   : R.colors.placeholderTextColor,
             }}>
-            {props.userProfile?.Profile?.avatar != null ||
+            {/* {props.userProfile?.Profile?.avatar != null ||
             props.userProfile?.Profile?.avatar != '' ? (
               <Image
                 source={{
-                  uri: `${Config.API_URL}${props.userProfile?.Profile?.avatar.slice(22)}`,
+                  uri: `${
+                    Config.API_URL
+                  }${props.userProfile?.Profile?.avatar.slice(22)}`,
                 }}
                 resizeMode={'cover'}
                 style={{
                   height: R.fontSize.Size35,
                   width: R.fontSize.Size35,
-                  borderRadius:R.fontSize.Size20
-
+                  borderRadius: R.fontSize.Size20,
                 }}
               />
-            ) : (
-              <Text
-              style={{
-                fontFamily:R.fonts.regular,
-                fontSize:R.fontSize.Size20,
-                fontWeight:'700',
-                color: select === 'ProfileScreen' ?  R.colors.appColor : R.colors.placeHolderColor
-              }}
-              >{((props.userProfile?.Profile?.name[0] ?? "#") + '').toLocaleUpperCase()}</Text>
-            )}
+            ) : ( */}
+              <Image
+                source={R.images.inActiveProfileIcon}
+                resizeMode={'cover'}
+                style={{
+                  height: R.fontSize.Size35,
+                  width: R.fontSize.Size35,
+                  borderRadius: R.fontSize.Size20,
+                }}
+              />
+            {/*  )} */}
           </View>
         </TouchableOpacity>
       </View>

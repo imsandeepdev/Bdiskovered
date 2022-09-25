@@ -45,6 +45,7 @@ const images = {
   inActiveSearchIcon: require('./images/inActiveSearchIcon.png'),
   activeAddIcon: require('./images/addIcon.png'),
   inActiveAddIcon: require('./images/inActiveAddIcon.png'),
+  inActiveProfileIcon: require('./images/user_placeholder.png'),
 
   // Payment Result
   paymentSuccessIcon: require('./images/paymentSuccessIcon.png'),

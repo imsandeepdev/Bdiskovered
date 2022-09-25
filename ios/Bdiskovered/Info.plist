@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSFileProviderDomainUsageDescription</key>
+	<string>$(PRODUCT_NAME)We will need to access video file</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>$(PRODUCT_NAME)We will need to access video file</string>
+	<key>NSVideoSubscriberAccountUsageDescription</key>
+	<string>$(PRODUCT_NAME)We will need to access video file</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME)We will need location to access current latitude and longitude</string>
 	<key>NSLocationAlwaysUsageDescription</key>

@@ -10,6 +10,7 @@ import showAllPostRoot from '../reducers/showAllPost.reducer';
 import getProfileDetailsRoot from '../reducers/getProfile.reducer';
 import videoRateRoot from '../reducers/videoRating.reducer';
 import uploadNewVideoRoot from '../reducers/uploadNewVideo.reducer';
+import subGetPlanRoot from '../reducers/subGetPlan.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -25,6 +26,7 @@ tailentProfileRoot,
 showAllPostRoot,
 getProfileDetailsRoot,
 videoRateRoot,
-uploadNewVideoRoot
+uploadNewVideoRoot,
+subGetPlanRoot
 
 });

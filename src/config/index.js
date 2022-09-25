@@ -16,5 +16,7 @@ export const Config = {
   profileUpdateAPI: 'profile/update',
   videoRatingAPI: 'post/rating',
   uploadNewVideoAPI: 'post/upload',
+  subscriberGetPlansAPI: 'subscriber/get-plans',
+  subGetCustomPlanAPI: 'subscriber/get-custom-plans',
 };
 

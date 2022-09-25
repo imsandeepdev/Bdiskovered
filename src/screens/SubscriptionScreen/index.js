@@ -22,8 +22,12 @@ import {
   CustomCardLine,
   SubscriptionCard,
 } from '../../components';
+import { Connect, useDispatch } from 'react-redux';
+import Toast from 'react-native-simple-toast';
+
 
 import R from '../../res/R';
+import { GetCustomPlanRequest, SubscriberGetPlanRequest } from '../../actions/subGetPlan.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -57,7 +61,56 @@ const paymentList = [
 
 
 const SubscriptionScreen = props => {
+
+  const dispatch = useDispatch()
   const [modalPicker, setModalPicker] = useState(false);
+  const [subGetPlan, setSubGetPlan] = useState([])
+  const [getPlanDesc, setGetPlanDesc] = useState([]);
+  const [getCustomPlan, setGetCustomPlan] = useState([])
+
+  const [loading, setLoading] = useState(false)
+
+  useEffect(()=>{
+
+    onCallSubGetPlan()
+    onCallGetCustomPlan()
+  },[props.navigation])
+
+
+  const onCallSubGetPlan = () => {
+    setLoading(true)
+    dispatch(
+      SubscriberGetPlanRequest(response => {
+        console.log('SUB GET PLAN RES', response);
+        if (response.status == 'success') {
+          setSubGetPlan(response.data)
+          setGetPlanDesc([response.data?.description])
+          setLoading(false)
+        }
+        else
+        {
+          Toast.show(response.message, Toast.SHORT)
+          setLoading(false)
+        }
+      }),
+    );
+  }
+
+  const onCallGetCustomPlan = () => {
+    setLoading(true);
+    dispatch(
+      GetCustomPlanRequest(response => {
+        console.log('GET CUSTOM PLAN RES', response);
+        if (response.status == 'success') {
+          setGetCustomPlan(response.data)
+          setLoading(false);
+        } else {
+          Toast.show(response.message, Toast.SHORT);
+          setLoading(false);
+        }
+      }),
+    );
+  };
 
   const onCallPayment = () => {
     setModalPicker(false)
@@ -65,7 +118,7 @@ const SubscriptionScreen = props => {
   }
   
   return (
-    <StoryScreen>
+    <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <Header
           onPress={() => props.navigation.goBack()}
@@ -278,25 +331,48 @@ const SubscriptionScreen = props => {
                   {'Choose a subscription plan'}
                 </Text>
 
-                <SubscriptionCard
-                  marginTop={R.fontSize.Size28}
-                  topTitle={
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontWeight: '700',
-                        fontSize: R.fontSize.Size14,
-                        color: R.colors.primaryTextColor,
-                        marginTop: R.fontSize.Size20,
-                      }}>
-                      {'One Month Subscription'}
-                    </Text>
+                {
+                  subGetPlan.map((item,index)=>{
+                    return (
+                      <SubscriptionCard
+                        key={index}
+                        marginTop={R.fontSize.Size28}
+                        topTitle={
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontWeight: '700',
+                              fontSize: R.fontSize.Size14,
+                              color: R.colors.primaryTextColor,
+                              marginTop: R.fontSize.Size20,
+                            }}>
+                            {item?.plan_name}
+                          </Text>
+                        }
+                        price={`${item?.price}$`}
+                        month={item?.validity}
+                        onPressAdd={() => setModalPicker(true)}
+                      />
+                    );
+                  })
                   }
-                  price={'59$'}
-                  month={'Month'}
-                  onPressAdd={() => setModalPicker(true)}
-                />
-                <SubscriptionCard
+
+                  {
+                    getCustomPlan.map((item,index) => {
+                      return (
+                        <SubscriptionCard
+                          key={index}
+                          borderWidth={R.fontSize.Size2}
+                          marginTop={R.fontSize.Size15}
+                          price={`${item?.price}$`}
+                          // noText={'5'}
+                          month={item?.validity}
+                          onPressAdd={() => setModalPicker(true)}
+                        />
+                      );
+                    })
+                  }
+                {/* <SubscriptionCard
                   borderWidth={R.fontSize.Size2}
                   marginTop={R.fontSize.Size45}
                   price={'30$'}
@@ -311,7 +387,7 @@ const SubscriptionScreen = props => {
                   noText={'1'}
                   month={'Boost'}
                   onPressAdd={() => setModalPicker(true)}
-                />
+                /> */}
               </View>
             </View>
           </ScrollView>
@@ -367,8 +443,8 @@ const SubscriptionScreen = props => {
                   <Image
                     source={R.images.makePaymentIcon}
                     style={{
-                      height: R.fontSize.Size220,
-                      width: R.fontSize.Size250,
+                      height: R.fontSize.Size200,
+                      width: R.fontSize.Size220,
                     }}
                     resizeMode={'contain'}
                   />
@@ -379,9 +455,9 @@ const SubscriptionScreen = props => {
                       fontFamily: R.fonts.regular,
                       color: R.colors.primaryTextColor,
                       fontWeight: '700',
-                      fontSize: R.fontSize.Size18,
+                      fontSize: R.fontSize.Size16,
                       textAlign: 'center',
-                      marginTop: R.fontSize.Size30,
+                      marginTop: R.fontSize.Size15,
                     }}>
                     {`Get connections and boost to grow\n your reach beyond whatyou ever have`}
                   </Text>
@@ -391,7 +467,8 @@ const SubscriptionScreen = props => {
                       flexWrap: 'wrap',
                       flexDirection: 'row',
                     }}>
-                    {paymentList.map((item, index) => {
+                    {getPlanDesc.map((item, index) => {
+                      console.log("GETPLANDESC",item)
                       return (
                         <View
                           key={index}
@@ -417,7 +494,7 @@ const SubscriptionScreen = props => {
                               color: R.colors.primaryTextColor,
                               marginLeft: R.fontSize.Size5,
                             }}>
-                            {item?.title}
+                            {item}
                           </Text>
                         </View>
                       );

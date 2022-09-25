@@ -27,7 +27,7 @@ import {
 import { connect, Connect, useDispatch} from 'react-redux';
 import R from '../../res/R';
 import ImagePicker from 'react-native-image-crop-picker';
-import { Video, Image as ImageCompressor } from 'react-native-compressor';
+import { Video as VideoCompressor, Image as ImageCompressor ,backgroundUpload} from 'react-native-compressor';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -154,19 +154,60 @@ const onSelectPicker = params => {
         type: video.mime,
         name: video.filename ?? 'video.MP4',
       });
-      const Result = ImageCompressor.compress(`${videoURL}`, {
-        maxWidth: 1000,
-        quality: 0.8,
-      });
+      onCallVideoCompress(videoURL);
+      // const Result = Video.compress(`${videoURL}`, {
+      //   maxWidth: 1000,
+      //   quality: 0.8,
+      // });
+
+      // const result =  Video.compress(
+      //   `${videoURL}`,
+      //   {
+      //     compressionMethod: 'auto',
+      //   },
+      //   progress => {
+      //       console.log('Compression: ', progress);
+
+      //     if (backgroundMode) {
+      //       console.log('Compression Progress: ', progress);
+      //     } else {
+      //       // setCompressingProgress(progress);
+      //     }
+      //   },
+      // );
      
-      // console.log("RESULT",Result)
+      // console.log("RESULT",result)
       // setVideoPath(video)
-      setPickerModal(false);
+      // setPickerModal(false);
     });
   }
 };
 
+const onCallVideoCompress = async (videoURL) => {
+  console.log('URL', videoURL);
 
+  // const result = await ImageCompressor.compress(videoURL, {
+  //   compressionMethod: 'auto',
+  // });
+  const result = await VideoCompressor.compress(
+    videoURL,
+    {
+      compressionMethod: 'auto',
+    },
+    // progress => {
+    //   console.log('Compression: ', progress);
+
+    //   if (backgroundMode) {
+    //     console.log('Compression Progress: ', progress);
+    //   } else {
+    //     // setCompressingProgress(progress);
+    //   }
+    // },
+  );
+  console.log('RESULT', result);
+      setPickerModal(false);
+
+};
 
 
   return (
