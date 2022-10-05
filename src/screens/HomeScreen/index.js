@@ -328,11 +328,20 @@ const HomeScreen = (props) => {
       postId:PostId,
       percentage_like:`${PercentLike}%`
     }
+    console.log('LIKE DATA',data)
     dispatch(VideoRatingRequest(data,response=>{
       console.log('VIDEO RATING RES',response)
     }))
   }
 
+  // const onProgress = (data) => {
+  //       console.log("ON PROGRESS", data)
+  //     }
+  const onLoad = (data) => {
+    console.log('ONLOAD',data)
+  }
+
+  
   return (
     <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
@@ -419,6 +428,7 @@ const HomeScreen = (props) => {
             //                   videoUrl={`${Config.API_URL}${item?.post.slice(
             //                     22,
             //                   )}`}
+            //                   paused={true}
             //                 />
             //               </View>
             //               <View style={Styles.mostPopularBottomView}>
@@ -453,13 +463,15 @@ const HomeScreen = (props) => {
                 <View
                   key={index}
                   style={{
-                    height: (screenHeight - R.fontSize.Size190)
+                    height: screenHeight - R.fontSize.Size190,
+                    borderWidth:2
                   }}>
                   <View
                     style={{
-                      flex: 1
+                      flex: 1,
                     }}>
                     <VideoCard
+                      poster={`${Config.API_URL}${item?.avatar.slice(22)}`}
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
                       videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
@@ -468,8 +480,10 @@ const HomeScreen = (props) => {
                       videoCat={item?.category}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
-                      // paused={currIndex !== index}
-                      paused={true}
+                      // onProgress={onProgress}
+                      onLoad={onLoad}
+                      paused={currIndex !== index || videoPlayPause}
+                      // paused={true}
                     />
                   </View>
                   <View
@@ -536,7 +550,7 @@ const HomeScreen = (props) => {
                                     fontSize: R.fontSize.Size8,
                                     height: R.fontSize.Size20,
                                   }}>
-                                  {'0'}
+                                  {sliderValue.toFixed(0)}
                                 </Text>
                               </ImageBackground>
                             </View>
@@ -617,25 +631,9 @@ const HomeScreen = (props) => {
         visible={modalPicker}
         transparent={true}
         onRequestClose={() => setModalPicker(false)}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: R.colors.modelBackground,
-            justifyContent: 'flex-end',
-          }}>
-          <View
-            style={{
-              height: screenHeight / 1.6,
-              backgroundColor: R.colors.white,
-              borderTopLeftRadius: R.fontSize.Size8,
-              borderTopRightRadius: R.fontSize.Size8,
-              paddingVertical: R.fontSize.Size30,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row-reverse',
-                marginHorizontal: R.fontSize.Size20,
-              }}>
+        <View style={Styles.modalMainView}>
+          <View style={Styles.modalView}>
+            <View style={Styles.modalViewReverse}>
               <Pressable
                 onPress={() => setModalPicker(false)}
                 style={({pressed}) => [
@@ -665,16 +663,7 @@ const HomeScreen = (props) => {
                     }}>
                     {modalType == 'filterModal' ? (
                       <View style={{flex: 1}}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size18,
-                            fontWeight: '700',
-                            color: R.colors.primaryTextColor,
-                          }}>
-                          {'Filter'}
-                        </Text>
-
+                        <Text style={Styles.modalFilterText}>{'Filter'}</Text>
                         <View
                           style={{flex: 1, marginVertical: R.fontSize.Size20}}>
                           <CustomCardLine
@@ -683,13 +672,11 @@ const HomeScreen = (props) => {
                             rightIcon={R.images.chevronDown}
                           />
                           <CustomLineTextInput placeholder={'Location'} />
-
                           <CustomCardLine
                             onPress={() => console.log('down')}
                             title={'Age 25 - 35'}
                             rightIcon={R.images.chevronDown}
                           />
-
                           <View
                             style={{
                               flexWrap: 'wrap',
@@ -744,13 +731,7 @@ const HomeScreen = (props) => {
                       <View style={{flex: 1}}>
                         <View
                           style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <View
-                            style={{
-                              height: R.fontSize.Size30,
-                              width: R.fontSize.Size30,
-                              overflow: 'hidden',
-                              borderRadius: R.fontSize.Size20,
-                            }}>
+                          <View style={Styles.videoModalMainView}>
                             {/* <Image
                               source={{
                                 uri: `${Config.API_URL}${videoModalDetail?.avatar.slice(
@@ -764,99 +745,41 @@ const HomeScreen = (props) => {
                               resizeMode={'cover'}
                             /> */}
                           </View>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size24,
-                              fontWeight: '700',
-                              color: R.colors.primaryTextColor,
-                              flex: 1,
-                              marginHorizontal: R.fontSize.Size14,
-                            }}>
+                          <Text style={Styles.videoModalTitleText}>
                             {videoModalDetail?.title}
                           </Text>
                         </View>
                         <View style={{marginTop: R.fontSize.Size30}}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size12,
-                              fontWeight: '400',
-                              color: R.colors.primaryTextColor,
-                            }}>
+                          <Text style={Styles.videoModalDescText}>
                             {videoModalDetail?.description}
                           </Text>
                         </View>
-                        <View
-                          style={{
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginTop: R.fontSize.Size30,
-                          }}>
+                        <View style={Styles.videoModalMapMainView}>
                           {videoModalPersonalDetail.map((item, index) => {
                             return (
                               <View
                                 key={index}
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                  marginRight: R.fontSize.Size14,
-                                }}>
+                                style={Styles.videoModalMapView}>
                                 <View
-                                  style={{
-                                    height: R.fontSize.Size10,
-                                    width: R.fontSize.Size10,
-                                    backgroundColor: R.colors.appColor,
-                                    borderRadius: R.fontSize.Size10,
-                                  }}
+                                  style={Styles.videoModalPersonalDetailView}
                                 />
                                 <Text
-                                  style={{
-                                    fontFamily: R.fonts.regular,
-                                    fontSize: R.fontSize.Size14,
-                                    fontWeight: '700',
-                                    color: R.colors.primaryTextColor,
-                                    marginLeft: R.fontSize.Size8,
-                                  }}>
+                                  style={Styles.videoModalPersonalDetailText}>
                                   {item}
                                 </Text>
                               </View>
                             );
                           })}
                         </View>
-
-                        <View
-                          style={{
-                            flexWrap: 'wrap',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginTop: R.fontSize.Size20,
-                          }}>
+                        <View style={Styles.videoModalMapMainView}>
                           {videoModalTalentDetail.map((item, index) => {
                             console.log('ITEM', item);
                             return (
                               <View
                                 key={index}
-                                style={{
-                                  alignItems: 'center',
-                                  marginRight: R.fontSize.Size14,
-                                  justifyContent: 'center',
-                                  paddingHorizontal: R.fontSize.Size20,
-                                  paddingVertical: R.fontSize.Size6,
-                                  backgroundColor:
-                                    R.colors.placeholderTextColor,
-                                  borderRadius: R.fontSize.Size8,
-                                  marginBottom: R.fontSize.Size6,
-                                }}>
+                                style={Styles.videoModalTalentView}>
                                 <Text
-                                  style={{
-                                    fontFamily: R.fonts.regular,
-                                    fontSize: R.fontSize.Size14,
-                                    fontWeight: '700',
-                                    color: R.colors.primaryTextColor,
-                                    marginLeft: R.fontSize.Size8,
-                                  }}>
+                                  style={Styles.videoModalTalentText}>
                                   {item}
                                 </Text>
                               </View>
@@ -864,50 +787,26 @@ const HomeScreen = (props) => {
                           })}
                         </View>
 
-                      
                         <View style={{marginTop: R.fontSize.Size30}}>
                           <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontWeight: '700',
-                              fontSize: R.fontSize.Size18,
-                              color: R.colors.primaryTextColor,
-                            }}>
+                            style={Styles.videoModalAvailableText}>
                             {'Available for :'}
                           </Text>
                         </View>
-                        
+
                         <View
-                          style={{
-                            marginTop: R.fontSize.Size30,
-                            flexWrap: 'wrap',
-                            alignItems: 'center',
-                            flexDirection: 'row',
-                          }}>
+                          style={Styles.videoModalMainView}>
                           {videoModalAvailableDetail.map((item, index) => {
                             return (
                               <View
                                 key={index}
-                                style={{
-                                  alignItems: 'center',
-                                  marginRight: R.fontSize.Size10,
-                                  justifyContent: 'center',
-                                  paddingHorizontal: R.fontSize.Size20,
-                                  paddingVertical: R.fontSize.Size6,
+                                style={[Styles.videoModalAvailView,{
                                   backgroundColor:
                                     item != '' ||
                                     (item != null && R.colors.appColor),
-                                  borderRadius: R.fontSize.Size8,
-                                  marginBottom: R.fontSize.Size6,
-                                }}>
+                                }]}>
                                 <Text
-                                  style={{
-                                    fontFamily: R.fonts.regular,
-                                    fontSize: R.fontSize.Size14,
-                                    fontWeight: '700',
-                                    color: R.colors.white,
-                                    marginLeft: R.fontSize.Size8,
-                                  }}>
+                                  style={Styles.videoModalAvailItemText}>
                                   {item}
                                 </Text>
                               </View>

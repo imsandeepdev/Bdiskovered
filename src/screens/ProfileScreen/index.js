@@ -141,6 +141,7 @@ const [profilePic, setProfilePic] = useState([]);
 
   useEffect(()=>{
 
+    console.log("USER TYPE", props.userType)
     const unsubscribe = props.navigation.addListener('focus', () => {
       screenFocus();
     });
@@ -160,14 +161,17 @@ const [profilePic, setProfilePic] = useState([]);
     setLoading(true)
     dispatch(GetProfileDetailsRequest(response => {
       console.log('Get Profile Res', response)
-      if(response.status=='success')
-      {
-        setProfileDetails(response.Profile)
+      if (response.status == 'success' && props.userType == 'Talent') {
+        setProfileDetails(response.Profile);
         let tempTalentArray = response.Profile?.category;
-       let useTalentArray = tempTalentArray.split(',');
-       console.log('useTalentArray', useTalentArray);
-        setTalentArray(useTalentArray)
-        setPersonalArray([response.Profile?.gender, response.Profile?.birth, 'Guru']);
+         let useTalentArray = tempTalentArray.split(',');
+         console.log('useTalentArray', useTalentArray);
+          setTalentArray(useTalentArray)
+        setPersonalArray([
+          response.Profile?.gender,
+          response.Profile?.birth,
+          'Guru',
+        ]);
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
           mime: 'profile/jpeg',
@@ -175,10 +179,19 @@ const [profilePic, setProfilePic] = useState([]);
         });
         setLoading(false);
       }
-      else
-      {
-        setLoading(false)
-        Toast.show(response.message, Toast.SHORT)
+      else if (response.status == 'success' && props.userType != 'Talent'){
+        setProfileDetails(response.Profile);
+        setProfilePic({
+          path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+          mime: 'profile/jpeg',
+          filename: 'profile.jpeg',
+        });
+        console.log('PROFILE PIC', profilePic)
+        setLoading(false);
+      }
+      else {
+        setLoading(false);
+        Toast.show(response.message, Toast.SHORT);
       }
     }))
   }
@@ -286,7 +299,9 @@ const [profilePic, setProfilePic] = useState([]);
                         color: R.colors.primaryTextColor,
                       }}
                       numberOfLines={1}>
-                      {profileDetails?.name}
+                      {props.userType != 'Business'
+                        ? profileDetails?.name
+                        : profileDetails?.company_name}
                     </Text>
                     <Text
                       style={{
@@ -296,7 +311,9 @@ const [profilePic, setProfilePic] = useState([]);
                         color: R.colors.primaryTextColor,
                       }}
                       numberOfLines={1}>
-                      {profileDetails?.username}
+                      {props.userType != 'Business'
+                        ? profileDetails?.username
+                        : profileDetails?.company_type}
                     </Text>
                   </View>
                 </View>
@@ -339,25 +356,60 @@ const [profilePic, setProfilePic] = useState([]);
                     </Text>
                   </Pressable>
                 </View>
-                <View style={{marginTop: R.fontSize.Size30, flex: 1}}>
-                  <CustomCardLine
-                    disabled={true}
-                    title={profileDetails?.name}
-                  />
-                  <CustomCardLine
-                    disabled={true}
-                    title={profileDetails?.mobile}
-                  />
-                  <CustomCardLine
-                    disabled={true}
-                    title={profileDetails?.gender}
-                  />
-                  <CustomCardLine
-                    disabled={true}
-                    title={profileDetails?.birth}
-                  />
-                  <CustomCardLine disabled={true} title={'Gurugram'} />
-                </View>
+                {props.userType != 'Business' ? (
+                  <View style={{marginTop: R.fontSize.Size30, flex: 1}}>
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.name}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.mobile}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.gender}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.birth}
+                    />
+                    <CustomCardLine disabled={true} title={'Gurugram'} />
+                  </View>
+                ) : (
+                  <View style={{marginTop: R.fontSize.Size30, flex: 1}}>
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.company_name}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.mobile}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.owner_name}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.email}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.company_registration_id}
+                    />
+                    <CustomCardLine
+                      disabled={true}
+                      title={profileDetails?.license_number}
+                    />
+                    {profileDetails?.company_address != '' && (
+                      <CustomCardLine
+                        disabled={true}
+                        title={profileDetails?.company_address}
+                      />
+                    )}
+                  </View>
+                )}
               </View>
             ) : (
               <View
@@ -591,50 +643,50 @@ const [profilePic, setProfilePic] = useState([]);
                 </View>
 
                 {profileDetails?.job_type1 != null &&
-                  profileDetails?.job_type2 != null &&
-                  profileDetails?.job_type3 != null && (
-                    <View style={{marginTop: R.fontSize.Size30}}>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontWeight: '700',
-                          fontSize: R.fontSize.Size18,
-                          color: R.colors.primaryTextColor,
-                        }}>
-                        {'Available for :'}
-                      </Text>
-                    </View>
-                  )}
+                profileDetails?.job_type2 != null &&
+                profileDetails?.job_type3 != null ? (
+                  <View style={{marginTop: R.fontSize.Size30}}>
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        fontWeight: '700',
+                        fontSize: R.fontSize.Size18,
+                        color: R.colors.primaryTextColor,
+                      }}>
+                      {'Available for :'}
+                    </Text>
+                  </View>
+                ) : null}
 
                 <View
                   style={{
                     marginTop: R.fontSize.Size20,
                     alignItems: 'center',
                   }}>
-                  {profileDetails?.job_type1 != '' ||
-                    (profileDetails?.job_type1 != null && (
+                  {profileDetails?.job_type1 != '' &&
+                    profileDetails?.job_type1 != null && (
                       <CustomTimeRow
                         leftTitle={profileDetails?.job_type1}
                         rightText={profileDetails?.full_time_amount}
                         rightDayHours={'/ Day'}
                       />
-                    ))}
-                  {profileDetails?.job_type2 != '' ||
-                    (profileDetails?.job_type2 != null && (
+                    )}
+                  {profileDetails?.job_type2 != '' &&
+                    profileDetails?.job_type2 != null && (
                       <CustomTimeRow
                         leftTitle={profileDetails?.job_type2}
                         rightText={profileDetails?.part_time_amount}
                         rightDayHours={'/ Hours'}
                       />
-                    ))}
-                  {profileDetails?.job_type3 != '' ||
-                    (profileDetails?.job_type3 != null && (
-                      <CustomTimeRow
-                        leftTitle={profileDetails?.job_type3}
-                        rightText={profileDetails?.gigs_amount}
-                        rightDayHours={'/ Hours'}
-                      />
-                    ))}
+                    )}
+                  {profileDetails?.job_type3 != '' &&
+                  profileDetails?.job_type3 != null ? (
+                    <CustomTimeRow
+                      leftTitle={profileDetails?.job_type3}
+                      rightText={profileDetails?.gigs_amount}
+                      rightDayHours={'/ Hours'}
+                    />
+                  ) : null}
                 </View>
 
                 <View

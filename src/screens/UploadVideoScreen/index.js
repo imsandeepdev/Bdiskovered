@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  Alert
 } from 'react-native';
 import {
   CustomCardView,
@@ -24,10 +25,13 @@ import {
   CustomCardLine,
   CustomLineTextInput,
 } from '../../components';
-import { connect, Connect, useDispatch} from 'react-redux';
+import { connect, useDispatch} from 'react-redux';
 import R from '../../res/R';
 import ImagePicker from 'react-native-image-crop-picker';
 import { Video as VideoCompressor, Image as ImageCompressor ,backgroundUpload} from 'react-native-compressor';
+import { UploadNewVideoRequest } from '../../actions/uploadNewVideo.action';
+import Toast from 'react-native-simple-toast';
+import CommonFunctions from '../../utils/CommonFuntions';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -54,7 +58,11 @@ const VideoType = [
 
 
 const UploadVideoScreen = props => {
+
+
+  const dispatch = useDispatch();
   const [modalPicker, setModalPicker] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [cardNo, setCardNo] = useState('');
   const [cardHolderName, setCardHolderName] = useState('');
   const [cardCVV, setCardCVV] = useState('');
@@ -133,19 +141,6 @@ const onSelectPicker = params => {
       cropping: false,
     }).then(video => {
       console.log('VIDEODETAILS', video);
-      setVideoPath(video)
-      setPickerModal(false);
-    });
-  } else if (params == 'gallery') {
-    ImagePicker.openPicker({
-      mediaType: 'any',
-      width: screenWidth,
-      height: screenHeight,
-      cropping: false,
-    }).then(video => {
-      console.log('VIDEODETAILS', video);
-      let videoURL = video.path?.replace('file://', '');
-      console.log("VIDEOP",videoURL)
       setVideoPath({
         uri:
           Platform.OS === 'android'
@@ -154,31 +149,31 @@ const onSelectPicker = params => {
         type: video.mime,
         name: video.filename ?? 'video.MP4',
       });
-      onCallVideoCompress(videoURL);
-      // const Result = Video.compress(`${videoURL}`, {
-      //   maxWidth: 1000,
-      //   quality: 0.8,
+      setPickerModal(false);
+    });
+  } else if (params == 'gallery') {
+    ImagePicker.openPicker({
+      mediaType: 'video',
+      width: screenWidth,
+      height: screenHeight,
+      cropping: false,
+    }).then(video => {
+      console.log('VIDEODETAILS', video);
+      let videoURL = video.path?.replace('file://', '');
+      console.log("VIDEOP",videoURL)
+      setVideoPath(video)
+      // setVideoPath({
+      //   uri:
+      //     Platform.OS === 'android'
+      //       ? video.path
+      //       : video.path?.replace('file://', ''),
+      //   type: video.mime,
+      //   name: video.filename ?? 'video.MP4',
       // });
+      setPickerModal(false);
 
-      // const result =  Video.compress(
-      //   `${videoURL}`,
-      //   {
-      //     compressionMethod: 'auto',
-      //   },
-      //   progress => {
-      //       console.log('Compression: ', progress);
-
-      //     if (backgroundMode) {
-      //       console.log('Compression Progress: ', progress);
-      //     } else {
-      //       // setCompressingProgress(progress);
-      //     }
-      //   },
-      // );
+      // onCallVideoCompress(videoURL);
      
-      // console.log("RESULT",result)
-      // setVideoPath(video)
-      // setPickerModal(false);
     });
   }
 };
@@ -209,9 +204,91 @@ const onCallVideoCompress = async (videoURL) => {
 
 };
 
+const checkValid = () => {
+  console.log('VIDEOPA',videoPath)
+  return (
+    onCheckVideo() &&
+    CommonFunctions.isBlank(videoTitle.trim(), 'Please Enter Video Title') &&
+    CommonFunctions.isBlank(
+      videoDesc.trim(),
+      'Please Enter Video Description',
+    ) &&
+    CommonFunctions.isBlank(videoPrice.trim(), 'Please Enter Price') &&
+    onCheckVideoType()
+  );
+}
+
+const onCheckVideo = () => {
+  if(videoPath.length == 0)
+  {
+    Toast.show('Please Select Video',Toast.SHORT)
+    return false
+  }
+  return true
+}
+const onCheckVideoType = () => {
+  if (videoTypes.length == 0) {
+    Toast.show('Please Select Video Type', Toast.SHORT);
+    return false;
+  }
+  return true;
+};
+
+const oncheckValidVideo = () => {
+  if(checkValid())
+  {
+    onCallVideoPostAPI()
+  }
+}
+
+const onCallVideoPostAPI = () => {
+  
+  setLoading(true)
+  let formdata = new FormData();
+
+  formdata.append('title', videoTitle);
+  formdata.append('latitude', '22222');
+  formdata.append('longitude', '22222');
+  formdata.append('caption', videoDesc);
+  formdata.append('amount', videoPrice);
+  formdata.append('category', videoTypes);
+  formdata.append(
+    'post',
+    videoPath.path == null || videoPath?.path == null
+      ? ''
+      : {
+          uri:
+            Platform.OS === 'android'
+              ? videoPath.path
+              : videoPath.path?.replace('file://', ''),
+          type: videoPath.mime,
+          name: videoPath.filename ?? 'video.mp4',
+        },
+  );
+console.log("FORMD",formdata)
+
+  let dataType = 'formdata';
+
+  // Alert.alert('FORMDATA',JSON.stringify(formdata))
+  dispatch(UploadNewVideoRequest(formdata,dataType, response =>{
+    console.log('UPLOAD VIDEO RES', response);
+    if(response.status == 'success')
+    {
+      Toast.show(response.message, Toast.SHORT)
+      setLoading(false)
+    }
+    else
+    {
+      Toast.show(response.message, Toast.SHORT);
+      setLoading(false);
+    }
+  }))
+  
+}
+
 
   return (
-    <StoryScreen>
+    <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
@@ -298,7 +375,7 @@ const onCallVideoCompress = async (videoURL) => {
                       </Text>
                     </Pressable>
                   </View>
-                  <View style={{marginTop: R.fontSize.Size20}}>
+                  <View style={{marginTop: R.fontSize.Size20, flex: 1}}>
                     <CustomLineTextInput
                       value={videoTitle}
                       onChangeText={title => setVideoTitle(title)}
@@ -372,20 +449,26 @@ const onCallVideoCompress = async (videoURL) => {
                       })}
                     </View>
                   </View>
+                  <View style={{paddingVertical: R.fontSize.Size30}}>
+                    <AppButton
+                      onPress={() => oncheckValidVideo()}
+                      title={'Create Post'}
+                    />
+                  </View>
                 </View>
               )}
             </TouchableWithoutFeedback>
           </ScrollView>
         </KeyboardAvoidingView>
 
-        {props.userType == 'Talent' && (
+        {/* {props.userType == 'Talent' && (
           <View style={{paddingVertical: R.fontSize.Size30}}>
             <AppButton
-              onPress={() => CompressVideoResult()}
+              onPress={() => onCallVideoPostAPI()}
               title={'Create Post'}
             />
           </View>
-        )}
+        )} */}
       </SafeAreaView>
       <Modal
         visible={pickerModal}

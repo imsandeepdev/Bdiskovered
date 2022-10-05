@@ -48,8 +48,8 @@ const reducer = (state = initial_state, {type, payload}) => {
     case sign_In_success:
       return {
         loading: false,
-        authToken: payload.token,
-        userType: payload.data.user_type,
+        authToken: payload?.token,
+        userType: payload.data?.user_type,
         signInInit: payload,
         error: '',
       };

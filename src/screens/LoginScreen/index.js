@@ -4,6 +4,7 @@ import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput,ScrollV
 import { CustomTextInput, StoryScreen, AppButton } from '../../components';
 import {connect, useDispatch} from 'react-redux';
 import CountryPicker from 'react-native-country-picker-modal';
+// import CountryPicker from 'react-native-country-codes-picker';
 import R from '../../res/R';
 import Styles from './styles';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
@@ -39,8 +40,7 @@ const LoginScreen = (props) => {
     if(isValid())
     {
       let data = {
-        // mobile: '+918947915820',
-        mobile: `${countryCode}${mobNo}`,
+        mobile: `+${countryCode}${mobNo}`,
         device_token:
           'cO2stOGoRpOGAnruOLGUan:APA91bGIdddlY_kqTLbaw2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
       };
@@ -105,7 +105,9 @@ const LoginScreen = (props) => {
                       <CustomTextInput
                         onChangeCounty={() => setCountyModalPicker(true)}
                         countryFlag={countyFlag != '' ? countyFlag : 'in'}
-                        countryCode={countryCode != '' ? `+ ${countryCode}` : '91'}
+                        countryCode={
+                          countryCode != '' ? `+${countryCode}` : '91'
+                        }
                         maxLength={10}
                         placeholder={'Mobile No'}
                         value={mobNo}
@@ -162,7 +164,7 @@ const LoginScreen = (props) => {
             />
           </View>
         </SafeAreaView>
-        <Modal
+        {/* <Modal
           visible={countyModalPicker}
           transparent={true}
           onRequestClose={() => setCountyModalPicker(false)}>
@@ -178,25 +180,49 @@ const LoginScreen = (props) => {
                 paddingHorizontal: R.fontSize.Size20,
                 paddingVertical: R.fontSize.Size50,
                 borderWidth: 1,
-              }}>
-              <CountryPicker
-                visible={countyModalPicker}
-                withFilter={true}
-                withFlag={true}
-                withCallingCode={true}
-                onSelect={country => {
+              }}> */}
+
+        {
+          countyModalPicker &&
+          <View
+          style={{position:'absolute', top:0, bottom:0, left:0, right:0}}
+          >
+            <CountryPicker
+              visible={countyModalPicker}
+              withFilter={true}
+              withFlag={true}
+              withCallingCode={true}
+              onClose={close=>{
+                console.log("CLOSED",close);
+                setCountyModalPicker(false);
+              }}
+              onSelect={country => {
+                console.log(country);
+                setCountyModalPicker(false);
+                setCountryCode(country?.callingCode[0]);
+                let flagName = (country?.flag).slice(5);
+                setCountyFlag(country?.cca2);
+                console.log('FlagName', flagName);
+              }}
+            />
+          </View>
+        }
+        {/* <CountryPicker
+              
+                show={countyModalPicker}
+                pickerButtonOnPress={country => {
                   console.log(country);
                   setCountyModalPicker(false);
-                  setCountryCode(country?.callingCode[0]);
-                  let flagName = (country?.flag).slice(5);
-                  setCountyFlag(country?.cca2)
-                  console.log('FlagName',flagName)
+                  setCountryCode(country?.dial_code);
+                  // let flagName = (country?.flag).slice(5);
+                  setCountyFlag(country?.code);
+                  // console.log('FlagName', flagName);
                 }}
-               
-              />
-            </SafeAreaView>
+              /> */}
+
+        {/* </SafeAreaView>
           </View>
-        </Modal>
+        </Modal> */}
       </StoryScreen>
     );
 }

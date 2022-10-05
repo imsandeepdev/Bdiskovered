@@ -8,11 +8,20 @@ import {
   Image,
   FlatList,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  ImageBackground
 } from 'react-native';
-import {Header, StoryScreen} from '../../components';
+import {Header, StoryScreen, VideoCard} from '../../components';
 import R from '../../res/R';
+import {connect, useDispatch} from 'react-redux';
+import { ShowAllPostRequest } from '../../actions/showAllPost.action';
+import Slider from 'react-native-custom-slider';
+
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import { Config } from '../../config';
 const screenWidth = Dimensions.get('screen').width;
+const screenHeight = Dimensions.get('screen').height;
+
 
 const PopularList = [
   {
@@ -46,8 +55,68 @@ const PopularList = [
 ];
 
 const PopularViewAllScreen = props => {
+
+  const dispatch = useDispatch();
+  const [currIndex, setCurrIndex] = useState(0);
+  const [videoPlayPause, setVideoPlayPause] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [allVideoPostList, setAllVideoPostList] = useState([]);
+  const [sliderValue, setSliderValue] = useState(0); 
+
+
+  useEffect(()=>{
+    onCallShowAllPost()
+
+     const blur = props.navigation.addListener('blur', () => {
+       setVideoPlayPause(true);
+     });
+
+     const focus = props.navigation.addListener('focus', () => {
+       setVideoPlayPause(false);
+     });
+
+     return blur, focus;
+
+  },[props.navigation])
+
+  const onCallShowAllPost = () => {
+    setLoading(true);
+
+    dispatch(
+      ShowAllPostRequest(response => {
+        console.log('SHOW ALL POST RES', response);
+        if (response.status == 'success') {
+          setAllVideoPostList(response?.Post);
+          setLoading(false);
+        }
+      }),
+    );
+  };
+  const onChangeIndex = ({index}) => {
+    setCurrIndex(index);
+  };
+
+  const onCallVideoRatingAPI = (PercentLike, PostId) => {
+    let data = {
+      postId: PostId,
+      percentage_like: `${PercentLike}%`,
+    };
+    dispatch(
+      VideoRatingRequest(data, response => {
+        console.log('VIDEO RATING RES', response);
+      }),
+    );
+  };
+
+  // const onProgress = (data) => {
+  //       console.log("ON PROGRESS", data)
+  //     }
+  const onLoad = data => {
+    console.log('ONLOAD', data);
+  };
+
   return (
-    <StoryScreen>
+    <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <Header
           onPress={() => props.navigation.goBack()}
@@ -55,67 +124,194 @@ const PopularViewAllScreen = props => {
           title={'Connected Users'}
         />
 
-        <View style={{flex: 1, marginHorizontal: R.fontSize.Size20,marginVertical:R.fontSize.Size10 }}>
-          <FlatList
-            // style={{}}
-            data={PopularList}
-            numColumns={2}
-            keyExtractor={item => item?.id}
+        <View
+          style={{
+            flex: 1,
+            borderWidth:2,
+            borderColor:R.colors.appColor
+            
+            // marginHorizontal: R.fontSize.Size20,
+            // marginVertical: R.fontSize.Size10,
+          }}>
+          <SwiperFlatList
+            vertical={true}
+            style={{flexDirection:'column',flex:1}}
+            data={allVideoPostList}
+            keyExtractor={(item, index) => index.toString()}
+            onChangeIndex={onChangeIndex}
             renderItem={({item, index}) => {
               return (
                 <View
                   key={index}
                   style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginHorizontal:R.fontSize.Size10,
-                    marginBottom:R.fontSize.Size10
+                  //  flex:1,
+                  //  height: screenHeight/1.18
+                  position:'relative',
+                  top:0,
+                  bottom:0,
+                  left:0,
+                  right:0,
                   }}>
+
+                <View
+                style={{height:screenHeight/2}}
+                >
                   <View
                     style={{
-                      height: R.fontSize.Size130,
-                      overflow: 'hidden',
-                      borderRadius: R.fontSize.Size8,
+                      flex: 1,
+                      borderWidth:2,
                     }}>
-                    <Image
-                      source={{
-                        uri: item?.videoImg,
-                      }}
-                      style={{
-                        height: R.fontSize.Size130,
-                        width: screenWidth / 2.5,
-                      }}
-                      resizeMode={'cover'}
+                    <VideoCard
+                      poster={`${Config.API_URL}${item?.avatar.slice(22)}`}
+                      // eyeonPress={() => onCallModal('videoDetailModal', item)}
+                      eyeIcon={R.images.eyeIcon}
+                      videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
+                      userImage={`${Config.API_URL}${item?.avatar.slice(22)}`}
+                      userName={item?.username}
+                      videoCat={item?.category}
+                      bottomTitle={item?.title}
+                      bottomDiscription={item?.bio}
+                      // onProgress={onProgress}
+                      onLoad={onLoad}
+                      paused={currIndex !== index || videoPlayPause}
+                      // paused={true}
                     />
                   </View>
                   <View
                     style={{
                       flexDirection: 'row',
+                      marginVertical: R.fontSize.Size5,
+                      marginHorizontal: R.fontSize.Size12,
                       alignItems: 'center',
-                      marginTop: R.fontSize.Size6,
                     }}>
-                    <Image
-                      source={{uri: item.source}}
+                    <View style={{flex: 1}}>
+                      <View style={{marginBottom: R.fontSize.Size6}}>
+                        <Slider
+                          value={sliderValue[index]}
+                          minimumValue={0}
+                          maximumValue={100}
+                          customMinimumTrack={
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.appColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
+                          }
+                          customMaximumTrack={
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.placeholderTextColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
+                          }
+                          minimumTrackTintColor={R.colors.white}
+                          maximumTrackTintColor={R.colors.white}
+                          onValueChange={val => setSliderValue(val)}
+                          onSlidingComplete={value => {
+                            console.log('SLIDE COMPLETE', value.toFixed(0));
+                            onCallVideoRatingAPI(
+                              value.toFixed(0),
+                              item?.postID,
+                            );
+                          }}
+                          customThumb={
+                            <View
+                              style={{
+                                overflow: 'hidden',
+                                top: 5,
+                                left: 0,
+                                right: 0,
+                              }}>
+                              <ImageBackground
+                                source={R.images.redHeartIcon}
+                                style={{
+                                  width: R.fontSize.Size35,
+                                  height: R.fontSize.Size35,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                                resizeMode={'contain'}>
+                                <Text
+                                  style={{
+                                    color: R.colors.white,
+                                    fontSize: R.fontSize.Size8,
+                                    height: R.fontSize.Size20,
+                                  }}>
+                                  {sliderValue.toFixed(0)}
+                                </Text>
+                              </ImageBackground>
+                            </View>
+                          }
+                        />
+                      </View>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size12,
+                            fontWeight: '700',
+                            color: R.colors.placeHolderColor,
+                          }}>
+                          {'Liked By '}
+                          <Text style={{color: R.colors.appColor}}>
+                            {item?.total_likes != '' ? item?.total_likes : '0'}
+                          </Text>
+                        </Text>
+                        <View
+                          style={{
+                            width: 1,
+                            height: R.fontSize.Size14,
+                            backgroundColor: R.colors.placeHolderColor,
+                            marginHorizontal: R.fontSize.Size10,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size12,
+                            fontWeight: '700',
+                            color: R.colors.placeHolderColor,
+                          }}>
+                          {'Average Like '}
+                          <Text style={{color: R.colors.appColor}}>
+                            {item?.total_rating != ''
+                              ? `${item?.total_rating}%`
+                              : '0%'}
+                          </Text>
+                        </Text>
+                      </View>
+                    </View>
+                    <View
                       style={{
-                        height: R.fontSize.Size25,
-                        width: R.fontSize.Size25,
-                        borderRadius: R.fontSize.Size15,
-                      }}
-                      resizeMode={'cover'}
-                    />
-                    <Text
-                      style={{
-                        flex: 1,
-                        marginHorizontal: R.fontSize.Size10,
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size14,
-                        color: R.colors.placeholderTextColor,
-
-                        fontWeight: '400',
-                      }}
-                      numberOfLines={1}>
-                      {item?.name}
-                    </Text>
+                        marginHorizontal: R.fontSize.Size15,
+                        alignItems: 'center',
+                      }}>
+                      <Image
+                        source={R.images.greyAppIcon}
+                        style={{
+                          height: R.fontSize.Size30,
+                          width: R.fontSize.Size30,
+                          marginBottom: R.fontSize.Size6,
+                        }}
+                        resizeMode={'contain'}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size12,
+                          fontWeight: '400',
+                          color: R.colors.placeHolderColor,
+                        }}
+                        numberOfLines={1}>
+                        {'Connect'}
+                      </Text>
+                    </View>
+                  </View>
                   </View>
                 </View>
               );

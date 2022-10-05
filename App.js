@@ -5,16 +5,14 @@ import AppNavigator from './src/navigator/AppNavigator';
 import {Provider} from 'react-redux';
 import {store, persistor} from './src/store';
 import {PersistGate} from 'redux-persist/integration/react';
-import {
-  notificationListner,
-  requestUserPermission,
-} from './src/helper/notificationServices';
+import { RequestLocationPermission } from './src/helper/locationServices';
+
 
 const App = () => {
-  // useEffect(()=>{
-  //   requestUserPermission()
-  //   notificationListner()
-  // },[])
+  useEffect(()=>{
+    RequestLocationPermission()
+    // notificationListner()
+  },[])
 
   return (
     <Provider store={store}>

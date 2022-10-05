@@ -21,6 +21,7 @@ import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
 import R from '../../res/R';
 import Styles from './styles';
+import axios from 'axios';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -94,70 +95,106 @@ const SignupScreen = (props) => {
     const onDateChange = (date) => {
       // setDOB(date)
       console.log(date)
-      let dateFormat = moment(date).format('L')
+      let dateFormat = moment(date).format('YYYY-MM-DD')
+      console.log("DATE",dateFormat)
       setDOB(dateFormat)
       setCalenderPicker(false)
     }
 
     const onCheckVerifyAPI = (value, verifyAPI) => {
-      let data = {
-        username: value,
-      };
-      const config = {
+      
+      let data = value
+      console.log('CONFIG DATA', data);
+      console.log('URL', `${Config.API_URL}${verifyAPI}`);
+
+      axios({
         method: 'POST',
-        body: data,
-      };
-      console.log('DATA', data);
-      fetch(`${Config.API_URL}${verifyAPI}`, config)
-        .then(res => res.json())
-        .then(response => {
-          console.log('Check User Name Response', response);
-          if (response.status == 'success') {
-            onFocusName == 'userName' && setUserNameStatus(true);
-            onFocusName == 'userEmail' && setUserMailStatus(true);
-            onFocusName == 'userPhone' && setUserPhoneStatus(true);
-            onFocusName == 'companyUserName' && setCompanyUserNameStatus(true);
-            onFocusName == 'companyMail' && setCompanyMailStatus(true);
-            onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
-          }
-          else
-          {
-             onFocusName == 'userName' && setUserNameStatus(false);
-             onFocusName == 'userEmail' && setUserMailStatus(false);
-             onFocusName == 'userPhone' && setUserPhoneStatus(false);
-             onFocusName == 'companyUserName' && setCompanyUserNameStatus(false);
-             onFocusName == 'companyMail' && setCompanyMailStatus(false);
-             onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
-          }
-        });
+        url: `${Config.API_URL}${verifyAPI}`,
+        data: value,
+      }).then(res => {
+        console.log('RESPONSE', res);
+        if (res.data.status == 'success') {
+          onFocusName == 'userName' && setUserNameStatus(true);
+          onFocusName == 'userEmail' && setUserMailStatus(true);
+          onFocusName == 'userPhone' && setUserPhoneStatus(true);
+          onFocusName == 'companyUserName' && setCompanyUserNameStatus(true);
+          onFocusName == 'companyMail' && setCompanyMailStatus(true);
+          onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
+        } else {
+          Toast.show(res.data.message, Toast.SHORT);
+          onFocusName == 'userName' && setUserNameStatus(false);
+          onFocusName == 'userEmail' && setUserMailStatus(false);
+          onFocusName == 'userPhone' && setUserPhoneStatus(false);
+          onFocusName == 'companyUserName' && setCompanyUserNameStatus(false);
+          onFocusName == 'companyMail' && setCompanyMailStatus(false);
+          onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
+        }
+      })
+      .catch((err)=>{
+        console.log('Error', err)
+        Toast.show('Please Connect Internet',Toast.SHORT)
+      })
+      ;
+
+      // fetch(`${Config.API_URL}${verifyAPI}`, config)
+      //   .then(res => res.json())
+      //   .then(response => {
+      //     console.log('Check User Name Response', response);
+      //     if (response.status == 'success') {
+      //       onFocusName == 'userName' && setUserNameStatus(true);
+      //       onFocusName == 'userEmail' && setUserMailStatus(true);
+      //       onFocusName == 'userPhone' && setUserPhoneStatus(true);
+      //       onFocusName == 'companyUserName' && setCompanyUserNameStatus(true);
+      //       onFocusName == 'companyMail' && setCompanyMailStatus(true);
+      //       onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
+      //     }
+      //     else
+      //     {
+      //        onFocusName == 'userName' && setUserNameStatus(false);
+      //        onFocusName == 'userEmail' && setUserMailStatus(false);
+      //        onFocusName == 'userPhone' && setUserPhoneStatus(false);
+      //        onFocusName == 'companyUserName' && setCompanyUserNameStatus(false);
+      //        onFocusName == 'companyMail' && setCompanyMailStatus(false);
+      //        onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
+      //     }
+      //   });
     };
 
     
 //  For Tailent and Viewer
     const onCallSetUserNameValue = (value) => {
       console.log('On Focus', onFocusName)
-      let userVerifyAPI = Config.verifyUsernameAPI
+      let userVerifyAPI = Config.verifyUsernameAPI  
+      let data = {
+        username:value
+      }
       setUserName(value);
       value.length > 2
-        ? onCheckVerifyAPI(value, userVerifyAPI)
+        ? onCheckVerifyAPI(data, userVerifyAPI)
         : setUserNameStatus(false);
     }
 
     const onCallSetUserEmailValue = value => {
       console.log('On Focus', onFocusName);
       let mailVerifyAPI = Config.verifyEmailAPI;
+      let data = {
+        email: value,
+      };
       setEMail(value);
       (value.length > 5)
-        ? onCheckVerifyAPI(value, mailVerifyAPI)
+        ? onCheckVerifyAPI(data, mailVerifyAPI)
         : setUserMailStatus(false);
     };
 
     const onCallSetUserPhoneValue = value => {
       console.log('On Focus', onFocusName);
       let phoneVerifyAPI = Config.verifyMobileAPI;
+       let data = {
+         mobile: `+${countryCode}${value}`,
+       };
       setMobNo(value);
       value.length >= 9
-        ? onCheckVerifyAPI(value, phoneVerifyAPI)
+        ? onCheckVerifyAPI(data, phoneVerifyAPI)
         : setUserPhoneStatus(false);
     };
 
@@ -166,27 +203,36 @@ const SignupScreen = (props) => {
     const onCallSetCompanyUserNameValue = value => {
       console.log('On Focus', onFocusName);
       let userVerifyAPI = Config.verifyUsernameAPI;
+      let data = {
+        username: value,
+      };
       setCompanyName(value);
       value.length > 2
-        ? onCheckVerifyAPI(value, userVerifyAPI)
+        ? onCheckVerifyAPI(data, userVerifyAPI)
         : setCompanyUserNameStatus(false);
     };
 
     const onCallSetCompanyEmailValue = value => {
       console.log('On Focus', onFocusName);
       let mailVerifyAPI = Config.verifyEmailAPI;
+      let data = {
+        email: value,
+      };
       setCompanyMail(value);
       value.length > 5
-        ? onCheckVerifyAPI(value, mailVerifyAPI)
+        ? onCheckVerifyAPI(data, mailVerifyAPI)
         : setCompanyMailStatus(false);
     };
 
     const onCallSetCompanyPhoneValue = value => {
       console.log('On Focus', onFocusName);
       let phoneVerifyAPI = Config.verifyMobileAPI;
+      let data = {
+        mobile: `+${countryCode}${value}`,
+      };
       setCompanyMob(value);
       value.length >= 9
-        ? onCheckVerifyAPI(value, phoneVerifyAPI)
+        ? onCheckVerifyAPI(data, phoneVerifyAPI)
         : setCompanyPhoneStatus(false);
     };
 
@@ -295,9 +341,9 @@ const onCheckDocument = () => {
       };
 
       let data = {
-         mobile: `${countryCode}${companyMob}`,
+         mobile: `+${countryCode}${companyMob}`,
          number_available: '0',
-         device_token: 'sjdusadhouisodjswesd3budedksaheedeff2d',
+         device_token: 'sjdusadhouisodjswesd3budedksaheedeff2de',
        };
        dispatch(
          CreateOTPRequest(data, response => {
@@ -312,7 +358,7 @@ const onCheckDocument = () => {
                 userTypeVerify: 'Company',
                 userType: props.route.params?.from,
               });
-            Toast.show(response?.message, Toast.SHORT);
+            Toast.show(response?.OTP, Toast.LONG);
 
            }
            else
@@ -377,9 +423,9 @@ const onCheckDocument = () => {
          device_name: deviceName,
        };
        let data = {
-         mobile: `${countryCode}${mobNo}`,
+         mobile: `+${countryCode}${mobNo}`,
          number_available: '0',
-         device_token: 'sjdusadhouisodjswesddd3buiededkssaheed2s',
+         device_token: 'sjdusadhouisodjswesddd3buiededkssaheed2se',
        };
        dispatch(
          CreateOTPRequest(data, response => {
@@ -394,7 +440,7 @@ const onCheckDocument = () => {
               userTypeVerify: 'tailentViewer',
               userType: props.route.params?.from,
             });
-            Toast.show(response?.message, Toast.SHORT);
+            Toast.show(response?.OTP, Toast.LONG);
            }
            else
            {
@@ -734,40 +780,35 @@ const onCheckDocument = () => {
             </View>
           </View>
         </Modal>
-        <Modal
-          visible={countyModalPicker}
-          transparent={true}
-          onRequestClose={() => setCountyModalPicker(false)}>
+        {countyModalPicker && (
           <View
             style={{
-              flex: 1,
-              backgroundColor: R.colors.modelBackground,
-              justifyContent: 'center',
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
             }}>
-            <SafeAreaView
-              style={{
-                flex: 1,
-                paddingHorizontal: R.fontSize.Size20,
-                paddingVertical: R.fontSize.Size50,
-                borderWidth: 1,
-              }}>
-              <CountryPicker
-                visible={countyModalPicker}
-                withFilter={true}
-                withFlag={true}
-                withCallingCode={true}
-                onSelect={country => {
-                  console.log(country);
-                  setCountyModalPicker(false);
-                  setCountryCode(country?.callingCode[0]);
-                  let flagName = (country?.flag).slice(5);
-                  setCountryFlag(flagName);
-                  console.log('FlagName', flagName);
-                }}
-              />
-            </SafeAreaView>
+            <CountryPicker
+              visible={countyModalPicker}
+              withFilter={true}
+              withFlag={true}
+              withCallingCode={true}
+              onClose={close => {
+                console.log('CLOSED', close);
+                setCountyModalPicker(false);
+              }}
+              onSelect={country => {
+                console.log(country);
+                setCountyModalPicker(false);
+                setCountryCode(country?.callingCode[0]);
+                let flagName = (country?.flag).slice(5);
+                setCountryFlag(country?.cca2);
+                console.log('FlagName', flagName);
+              }}
+            />
           </View>
-        </Modal>
+        )}
         <Modal
           visible={documentModalPicker}
           transparent={true}

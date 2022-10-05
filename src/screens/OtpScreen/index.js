@@ -60,14 +60,11 @@ const OtpScreen = (props) => {
       console.log('LOGINDATA',data)
       dispatch(SignInRequest(data, response =>{
           console.log('LOGIN RES', response)
-          if(response.status == 'success')
-          {
-            props.navigation.replace('HomeMenu')
+          if (response.status == 'success' && response.token != null) {
+            props.navigation.replace('HomeMenu');
             Toast.show(response.message, Toast.SHORT);
-          }
-          else
-          {
-          Toast.show(response.message, Toast.SHORT);
+          } else {
+            Toast.show(response.message, Toast.SHORT);
           }
         })
       )
@@ -117,13 +114,10 @@ const OtpScreen = (props) => {
     dispatch(
       SignUpRequest(formData, dataType, response => {
         console.log('ResponseForBusiness', response);
-        if(response.status == 'success')
-        {
+        if (response.status == 'success' && response.token != null) {
           props.navigation.navigate('TalentFinishScreen');
           Toast.show(response.message, Toast.SHORT);
-        }
-        else
-        {
+        } else {
           Toast.show(response.message, Toast.SHORT);
         }
       }),

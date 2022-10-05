@@ -148,13 +148,11 @@ const CustomTabBar = props => {
                   ? R.colors.appColor
                   : R.colors.placeholderTextColor,
             }}>
-            {/* {props.userProfile?.Profile?.avatar != null ||
+            {props.userProfile?.Profile?.avatar != null ||
             props.userProfile?.Profile?.avatar != '' ? (
               <Image
                 source={{
-                  uri: `${
-                    Config.API_URL
-                  }${props.userProfile?.Profile?.avatar.slice(22)}`,
+                  uri: `${Config.API_URL}${props.userProfile.Profile?.avatar.slice(22)}`,
                 }}
                 resizeMode={'cover'}
                 style={{
@@ -163,7 +161,7 @@ const CustomTabBar = props => {
                   borderRadius: R.fontSize.Size20,
                 }}
               />
-            ) : ( */}
+            ) : (
               <Image
                 source={R.images.inActiveProfileIcon}
                 resizeMode={'cover'}
@@ -173,7 +171,7 @@ const CustomTabBar = props => {
                   borderRadius: R.fontSize.Size20,
                 }}
               />
-            {/*  )} */}
+             )}
           </View>
         </TouchableOpacity>
       </View>

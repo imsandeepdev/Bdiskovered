@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import {View, TextInput, Pressable, Image, Text, ScrollView, SafeAreaView, Dimensions,Modal, Platform} from 'react-native';
-import {AppButton, CustomCardView, CustomLineTextInput, Header, StoryScreen}from '../../components'
+import {AppButton, CustomCardLine, CustomCardView, CustomLineTextInput, Header, StoryScreen}from '../../components'
 import R from '../../res/R';
 import CalendarPicker from 'react-native-calendar-picker';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -20,14 +20,22 @@ const UpdateProfileScreen = (props) => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false)
     const [actualName, setActualName] = useState('')
-    const [userName, setUserName] = useState('');
-    const [userDob, setUserDob] = useState('');
+    const [userName, setUserName] = useState('')
+    const [userDob, setUserDob] = useState('')
     const [userMail, setUserMail] = useState('');
     const [mobNo, setMobNo] = useState('');
     const [userBio, setUserBio] = useState('');
     const [calPickerModal, setCalPickerModal] = useState(false)
     const [profilePic, setProfilePic] = useState([])
     const [pickerModal, setPickerModal] = useState(false)
+    const [companyName, setCompanyName] = useState('')
+    const [companyType, setCompanyType] = useState('')
+    const [companyEmail, setCompanyEmail] = useState('')
+    const [companyContact, setCompanyContact] = useState('')
+    const [companyAddress, setCompanyAddress] = useState('')
+
+
+
 
     useEffect(()=>{
 
@@ -39,18 +47,35 @@ const UpdateProfileScreen = (props) => {
       dispatch(
         GetProfileDetailsRequest(response => {
           console.log('Get Profile Res', response);
-          if (response.status == 'success') {
-            setActualName(response.Profile?.name)
-            setUserName(response.Profile?.username)
-            setUserDob(response.Profile?.birth)
-            setMobNo(response.Profile?.mobile)
-            setUserBio(response.Profile?.bio)
-            setUserMail(response.Profile?.email)
-              setProfilePic({
-                path:  `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
-                mime: 'profile/jpeg',
-                filename: 'profile.jpeg',
-              });
+          console.log('USERTYPE', props.userType);
+          if (response.status == 'success' && props.userType != 'Business') {
+            setActualName(response.Profile?.name);
+            setUserName(response.Profile?.username);
+            setUserDob(response.Profile?.birth);
+            setMobNo(response.Profile?.mobile);
+            setUserBio(response.Profile?.bio);
+            setUserMail(response.Profile?.email);
+            setProfilePic({
+              path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+              mime: 'profile/jpeg',
+              filename: 'profile.jpeg',
+            });
+            setLoading(false);
+          } else if (
+            response.status == 'success' &&
+            props.userType == 'Business'
+          ) {
+            console.log('BUSINESS');
+            setCompanyName(response.Profile?.company_name);
+            setCompanyAddress(response.Profile?.company_address);
+            setCompanyType(response.Profile?.company_type);
+            setCompanyEmail(response.Profile?.email);
+            setCompanyContact(response.Profile?.mobile);
+            setProfilePic({
+              path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+              mime: 'profile/jpeg',
+              filename: 'profile.jpeg',
+            });
             setLoading(false);
           } else {
             setLoading(false);
@@ -63,7 +88,7 @@ const UpdateProfileScreen = (props) => {
     const onDateChange = date => {
       // setDOB(date)
       console.log(date);
-      let dateFormat = moment(date).format('L');
+      let dateFormat = moment(date).format('YYYY-MM-DD');
       setUserDob(dateFormat);
       setCalPickerModal(false);
     };
@@ -137,6 +162,53 @@ const UpdateProfileScreen = (props) => {
         }
       }))
      }
+
+          const onCallUpdateBusinessProfile = () => {
+            setLoading(true);
+            let formData = new FormData();
+            let dataType = 'formdata';
+            formData.append('company_type', companyType);
+            formData.append('company_email', companyEmail);
+            formData.append('company_contact', companyContact);
+            formData.append('company_address', companyAddress);
+            formData.append(
+              'avatar',
+              profilePic.path == null || profilePic?.path == null
+                ? ''
+                : {
+                    uri:
+                      Platform.OS === 'android'
+                        ? profilePic.path
+                        : profilePic.path?.replace('file://', ''),
+                    type: profilePic.mime,
+                    name: profilePic.filename ?? 'image.jpg',
+                  },
+            );
+            dispatch(
+              ProfileUpdateRequest(formData, dataType, response => {
+                console.log('UpDate Profile BUSINESS RES', response);
+                if (response.status == 'success') {
+                  setCompanyName(response.Profile?.company_name);
+                  setCompanyAddress(response.Profile?.company_address);
+                  setCompanyType(response.Profile?.company_type);
+                  setCompanyEmail(response.Profile?.email);
+                  setCompanyContact(response.Profile?.mobile);
+                  setProfilePic({
+                    path: `${Config.API_URL}${response.Profile?.avatar.slice(
+                      22,
+                    )}`,
+                    mime: 'profile/jpeg',
+                    filename: 'profile.jpeg',
+                  });
+                  Toast.show(response.message, Toast.SHORT);
+                  setLoading(false);
+                } else {
+                  Toast.show(response.message, Toast.SHORT);
+                  setLoading(false);
+                }
+              }),
+            );
+          };
 
     return (
       <StoryScreen loading={loading}>
@@ -237,67 +309,102 @@ const UpdateProfileScreen = (props) => {
                     justifyContent: 'center',
                   }}>
                   <AppButton
-                    onPress={() => onCallUpdateProfile()}
+                    onPress={() =>
+                      props.userType != 'Business'
+                        ? onCallUpdateProfile()
+                        : onCallUpdateBusinessProfile()
+                    }
                     title={'Update Profile'}
                     textColor={R.colors.white}
                     paddingHorizontal={R.fontSize.Size30}
                   />
                 </View>
               </View>
-              <View
-                style={{
-                  marginTop: R.fontSize.Size40,
-                  flex: 1,
-                }}>
-                <CustomLineTextInput
-                  value={actualName}
-                  onChangeText={name => setActualName(name)}
-                  placeholder={'Actual Name'}
-                />
-                <CustomLineTextInput
-                  value={userName}
-                  onChangeText={uname => setUserName(uname)}
-                  placeholder={'User Name'}
-                />
-                <CustomLineTextInput
-                  value={userMail}
-                  onChangeText={mail => setUserMail(mail)}
-                  placeholder={'Email'}
-                />
-                <Pressable
-                  onPress={() => setCalPickerModal(!calPickerModal)}
-                  style={({pressed}) => [
-                    {
-                      height: R.fontSize.Size50,
-                      justifyContent: 'center',
-                      opacity: pressed ? 0.5 : 1,
-                      marginBottom: R.fontSize.Size12,
-                      borderBottomWidth: 1,
-                      borderColor: R.colors.placeholderTextColor,
-                    },
-                  ]}>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size15,
-                      color: R.colors.primaryTextColor,
-                      fontWeight: '700',
-                    }}>
-                    {userDob != '' ? userDob : 'Date of Birth'}
-                  </Text>
-                </Pressable>
+              {props.userType != 'Business' ? (
+                <View
+                  style={{
+                    marginTop: R.fontSize.Size40,
+                    flex: 1,
+                  }}>
+                  <CustomLineTextInput
+                    value={actualName}
+                    onChangeText={name => setActualName(name)}
+                    placeholder={'Actual Name'}
+                  />
+                  <CustomLineTextInput
+                    value={userName}
+                    onChangeText={uname => setUserName(uname)}
+                    placeholder={'User Name'}
+                  />
+                  <CustomLineTextInput
+                    value={userMail}
+                    onChangeText={mail => setUserMail(mail)}
+                    placeholder={'Email'}
+                  />
+                  <Pressable
+                    onPress={() => setCalPickerModal(!calPickerModal)}
+                    style={({pressed}) => [
+                      {
+                        height: R.fontSize.Size50,
+                        justifyContent: 'center',
+                        opacity: pressed ? 0.5 : 1,
+                        marginBottom: R.fontSize.Size12,
+                        borderBottomWidth: 1,
+                        borderColor: R.colors.placeholderTextColor,
+                      },
+                    ]}>
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        fontSize: R.fontSize.Size15,
+                        color: R.colors.primaryTextColor,
+                        fontWeight: '700',
+                      }}>
+                      {userDob != '' ? userDob : 'Date of Birth'}
+                    </Text>
+                  </Pressable>
 
-                <CustomLineTextInput
-                  value={mobNo}
-                  onChangeText={mob => setMobNo(mob)}
-                  placeholder={'Contact Number'}
-                />
-                <CustomLineTextInput
-                  value={userBio}
-                  onChangeText={bio => setUserBio(bio)}
-                  placeholder={'Bio'}
-                />
-              </View>
+                  {/* <CustomLineTextInput
+                    value={mobNo}
+                    onChangeText={mob => setMobNo(mob)}
+                    placeholder={'Contact Number'}
+                  /> */}
+                  <CustomLineTextInput
+                    value={userBio}
+                    onChangeText={bio => setUserBio(bio)}
+                    placeholder={'Bio'}
+                  />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    marginTop: R.fontSize.Size40,
+                    flex: 1,
+                  }}>
+                  <CustomCardLine disabled={true} title={companyName} />
+
+                  <CustomLineTextInput
+                    value={companyType}
+                    onChangeText={cType => setCompanyType(cType)}
+                    placeholder={'Company Type'}
+                  />
+                  <CustomLineTextInput
+                    value={companyEmail}
+                    onChangeText={cEmail => setCompanyEmail(cEmail)}
+                    placeholder={'Company Email'}
+                  />
+                  {/* <CustomLineTextInput
+                    value={companyContact}
+                    onChangeText={cPhone => setCompanyContact(cPhone)}
+                    placeholder={'Company Contact Number'}
+                  /> */}
+                  <CustomLineTextInput
+                    value={companyAddress}
+                    onChangeText={cAdd => setCompanyAddress(cAdd)}
+                    placeholder={'Company Address'}
+                  />
+                </View>
+              )}
             </View>
           </ScrollView>
         </SafeAreaView>

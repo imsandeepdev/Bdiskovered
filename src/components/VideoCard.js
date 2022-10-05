@@ -29,6 +29,9 @@ const VideoCard = props => {
   return (
     <View style={{flex: 1}}>
       <Video
+      
+        poster={props.poster}
+        posterResizeMode={'cover'}
         source={{
           uri: props.videoUrl,
         }}
@@ -37,9 +40,11 @@ const VideoCard = props => {
         // }}
         ref={videoRef}
         onBuffer={onBuffer}
+        onProgress={props.onProgress}
         //   onError={this.videoError} // Callback when video cannot be loaded
         // setControls={true}
         paused={props.paused}
+        onLoad={props.onLoad}
         controls={true}
         resizeMode={'cover'}
         repeat

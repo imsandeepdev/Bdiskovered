@@ -26,6 +26,7 @@ export const UploadNewVideoError = error => {
 
 export const UploadNewVideoRequest = (
   data,
+  dataType,
   success?: () => void,
   failed?: () => void,
 ) => {
@@ -33,6 +34,7 @@ export const UploadNewVideoRequest = (
     dispatch(UploadNewVideo());
     Api.MultiPostFetch({
       body: data,
+      datatype: dataType,
       url: Config.uploadNewVideoAPI,
     })
       .then(response => {
