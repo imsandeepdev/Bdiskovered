@@ -3,7 +3,7 @@ import R from '../res/R';
 
 const ShadowHeader = props => {
   return (
-    <View style={{overflow: 'hidden', paddingBottom: 5}}>
+    <View style={{overflow: 'hidden', paddingBottom:R.fontSize.Size5}}>
       <View
         style={{
           flexDirection: 'row',
@@ -11,7 +11,7 @@ const ShadowHeader = props => {
           alignItems: 'center',
           paddingHorizontal: R.fontSize.Size2,
           backgroundColor: '#fff',
-          height: R.fontSize.Size50,
+          height: props.headerHeight ?? R.fontSize.Size50,
           shadowColor: '#000',
           shadowOffset: {width: 1, height: 1},
           shadowOpacity: 0.4,

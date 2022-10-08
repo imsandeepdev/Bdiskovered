@@ -16,7 +16,7 @@ const VideoCard = props => {
 
 
   const onBuffer = (e) => {
-    console.log('Buffering',e)
+    // console.log('Buffering',e)
   };
 
   const handlePlayPause = () => {
@@ -29,7 +29,6 @@ const VideoCard = props => {
   return (
     <View style={{flex: 1}}>
       <Video
-      
         poster={props.poster}
         posterResizeMode={'cover'}
         source={{
@@ -49,8 +48,11 @@ const VideoCard = props => {
         resizeMode={'cover'}
         repeat
         style={{
-          height: '100%',
-          width: '100%',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           backgroundColor: R.colors.lightBlack,
         }}
       />
@@ -93,7 +95,8 @@ const VideoCard = props => {
             </Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                source={R.images.musicIcon}
+                // source={R.images.musicIcon}
+                source={props.musicIcon}
                 style={{
                   height: R.fontSize.Size10,
                   width: R.fontSize.Size10,

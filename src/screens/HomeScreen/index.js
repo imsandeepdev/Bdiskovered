@@ -28,6 +28,8 @@ import Styles from './styles';
 import { ShowAllPostRequest } from '../../actions/showAllPost.action';
 import { Config } from '../../config';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
+import axios from 'axios';
+
 const screenHeight = Dimensions.get('screen').height;
 
 
@@ -206,7 +208,7 @@ const HomeScreen = (props) => {
   const dispatch = useDispatch()
   const [currIndex, setCurrIndex] = useState(0)
   const [videoPlayPause, setVideoPlayPause] = useState(false)
-  const [videoModalDetail, setVideoModalDetail] = useState({})
+  const [videoModalDetail, setVideoModalDetail] = useState()
   const [videoModalPersonalDetail, setVideoModalPersonalDetail] = useState([]);
   const [videoModalTalentDetail, setVideoModalTalentDetail] = useState([]);
   const [videoModalAvailableDetail, setVideoModalAvailableDetail] = useState([]);
@@ -324,14 +326,55 @@ const HomeScreen = (props) => {
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId) => {
-    let data = {
-      postId:PostId,
-      percentage_like:`${PercentLike}%`
-    }
-    console.log('LIKE DATA',data)
-    dispatch(VideoRatingRequest(data,response=>{
-      console.log('VIDEO RATING RES',response)
-    }))
+    setLoading(true)
+    let data1 = {
+      id: PostId,
+      percentage_like: `${PercentLike}`,
+    };
+    let headerToken = {
+      token: props.authToken,
+    };
+     axios({
+        method: 'POST',
+        url: `${Config.API_URL}${Config.videoRatingAPI}`,
+        data: data1,
+        headers: headerToken
+      }).then(res => {
+        console.log("LIKE RES",res)
+        if(res.data.status == 'success')
+        {
+          Toast.show(res.data.message, Toast.SHORT);
+          onCallShowAllPost();
+          setLoading(false);
+        }
+        else
+        {
+          setLoading(false);
+          Toast.show(res.data.message, Toast.SHORT);
+        }
+      })
+
+    // setLoading(true)
+    // let data = {
+    //   id:PostId,
+    //   percentage_like:`${PercentLike}`
+    // }
+    // console.log('LIKE DATA',data)
+    // dispatch(VideoRatingRequest(data,response=>{
+    //   console.log('VIDEO RATING RES', response);
+    //   if(response.status == 'success')
+    //   {
+    //     Toast.show(response.message, Toast.SHORT)
+    //     onCallShowAllPost();
+    //     setLoading(false);
+    //   }
+    //   else
+    //   {
+    //     Toast.show(response.message, Toast.SHORT);
+    //     setLoading(false);
+
+    //   }
+    // }))
   }
 
   // const onProgress = (data) => {
@@ -341,12 +384,18 @@ const HomeScreen = (props) => {
     console.log('ONLOAD',data)
   }
 
+  const onCallConnectNow = () => 
+  {
+    setModalPicker(false)
+    props.navigation.navigate('ConnectedProfileScreen');
+  }
   
   return (
     <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
+          headerHeight={R.fontSize.Size50}
           leftSource={R.images.menuIcon}
           rightSource={R.images.filterIcon}
           rightSourceOnPress={() => onCallModal('filterModal')}
@@ -463,12 +512,11 @@ const HomeScreen = (props) => {
                 <View
                   key={index}
                   style={{
-                    height: screenHeight - R.fontSize.Size190,
-                    borderWidth:2
+                    flex: 1,
                   }}>
                   <View
                     style={{
-                      flex: 1,
+                      height: screenHeight - R.fontSize.Size290,
                     }}>
                     <VideoCard
                       poster={`${Config.API_URL}${item?.avatar.slice(22)}`}
@@ -489,14 +537,24 @@ const HomeScreen = (props) => {
                   <View
                     style={{
                       flexDirection: 'row',
-                      marginVertical: R.fontSize.Size5,
                       marginHorizontal: R.fontSize.Size12,
                       alignItems: 'center',
+                      height: R.fontSize.Size100,
+                      justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
-                      <View style={{marginBottom: R.fontSize.Size6}}>
+                      <View>
                         <Slider
-                          value={sliderValue[index]}
+                          disabled={
+                            item.postInfo[0]?.percentage_like != null
+                              ? true
+                              : false
+                          }
+                          value={
+                            item?.postInfo[0]?.percentage_like != null
+                              ? parseInt(item.postInfo[0]?.percentage_like)
+                              : sliderValue[index]
+                          }
                           minimumValue={0}
                           maximumValue={100}
                           customMinimumTrack={
@@ -550,7 +608,11 @@ const HomeScreen = (props) => {
                                     fontSize: R.fontSize.Size8,
                                     height: R.fontSize.Size20,
                                   }}>
-                                  {sliderValue.toFixed(0)}
+                                  {item?.postInfo[0]?.percentage_like != null
+                                    ? parseInt(
+                                        item.postInfo[0]?.percentage_like,
+                                      )
+                                    : sliderValue.toFixed(0)}
                                 </Text>
                               </ImageBackground>
                             </View>
@@ -732,18 +794,18 @@ const HomeScreen = (props) => {
                         <View
                           style={{flexDirection: 'row', alignItems: 'center'}}>
                           <View style={Styles.videoModalMainView}>
-                            {/* <Image
+                            <Image
                               source={{
-                                uri: `${Config.API_URL}${videoModalDetail?.avatar.slice(
-                                  22,
-                                )}`,
+                                uri: `${
+                                  Config.API_URL
+                                }${videoModalDetail?.avatar.slice(22)}`,
                               }}
                               style={{
                                 height: R.fontSize.Size30,
                                 width: R.fontSize.Size30,
                               }}
                               resizeMode={'cover'}
-                            /> */}
+                            />
                           </View>
                           <Text style={Styles.videoModalTitleText}>
                             {videoModalDetail?.title}
@@ -778,8 +840,7 @@ const HomeScreen = (props) => {
                               <View
                                 key={index}
                                 style={Styles.videoModalTalentView}>
-                                <Text
-                                  style={Styles.videoModalTalentText}>
+                                <Text style={Styles.videoModalTalentText}>
                                   {item}
                                 </Text>
                               </View>
@@ -788,25 +849,25 @@ const HomeScreen = (props) => {
                         </View>
 
                         <View style={{marginTop: R.fontSize.Size30}}>
-                          <Text
-                            style={Styles.videoModalAvailableText}>
+                          <Text style={Styles.videoModalAvailableText}>
                             {'Available for :'}
                           </Text>
                         </View>
 
-                        <View
-                          style={Styles.videoModalMainView}>
+                        <View style={Styles.videoModalMapMainView}>
                           {videoModalAvailableDetail.map((item, index) => {
                             return (
                               <View
                                 key={index}
-                                style={[Styles.videoModalAvailView,{
-                                  backgroundColor:
-                                    item != '' ||
-                                    (item != null && R.colors.appColor),
-                                }]}>
-                                <Text
-                                  style={Styles.videoModalAvailItemText}>
+                                style={[
+                                  Styles.videoModalAvailView,
+                                  {
+                                    backgroundColor:
+                                      item != '' ||
+                                      (item != null && R.colors.appColor),
+                                  },
+                                ]}>
+                                <Text style={Styles.videoModalAvailItemText}>
                                   {item}
                                 </Text>
                               </View>
@@ -822,6 +883,11 @@ const HomeScreen = (props) => {
 
             <View style={{paddingVertical: R.fontSize.Size10}}>
               <AppButton
+                onPress={() => {
+                  modalType == 'filterModal'
+                    ? console.log('Filter')
+                    : onCallConnectNow();
+                }}
                 title={modalType == 'filterModal' ? 'Apply' : 'Connect Now'}
                 marginHorizontal={R.fontSize.Size55}
               />
@@ -832,4 +898,12 @@ const HomeScreen = (props) => {
     </StoryScreen>
   );
 };
-export default HomeScreen;
+
+const mapStateToProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+
+export default connect(mapStateToProps)(HomeScreen);

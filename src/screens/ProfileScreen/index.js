@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {View, TextInput, Pressable, Image, Text, ScrollView, SafeAreaView, Dimensions, StatusBar, Platform} from 'react-native';
-import {CustomCardLine, CustomCardView, ShadowHeader, StoryScreen}from '../../components'
+import {CustomCardLine, CustomCardView, ShadowHeader, StoryScreen, VideoCard}from '../../components'
 import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
 import Toast from 'react-native-simple-toast';
@@ -134,6 +134,7 @@ const ProfileScreen = (props) => {
 const dispatch = useDispatch()
 const [loading, setLoading] = useState(false)
 const [profileDetails, setProfileDetails] = useState({})
+const [tailentPostVideo,setTailentPostVideo] = useState([])
 const [taletArray, setTalentArray] = useState([])
 const [personalArray, setPersonalArray] = useState([])
 const [profilePic, setProfilePic] = useState([]);
@@ -167,6 +168,7 @@ const [profilePic, setProfilePic] = useState([]);
          let useTalentArray = tempTalentArray.split(',');
          console.log('useTalentArray', useTalentArray);
           setTalentArray(useTalentArray)
+          setTailentPostVideo(response.Profile?.post)
         setPersonalArray([
           response.Profile?.gender,
           response.Profile?.birth,
@@ -694,19 +696,34 @@ const [profilePic, setProfilePic] = useState([]);
                     marginTop: R.fontSize.Size45,
                     flexWrap: 'wrap',
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
                   }}>
-                  {[1, 2, 3, 4, 5, 6].map((item, index) => {
+                  {tailentPostVideo.map((item, index) => {
                     return (
-                      <View
-                        key={index}
-                        style={{
-                          width: screenWidth / 3.7,
-                          height: screenWidth / 3,
-                          backgroundColor: R.colors.placeholderTextColor,
-                          borderRadius: R.fontSize.Size8,
-                          margin: R.fontSize.Size5,
-                        }}></View>
+                      <View key={index}>
+                        <Pressable
+                          onPress={() => props.navigation.navigate('TailentVideoList',{
+                            videoItems: tailentPostVideo,
+                            playIndex: index
+                          })}
+                          style={({pressed}) => [
+                            {
+                              opacity: pressed ? 0.5 : 1,
+                              width: screenWidth / 3.7,
+                              height: screenWidth / 3,
+                              borderRadius: R.fontSize.Size8,
+                              margin: R.fontSize.Size5,
+                              overflow: 'hidden',
+                            },
+                          ]}>
+                          <VideoCard
+                            poster={`${Config.API_URL}${item?.post.slice(22)}`}
+                            videoUrl={`${Config.API_URL}${item?.post.slice(
+                              22,
+                            )}`}
+                            paused={true}
+                          />
+                        </Pressable>
+                      </View>
                     );
                   })}
                 </View>

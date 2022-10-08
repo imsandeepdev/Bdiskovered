@@ -134,7 +134,8 @@ const UpdateProfileScreen = (props) => {
                   ? profilePic.path
                   : profilePic.path?.replace('file://', ''),
               type: profilePic.mime,
-              name: profilePic.filename ?? 'image.jpg',
+              name: 'image.jpg',
+              // name: profilePic.filename ?? 'image.jpg',
             },
       );
       dispatch(ProfileUpdateRequest(formData,dataType,response=>{

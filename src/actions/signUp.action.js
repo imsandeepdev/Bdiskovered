@@ -8,7 +8,10 @@ import {
   sign_In_error,
   user_SignOut,
   user_SignOut_success,
-  user_SignOut_error
+  user_SignOut_error,
+  user_LogoutAll,
+  user_LogoutAll_success,
+  user_LogoutAll_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -66,6 +69,24 @@ export const UserSignOutError = error => {
   };
 };
 
+export const UserLogoutAll = () => {
+  return {
+    type: user_LogoutAll,
+  };
+};
+export const UserLogoutAllSuccess = payload => {
+  return {
+    type: user_LogoutAll_success,
+    payload,
+  };
+};
+export const UserLogoutAllError = error => {
+  return {
+    type: user_LogoutAll_error,
+    payload: error,
+  };
+};
+
 export const SignUpRequest = (
   data,
   dataType,
@@ -115,13 +136,14 @@ export const SignInRequest = (
 
 
 export const UserSignOutRequest = (
-  
+  data,
   success?: () => void,
   failed?: () => void,
 ) => {
   return dispatch => {
     dispatch(UserSignOut());
     Api.MultiPostFetch({
+      body:data,
       url: Config.userSignOutAPI,
     })
       .then(response => {
@@ -130,6 +152,28 @@ export const UserSignOutRequest = (
       })
       .catch(error => {
         dispatch(UserSignOutError(error));
+        failed?.(error);
+      });
+  };
+};
+
+export const UserLogoutAllRequest = (
+  data,
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(UserLogoutAll());
+    Api.RequestPostFetch({
+      body: data,
+      url: Config.userLogOutAllAPI,
+    })
+      .then(response => {
+        dispatch(UserLogoutAllSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(UserLogoutAllError(error));
         failed?.(error);
       });
   };

@@ -14,7 +14,8 @@ const Header = (props) => {
                 width:R.fontSize.Size40,
                 alignItems:'center',
                 justifyContent:'center',
-                opacity: pressed?0.5:1
+                opacity: pressed?0.5:1,
+                
             }]}
             >
                 <Image

@@ -15,10 +15,13 @@ import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
 import { UserSignOutRequest } from '../../actions/signUp.action';
 import Toast from 'react-native-simple-toast';
+import DeviceInfo from 'react-native-device-info';
+
 
 const screenWidth = Dimensions.get('screen').width;
 
 const CustomMenuButton = (props) => {
+
     return (
       <Pressable
         onPress={props.onPress}
@@ -54,7 +57,16 @@ const CustomMenuButton = (props) => {
 const Menu = (props) => {
   
   const dispatch = useDispatch()
+  const [deviceName, setDeviceName] = useState('');
 
+
+  const onCallDeviceName = () => {
+     DeviceInfo.getDeviceName().then(deviceName => {
+       setDeviceName(deviceName);
+       console.log('DEVICE NAME', deviceName);
+       onCallLogout(deviceName)
+     });
+  }
 
   const onLogout = () => {
     Alert.alert(
@@ -63,7 +75,7 @@ const Menu = (props) => {
       [
         {
           text: 'LOGOUT',
-          onPress: () => onCallLogout(),
+          onPress: () => onCallDeviceName(),
         },
         {
           text: 'CANCEL',
@@ -75,8 +87,13 @@ const Menu = (props) => {
     );
   };
 
-  const onCallLogout = () => {
-    dispatch(UserSignOutRequest(response=>{
+  const onCallLogout = (deviceName) => {
+    let data = {
+      device_name: deviceName,
+      device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+    };
+    console.log('LOGDATA',data)
+    dispatch(UserSignOutRequest(data,response=>{
       console.log('LOGOUT RES', response);
       if(response.status == 'success')
       {

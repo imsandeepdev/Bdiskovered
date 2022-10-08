@@ -71,3 +71,13 @@ export const subscriber_GetPlans_error = 'subscriber_GetPlans_error';
 export const getCustom_Plan = 'getCustom_Plan';
 export const getCustom_Plan_success = 'getCustom_Plan_success';
 export const getCustom_Plan_error = 'getCustom_Plan_error';
+
+// userLogoutAll
+export const user_LogoutAll = 'user_LogoutAll';
+export const user_LogoutAll_success = 'user_LogoutAll_success';
+export const user_LogoutAll_error = 'user_LogoutAll_error';
+
+// resendOtp
+// export const resend_Otp = 'resend_Otp';
+// export const resend_Otp_success = 'resend_Otp_success';
+// export const resend_Otp_error = 'resend_Otp_error';

@@ -1,6 +1,6 @@
 import * as react from 'react';
 import {useState, useEffect} from 'react';
-import {Text, View, Pressable, Image, SafeAreaView,TextInput, FlatList,ScrollView, Modal,Dimensions } from 'react-native';
+import {Text, View, Pressable, Image, SafeAreaView,TextInput, FlatList,ScrollView, Modal,Dimensions,TouchableWithoutFeedback,KeyboardAvoidingView ,Keyboard,Platform} from 'react-native';
 import { StoryScreen, Header, AppButton, CustomCardView, CustomTimeCard } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
@@ -86,21 +86,31 @@ const CustomTimeRow = (props) => {
           }}>
           {'USD'}
         </Text>
+        <View
+        style={{width:R.fontSize.Size70, alignItems:'center'}}
+        >
         <TextInput
           style={{
             width: R.fontSize.Size60,
-            height: R.fontSize.Size20,
+            height: R.fontSize.Size40,
+            paddingVertical:R.fontSize.Size6,
             marginHorizontal: R.fontSize.Size6,
             textAlign: 'center',
             borderBottomWidth: 1,
             borderColor: R.colors.appColor,
+            fontFamily:R.fonts.regular,
+            fontSize:R.fontSize.Size12,
+            color:R.colors.primaryTextColor,
+            fontWeight:'400'
           }}
+          maxLength={6}
           placeholder={'00'}
           placeholderTextColor={R.colors.placeholderTextColor}
           value={props.rightValue}
           onChangeText={props.rightOnChangeText}
           keyboardType={'number-pad'}
         />
+        </View>
         <Text
           style={{
             fontFamily: R.fonts.regular,
@@ -276,138 +286,148 @@ const TalentScreen = (props) => {
             leftSource={R.images.chevronBack}
           />
           <View style={Styles.mainView}>
-            <View style={{flex: 1}}>
-              <FlatList
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
+              style={{flex: 1}}>
+              <ScrollView
                 contentContainerStyle={{flexGrow: 1}}
-                data={data}
-                showsVerticalScrollIndicator={false}
-                ListHeaderComponent={
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size50,
-                      marginHorizontal: R.fontSize.Size5,
-                      marginBottom: R.fontSize.Size30,
-                    }}>
-                    <Text style={Styles.userselectionText}>
-                      {'Talent & Work Type Selection'}
-                    </Text>
-                    <Text
-                      style={[
-                        Styles.accountTypeText,
-                        {marginTop: R.fontSize.Size10},
-                      ]}>
-                      {'Select Your Talent & Work Type'}
-                    </Text>
-                    <Text
-                      style={[
-                        Styles.userselectionText,
-                        {marginTop: R.fontSize.Size15},
-                      ]}>
-                      {'You can choose multiple talent at a time'}
-                    </Text>
-                  </View>
-                }
-                keyExtractor={(item, index) => index}
-                renderItem={({item, index}) => {
-                  return (
-                    <CustomCardView
-                      marginHorizontal={R.fontSize.Size5}
-                      key={index}
-                      onPress={() => onCallUserSelect(item, index)}
-                      backgroundColor={
-                        item.selected == true
-                          ? R.colors.PrimaryApp_color
-                          : R.colors.white
-                      }
-                      title={item?.talent}
-                      TextColor={
-                        item.selected == true
-                          ? R.colors.white
-                          : R.colors.primaryTextColor
-                      }
-                      rightIcon={R.images.checkWhiteIcon}
-                    />
-                  );
-                }}
-                ListFooterComponent={
-                  <View>
+                showsVerticalScrollIndicator={false}>
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                  <View style={{flex: 1}}>
                     <View
                       style={{
-                        marginTop: R.fontSize.Size10,
+                        marginTop: R.fontSize.Size50,
                         marginHorizontal: R.fontSize.Size5,
+                        marginBottom: R.fontSize.Size30,
                       }}>
-                      <View>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontWeight: '900',
-                            fontSize: R.fontSize.Size15,
-                            color: R.colors.black,
-                          }}>
-                          {'Open For'}
-                        </Text>
-                        <View style={{marginTop: R.fontSize.Size10}}>
-                          <CustomTimeRow
-                            leftOnPress={() => onCallFullTimeRow()}
-                            leftImageSource={
-                              selectFullTime
-                                ? R.images.checkTermsIcon
-                                : R.images.unCheckTermsIcon
-                            }
-                            leftTitle={'Full Time'}
-                            leftTextColor={
-                              selectFullTime
-                                ? R.colors.appColor
-                                : R.colors.placeholderTextColor
-                            }
-                            rightStatus={selectFullTime}
-                            rightValue={fullTimePrice}
-                            rightOnChangeText={price => setFullTimePrice(price)}
-                            rightDayHours={'/ Day'}
-                          />
-                          <CustomTimeRow
-                            leftOnPress={() => onCallPartTimeRow()}
-                            leftImageSource={
-                              selectPartTime
-                                ? R.images.checkTermsIcon
-                                : R.images.unCheckTermsIcon
-                            }
-                            leftTitle={'Part Time'}
-                            leftTextColor={
-                              selectPartTime
-                                ? R.colors.appColor
-                                : R.colors.placeholderTextColor
-                            }
-                            rightStatus={selectPartTime}
-                            rightValue={partTimePrice}
-                            rightOnChangeText={price => setPartTimePrice(price)}
-                            rightDayHours={'/ Hours'}
-                          />
-                          <CustomTimeRow
-                            leftOnPress={() => onCallGigsRow()}
-                            leftImageSource={
-                              selectGigs
-                                ? R.images.checkTermsIcon
-                                : R.images.unCheckTermsIcon
-                            }
-                            leftTitle={'Gigs'}
-                            leftTextColor={
-                              selectGigs
-                                ? R.colors.appColor
-                                : R.colors.placeholderTextColor
-                            }
-                            rightStatus={selectGigs}
-                            rightValue={gigsPrice}
-                            rightOnChangeText={price => setGigsPrice(price)}
-                            rightDayHours={'/ Hours'}
-                          />
+                      <Text style={Styles.userselectionText}>
+                        {'Talent & Work Type Selection'}
+                      </Text>
+                      <Text
+                        style={[
+                          Styles.accountTypeText,
+                          {marginTop: R.fontSize.Size10},
+                        ]}>
+                        {'Select Your Talent & Work Type'}
+                      </Text>
+                      <Text
+                        style={[
+                          Styles.userselectionText,
+                          {marginTop: R.fontSize.Size15},
+                        ]}>
+                        {'You can choose multiple talent at a time'}
+                      </Text>
+                    </View>
+
+                    <View>
+                     { 
+                     data.map((item,index)=>{
+                      return (
+                        <CustomCardView
+                          marginHorizontal={R.fontSize.Size5}
+                          key={index}
+                          onPress={() => onCallUserSelect(item, index)}
+                          backgroundColor={
+                            item.selected == true
+                              ? R.colors.PrimaryApp_color
+                              : R.colors.white
+                          }
+                          title={item?.talent}
+                          TextColor={
+                            item.selected == true
+                              ? R.colors.white
+                              : R.colors.primaryTextColor
+                          }
+                          rightIcon={R.images.checkWhiteIcon}
+                        />
+                      );
+                     })
+                    }
+                    </View>
+
+                    <View>
+                      <View
+                        style={{
+                          marginTop: R.fontSize.Size10,
+                          marginHorizontal: R.fontSize.Size5,
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontWeight: '900',
+                              fontSize: R.fontSize.Size15,
+                              color: R.colors.black,
+                            }}>
+                            {'Open For'}
+                          </Text>
+                          <View style={{marginTop: R.fontSize.Size10}}>
+                            <CustomTimeRow
+                              leftOnPress={() => onCallFullTimeRow()}
+                              leftImageSource={
+                                selectFullTime
+                                  ? R.images.checkTermsIcon
+                                  : R.images.unCheckTermsIcon
+                              }
+                              leftTitle={'Full Time'}
+                              leftTextColor={
+                                selectFullTime
+                                  ? R.colors.appColor
+                                  : R.colors.placeholderTextColor
+                              }
+                              rightStatus={selectFullTime}
+                              rightValue={fullTimePrice}
+                              rightOnChangeText={price =>
+                                setFullTimePrice(price)
+                              }
+                              rightDayHours={'/ Day'}
+                            />
+                            <CustomTimeRow
+                              leftOnPress={() => onCallPartTimeRow()}
+                              leftImageSource={
+                                selectPartTime
+                                  ? R.images.checkTermsIcon
+                                  : R.images.unCheckTermsIcon
+                              }
+                              leftTitle={'Part Time'}
+                              leftTextColor={
+                                selectPartTime
+                                  ? R.colors.appColor
+                                  : R.colors.placeholderTextColor
+                              }
+                              rightStatus={selectPartTime}
+                              rightValue={partTimePrice}
+                              rightOnChangeText={price =>
+                                setPartTimePrice(price)
+                              }
+                              rightDayHours={'/ Hours'}
+                            />
+                            <CustomTimeRow
+                              leftOnPress={() => onCallGigsRow()}
+                              leftImageSource={
+                                selectGigs
+                                  ? R.images.checkTermsIcon
+                                  : R.images.unCheckTermsIcon
+                              }
+                              leftTitle={'Gigs'}
+                              leftTextColor={
+                                selectGigs
+                                  ? R.colors.appColor
+                                  : R.colors.placeholderTextColor
+                              }
+                              rightStatus={selectGigs}
+                              rightValue={gigsPrice}
+                              rightOnChangeText={price => setGigsPrice(price)}
+                              rightDayHours={'/ Hours'}
+                            />
+                          </View>
                         </View>
                       </View>
                     </View>
                   </View>
-                }
-              />
-            </View>
+                </TouchableWithoutFeedback>
+              </ScrollView>
+            </KeyboardAvoidingView>
             <View style={{paddingVertical: R.fontSize.Size16}}>
               <AppButton
                 onPress={() => onCallCreateTailentProfile()}

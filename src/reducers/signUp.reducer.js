@@ -7,7 +7,10 @@ import {
     sign_In_error,
     user_SignOut,
     user_SignOut_success,
-    user_SignOut_error
+    user_SignOut_error,
+    user_LogoutAll,
+    user_LogoutAll_success,
+    user_LogoutAll_error
 } from '../constants/common';
 
 const initial_state = {
@@ -31,8 +34,8 @@ const reducer = (state = initial_state, {type, payload}) => {
       return {
         loading: false,
         authToken: payload.token,
+        userType: payload.data?.user_type,
         signUpInit: payload,
-        userType: payload.data.user_type,
         error: '',
       };
     case sign_Up_error:
@@ -66,6 +69,18 @@ const reducer = (state = initial_state, {type, payload}) => {
     case user_SignOut_success:
       return initial_state;
     case user_SignOut_error:
+      return {
+        loading: false,
+        error: payload.error,
+      };
+    case user_LogoutAll:
+      return {
+        ...state,
+        loading: true,
+      };
+    case user_LogoutAll_success:
+      return initial_state;
+    case user_LogoutAll_error:
       return {
         loading: false,
         error: payload.error,

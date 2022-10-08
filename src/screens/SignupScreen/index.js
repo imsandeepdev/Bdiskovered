@@ -327,7 +327,7 @@ const onCheckDocument = () => {
     const onCallForBusinessCreateOTP = () => {
   
       let signUpData = {
-        device_token: '2wewe',
+        device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
         email: companyMail,
         device_ip: deviceId,
         user_type: userType,
@@ -343,7 +343,7 @@ const onCheckDocument = () => {
       let data = {
          mobile: `+${countryCode}${companyMob}`,
          number_available: '0',
-         device_token: 'sjdusadhouisodjswesd3budedksaheedeff2de',
+         device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
        };
        dispatch(
          CreateOTPRequest(data, response => {
@@ -458,8 +458,8 @@ const onCheckDocument = () => {
     const onSelectPicker = params => {
     if (params == 'camera') {
       ImagePicker.openCamera({
-        width: 400,
-        height: 400,
+        // width: 400,
+        // height: 400,
         cropping: true,
       }).then(image => {
         console.log("IMAGE",image)
@@ -468,8 +468,8 @@ const onCheckDocument = () => {
       });
     } else if (params == 'gallery') {
       ImagePicker.openPicker({
-        width: 400,
-        height: 400,
+        // width: 400,
+        // height: 400,
         cropping: true,
       }).then(image => {
         console.log('IMAGE', image);
@@ -506,213 +506,229 @@ const onCheckDocument = () => {
                 contentContainerStyle={{flexGrow: 1}}
                 showsVerticalScrollIndicator={false}>
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                  <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
-                    <View style={{marginTop: R.fontSize.Size50}}>
-                      <Text style={Styles.detailsText}>
-                        {props.route.params?.from != 'Business'
-                          ? 'User Details'
-                          : 'Business Details'}
-                      </Text>
-                      <Text style={Styles.titleDetailText}>
-                        {props.route.params?.from != 'Business'
-                          ? 'Enter Your Details'
-                          : 'Enter Company Details'}
-                      </Text>
-                    </View>
-                    <View>
-                      {props.route.params?.from != 'Business' ? (
-                        <View style={{marginTop: R.fontSize.Size30}}>
-                          <CustomCardTextInput
-                            value={userName}
-                            onChangeText={username =>
-                              onCallSetUserNameValue(username)
-                            }
-                            placeholder={'User Name'}
-                            rightIcon={
-                              userNameStatue
-                                ? R.images.checkOrangeIcon
-                                : R.images.checkGreyIcon
-                            }
-                            onFocus={() => setOnFocusName('userName')}
-                          />
-                          <CustomCardTextInput
-                            value={fullName}
-                            onChangeText={fname => setFullName(fname)}
-                            placeholder={'Full Name'}
-                          />
-                          <CustomCardTextInput
-                            value={eMail}
-                            onChangeText={mail => onCallSetUserEmailValue(mail)}
-                            placeholder={'Email'}
-                            rightIcon={
-                              userMailStatue
-                                ? R.images.checkOrangeIcon
-                                : R.images.checkGreyIcon
-                            }
-                            onFocus={() => setOnFocusName('userEmail')}
-                          />
-                          <CustomTextInput
-                            onChangeCounty={() => setCountyModalPicker(true)}
-                            countryFlag={countryFlag != '' ? countryFlag : 'in'}
-                            countryCode={
-                              countryCode != '' ? `+${countryCode}` : '+91'
-                            }
-                            maxLength={10}
-                            placeholder={'Mobile No'}
-                            value={mobNo}
-                            onChangeText={no => onCallSetUserPhoneValue(no)}
-                            marginBottom={R.fontSize.Size20}
-                            rightIcon={
-                              userPhoneStatue
-                                ? R.images.checkOrangeIcon
-                                : R.images.checkGreyIcon
-                            }
-                            onFocus={() => setOnFocusName('userPhone')}
-                          />
+                  <View style={{flex: 1}}>
+                    <View
+                      style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
+                      <View style={{marginTop: R.fontSize.Size50}}>
+                        <Text style={Styles.detailsText}>
+                          {props.route.params?.from != 'Business'
+                            ? 'User Details'
+                            : 'Business Details'}
+                        </Text>
+                        <Text style={Styles.titleDetailText}>
+                          {props.route.params?.from != 'Business'
+                            ? 'Enter Your Details'
+                            : 'Enter Company Details'}
+                        </Text>
+                      </View>
+                      <View>
+                        {props.route.params?.from != 'Business' ? (
+                          <View style={{marginTop: R.fontSize.Size30}}>
+                            <CustomCardTextInput
+                              value={userName}
+                              onChangeText={username =>
+                                onCallSetUserNameValue(username)
+                              }
+                              placeholder={'User Name'}
+                              rightIcon={
+                                userNameStatue
+                                  ? R.images.checkOrangeIcon
+                                  : R.images.checkGreyIcon
+                              }
+                              onFocus={() => setOnFocusName('userName')}
+                            />
+                            <CustomCardTextInput
+                              value={fullName}
+                              onChangeText={fname => setFullName(fname)}
+                              placeholder={'Full Name'}
+                            />
+                            <CustomCardTextInput
+                              value={eMail}
+                              onChangeText={mail =>
+                                onCallSetUserEmailValue(mail)
+                              }
+                              placeholder={'Email'}
+                              rightIcon={
+                                userMailStatue
+                                  ? R.images.checkOrangeIcon
+                                  : R.images.checkGreyIcon
+                              }
+                              onFocus={() => setOnFocusName('userEmail')}
+                            />
+                            <CustomTextInput
+                              onChangeCounty={() => setCountyModalPicker(true)}
+                              countryFlag={
+                                countryFlag != '' ? countryFlag : 'in'
+                              }
+                              countryCode={
+                                countryCode != '' ? `+${countryCode}` : '+91'
+                              }
+                              maxLength={10}
+                              placeholder={'Mobile No'}
+                              value={mobNo}
+                              onChangeText={no => onCallSetUserPhoneValue(no)}
+                              marginBottom={R.fontSize.Size20}
+                              rightIcon={
+                                userPhoneStatue
+                                  ? R.images.checkOrangeIcon
+                                  : R.images.checkGreyIcon
+                              }
+                              onFocus={() => setOnFocusName('userPhone')}
+                            />
 
-                          <CustomCardView
-                            onPress={() => setCalenderPicker(!calenderPicker)}
-                            title={dob}
-                            TextColor={
-                              dob == 'Date of Birth'
-                                ? R.colors.placeholderTextColor
-                                : R.colors.primaryTextColor
-                            }
-                          />
+                            <CustomCardView
+                              onPress={() => setCalenderPicker(!calenderPicker)}
+                              title={dob}
+                              TextColor={
+                                dob == 'Date of Birth'
+                                  ? R.colors.placeholderTextColor
+                                  : R.colors.primaryTextColor
+                              }
+                            />
 
-                          <CustomMaleFemale
-                            maleOnPress={() => setOnGender('Male')}
-                            maleIcon={
-                              onGender == 'Male'
-                                ? R.images.activeMaleIcon
-                                : R.images.inactiveMaleIcon
-                            }
-                            maleTextColor={
-                              onGender == 'Male'
-                                ? R.colors.appColor
-                                : R.colors.placeholderTextColor
-                            }
-                            feMaleOnPress={() => setOnGender('Female')}
-                            feMaleIcon={
-                              onGender == 'Female'
-                                ? R.images.activeFemaleIcon
-                                : R.images.inactiveFemaleIcon
-                            }
-                            feMaleTextColor={
-                              onGender == 'Female'
-                                ? R.colors.appColor
-                                : R.colors.placeholderTextColor
-                            }
-                          />
-                        </View>
-                      ) : (
-                        <View style={{marginTop: R.fontSize.Size30}}>
-                          <CustomCardTextInput
-                            value={companyName}
-                            onChangeText={cname =>
-                              onCallSetCompanyUserNameValue(cname)
-                            }
-                            placeholder={'Company Name'}
-                            onFocus={() => setOnFocusName('companyUserName')}
-                            rightIcon={
-                              companyUserNameStatue
-                                ? R.images.checkOrangeIcon
-                                : R.images.checkGreyIcon
-                            }
-                          />
-                          <CustomCardTextInput
-                            value={companyType}
-                            onChangeText={ctype => setCompanyType(ctype)}
-                            placeholder={'Company Type'}
-                          />
-                          <CustomCardTextInput
-                            value={companytradeNo}
-                            onChangeText={ctradeNo =>
-                              setCompanyTradeNo(ctradeNo)
-                            }
-                            placeholder={'Trade License Number'}
-                          />
-                          <CustomCardTextInput
-                            value={companyRegId}
-                            onChangeText={cRegId => setCompanyRegId(cRegId)}
-                            placeholder={'Company Registration Id'}
-                          />
-                          <CustomCardTextInput
-                            value={companyMail}
-                            onChangeText={email =>
-                              onCallSetCompanyEmailValue(email)
-                            }
-                            placeholder={'Company Email Address'}
-                            onFocus={() => setOnFocusName('companyMail')}
-                            rightIcon={
-                              companyMailStatue
-                                ? R.images.checkOrangeIcon
-                                : R.images.checkGreyIcon
-                            }
-                          />
-                          <CustomTextInput
-                            onChangeCounty={() => setCountyModalPicker(true)}
-                            countryFlag={countryFlag != '' ? countryFlag : 'in'}
-                            countryCode={
-                              countryCode != '' ? `+ ${countryCode}` : '+91'
-                            }
-                            maxLength={10}
-                            placeholder={'Mobile No'}
-                            value={companyMob}
-                            onChangeText={mobno =>
-                              onCallSetCompanyPhoneValue(mobno)
-                            }
-                            marginBottom={R.fontSize.Size20}
-                            rightIcon={
-                              companyPhoneStatue
-                                ? R.images.checkOrangeIcon
-                                : R.images.checkGreyIcon
-                            }
-                            onFocus={() => setOnFocusName('companyPhone')}
-                          />
-
-                          <CustomCardTextInput
-                            value={companyOwnerName}
-                            onChangeText={ownerName =>
-                              setCompanyOwnerName(ownerName)
-                            }
-                            placeholder={'Owner Name'}
-                          />
-                          <CustomCardView
-                            onPress={() => handleFilePicker()}
-                            title={
-                              documentPic.length == 0
-                                ? 'Upload Trade / Commercial License'
-                                : `${documentPic?.filename}`
-                            }
-                            TextColor={R.colors.placeholderTextColor}
-                            rightIcon={R.images.uploadIcon}
-                            marginBottom={R.fontSize.Size4}
-                          />
-                          <View>
-                            {documentPic.path != null && (
-                              <Image
-                                source={{uri: documentPic.path}}
-                                style={{width: '100%', height: screenWidth}}
-                                resizeMode={'contain'}
-                              />
-                            )}
+                            <CustomMaleFemale
+                              maleOnPress={() => setOnGender('Male')}
+                              maleIcon={
+                                onGender == 'Male'
+                                  ? R.images.activeMaleIcon
+                                  : R.images.inactiveMaleIcon
+                              }
+                              maleTextColor={
+                                onGender == 'Male'
+                                  ? R.colors.appColor
+                                  : R.colors.placeholderTextColor
+                              }
+                              feMaleOnPress={() => setOnGender('Female')}
+                              feMaleIcon={
+                                onGender == 'Female'
+                                  ? R.images.activeFemaleIcon
+                                  : R.images.inactiveFemaleIcon
+                              }
+                              feMaleTextColor={
+                                onGender == 'Female'
+                                  ? R.colors.appColor
+                                  : R.colors.placeholderTextColor
+                              }
+                            />
                           </View>
-                        </View>
-                      )}
+                        ) : (
+                          <View style={{marginTop: R.fontSize.Size30}}>
+                            <CustomCardTextInput
+                              value={companyName}
+                              onChangeText={cname =>
+                                onCallSetCompanyUserNameValue(cname)
+                              }
+                              placeholder={'Company Name'}
+                              onFocus={() => setOnFocusName('companyUserName')}
+                              rightIcon={
+                                companyUserNameStatue
+                                  ? R.images.checkOrangeIcon
+                                  : R.images.checkGreyIcon
+                              }
+                            />
+                            <CustomCardTextInput
+                              value={companyType}
+                              onChangeText={ctype => setCompanyType(ctype)}
+                              placeholder={'Company Type'}
+                            />
+                            <CustomCardTextInput
+                              value={companytradeNo}
+                              onChangeText={ctradeNo =>
+                                setCompanyTradeNo(ctradeNo)
+                              }
+                              placeholder={'Trade License Number'}
+                            />
+                            <CustomCardTextInput
+                              value={companyRegId}
+                              onChangeText={cRegId => setCompanyRegId(cRegId)}
+                              placeholder={'Company Registration Id'}
+                            />
+                            <CustomCardTextInput
+                              value={companyMail}
+                              onChangeText={email =>
+                                onCallSetCompanyEmailValue(email)
+                              }
+                              placeholder={'Company Email Address'}
+                              onFocus={() => setOnFocusName('companyMail')}
+                              rightIcon={
+                                companyMailStatue
+                                  ? R.images.checkOrangeIcon
+                                  : R.images.checkGreyIcon
+                              }
+                            />
+                            <CustomTextInput
+                              onChangeCounty={() => setCountyModalPicker(true)}
+                              countryFlag={
+                                countryFlag != '' ? countryFlag : 'in'
+                              }
+                              countryCode={
+                                countryCode != '' ? `+ ${countryCode}` : '+91'
+                              }
+                              maxLength={10}
+                              placeholder={'Mobile No'}
+                              value={companyMob}
+                              onChangeText={mobno =>
+                                onCallSetCompanyPhoneValue(mobno)
+                              }
+                              marginBottom={R.fontSize.Size20}
+                              rightIcon={
+                                companyPhoneStatue
+                                  ? R.images.checkOrangeIcon
+                                  : R.images.checkGreyIcon
+                              }
+                              onFocus={() => setOnFocusName('companyPhone')}
+                            />
+
+                            <CustomCardTextInput
+                              value={companyOwnerName}
+                              onChangeText={ownerName =>
+                                setCompanyOwnerName(ownerName)
+                              }
+                              placeholder={'Owner Name'}
+                            />
+                            <CustomCardView
+                              onPress={() => handleFilePicker()}
+                              title={
+                                documentPic.length == 0
+                                  ? 'Upload Trade / Commercial License'
+                                  : `${documentPic?.filename}`
+                              }
+                              TextColor={R.colors.placeholderTextColor}
+                              rightIcon={R.images.uploadIcon}
+                              marginBottom={R.fontSize.Size4}
+                            />
+                            <View>
+                              {documentPic.path != null && (
+                                <Image
+                                  source={{uri: documentPic.path}}
+                                  style={{width: '100%', height: screenWidth}}
+                                  resizeMode={'contain'}
+                                />
+                              )}
+                            </View>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                    <View style={{paddingVertical: R.fontSize.Size16}}>
+                      <AppButton
+                        onPress={() => onCallSignUpAPI()}
+                        marginHorizontal={R.fontSize.Size55}
+                        title={'Proceed'}
+                      />
                     </View>
                   </View>
                 </TouchableWithoutFeedback>
               </ScrollView>
             </KeyboardAvoidingView>
           </View>
-          <View style={{paddingVertical: R.fontSize.Size16}}>
+          {/* <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
               onPress={() => onCallSignUpAPI()}
               marginHorizontal={R.fontSize.Size55}
               title={'Proceed'}
             />
-          </View>
+          </View> */}
         </SafeAreaView>
         <Modal
           visible={calenderPicker}

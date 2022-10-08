@@ -18,5 +18,6 @@ export const Config = {
   uploadNewVideoAPI: 'post/upload',
   subscriberGetPlansAPI: 'subscriber/get-plans',
   subGetCustomPlanAPI: 'subscriber/get-custom-plans',
+  userLogOutAllAPI: 'user/logout-all',
 };
 

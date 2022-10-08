@@ -12,19 +12,25 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
+  Modal
 } from 'react-native';
 import { StoryScreen, Header, AppButton } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
 import {connect, useDispatch} from 'react-redux';
-import { SignInRequest, SignUpRequest } from '../../actions/signUp.action';
+import { SignInRequest, SignUpRequest, UserLogoutAllRequest } from '../../actions/signUp.action';
 import Toast from 'react-native-simple-toast';
+import DeviceInfo from 'react-native-device-info';
+import { CreateOTPRequest } from '../../actions/createOTP.action';
+
 
 
 const OtpScreen = (props) => {
 
     const dispatch = useDispatch()
     const [otpNo, setOtpNo] = useState('')
+    const [deviceName, setDeviceName] = useState('');
+    const [pickerModal, setPickerModal] = useState(false);
     const [otpArray, setOtpArray] = useState([])
     const firstTextInputRef = useRef(null);
     const secondTextInputRef = useRef(null);
@@ -37,9 +43,18 @@ const OtpScreen = (props) => {
   useEffect(()=>{
 
     console.log('SIGNUPVALUE', props.route.params?.signupValue);
+    onCallDeviceName();
     // setSignUpData(props.route.params?.signupValue);
     // console.log(signUpData)
   },[props.navigation])
+
+  const onCallDeviceName = () => {
+    DeviceInfo.getDeviceName().then(deviceName => {
+      setDeviceName(deviceName);
+      console.log('DEVICE NAME', deviceName);
+    });
+  };
+
 
   const onCallCheckVerify = () => {
     props.route.params?.fromScreen == 'SignUpScreen'
@@ -63,12 +78,18 @@ const OtpScreen = (props) => {
           if (response.status == 'success' && response.token != null) {
             props.navigation.replace('HomeMenu');
             Toast.show(response.message, Toast.SHORT);
-          } else {
+          } 
+          else if (
+            response.message == 'your account has been logged in another device'
+          ) {
+            Toast.show(response.message, Toast.SHORT);
+            setPickerModal(true)
+          } 
+          else {
             Toast.show(response.message, Toast.SHORT);
           }
         })
       )
-
   }
 
   const onCallSignUpVerify = () => {
@@ -181,6 +202,61 @@ const OtpScreen = (props) => {
     };
 
 
+    const onCallLogoutAllDevices = () => {
+      let data = {
+        type: 'All',
+        mobile: `+${props.route.params?.countryCode}${props.route.params?.mobValue}`,
+        device_name: deviceName,
+        device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+      };
+      console.log('AllLogout Data',data)
+      dispatch(UserLogoutAllRequest(data,response => {
+        console.log('Logout all devices response', response)
+        if(response.status == 'success')
+        {
+          Toast.show(response.message, Toast.SHORT)
+          setPickerModal(false)
+          props.navigation.replace('LoginScreen')
+        }
+        else
+        {
+          Toast.show(response.message, Toast.SHORT);
+          setPickerModal(false);
+        }
+      }))
+    }
+
+
+      const onCallResndOTP = () => {
+        
+        
+        let data =
+          props.route.params?.fromScreen == 'SignUpScreen'
+            ? {
+                mobile: `+${props.route.params?.countryCode}${props.route.params?.mobValue}`,
+                number_available: "0",
+                device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+              }
+            : {
+                mobile: `+${props.route.params?.countryCode}${props.route.params?.mobValue}`,
+                device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+              };
+          console.log("RESND OTP DATA", data)
+
+          // dispatch(
+          //   CreateOTPRequest(data, response => {
+          //     console.log('RESPONSE RESND OTP', response);
+          //     if (response.status == 'success') {
+          //       Toast.show(response.OTP, Toast.LONG);
+          //       setOtpArray([]);
+          //     } else {
+          //       Toast.show(response.message, Toast.SHORT);
+          //     }
+          //   }),
+          // );
+        
+      };
+
     return (
       <StoryScreen>
         <SafeAreaView style={{flex: 1}}>
@@ -267,7 +343,7 @@ const OtpScreen = (props) => {
                               width: R.fontSize.Size45,
                               marginTop:
                                 Platform.OS === 'android'
-                                  ? R.fontSize.Size4
+                                  ? R.fontSize.Size2
                                   : 0,
                               textAlign: 'center',
                             }}
@@ -296,6 +372,7 @@ const OtpScreen = (props) => {
                         {'Didn’t recieve the code?'}
                       </Text>
                       <Pressable
+                        onPress={() => onCallResndOTP()}
                         style={({pressed}) => [
                           {
                             padding: R.fontSize.Size4,
@@ -326,6 +403,100 @@ const OtpScreen = (props) => {
             />
           </View>
         </SafeAreaView>
+        <Modal
+          visible={pickerModal}
+          transparent={true}
+          onRequestClose={() => setPickerModal(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: R.colors.modelBackground,
+              justifyContent: 'flex-end',
+            }}>
+            <View
+              style={{
+                paddingVertical: R.fontSize.Size25,
+                paddingHorizontal: R.fontSize.Size20,
+                backgroundColor: R.colors.white,
+                paddingBottom: R.fontSize.Size20,
+              }}>
+              <View
+                style={{alignItems: 'center', marginBottom: R.fontSize.Size5}}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size14,
+                    color: R.colors.primaryTextColor,
+                    fontWeight: '700',
+                    textAlign: 'center',
+                  }}>
+                  {
+                    'Your account has been logged in another device\nPlease logout from devices'
+                  }
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginVertical: R.fontSize.Size10,
+                  paddingTop: R.fontSize.Size10,
+                  paddingBottom: R.fontSize.Size20,
+                }}>
+                <Pressable
+                  onPress={() => onCallLogoutAllDevices()}
+                  style={({pressed}) => [
+                    {
+                      width: R.fontSize.Size140,
+                      height: R.fontSize.Size45,
+                      borderRadius: R.fontSize.Size4,
+                      opacity: pressed ? 0.5 : 1,
+                      backgroundColor: R.colors.appColor,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginHorizontal: R.fontSize.Size20,
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      color: R.colors.white,
+                      fontSize: R.fontSize.Size14,
+                      fontWeight: '700',
+                    }}>
+                    {'Logout'}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => setPickerModal(false)}
+                  style={({pressed}) => [
+                    {
+                      width: R.fontSize.Size140,
+                      height: R.fontSize.Size45,
+                      borderRadius: R.fontSize.Size4,
+                      opacity: pressed ? 0.5 : 1,
+                      borderWidth: 2,
+                      borderColor: R.colors.appColor,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginHorizontal: R.fontSize.Size20,
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      color: R.colors.appColor,
+                      fontSize: R.fontSize.Size14,
+                      fontWeight: '700',
+                    }}>
+                    {'Cancel'}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </StoryScreen>
     );
 }

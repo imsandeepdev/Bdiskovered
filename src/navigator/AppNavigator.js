@@ -30,6 +30,7 @@ import PopularViewAllScreen from '../screens/PopularViewAllScreen';
 import ConnectedProfileScreen from '../screens/ConnectedProfileScreen';
 import { GetProfileDetailsRequest } from '../actions/getProfile.action';
 import SearchScreen from '../screens/SearchScreen';
+import TailentVideoList from '../screens/TailentVideoList';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -161,6 +162,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="UploadScreen"
           component={UploadVideoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TailentVideoList"
+          component={TailentVideoList}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

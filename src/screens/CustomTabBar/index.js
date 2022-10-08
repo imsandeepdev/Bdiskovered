@@ -37,7 +37,7 @@ const CustomTabBar = props => {
       style={{
         backgroundColor: R.colors.white,
         overflow: 'hidden',
-        paddingTop: 5,
+        paddingTop: R.fontSize.Size5,
       }}>
       <View
         style={{
@@ -148,7 +148,7 @@ const CustomTabBar = props => {
                   ? R.colors.appColor
                   : R.colors.placeholderTextColor,
             }}>
-            {props.userProfile?.Profile?.avatar != null ||
+            {/* {props.userProfile?.Profile?.avatar != null ||
             props.userProfile?.Profile?.avatar != '' ? (
               <Image
                 source={{
@@ -161,7 +161,7 @@ const CustomTabBar = props => {
                   borderRadius: R.fontSize.Size20,
                 }}
               />
-            ) : (
+            ) : ( */}
               <Image
                 source={R.images.inActiveProfileIcon}
                 resizeMode={'cover'}
@@ -171,7 +171,7 @@ const CustomTabBar = props => {
                   borderRadius: R.fontSize.Size20,
                 }}
               />
-             )}
+              {/* )} */}
           </View>
         </TouchableOpacity>
       </View>

@@ -262,7 +262,8 @@ const onCallVideoPostAPI = () => {
               ? videoPath.path
               : videoPath.path?.replace('file://', ''),
           type: videoPath.mime,
-          name: videoPath.filename ?? 'video.mp4',
+          name: 'video.mp4',
+          // name: videoPath.filename ?? 'video.mp4',
         },
   );
 console.log("FORMD",formdata)

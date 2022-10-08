@@ -41,8 +41,7 @@ const LoginScreen = (props) => {
     {
       let data = {
         mobile: `+${countryCode}${mobNo}`,
-        device_token:
-          'cO2stOGoRpOGAnruOLGUan:APA91bGIdddlY_kqTLbaw2EN6yl9tof3GjFz0_rb_V3Nj8TH4FCyZn5eWLE4Ly7t7uIOzV5dvvhvoqrMLhjbTZgfj5oYaYdX1lKUCZ27I5la-00-HDtLAa4YInAtYy5t8ZrQAUQ-KkO',
+        device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
       };
       dispatch(
         CreateOTPRequest(data, response => {
