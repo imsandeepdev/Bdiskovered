@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -9,8 +10,11 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import {CustomCardView, ShadowHeader, StoryScreen} from '../../components';
+import { ConnectTailentProfileRequest, GetProfileDetailsRequest } from '../../actions/getProfile.action';
+import {CustomCardView, ShadowHeader, StoryScreen, VideoCard} from '../../components';
 import R from '../../res/R';
+import { connect, Connect,useDispatch } from 'react-redux';
+import { Config } from '../../config';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -59,9 +63,126 @@ const timeDetails = [
   },
 ];
 
-const ConnectedProfileScreen = props => {
+
+const CustomTimeRow = props => {
   return (
-    <StoryScreen>
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: R.fontSize.Size10,
+      }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: screenWidth / 2.5,
+        }}>
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+            color: R.colors.appColor,
+            marginHorizontal: R.fontSize.Size12,
+          }}>
+          {props.leftTitle}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            color: R.colors.primaryTextColor,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+          }}>
+          {'USD'}
+        </Text>
+        <Text
+          style={{
+            height: R.fontSize.Size20,
+            marginHorizontal: R.fontSize.Size8,
+            textAlign: 'center',
+            borderBottomWidth: 1,
+            borderColor: R.colors.appColor,
+            fontFamily: R.fonts.regular,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+            color: R.colors.black,
+          }}>
+          {props.rightText}
+        </Text>
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            color: R.colors.primaryTextColor,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+          }}>
+          {props.rightDayHours}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const ConnectedProfileScreen = props => {
+
+  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
+  const [profileDetails, setProfileDetails] = useState({});
+  const [tailentPostVideo, setTailentPostVideo] = useState([]);
+  const [taletArray, setTalentArray] = useState([]);
+  const [personalArray, setPersonalArray] = useState([]);
+  const [profilePic, setProfilePic] = useState([]);
+
+  useEffect(()=>{
+
+    onCallConnectTailentProfileAPI(props.route.params?.profileId);
+
+  },[props.navigation])
+
+    const onCallConnectTailentProfileAPI = (profileId) => {
+    setLoading(true)
+    let data = {
+      id: profileId
+    }
+    dispatch(ConnectTailentProfileRequest(data,response => {
+      console.log('Get Profile Res', response)
+      if (response.status == 'success') {
+        setProfileDetails(response.Profile);
+        let tempTalentArray = response.Profile?.category;
+         let useTalentArray = tempTalentArray.split(',');
+         console.log('useTalentArray', useTalentArray);
+          setTalentArray(useTalentArray)
+          setTailentPostVideo(response.Profile?.post)
+        setPersonalArray([
+          response.Profile?.gender,
+          response.Profile?.birth,
+          'Guru',
+        ]);
+        setProfilePic({
+          path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+          mime: 'profile/jpeg',
+          filename: 'profile.jpeg',
+        });
+        setLoading(false);
+      }
+    }))
+  }
+
+
+
+  return (
+    <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.goBack()}
@@ -82,7 +203,9 @@ const ConnectedProfileScreen = props => {
             </Text>
           }
           rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() => console.log('Bell')}
+          rightSourceOnPress2={() =>
+            props.navigation.navigate('NotificationScreen')
+          }
         />
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
@@ -97,19 +220,20 @@ const ConnectedProfileScreen = props => {
               <View style={{flex: 1, justifyContent: 'space-around'}}>
                 <View
                   style={{
-                    height: R.fontSize.Size40,
-                    width: R.fontSize.Size40,
+                    height: R.fontSize.Size50,
+                    width: R.fontSize.Size50,
                     borderRadius: R.fontSize.Size25,
                     overflow: 'hidden',
-                    borderWidth: 1,
+                    borderWidth: 2,
+                    borderColor: R.colors.appColor,
                   }}>
                   <Image
                     source={{
-                      uri: 'https://xsgames.co/randomusers/assets/avatars/male/63.jpg',
+                      uri: profilePic?.path,
                     }}
                     style={{
-                      height: R.fontSize.Size40,
-                      width: R.fontSize.Size40,
+                      height: R.fontSize.Size45,
+                      width: R.fontSize.Size45,
                     }}
                     resizeMode={'cover'}
                   />
@@ -122,7 +246,7 @@ const ConnectedProfileScreen = props => {
                     color: R.colors.primaryTextColor,
                   }}
                   numberOfLines={1}>
-                  {'Random Name'}
+                  {profileDetails?.name}
                 </Text>
               </View>
               <View
@@ -146,7 +270,7 @@ const ConnectedProfileScreen = props => {
                     color: R.colors.primaryTextColor,
                   }}
                   numberOfLines={1}>
-                  {'7'}
+                  {tailentPostVideo.length}
                 </Text>
                 <Text
                   style={{
@@ -201,7 +325,7 @@ const ConnectedProfileScreen = props => {
                   fontWeight: '400',
                   color: R.colors.primaryTextColor,
                 }}>
-                {`BioBioBioBioBioBioBioBioBioBioBioBiooBiooBiooBiooBioBioBioBioBioBioBioBioBioBioBioBioBiooBiooBiooBi`}
+                {`${profileDetails?.bio}`}
               </Text>
             </View>
 
@@ -212,7 +336,7 @@ const ConnectedProfileScreen = props => {
                 alignItems: 'center',
                 marginTop: R.fontSize.Size30,
               }}>
-              {persnalDetails.map((item, index) => {
+              {personalArray.map((item, index) => {
                 return (
                   <View
                     key={index}
@@ -237,13 +361,12 @@ const ConnectedProfileScreen = props => {
                         color: R.colors.primaryTextColor,
                         marginLeft: R.fontSize.Size8,
                       }}>
-                      {item.title}
+                      {item}
                     </Text>
                   </View>
                 );
               })}
             </View>
-
             <View
               style={{
                 flexWrap: 'wrap',
@@ -251,7 +374,8 @@ const ConnectedProfileScreen = props => {
                 alignItems: 'center',
                 marginTop: R.fontSize.Size20,
               }}>
-              {tailentDetails.map((item, index) => {
+              {taletArray.map((item, index) => {
+                console.log('ITEM', item);
                 return (
                   <View
                     key={index}
@@ -273,78 +397,58 @@ const ConnectedProfileScreen = props => {
                         color: R.colors.primaryTextColor,
                         marginLeft: R.fontSize.Size8,
                       }}>
-                      {item.title}
+                      {item}
                     </Text>
                   </View>
                 );
               })}
             </View>
 
-            <View style={{marginTop: R.fontSize.Size30}}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontWeight: '700',
-                  fontSize: R.fontSize.Size18,
-                  color: R.colors.primaryTextColor,
-                }}>
-                {'Available for :'}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                marginTop: R.fontSize.Size30,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  flex: 1,
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                }}>
-                {timeDetails.map((item, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        alignItems: 'center',
-                        marginRight: R.fontSize.Size10,
-                        justifyContent: 'center',
-                        paddingHorizontal: R.fontSize.Size20,
-                        paddingVertical: R.fontSize.Size6,
-                        backgroundColor: R.colors.appColor,
-                        borderRadius: R.fontSize.Size8,
-                        marginBottom: R.fontSize.Size6,
-                      }}>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          fontWeight: '700',
-                          color: R.colors.white,
-                          marginLeft: R.fontSize.Size8,
-                        }}>
-                        {item.title}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </View>
-              <View>
+            {profileDetails?.job_type1 != null &&
+            profileDetails?.job_type2 != null &&
+            profileDetails?.job_type3 != null ? (
+              <View style={{marginTop: R.fontSize.Size30}}>
                 <Text
                   style={{
                     fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
                     fontWeight: '700',
+                    fontSize: R.fontSize.Size18,
                     color: R.colors.primaryTextColor,
-                    alignItems: 'center',
                   }}>
-                  {'35-50 $'}
+                  {'Available for :'}
                 </Text>
               </View>
+            ) : null}
+
+            <View
+              style={{
+                marginTop: R.fontSize.Size20,
+                alignItems: 'center',
+              }}>
+              {profileDetails?.job_type1 != '' &&
+                profileDetails?.job_type1 != null && (
+                  <CustomTimeRow
+                    leftTitle={profileDetails?.job_type1}
+                    rightText={profileDetails?.full_time_amount}
+                    rightDayHours={'/ Day'}
+                  />
+                )}
+              {profileDetails?.job_type2 != '' &&
+                profileDetails?.job_type2 != null && (
+                  <CustomTimeRow
+                    leftTitle={profileDetails?.job_type2}
+                    rightText={profileDetails?.part_time_amount}
+                    rightDayHours={'/ Hours'}
+                  />
+                )}
+              {profileDetails?.job_type3 != '' &&
+              profileDetails?.job_type3 != null ? (
+                <CustomTimeRow
+                  leftTitle={profileDetails?.job_type3}
+                  rightText={profileDetails?.gigs_amount}
+                  rightDayHours={'/ Hours'}
+                />
+              ) : null}
             </View>
 
             <View
@@ -352,19 +456,34 @@ const ConnectedProfileScreen = props => {
                 marginTop: R.fontSize.Size45,
                 flexWrap: 'wrap',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
-              {[1, 2, 3, 4, 5, 6].map((item, index) => {
+              {tailentPostVideo.map((item, index) => {
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      width: screenWidth / 3.7,
-                      height: screenWidth / 3,
-                      backgroundColor: R.colors.placeholderTextColor,
-                      borderRadius: R.fontSize.Size8,
-                      margin: R.fontSize.Size5,
-                    }}></View>
+                  <View key={index}>
+                    <Pressable
+                      onPress={() =>
+                        props.navigation.navigate('TailentVideoList', {
+                          videoItems: tailentPostVideo,
+                          playIndex: index,
+                        })
+                      }
+                      style={({pressed}) => [
+                        {
+                          opacity: pressed ? 0.5 : 1,
+                          width: screenWidth / 3.7,
+                          height: screenWidth / 3,
+                          borderRadius: R.fontSize.Size8,
+                          margin: R.fontSize.Size5,
+                          overflow: 'hidden',
+                        },
+                      ]}>
+                      <VideoCard
+                        poster={`${Config.API_URL}${item?.post.slice(22)}`}
+                        videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
+                        paused={true}
+                      />
+                    </Pressable>
+                  </View>
                 );
               })}
             </View>
@@ -375,4 +494,9 @@ const ConnectedProfileScreen = props => {
   );
 };
 
-export default ConnectedProfileScreen;
+const mapStatetoProps = (state, props) => ({
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+export default connect(mapStatetoProps) (ConnectedProfileScreen);

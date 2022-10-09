@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {View, TextInput, Pressable, Image, Text, ScrollView, SafeAreaView, Dimensions, StatusBar, Platform} from 'react-native';
+import {View, TextInput, Pressable, Image, Text, ScrollView, SafeAreaView, Dimensions, StatusBar, Platform,Alert} from 'react-native';
 import {CustomCardLine, CustomCardView, ShadowHeader, StoryScreen, VideoCard}from '../../components'
 import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
 import Toast from 'react-native-simple-toast';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import { Config } from '../../config';
+import { PostDeleteRequest } from '../../actions/uploadNewVideo.action';
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -198,29 +199,72 @@ const [profilePic, setProfilePic] = useState([]);
     }))
   }
 
+    const onDeleteVideoAlart = (postId) => {
+      Alert.alert(
+        'Delete Video!',
+        'Are you sure want to delete this video?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => onCallDeletevideoAPI(postId),
+          },
+          {
+            text: 'No',
+          },
+        ],
+        {
+          cancelable: true,
+        },
+      );
+    };
+
+    const onCallDeletevideoAPI = postId => {
+      // setLoading(true)
+      let data ={
+        postId: postId
+      }
+      console.log('PostId',data)
+      // dispatch(PostDeleteRequest(data,response =>{
+      //   console.log('DeletePost Resp',response)
+      //   if(response.status == 'success')
+      //   {
+      //     onCallProfileAPI();
+      //     Toast.show(response.message, Toast.SHORT);
+      //     setLoading(false)
+      //   }
+      //   else
+      //   {
+      //     Toast.show(response.message, Toast.SHORT)
+      //     setLoading(false);
+      //   }
+      // }))
+    };
+
     return (
       <StoryScreen loading={loading}>
         <SafeAreaView style={{flex: 1}}>
           <ShadowHeader
             onPress={() => props.navigation.toggleDrawer()}
             leftSource={R.images.menuIcon}
-            rightSource={R.images.chatIcon}
-            rightSourceOnPress={() => console.log('chat')}
-            marginRightSource={R.fontSize.Size6}
-            rightTitle={
-              <Text
-                style={{
-                  marginRight: R.fontSize.Size10,
-                  color: R.colors.primaryTextColor,
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size14,
-                  fontWeight: '700',
-                }}>
-                {'Send Message'}
-              </Text>
-            }
+            // rightSource={R.images.chatIcon}
+            // rightSourceOnPress={() => console.log('chat')}
+            // marginRightSource={R.fontSize.Size6}
+            // rightTitle={
+            //   <Text
+            //     style={{
+            //       marginRight: R.fontSize.Size10,
+            //       color: R.colors.primaryTextColor,
+            //       fontFamily: R.fonts.regular,
+            //       fontSize: R.fontSize.Size14,
+            //       fontWeight: '700',
+            //     }}>
+            //     {'Send Message'}
+            //   </Text>
+            // }
             rightSource2={R.images.bellIcon}
-            rightSourceOnPress2={() => console.log('Bell')}
+            rightSourceOnPress2={() =>
+              props.navigation.navigate('NotificationScreen')
+            }
           />
           <ScrollView
             contentContainerStyle={{flexGrow: 1}}
@@ -501,7 +545,7 @@ const [profilePic, setProfilePic] = useState([]);
                         color: R.colors.primaryTextColor,
                       }}
                       numberOfLines={1}>
-                      {'7'}
+                      {tailentPostVideo.length}
                     </Text>
                     <Text
                       style={{
@@ -701,10 +745,12 @@ const [profilePic, setProfilePic] = useState([]);
                     return (
                       <View key={index}>
                         <Pressable
-                          onPress={() => props.navigation.navigate('TailentVideoList',{
-                            videoItems: tailentPostVideo,
-                            playIndex: index
-                          })}
+                          onPress={() =>
+                            props.navigation.navigate('TailentVideoList', {
+                              videoItems: tailentPostVideo,
+                              playIndex: index,
+                            })
+                          }
                           style={({pressed}) => [
                             {
                               opacity: pressed ? 0.5 : 1,
@@ -722,6 +768,39 @@ const [profilePic, setProfilePic] = useState([]);
                             )}`}
                             paused={true}
                           />
+                        </Pressable>
+                        <Pressable
+                          onPress={() => onDeleteVideoAlart(item?._id)}
+                          style={({pressed}) => [
+                            {
+                              position: 'absolute',
+                              bottom: 10,
+                              right: 10,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              opacity: pressed ? 0.5 : 1,
+                            },
+                          ]}>
+                          <View
+                            style={{
+                              height: R.fontSize.Size30,
+                              width: R.fontSize.Size25,
+                              backgroundColor: R.colors.modelBackground,
+                              borderWidth: 0.5,
+                              borderColor: R.colors.lightWhite,
+                              borderRadius: R.fontSize.Size5,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Image
+                              source={R.images.deleteIcon}
+                              style={{
+                                height: R.fontSize.Size15,
+                                width: R.fontSize.Size15,
+                              }}
+                              resizeMode={'contain'}
+                            />
+                          </View>
                         </Pressable>
                       </View>
                     );

@@ -19,5 +19,7 @@ export const Config = {
   subscriberGetPlansAPI: 'subscriber/get-plans',
   subGetCustomPlanAPI: 'subscriber/get-custom-plans',
   userLogOutAllAPI: 'user/logout-all',
+  connectedUsersAPI: 'profile/connect-user-list',
+  postDeleteAPI: 'post/delete',
 };
 

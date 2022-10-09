@@ -124,12 +124,25 @@ const Menu = (props) => {
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <CustomMenuButton
-            onPress={() => console.log('help')}
+            onPress={() => props.navigation.navigate('ConnectionScreen')}
+            leftSource={R.images.connectionsIcon}
+            title={'Connections'}
+          />
+          <CustomMenuButton
+            onPress={() =>
+              props.navigation.navigate('WebViewScreen', {
+                from: 'help',
+              })
+            }
             leftSource={R.images.helpIcon}
             title={'Help'}
           />
           <CustomMenuButton
-            onPress={() => console.log('faq')}
+            onPress={() =>
+              props.navigation.navigate('WebViewScreen', {
+                from: 'faq',
+              })
+            }
             leftSource={R.images.faqIcon}
             title={'FAQ'}
           />

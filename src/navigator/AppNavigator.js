@@ -31,6 +31,9 @@ import ConnectedProfileScreen from '../screens/ConnectedProfileScreen';
 import { GetProfileDetailsRequest } from '../actions/getProfile.action';
 import SearchScreen from '../screens/SearchScreen';
 import TailentVideoList from '../screens/TailentVideoList';
+import WebViewScreen from '../screens/WebViewScreen';
+import ConnectionScreen from '../screens/ConnectionScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -167,6 +170,21 @@ const AppNavigator = props => {
         <Stack.Screen
           name="TailentVideoList"
           component={TailentVideoList}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="WebViewScreen"
+          component={WebViewScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ConnectionScreen"
+          component={ConnectionScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="NotificationScreen"
+          component={NotificationScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -77,7 +77,17 @@ export const user_LogoutAll = 'user_LogoutAll';
 export const user_LogoutAll_success = 'user_LogoutAll_success';
 export const user_LogoutAll_error = 'user_LogoutAll_error';
 
-// resendOtp
-// export const resend_Otp = 'resend_Otp';
-// export const resend_Otp_success = 'resend_Otp_success';
-// export const resend_Otp_error = 'resend_Otp_error';
+// connectTailetProfile
+export const connectTailent_Profile = 'connectTailent_Profile';
+export const connectTailent_Profile_success = 'connectTailent_Profile_success';
+export const connectTailent_Profile_error = 'connectTailent_Profile_error';
+
+// connectedUsers
+export const connected_Users = 'connected_Users';
+export const connected_Users_success = 'connected_Users_success';
+export const connected_Users_error = 'connected_Users_error';
+
+// postDelete
+export const post_Delete = 'post_Delete';
+export const post_Delete_success = 'post_Delete_success';
+export const post_Delete_error = 'post_Delete_error';

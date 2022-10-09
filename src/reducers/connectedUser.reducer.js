@@ -1,29 +1,29 @@
 import {
-  create_OTP,
-  create_OTP_success,
-  create_OTP_error
+    connected_Users,
+    connected_Users_success,
+    connected_Users_error
 } from '../constants/common';
 
 const initial_state = {
   loading: false,
-  genrateOTPInit: {},
+  connectUserInit: {},
   error: '',
 };
 
 const reducer = (state = initial_state, {type, payload}) => {
   switch (type) {
-    case create_OTP:
+    case connected_Users:
       return {
         ...state,
         loading: true,
       };
-    case create_OTP_success:
+    case connected_Users_success:
       return {
         loading: false,
-        genrateOTPInit: payload,
+        connectUserInit: payload,
         error: '',
       };
-    case create_OTP_error:
+    case connected_Users_error:
       return {
         loading: false,
         error: payload.error,

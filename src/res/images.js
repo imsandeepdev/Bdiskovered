@@ -30,6 +30,7 @@ const images = {
   eyeIcon: require('./images/eyeIcon.png'),
   ratingBarIcon: require('./images/ratingBarIcon.png'),
   greyAppIcon: require('./images/greyAppIcon.png'),
+  orangeAppIcon: require('./images/oragne_star.png'),
   redHeartIcon: require('./images/redHeartIcon.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
@@ -39,6 +40,7 @@ const images = {
   faqIcon: require('./images/FaqIcon.png'),
   signoutIcon: require('./images/SignoutIcon.png'),
   premiumIcon: require('./images/premiumIcon.png'),
+  connectionsIcon: require('./images/connectionIcon.png'),
 
   // BottomTab
   activeHomeIcon: require('./images/activeHomeIcon.png'),
@@ -54,6 +56,9 @@ const images = {
   // Profile
   profileEditIcon: require('./images/editProfileIcon.png'),
   chatIcon: require('./images/chatIcon.png'),
+
+  // Notification
+  deleteIcon: require('./images/deleteIcon.png'),
 };
 
 export {images};

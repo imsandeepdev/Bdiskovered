@@ -384,10 +384,12 @@ const HomeScreen = (props) => {
     console.log('ONLOAD',data)
   }
 
-  const onCallConnectNow = () => 
+  const onCallConnectNow = (profileID) => 
   {
     setModalPicker(false)
-    props.navigation.navigate('ConnectedProfileScreen');
+    props.navigation.navigate('ConnectedProfileScreen',{
+      profileId: profileID
+    });
   }
   
   return (
@@ -400,7 +402,7 @@ const HomeScreen = (props) => {
           rightSource={R.images.filterIcon}
           rightSourceOnPress={() => onCallModal('filterModal')}
           rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() => console.log('Bell')}
+          rightSourceOnPress2={() => props.navigation.navigate('NotificationScreen')}
         />
         <View style={{flex: 1}}>
           <SwiperFlatList
@@ -657,13 +659,21 @@ const HomeScreen = (props) => {
                         </Text>
                       </View>
                     </View>
-                    <View
-                      style={{
-                        marginHorizontal: R.fontSize.Size15,
-                        alignItems: 'center',
-                      }}>
+                    <Pressable
+                      onPress={() =>
+                        props.navigation.navigate('ConnectedProfileScreen', {
+                          profileId: item?.profileID,
+                        })
+                      }
+                      style={({pressed}) => [
+                        {
+                          marginHorizontal: R.fontSize.Size15,
+                          alignItems: 'center',
+                          opacity: pressed ? 0.5 : 1,
+                        },
+                      ]}>
                       <Image
-                        source={R.images.greyAppIcon}
+                        source={R.images.orangeAppIcon}
                         style={{
                           height: R.fontSize.Size30,
                           width: R.fontSize.Size30,
@@ -681,7 +691,7 @@ const HomeScreen = (props) => {
                         numberOfLines={1}>
                         {'Connect'}
                       </Text>
-                    </View>
+                    </Pressable>
                   </View>
                 </View>
               );
@@ -863,8 +873,8 @@ const HomeScreen = (props) => {
                                   Styles.videoModalAvailView,
                                   {
                                     backgroundColor:
-                                      item != '' ||
-                                      (item != null && R.colors.appColor),
+                                      (item != '' ||
+                                      item != null )&& R.colors.appColor,
                                   },
                                 ]}>
                                 <Text style={Styles.videoModalAvailItemText}>
@@ -886,7 +896,7 @@ const HomeScreen = (props) => {
                 onPress={() => {
                   modalType == 'filterModal'
                     ? console.log('Filter')
-                    : onCallConnectNow();
+                    : onCallConnectNow(videoModalDetail?.profileID);
                 }}
                 title={modalType == 'filterModal' ? 'Apply' : 'Connect Now'}
                 marginHorizontal={R.fontSize.Size55}

@@ -11,6 +11,7 @@ import getProfileDetailsRoot from '../reducers/getProfile.reducer';
 import videoRateRoot from '../reducers/videoRating.reducer';
 import uploadNewVideoRoot from '../reducers/uploadNewVideo.reducer';
 import subGetPlanRoot from '../reducers/subGetPlan.reducer';
+import connectedUserRoot from '../reducers/connectedUser.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -27,6 +28,7 @@ showAllPostRoot,
 getProfileDetailsRoot,
 videoRateRoot,
 uploadNewVideoRoot,
-subGetPlanRoot
+subGetPlanRoot,
+connectedUserRoot
 
 });

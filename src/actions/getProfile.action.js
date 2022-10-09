@@ -5,7 +5,10 @@ import {
   getProfile_Details_error,
   profile_Update,
   profile_Update_success,
-  profile_Update_error
+  profile_Update_error,
+  connectTailent_Profile,
+  connectTailent_Profile_success,
+  connectTailent_Profile_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -41,6 +44,24 @@ export const ProfileUpdateSuccess = payload => {
 export const ProfileUpdateError = error => {
   return {
     type: profile_Update_error,
+    payload: error,
+  };
+};
+
+export const ConnectTailentProfile = () => {
+  return {
+    type: connectTailent_Profile,
+  };
+};
+export const ConnectTailentProfileSuccess = payload => {
+  return {
+    type: connectTailent_Profile_success,
+    payload,
+  };
+};
+export const ConnectTailentProfileError = error => {
+  return {
+    type: connectTailent_Profile_error,
     payload: error,
   };
 };
@@ -84,6 +105,28 @@ export const ProfileUpdateRequest = (
       })
       .catch(error => {
         dispatch(ProfileUpdateError(error));
+        failed?.(error);
+      });
+  };
+};
+
+export const ConnectTailentProfileRequest = (
+  data,
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(ConnectTailentProfile());
+    Api.MultiPostFetch({
+      body:data,
+      url: Config.getProfileAPI,
+    })
+      .then(response => {
+        dispatch(ConnectTailentProfileSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(ConnectTailentProfileError(error));
         failed?.(error);
       });
   };

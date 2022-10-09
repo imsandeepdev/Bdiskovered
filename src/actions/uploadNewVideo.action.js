@@ -2,7 +2,10 @@ import {Config} from '../config';
 import {
     upload_NewVideo,
     upload_NewVideo_success,
-    upload_NewVideo_error
+    upload_NewVideo_error,
+    post_Delete,
+    post_Delete_success,
+    post_Delete_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -20,6 +23,25 @@ export const UploadNewVideoSuccess = payload => {
 export const UploadNewVideoError = error => {
   return {
     type: upload_NewVideo_error,
+    payload: error,
+  };
+};
+
+
+export const PostDelete = () => {
+  return {
+    type: post_Delete,
+  };
+};
+export const PostDeleteSuccess = payload => {
+  return {
+    type: post_Delete_success,
+    payload,
+  };
+};
+export const PostDeleteError = error => {
+  return {
+    type: post_Delete_error,
     payload: error,
   };
 };
@@ -47,3 +69,27 @@ export const UploadNewVideoRequest = (
       });
   };
 };
+
+
+export const PostDeleteRequest = (
+  data,
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(PostDelete());
+    Api.MultiPostFetch({
+      body: data,
+      url: Config.postDeleteAPI,
+    })
+      .then(response => {
+        dispatch(PostDeleteSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(PostDeleteError(error));
+        failed?.(error);
+      });
+  };
+};
+

@@ -294,10 +294,10 @@ console.log("FORMD",formdata)
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
           leftSource={R.images.menuIcon}
-          rightSource={R.images.filterIcon}
-          rightSourceOnPress={() => setModalPicker(true)}
           rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() => console.log('Bell')}
+          rightSourceOnPress2={() =>
+            props.navigation.navigate('NotificationScreen')
+          }
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
