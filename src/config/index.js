@@ -21,5 +21,6 @@ export const Config = {
   userLogOutAllAPI: 'user/logout-all',
   connectedUsersAPI: 'profile/connect-user-list',
   postDeleteAPI: 'post/delete',
+  getsubscriberGetAPI: 'subscriber/get'
 };
 

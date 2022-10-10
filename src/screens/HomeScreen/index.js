@@ -530,6 +530,7 @@ const HomeScreen = (props) => {
                       videoCat={item?.category}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
+                      usdPrice={`USD ${item?.amount}`}
                       // onProgress={onProgress}
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}

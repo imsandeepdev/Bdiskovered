@@ -688,9 +688,9 @@ const [profilePic, setProfilePic] = useState([]);
                   })}
                 </View>
 
-                {profileDetails?.job_type1 != null &&
-                profileDetails?.job_type2 != null &&
-                profileDetails?.job_type3 != null ? (
+                {profileDetails?.full_time_amount != '' ||
+                profileDetails?.part_time_amount != '' ||
+                profileDetails?.gigs_amount != '' ? (
                   <View style={{marginTop: R.fontSize.Size30}}>
                     <Text
                       style={{
@@ -709,24 +709,24 @@ const [profilePic, setProfilePic] = useState([]);
                     marginTop: R.fontSize.Size20,
                     alignItems: 'center',
                   }}>
-                  {profileDetails?.job_type1 != '' &&
-                    profileDetails?.job_type1 != null && (
+                  {profileDetails?.full_time_amount != '' &&
+                    profileDetails?.full_time_amount != null && (
                       <CustomTimeRow
                         leftTitle={profileDetails?.job_type1}
                         rightText={profileDetails?.full_time_amount}
                         rightDayHours={'/ Day'}
                       />
                     )}
-                  {profileDetails?.job_type2 != '' &&
-                    profileDetails?.job_type2 != null && (
+                  {profileDetails?.part_time_amount != '' &&
+                    profileDetails?.part_time_amount != null && (
                       <CustomTimeRow
                         leftTitle={profileDetails?.job_type2}
                         rightText={profileDetails?.part_time_amount}
                         rightDayHours={'/ Hours'}
                       />
                     )}
-                  {profileDetails?.job_type3 != '' &&
-                  profileDetails?.job_type3 != null ? (
+                  {profileDetails?.gigs_amount != '' &&
+                  profileDetails?.gigs_amount != null ? (
                     <CustomTimeRow
                       leftTitle={profileDetails?.job_type3}
                       rightText={profileDetails?.gigs_amount}

@@ -298,22 +298,23 @@ const ConnectedProfileScreen = props => {
                   },
                 ]}>
                 <View
-                  style={{
-                    height: R.fontSize.Size10,
-                    width: R.fontSize.Size10,
-                    borderRadius: R.fontSize.Size10,
-                    backgroundColor: R.colors.white,
-                  }}
-                />
+                  style={{justifyContent:'center'}}
+                >
+                  <Image
+                      source={R.images.chatIcon}
+                      style={{height:R.fontSize.Size20,width:R.fontSize.Size20}}
+                      resizeMode={'contain'}
+                  />
+                </View>
                 <Text
                   style={{
                     fontFamily: R.fonts.regular,
                     fontSize: R.fontSize.Size14,
                     color: R.colors.white,
-                    fontWeight: '400',
+                    fontWeight: '700',
                     marginHorizontal: R.fontSize.Size5,
                   }}>
-                  {'Connected'}
+                  {'Send Message'}
                 </Text>
               </Pressable>
             </View>

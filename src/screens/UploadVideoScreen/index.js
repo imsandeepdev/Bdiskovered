@@ -338,7 +338,7 @@ console.log("FORMD",formdata)
                         color: R.colors.primaryTextColor,
                         marginTop: R.fontSize.Size10,
                       }}>
-                      {'Create a Video Post'}
+                      {'Select Type of Talent to View'}
                     </Text>
                   </View>
                   <View style={{marginTop: R.fontSize.Size50}}>
@@ -375,6 +375,13 @@ console.log("FORMD",formdata)
                         {'Add Video'}
                       </Text>
                     </Pressable>
+                  </View>
+                  <View
+                  style={{marginVertical:R.fontSize.Size4}}
+                  >
+                    <Text
+                    style={{fontFamily:R.fonts.regular, fontSize:R.fontSize.Size10, color:R.colors.placeHolderColor, fontWeight:'300'}}
+                    >{videoPath?.path}</Text>
                   </View>
                   <View style={{marginTop: R.fontSize.Size20, flex: 1}}>
                     <CustomLineTextInput

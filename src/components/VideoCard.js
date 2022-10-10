@@ -192,6 +192,16 @@ const VideoCard = props => {
             numberOfLines={3}>
             {props.bottomDiscription}
           </Text>
+          <Text
+            style={{
+              marginTop:R.fontSize.Size4,
+              fontFamily: R.fonts.regular,
+              fontSize: R.fontSize.Size14,
+              fontWeight: '700',
+              color: R.colors.white,
+            }}>
+            {props.usdPrice}
+          </Text>
         </View>
       </View>
     </View>

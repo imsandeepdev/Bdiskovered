@@ -5,7 +5,10 @@ import {
   subscriber_GetPlans_error,
   getCustom_Plan,
   getCustom_Plan_success,
-  getCustom_Plan_error
+  getCustom_Plan_error,
+  getSubscriber_Get,
+  getSubscriber_Get_success,
+  getSubscriber_Get_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -45,6 +48,24 @@ export const GetCustomPlanError = error => {
   };
 };
 
+export const GetSubscriberGet = () => {
+  return {
+    type: getSubscriber_Get,
+  };
+};
+export const GetSubscriberGetSuccess = payload => {
+  return {
+    type: getSubscriber_Get_success,
+    payload,
+  };
+};
+export const GetSubscriberGetError = error => {
+  return {
+    type: getSubscriber_Get_error,
+    payload: error,
+  };
+};
+
 export const SubscriberGetPlanRequest = (
   success?: () => void,
   failed?: () => void,
@@ -80,6 +101,27 @@ export const GetCustomPlanRequest = (
       })
       .catch(error => {
         dispatch(GetCustomPlanError(error));
+        failed?.(error);
+      });
+  };
+};
+
+
+export const GetSubscruberGetRequest = (
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(GetSubscriberGet());
+    Api.MultiPostFetch({
+      url: Config.getsubscriberGetAPI,
+    })
+      .then(response => {
+        dispatch(GetSubscriberGetSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(GetSubscriberGetError(error));
         failed?.(error);
       });
   };

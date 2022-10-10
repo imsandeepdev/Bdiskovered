@@ -4,13 +4,17 @@ import {
     subscriber_GetPlans_error,
     getCustom_Plan,
     getCustom_Plan_success,
-    getCustom_Plan_error
+    getCustom_Plan_error,
+    getSubscriber_Get,
+    getSubscriber_Get_success,
+    getSubscriber_Get_error
 } from '../constants/common';
 
 const initial_state = {
   loading: false,
   subGetPlanInit: {},
   getCustomPlanInit: {},
+  getSubgetInit: {},
   error: '',
 };
 
@@ -44,6 +48,23 @@ const reducer = (state = initial_state, {type, payload}) => {
         error: '',
       };
     case getCustom_Plan_error:
+      return {
+        loading: false,
+        error: payload.error,
+      };
+
+    case getSubscriber_Get:
+      return {
+        ...state,
+        loading: true,
+      };
+    case getSubscriber_Get_success:
+      return {
+        loading: false,
+        getSubgetInit: payload,
+        error: '',
+      };
+    case getSubscriber_Get_error:
       return {
         loading: false,
         error: payload.error,

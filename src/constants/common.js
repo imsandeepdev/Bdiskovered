@@ -72,6 +72,11 @@ export const getCustom_Plan = 'getCustom_Plan';
 export const getCustom_Plan_success = 'getCustom_Plan_success';
 export const getCustom_Plan_error = 'getCustom_Plan_error';
 
+// getSubscriberGet
+export const getSubscriber_Get = 'getSubscriber_Get';
+export const getSubscriber_Get_success = 'getSubscriber_Get_success';
+export const getSubscriber_Get_error = 'getSubscriber_Get_error';
+
 // userLogoutAll
 export const user_LogoutAll = 'user_LogoutAll';
 export const user_LogoutAll_success = 'user_LogoutAll_success';

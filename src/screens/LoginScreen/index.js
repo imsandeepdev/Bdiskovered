@@ -19,8 +19,8 @@ const LoginScreen = (props) => {
   const dispatch = useDispatch()
   const [mobNo, setMobNo] = useState('')
   const [countyModalPicker,setCountyModalPicker] = useState(false)
-  const [countryCode, setCountryCode] = useState('91')
-  const [countyFlag, setCountyFlag] = useState('');
+  const [countryCode, setCountryCode] = useState('971')
+  const [countyFlag, setCountyFlag] = useState('ae');
   const [fcmToken, setFcmToken] = useState('');
 
   // useEffect(()=>{
@@ -103,9 +103,9 @@ const LoginScreen = (props) => {
                     <View style={{marginTop: R.fontSize.Size30}}>
                       <CustomTextInput
                         onChangeCounty={() => setCountyModalPicker(true)}
-                        countryFlag={countyFlag != '' ? countyFlag : 'in'}
+                        countryFlag={countyFlag != '' ? countyFlag : 'ae'}
                         countryCode={
-                          countryCode != '' ? `+${countryCode}` : '91'
+                          countryCode != '' ? `+${countryCode}` : '971'
                         }
                         maxLength={10}
                         placeholder={'Mobile No'}

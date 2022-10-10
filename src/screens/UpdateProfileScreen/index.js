@@ -13,6 +13,97 @@ import { Config } from '../../config';
 const screenWidth = Dimensions.get('screen').width
 const screenHeight = Dimensions.get('screen').height;
 
+const CustomTimeRow = props => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: R.fontSize.Size10,
+      }}>
+      <Pressable
+        onPress={props.leftOnPress}
+        style={({pressed}) => [
+          {
+            opacity: pressed ? 0.5 : 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: screenWidth / 2.5,
+          },
+        ]}>
+        <Image
+          source={props.leftImageSource}
+          style={{
+            height: R.fontSize.Size30,
+            width: R.fontSize.Size30,
+          }}
+          resizeMode={'contain'}
+        />
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+            color: props.leftTextColor,
+            marginHorizontal: R.fontSize.Size12,
+          }}>
+          {props.leftTitle}
+        </Text>
+      </Pressable>
+
+      {props.rightStatus && (
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontFamily: R.fonts.regular,
+              color: R.colors.primaryTextColor,
+              fontSize: R.fontSize.Size14,
+              fontWeight: '400',
+            }}>
+            {'USD'}
+          </Text>
+          <View style={{width: R.fontSize.Size70, alignItems: 'center'}}>
+            <TextInput
+              style={{
+                width: R.fontSize.Size60,
+                height: R.fontSize.Size40,
+                paddingVertical: R.fontSize.Size6,
+                marginHorizontal: R.fontSize.Size6,
+                textAlign: 'center',
+                borderBottomWidth: 1,
+                borderColor: R.colors.appColor,
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size12,
+                color: R.colors.primaryTextColor,
+                fontWeight: '400',
+              }}
+              maxLength={6}
+              placeholder={'00'}
+              placeholderTextColor={R.colors.placeholderTextColor}
+              value={props.rightValue}
+              onChangeText={props.rightOnChangeText}
+              keyboardType={'number-pad'}
+            />
+          </View>
+          <Text
+            style={{
+              fontFamily: R.fonts.regular,
+              color: R.colors.primaryTextColor,
+              fontSize: R.fontSize.Size14,
+              fontWeight: '400',
+            }}>
+            {props.rightDayHours}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
 
 
 const UpdateProfileScreen = (props) => {
@@ -33,6 +124,13 @@ const UpdateProfileScreen = (props) => {
     const [companyEmail, setCompanyEmail] = useState('')
     const [companyContact, setCompanyContact] = useState('')
     const [companyAddress, setCompanyAddress] = useState('')
+
+    const [selectFullTime, setSelectFullTime] = useState(false);
+    const [fullTimePrice, setFullTimePrice] = useState('');
+    const [selectPartTime, setSelectPartTime] = useState(false);
+    const [partTimePrice, setPartTimePrice] = useState('');
+    const [selectGigs, setSelectGigs] = useState(false);
+    const [gigsPrice, setGigsPrice] = useState('');
 
 
 
@@ -60,6 +158,14 @@ const UpdateProfileScreen = (props) => {
               mime: 'profile/jpeg',
               filename: 'profile.jpeg',
             });
+
+            setFullTimePrice(response.Profile?.full_time_amount);
+            setPartTimePrice(response.Profile?.part_time_amount);
+            setGigsPrice(response.Profile?.gigs_amount);
+            setSelectFullTime(response.Profile?.full_time_amount != '' ?? true);
+            setSelectPartTime(response.Profile?.part_time_amount != '' ?? true);
+            setSelectGigs(response.Profile?.gigs_amount != '' ?? true);
+
             setLoading(false);
           } else if (
             response.status == 'success' &&
@@ -124,6 +230,11 @@ const UpdateProfileScreen = (props) => {
       formData.append('name', actualName);
       formData.append('email', userMail);
       formData.append('bio', userBio);
+      formData.append('mobile', mobNo);
+      formData.append('full_time_amount', fullTimePrice);
+      formData.append('part_time_amount', partTimePrice);
+      formData.append('gigs_amount', gigsPrice);
+
       formData.append(
         'avatar',
         profilePic.path == null || profilePic?.path == null
@@ -153,6 +264,15 @@ const UpdateProfileScreen = (props) => {
             mime: 'profile/jpeg',
             filename: 'profile.jpeg',
           });
+
+          setFullTimePrice(response.Profile?.full_time_amount);
+          setPartTimePrice(response.Profile?.part_time_amount);
+          setGigsPrice(response.Profile?.gigs_amount);
+          setSelectFullTime(response.Profile?.full_time_amount != '' ?? true);
+          setSelectPartTime(response.Profile?.part_time_amount != '' ?? true);
+          setSelectGigs(response.Profile?.gigs_amount != '' ?? true);
+
+
           Toast.show(response.message,Toast.SHORT)
           setLoading(false)
         }
@@ -210,6 +330,23 @@ const UpdateProfileScreen = (props) => {
               }),
             );
           };
+
+
+     const onCallFullTimeRow = () => {
+       setSelectFullTime(!selectFullTime);
+       setFullTimePrice('');
+     };
+
+     const onCallPartTimeRow = () => {
+       setSelectPartTime(!selectPartTime);
+       setPartTimePrice('');
+     };
+
+     const onCallGigsRow = () => {
+       setSelectGigs(!selectGigs);
+       setGigsPrice('');
+     };
+
 
     return (
       <StoryScreen loading={loading}>
@@ -365,16 +502,93 @@ const UpdateProfileScreen = (props) => {
                     </Text>
                   </Pressable>
 
-                  {/* <CustomLineTextInput
+                  <CustomLineTextInput
                     value={mobNo}
                     onChangeText={mob => setMobNo(mob)}
                     placeholder={'Contact Number'}
-                  /> */}
+                  />
                   <CustomLineTextInput
                     value={userBio}
                     onChangeText={bio => setUserBio(bio)}
                     placeholder={'Bio'}
                   />
+                {
+
+                props.userType == 'Talent' &&
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size10,
+                    }}>
+                    <View>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontWeight: '900',
+                          fontSize: R.fontSize.Size15,
+                          color: R.colors.black,
+                        }}>
+                        {'Open For'}
+                      </Text>
+                      <View style={{marginTop: R.fontSize.Size10}}>
+                        <CustomTimeRow
+                          leftOnPress={() => onCallFullTimeRow()}
+                          leftImageSource={
+                            selectFullTime
+                              ? R.images.checkTermsIcon
+                              : R.images.unCheckTermsIcon
+                          }
+                          leftTitle={'Full Time'}
+                          leftTextColor={
+                            selectFullTime
+                              ? R.colors.appColor
+                              : R.colors.placeholderTextColor
+                          }
+                          rightStatus={selectFullTime}
+                          rightValue={fullTimePrice}
+                          rightOnChangeText={price => setFullTimePrice(price)}
+                          rightDayHours={'/ Day'}
+                        />
+                        <CustomTimeRow
+                          leftOnPress={() => onCallPartTimeRow()}
+                          leftImageSource={
+                            selectPartTime
+                              ? R.images.checkTermsIcon
+                              : R.images.unCheckTermsIcon
+                          }
+                          leftTitle={'Part Time'}
+                          leftTextColor={
+                            selectPartTime
+                              ? R.colors.appColor
+                              : R.colors.placeholderTextColor
+                          }
+                          rightStatus={selectPartTime}
+                          rightValue={partTimePrice}
+                          rightOnChangeText={price => setPartTimePrice(price)}
+                          rightDayHours={'/ Hours'}
+                        />
+                        <CustomTimeRow
+                          leftOnPress={() => onCallGigsRow()}
+                          leftImageSource={
+                            selectGigs
+                              ? R.images.checkTermsIcon
+                              : R.images.unCheckTermsIcon
+                          }
+                          leftTitle={'Gigs'}
+                          leftTextColor={
+                            selectGigs
+                              ? R.colors.appColor
+                              : R.colors.placeholderTextColor
+                          }
+                          rightStatus={selectGigs}
+                          rightValue={gigsPrice}
+                          rightOnChangeText={price => setGigsPrice(price)}
+                          rightDayHours={'/ Hours'}
+                        />
+                      </View>
+                    </View>
+                  </View>
+                }
+
                 </View>
               ) : (
                 <View
@@ -394,11 +608,11 @@ const UpdateProfileScreen = (props) => {
                     onChangeText={cEmail => setCompanyEmail(cEmail)}
                     placeholder={'Company Email'}
                   />
-                  {/* <CustomLineTextInput
+                  <CustomLineTextInput
                     value={companyContact}
                     onChangeText={cPhone => setCompanyContact(cPhone)}
                     placeholder={'Company Contact Number'}
-                  /> */}
+                  />
                   <CustomLineTextInput
                     value={companyAddress}
                     onChangeText={cAdd => setCompanyAddress(cAdd)}
