@@ -16,6 +16,8 @@ import {connect, useDispatch} from 'react-redux';
 import { UserSignOutRequest } from '../../actions/signUp.action';
 import Toast from 'react-native-simple-toast';
 import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const screenWidth = Dimensions.get('screen').width;
@@ -87,10 +89,12 @@ const Menu = (props) => {
     );
   };
 
-  const onCallLogout = (deviceName) => {
+  const onCallLogout = async(deviceName) => {
+    const value = await AsyncStorage.getItem('deviceAccess_token');
+    console.log("VALUE",value)
     let data = {
       device_name: deviceName,
-      device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+      device_token: value,
     };
     console.log('LOGDATA',data)
     dispatch(UserSignOutRequest(data,response=>{

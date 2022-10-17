@@ -72,8 +72,14 @@ const onChangeIndex = ({index}) => {
                       height: screenHeight,
                     }}>
                     <VideoCard
-                      poster={`${Config.API_URL}${item?.post.slice(22)}`}
-                      videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
+                      poster={`${Config.API_URL}${item?.post.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`}
+                      videoUrl={`${Config.API_URL}${item?.post.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`}
                       videoCat={item?.category}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.caption}

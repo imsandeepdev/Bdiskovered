@@ -170,7 +170,7 @@ const ConnectedProfileScreen = props => {
           'Guru',
         ]);
         setProfilePic({
-          path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+          path: `${Config.API_URL}${response.Profile?.avatar.replace('http://localhost:8080/','')}`,
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
@@ -479,8 +479,14 @@ const ConnectedProfileScreen = props => {
                         },
                       ]}>
                       <VideoCard
-                        poster={`${Config.API_URL}${item?.post.slice(22)}`}
-                        videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
+                        poster={`${Config.API_URL}${item?.post.replace(
+                          'http://localhost:8080/',
+                          '',
+                        )}`}
+                        videoUrl={`${Config.API_URL}${item?.post.replace(
+                          'http://localhost:8080/',
+                          '',
+                        )}`}
                         paused={true}
                       />
                     </Pressable>

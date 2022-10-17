@@ -8,6 +8,7 @@ import Toast from 'react-native-simple-toast';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import { Config } from '../../config';
 import { PostDeleteRequest } from '../../actions/uploadNewVideo.action';
+import moment from 'moment';
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -172,11 +173,14 @@ const [profilePic, setProfilePic] = useState([]);
           setTailentPostVideo(response.Profile?.post)
         setPersonalArray([
           response.Profile?.gender,
-          response.Profile?.birth,
+          `${moment().diff(response.Profile?.birth, 'years')} Year`,
           'Guru',
         ]);
         setProfilePic({
-          path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+          path: `${Config.API_URL}${response.Profile?.avatar.replace(
+            'http://localhost:8080/',
+            '',
+          )}`,
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
@@ -185,7 +189,8 @@ const [profilePic, setProfilePic] = useState([]);
       else if (response.status == 'success' && props.userType != 'Talent'){
         setProfileDetails(response.Profile);
         setProfilePic({
-          path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+          path: `${Config.API_URL}${response.Profile?.avatar.replace(
+            'http://localhost:8080/','')}`,
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
@@ -762,7 +767,10 @@ const [profilePic, setProfilePic] = useState([]);
                             },
                           ]}>
                           <VideoCard
-                            poster={`${Config.API_URL}${item?.post.slice(22)}`}
+                            poster={`${Config.API_URL}${item?.post.replace(
+                              'http://localhost:8080/',
+                              '',
+                            )}`}
                             videoUrl={`${Config.API_URL}${item?.post.slice(
                               22,
                             )}`}

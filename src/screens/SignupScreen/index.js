@@ -79,7 +79,10 @@ const SignupScreen = (props) => {
     const [countryCode, setCountryCode] = useState('971');
     const [countryFlag, setCountryFlag] = useState('ae');
 
+    const [createDeviceToken, setCreateDeviceToken] = useState('')
+
     useEffect(()=>{
+        onCallCreateDeviceToken()
         console.log(props.route.params?.from);
         setUserType(props.route.params?.from);
         DeviceInfo.getDeviceName().then(deviceName => {
@@ -91,6 +94,16 @@ const SignupScreen = (props) => {
         console.log('DEVICE ID',uniqueId?._3);
 
     },[props.navigation])
+
+    const onCallCreateDeviceToken = () => {
+      const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      const charLength = characters.length;
+      let result = ' ';
+      for (let i = 0; i < 45; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charLength));
+      }
+      setCreateDeviceToken(result)
+    }
 
     const onDateChange = (date) => {
       // setDOB(date)
@@ -327,7 +340,7 @@ const onCheckDocument = () => {
     const onCallForBusinessCreateOTP = () => {
   
       let signUpData = {
-        device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+        device_token: createDeviceToken,
         email: companyMail,
         device_ip: deviceId,
         user_type: userType,
@@ -341,10 +354,10 @@ const onCheckDocument = () => {
       };
 
       let data = {
-         mobile: `+${countryCode}${companyMob}`,
-         number_available: '0',
-         device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
-       };
+        mobile: `+${countryCode}${companyMob}`,
+        number_available: '0',
+        device_token: createDeviceToken,
+      };
        dispatch(
          CreateOTPRequest(data, response => {
            console.log('RESPONSE', response);
@@ -357,6 +370,7 @@ const onCheckDocument = () => {
                 fromScreen: 'SignUpScreen',
                 userTypeVerify: 'Company',
                 userType: props.route.params?.from,
+                deviceToken: createDeviceToken,
               });
             Toast.show(response?.OTP, Toast.LONG);
 
@@ -417,7 +431,7 @@ const onCheckDocument = () => {
          birth: dob,
          email: eMail,
          name: fullName,
-         device_token: 'jkjk22',
+         device_token: createDeviceToken,
          device_ip: deviceId,
          user_type: userType,
          device_name: deviceName,
@@ -425,7 +439,7 @@ const onCheckDocument = () => {
        let data = {
          mobile: `+${countryCode}${mobNo}`,
          number_available: '0',
-         device_token: 'sjdusadhouisodjswesddd3buiededkssaheed2se',
+         device_token: createDeviceToken,
        };
        dispatch(
          CreateOTPRequest(data, response => {
@@ -439,6 +453,7 @@ const onCheckDocument = () => {
               fromScreen: 'SignUpScreen',
               userTypeVerify: 'tailentViewer',
               userType: props.route.params?.from,
+              deviceToken: createDeviceToken,
             });
             Toast.show(response?.OTP, Toast.LONG);
            }

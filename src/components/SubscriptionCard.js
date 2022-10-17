@@ -6,19 +6,21 @@ import R from '../res/R';
 
 const SubscriptionCard = (props) => {
     return (
-      <View
-        style={{
+      <Pressable
+        onPress={props.onPressAdd}
+        style={({pressed})=>[{
           overflow: 'hidden',
           paddingBottom: R.fontSize.Size4,
           paddingRight: R.fontSize.Size4,
           paddingLeft: R.fontSize.Size2,
           borderRadius: R.fontSize.Size5,
           marginTop: props.marginTop,
-        }}>
+          opacity: pressed ? 0.5: 1
+        }]}>
         <View
           style={{
             borderWidth: props.borderWidth,
-            borderColor: R.colors.appColor,
+            borderColor: props.borderColor ?? R.colors.appColor,
             paddingHorizontal: R.fontSize.Size20,
             borderRadius: R.fontSize.Size8,
             backgroundColor: R.colors.white,
@@ -50,7 +52,7 @@ const SubscriptionCard = (props) => {
                 style={{
                   fontFamily: R.fonts.regular,
                   fontSize: R.fontSize.Size35,
-                  color: R.colors.appColor,
+                  color: props.priceTextColor ?? R.colors.appColor,
                   fontWeight: '700',
                 }}>
                 {props.price}
@@ -60,7 +62,7 @@ const SubscriptionCard = (props) => {
                   marginHorizontal: R.fontSize.Size5,
                   fontFamily: R.fonts.regular,
                   fontSize: R.fontSize.Size22,
-                  color: R.colors.primaryTextColor,
+                  color: props.slashTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '700',
                 }}>
                 {'/'}
@@ -69,7 +71,7 @@ const SubscriptionCard = (props) => {
                 style={{
                   fontFamily: R.fonts.regular,
                   fontSize: R.fontSize.Size22,
-                  color: R.colors.primaryTextColor,
+                  color: props.noTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '700',
                   marginRight: R.fontSize.Size5,
                 }}>
@@ -79,7 +81,7 @@ const SubscriptionCard = (props) => {
                 style={{
                   fontFamily: R.fonts.regular,
                   fontSize: R.fontSize.Size15,
-                  color: R.colors.primaryTextColor,
+                  color: props.monthTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '400',
                 }}>
                 {props.month}
@@ -114,7 +116,7 @@ const SubscriptionCard = (props) => {
           </View>
           {props.bottomButton}
         </View>
-      </View>
+      </Pressable>
     );
 }
 

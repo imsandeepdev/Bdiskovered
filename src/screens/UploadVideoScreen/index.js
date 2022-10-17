@@ -32,6 +32,7 @@ import { Video as VideoCompressor, Image as ImageCompressor ,backgroundUpload} f
 import { UploadNewVideoRequest } from '../../actions/uploadNewVideo.action';
 import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
+import { ProcessingManager } from 'react-native-video-processing';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -157,11 +158,15 @@ const onSelectPicker = params => {
       width: screenWidth,
       height: screenHeight,
       cropping: false,
+      videoQuality: 'medium',
+      durationLimit: 30,
+      thumbnail: true,
+      allowsEditing: true,
     }).then(video => {
       console.log('VIDEODETAILS', video);
-      let videoURL = video.path?.replace('file://', '');
-      console.log("VIDEOP",videoURL)
-      setVideoPath(video)
+      let videoURL = video.path;
+      console.log('VIDEOP', videoURL);
+      // setVideoPath(video)
       // setVideoPath({
       //   uri:
       //     Platform.OS === 'android'
@@ -170,13 +175,25 @@ const onSelectPicker = params => {
       //   type: video.mime,
       //   name: video.filename ?? 'video.MP4',
       // });
-      setPickerModal(false);
+      // setPickerModal(false);
 
-      // onCallVideoCompress(videoURL);
-     
+      onCallVideoCompress(videoURL);
+      // onCallCompressVideo(videoURL)
     });
   }
 };
+
+
+const onCallCompressVideo = (source) => {
+   const options = {
+     startTime: 0,
+     endTime: 10, // iOS only
+     saveToCameraRoll: true, // default is false // iOS only
+     saveWithCurrentDate: true, // default is false // iOS only
+   };
+   ProcessingManager.trim(source, options) // like VideoPlayer trim options
+     .then(data => console.log('Compress video data',data));
+}
 
 const onCallVideoCompress = async (videoURL) => {
   console.log('URL', videoURL);
@@ -195,13 +212,22 @@ const onCallVideoCompress = async (videoURL) => {
     //   if (backgroundMode) {
     //     console.log('Compression Progress: ', progress);
     //   } else {
-    //     // setCompressingProgress(progress);
+    //     setCompressingProgress(progress);
     //   }
     // },
   );
   console.log('RESULT', result);
-      setPickerModal(false);
-
+ 
+  setVideoPath({
+    uri:
+      Platform.OS === 'android'
+        ? result
+        : result?.replace('file://', ''),
+    type: 'video/mp4',
+    name: 'video.MP4',
+  });
+  console.log("VIDEOPATH", videoPath)
+  setPickerModal(false);
 };
 
 const checkValid = () => {
@@ -254,14 +280,14 @@ const onCallVideoPostAPI = () => {
   formdata.append('category', videoTypes);
   formdata.append(
     'post',
-    videoPath.path == null || videoPath?.path == null
+    videoPath.uri == null || videoPath?.uri == null
       ? ''
       : {
           uri:
             Platform.OS === 'android'
-              ? videoPath.path
-              : videoPath.path?.replace('file://', ''),
-          type: videoPath.mime,
+              ? videoPath.uri
+              : videoPath.uri?.replace('file://', ''),
+          type: videoPath.type,
           name: 'video.mp4',
           // name: videoPath.filename ?? 'video.mp4',
         },
@@ -381,7 +407,7 @@ console.log("FORMD",formdata)
                   >
                     <Text
                     style={{fontFamily:R.fonts.regular, fontSize:R.fontSize.Size10, color:R.colors.placeHolderColor, fontWeight:'300'}}
-                    >{videoPath?.path}</Text>
+                    >{videoPath?.uri}</Text>
                   </View>
                   <View style={{marginTop: R.fontSize.Size20, flex: 1}}>
                     <CustomLineTextInput

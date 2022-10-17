@@ -83,7 +83,12 @@ const ConnectionScreen = props => {
                         overflow: 'hidden',
                       }}>
                       <Image
-                        source={{uri:`${Config.API_URL}${item?.avatar.slice(22)}`}}
+                        source={{
+                          uri: `${Config.API_URL}${item?.avatar.replace(
+                            'http://localhost:8080/',
+                            '',
+                          )}`,
+                        }}
                         style={{
                           height: R.fontSize.Size50,
                           width: R.fontSize.Size50,

@@ -21,8 +21,9 @@ import {
   CustomCardView,
   CustomCardLine,
   SubscriptionCard,
+  AlartModal
 } from '../../components';
-import { Connect, useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
 
@@ -66,26 +67,36 @@ const SubscriptionScreen = props => {
 
   const dispatch = useDispatch()
   const [modalPicker, setModalPicker] = useState(false);
+  const [alartModalPicker, setAlartModalPicker] = useState(false);
   const [subGetPlan, setSubGetPlan] = useState([])
   const [getPlanDesc, setGetPlanDesc] = useState([]);
   const [getCustomPlan, setGetCustomPlan] = useState([])
   const [getSubData, setGetSubData] = useState({})
   const [getSubDesc, setGetSubDesc] = useState([]);
   const [getSubDescActive, setGetSubDescActive] = useState(false)
+  const [checkSubActive, setCheckSubActive] = useState(true)
 
   const [loading, setLoading] = useState(false)
 
   useEffect(()=>{
 
+    onCallCheckSubActive()
     onCallSubGetPlan()
     onCallGetCustomPlan()
     onCallgetSubGetPlan()
   },[props.navigation])
 
 
+  const onCallCheckSubActive = () => {
+    setLoading(true)
+    props.userProfile.Profile?.subscription != 0 ?
+    setCheckSubActive(true) : setCheckSubActive(false)
+    setLoading(false)
+  }
+
   const onCallgetSubGetPlan = () => {
     dispatch(GetSubscruberGetRequest(response =>{
-      console.log('GetSubGet Res',response.description)
+      console.log('GetSubGet Res',response)
       if(response.status == 'success')
       {
         setGetSubData(response?.data)
@@ -103,6 +114,7 @@ const SubscriptionScreen = props => {
           response?.description?.feature_11,
           response?.description?.feature_12,
         ]);
+        console.log("GETSUBDESC",getSubDesc)
       }
     }))
   }
@@ -114,7 +126,20 @@ const SubscriptionScreen = props => {
         console.log('SUB GET PLAN RES', response);
         if (response.status == 'success') {
           setSubGetPlan(response.data)
-          setGetPlanDesc([response.data?.description])
+          setGetPlanDesc([
+            response.data[0]?.description[0]?.feature_1,
+            response.data[0]?.description[0]?.feature_2,
+            response.data[0]?.description[0]?.feature_3,
+            response.data[0]?.description[0]?.feature_4,
+            response.data[0]?.description[0]?.feature_5,
+            response.data[0]?.description[0]?.feature_6,
+            response.data[0]?.description[0]?.feature_7,
+            response.data[0]?.description[0]?.feature_8,
+            response.data[0]?.description[0]?.feature_9,
+            response.data[0]?.description[0]?.feature_10,
+            response.data[0]?.description[0]?.feature_11,
+            response.data[0]?.description[0]?.feature_12,
+          ]);
           setLoading(false)
         }
         else
@@ -146,6 +171,12 @@ const SubscriptionScreen = props => {
     setModalPicker(false)
     props.navigation.navigate('CardScreen');
   }
+
+  const onCheckModal = () => {
+     props.userProfile.Profile?.subscription != 0 ?
+     setModalPicker(true) :
+     setAlartModalPicker(true)
+  }
   
   return (
     <StoryScreen loading={loading}>
@@ -162,262 +193,264 @@ const SubscriptionScreen = props => {
               marginHorizontal: R.fontSize.Size20,
             }}>
             <View style={{flex: 1}}>
-              <View style={{marginTop: R.fontSize.Size45}}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size16,
-                    fontWeight: '700',
-                    color: R.colors.primaryTextColor,
-                  }}>
-                  {'Your Balance'}
-                </Text>
-                <View
-                  style={{
-                    marginTop: R.fontSize.Size30,
-                    paddingTop: R.fontSize.Size10,
-                    paddingBottom: R.fontSize.Size5,
-                    paddingHorizontal: R.fontSize.Size20,
-                    borderWidth: R.fontSize.Size2,
-                    borderRadius: R.fontSize.Size8,
-                    borderColor: R.colors.appColor,
-                    backgroundColor: R.colors.white,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                  }}>
+              {getSubDesc.length != 0 ?? (
+                <View style={{marginTop: R.fontSize.Size45}}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      fontSize: R.fontSize.Size16,
+                      fontWeight: '700',
+                      color: R.colors.primaryTextColor,
+                    }}>
+                    {'Your Balance'}
+                  </Text>
                   <View
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: R.fontSize.Size10,
+                      marginTop: R.fontSize.Size30,
+                      paddingTop: R.fontSize.Size10,
+                      paddingBottom: R.fontSize.Size5,
+                      paddingHorizontal: R.fontSize.Size20,
+                      borderWidth: R.fontSize.Size2,
+                      borderRadius: R.fontSize.Size8,
+                      borderColor: R.colors.appColor,
+                      backgroundColor: R.colors.white,
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+                      elevation: 5,
                     }}>
                     <View
                       style={{
-                        width: screenWidth / 5,
-                        alignItems: 'flex-start',
-                      }}>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          color: R.colors.primaryTextColor,
-                          fontWeight: '700',
-                        }}
-                        numberOfLines={1}>
-                        {'Valid Till'}
-                      </Text>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size35,
-                          color: R.colors.appColor,
-                          fontWeight: '700',
-                          textAlign: 'center',
-                        }}
-                        numberOfLines={1}>
-                        {moment(getSubData?.exp_date).format('Do')}
-                      </Text>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          color: R.colors.primaryTextColor,
-                          fontWeight: '400',
-                          textAlign: 'center',
-                        }}
-                        numberOfLines={1}>
-                        {moment(getSubData?.exp_date).format('MMMM')}
-                      </Text>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          color: R.colors.primaryTextColor,
-                          fontWeight: '400',
-                          textAlign: 'center',
-                        }}
-                        numberOfLines={1}>
-                        {moment(getSubData?.exp_date).format('YYYY')}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        marginHorizontal: R.fontSize.Size10,
-                        height: R.fontSize.Size80,
-                        width: 1,
-                        backgroundColor: R.colors.placeholderTextColor,
-                      }}
-                    />
-
-                    <View style={{flex: 1}}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          flex: 1,
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            textAlign: 'center',
-                            fontSize: R.fontSize.Size18,
-                            fontWeight: '700',
-                            color: R.colors.appColor,
-                          }}>
-                          {getSubData?.total_connection}
-                        </Text>
-                        <Text
-                          style={{
-                            flex: 1,
-                            fontFamily: R.fonts.regular,
-                            textAlign: 'center',
-                            fontSize: R.fontSize.Size18,
-                            fontWeight: '400',
-                            color: R.colors.primaryTextColor,
-                          }}
-                          numberOfLines={1}>
-                          {'Connections'}
-                        </Text>
-                        <TouchableOpacity style={{padding: R.fontSize.Size5}}>
-                          <Image
-                            source={R.images.activeAddIcon}
-                            style={{
-                              height: R.fontSize.Size10,
-                              width: R.fontSize.Size10,
-                            }}
-                            resizeMode={'contain'}
-                          />
-                        </TouchableOpacity>
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          flex: 1,
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            textAlign: 'center',
-                            fontSize: R.fontSize.Size18,
-                            fontWeight: '700',
-                            color: R.colors.appColor,
-                          }}>
-                          {getSubData?.boost}
-                        </Text>
-                        <Text
-                          style={{
-                            flex: 1,
-                            fontFamily: R.fonts.regular,
-                            textAlign: 'center',
-                            fontSize: R.fontSize.Size18,
-                            fontWeight: '400',
-                            color: R.colors.primaryTextColor,
-                          }}
-                          numberOfLines={1}>
-                          {'Boots'}
-                        </Text>
-                        <TouchableOpacity style={{padding: R.fontSize.Size5}}>
-                          <Image
-                            source={R.images.activeAddIcon}
-                            style={{
-                              height: R.fontSize.Size10,
-                              width: R.fontSize.Size10,
-                            }}
-                            resizeMode={'contain'}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-
-                  {getSubDescActive && (
-                    <View
-                      style={{
-                        paddingVertical: R.fontSize.Size10,
-                        flexWrap: 'wrap',
                         flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginTop: R.fontSize.Size10,
                       }}>
-                      {getSubDesc.map((item, index) => {
-                        return (
-                          <View
-                            key={index}
+                      <View
+                        style={{
+                          width: screenWidth / 5,
+                          alignItems: 'flex-start',
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size14,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                          }}
+                          numberOfLines={1}>
+                          {'Valid Till'}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size35,
+                            color: R.colors.appColor,
+                            fontWeight: '700',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {moment(getSubData?.exp_date).format('Do')}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size14,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '400',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {moment(getSubData?.exp_date).format('MMMM')}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size14,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '400',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {moment(getSubData?.exp_date).format('YYYY')}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          marginHorizontal: R.fontSize.Size10,
+                          height: R.fontSize.Size80,
+                          width: 1,
+                          backgroundColor: R.colors.placeholderTextColor,
+                        }}
+                      />
+
+                      <View style={{flex: 1}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            flex: 1,
+                          }}>
+                          <Text
                             style={{
-                              width: screenWidth / 2.6,
-                              paddingBottom: R.fontSize.Size2,
+                              fontFamily: R.fonts.regular,
+                              textAlign: 'center',
+                              fontSize: R.fontSize.Size18,
+                              fontWeight: '700',
+                              color: R.colors.appColor,
                             }}>
-                            {item != '' && (
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                }}>
+                            {getSubData?.total_connection}
+                          </Text>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontFamily: R.fonts.regular,
+                              textAlign: 'center',
+                              fontSize: R.fontSize.Size18,
+                              fontWeight: '400',
+                              color: R.colors.primaryTextColor,
+                            }}
+                            numberOfLines={1}>
+                            {'Connections'}
+                          </Text>
+                          <TouchableOpacity style={{padding: R.fontSize.Size5}}>
+                            <Image
+                              source={R.images.activeAddIcon}
+                              style={{
+                                height: R.fontSize.Size10,
+                                width: R.fontSize.Size10,
+                              }}
+                              resizeMode={'contain'}
+                            />
+                          </TouchableOpacity>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            flex: 1,
+                          }}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              textAlign: 'center',
+                              fontSize: R.fontSize.Size18,
+                              fontWeight: '700',
+                              color: R.colors.appColor,
+                            }}>
+                            {getSubData?.boost}
+                          </Text>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontFamily: R.fonts.regular,
+                              textAlign: 'center',
+                              fontSize: R.fontSize.Size18,
+                              fontWeight: '400',
+                              color: R.colors.primaryTextColor,
+                            }}
+                            numberOfLines={1}>
+                            {'Boots'}
+                          </Text>
+                          <TouchableOpacity style={{padding: R.fontSize.Size5}}>
+                            <Image
+                              source={R.images.activeAddIcon}
+                              style={{
+                                height: R.fontSize.Size10,
+                                width: R.fontSize.Size10,
+                              }}
+                              resizeMode={'contain'}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+
+                    {getSubDescActive && (
+                      <View
+                        style={{
+                          paddingVertical: R.fontSize.Size10,
+                          flexWrap: 'wrap',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        {getSubDesc.map((item, index) => {
+                          return (
+                            <View
+                              key={index}
+                              style={{
+                                width: screenWidth / 2.6,
+                                paddingBottom: R.fontSize.Size2,
+                              }}>
+                              {item != '' && (
                                 <View
                                   style={{
-                                    height: R.fontSize.Size10,
-                                    width: R.fontSize.Size10,
-                                    borderRadius: R.fontSize.Size6,
-                                    backgroundColor: R.colors.appColor,
-                                  }}
-                                />
-                                <Text
-                                  style={{
-                                    fontFamily: R.fonts.regular,
-                                    fontWeight: '400',
-                                    color: R.colors.primaryTextColor,
-                                    fontSize: R.fontSize.Size12,
-                                    marginLeft: R.fontSize.Size10,
-                                  }}
-                                  numberOfLines={1}>
-                                  {item}
-                                </Text>
-                              </View>
-                            )}
-                          </View>
-                        );
-                      })}
-                    </View>
-                  )}
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}>
+                                  <View
+                                    style={{
+                                      height: R.fontSize.Size10,
+                                      width: R.fontSize.Size10,
+                                      borderRadius: R.fontSize.Size6,
+                                      backgroundColor: R.colors.appColor,
+                                    }}
+                                  />
+                                  <Text
+                                    style={{
+                                      fontFamily: R.fonts.regular,
+                                      fontWeight: '400',
+                                      color: R.colors.primaryTextColor,
+                                      fontSize: R.fontSize.Size12,
+                                      marginLeft: R.fontSize.Size10,
+                                    }}
+                                    numberOfLines={1}>
+                                    {item}
+                                  </Text>
+                                </View>
+                              )}
+                            </View>
+                          );
+                        })}
+                      </View>
+                    )}
 
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: R.fontSize.Size15,
-                    }}>
-                    <Pressable
-                      onPress={() => setGetSubDescActive(!getSubDescActive)}
-                      style={({pressed}) => [
-                        {
-                          padding: R.fontSize.Size5,
-                          opacity: pressed ? 0.5 : 1,
-                          paddingHorizontal: R.fontSize.Size15,
-                          paddingVertical: R.fontSize.Size10,
-                        },
-                      ]}>
-                      <Image
-                        source={R.images.chevronDown}
-                        style={{
-                          height: R.fontSize.Size5,
-                          width: R.fontSize.Size8,
-                          transform: [
-                            {rotate: getSubDescActive ? '180deg' : '0deg'},
-                          ],
-                        }}
-                        resizeMode={'contain'}
-                      />
-                    </Pressable>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: R.fontSize.Size15,
+                      }}>
+                      <Pressable
+                        onPress={() => setGetSubDescActive(!getSubDescActive)}
+                        style={({pressed}) => [
+                          {
+                            padding: R.fontSize.Size5,
+                            opacity: pressed ? 0.5 : 1,
+                            paddingHorizontal: R.fontSize.Size15,
+                            paddingVertical: R.fontSize.Size10,
+                          },
+                        ]}>
+                        <Image
+                          source={R.images.chevronDown}
+                          style={{
+                            height: R.fontSize.Size5,
+                            width: R.fontSize.Size8,
+                            transform: [
+                              {rotate: getSubDescActive ? '180deg' : '0deg'},
+                            ],
+                          }}
+                          resizeMode={'contain'}
+                        />
+                      </Pressable>
+                    </View>
                   </View>
                 </View>
-              </View>
+              )}
 
               {/* Subscription Selection */}
 
@@ -448,6 +481,12 @@ const SubscriptionScreen = props => {
                     <SubscriptionCard
                       key={index}
                       marginTop={R.fontSize.Size28}
+                      borderWidth={!checkSubActive ? R.fontSize.Size2 : null}
+                      borderColor={
+                        !checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
+                      }
                       topTitle={
                         <Text
                           style={{
@@ -460,7 +499,7 @@ const SubscriptionScreen = props => {
                           {item?.plan_name}
                         </Text>
                       }
-                      price={`${item?.price}$`}
+                      price={`${item?.price}`}
                       month={item?.validity}
                       onPressAdd={() => setModalPicker(true)}
                     />
@@ -472,11 +511,36 @@ const SubscriptionScreen = props => {
                     <SubscriptionCard
                       key={index}
                       borderWidth={R.fontSize.Size2}
+                      borderColor={
+                        checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
+                      }
+                      priceTextColor={
+                        checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
+                      }
+                      slashTextColor={
+                        checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
+                      }
+                      noTextColor={
+                        checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
+                      }
+                      monthTextColor={
+                        checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
+                      }
                       marginTop={R.fontSize.Size15}
-                      price={`${item?.price}$`}
+                      price={`USD ${item?.price}`}
                       // noText={'5'}
                       month={item?.validity}
-                      onPressAdd={() => setModalPicker(true)}
+                      onPressAdd={() => onCheckModal()}
                     />
                   );
                 })}
@@ -574,9 +638,9 @@ const SubscriptionScreen = props => {
                       marginTop: R.fontSize.Size20,
                       flexWrap: 'wrap',
                       flexDirection: 'row',
-                      justifyContent:'space-between'
+                      justifyContent: 'space-between',
                     }}>
-                    {getSubDesc.map((item, index) => {
+                    {getPlanDesc.map((item, index) => {
                       return (
                         <View
                           key={index}
@@ -627,7 +691,21 @@ const SubscriptionScreen = props => {
           </View>
         </View>
       </Modal>
+      <AlartModal
+        visible={alartModalPicker}
+        onRequestClose={() => setAlartModalPicker(false)}
+        title={`First buy the subscription plan after that you can buy add-on services.`}
+        onPress={()=>setAlartModalPicker(false)}
+      />
     </StoryScreen>
   );
 };
-export default SubscriptionScreen;
+
+
+const mapStateToProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+export default connect(mapStateToProps) (SubscriptionScreen);

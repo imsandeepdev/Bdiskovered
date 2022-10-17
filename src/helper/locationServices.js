@@ -12,13 +12,13 @@ export const RequestLocationPermission = async () => {
   if(Platform.OS == 'ios')
   {
     console.log("LOCATION")
-    //  Geolocation.setRNConfiguration({
-    //    authorizationLevel: 'whenInUse',
-    //  });
+     Geolocation.setRNConfiguration({
+       authorizationLevel: 'whenInUse',
+     });
      getOneTimeLocation()
     // Geolocation.requestAuthorization();
     // IOS permission request does not offer a callback :/
-    // return null;
+    return null;
   }
   else if(Platform.OS == 'android')
   {

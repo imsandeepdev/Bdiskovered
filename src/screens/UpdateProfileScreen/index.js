@@ -154,7 +154,10 @@ const UpdateProfileScreen = (props) => {
             setUserBio(response.Profile?.bio);
             setUserMail(response.Profile?.email);
             setProfilePic({
-              path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+              path: `${Config.API_URL}${response.Profile?.avatar.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`,
               mime: 'profile/jpeg',
               filename: 'profile.jpeg',
             });
@@ -178,7 +181,10 @@ const UpdateProfileScreen = (props) => {
             setCompanyEmail(response.Profile?.email);
             setCompanyContact(response.Profile?.mobile);
             setProfilePic({
-              path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+              path: `${Config.API_URL}${response.Profile?.avatar.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`,
               mime: 'profile/jpeg',
               filename: 'profile.jpeg',
             });
@@ -260,19 +266,19 @@ const UpdateProfileScreen = (props) => {
           setUserBio(response.Profile?.bio);
           setUserMail(response.Profile?.email);
           setProfilePic({
-            path: `${Config.API_URL}${response.Profile?.avatar.slice(22)}`,
+            path: `${Config.API_URL}${response.Profile?.avatar.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`,
             mime: 'profile/jpeg',
             filename: 'profile.jpeg',
           });
-
           setFullTimePrice(response.Profile?.full_time_amount);
           setPartTimePrice(response.Profile?.part_time_amount);
           setGigsPrice(response.Profile?.gigs_amount);
           setSelectFullTime(response.Profile?.full_time_amount != '' ?? true);
           setSelectPartTime(response.Profile?.part_time_amount != '' ?? true);
           setSelectGigs(response.Profile?.gigs_amount != '' ?? true);
-
-
           Toast.show(response.message,Toast.SHORT)
           setLoading(false)
         }

@@ -22,10 +22,23 @@ const LoginScreen = (props) => {
   const [countryCode, setCountryCode] = useState('971')
   const [countyFlag, setCountyFlag] = useState('ae');
   const [fcmToken, setFcmToken] = useState('');
+  const [createDeviceToken, setCreateDeviceToken] = useState('');
 
-  // useEffect(()=>{
-  //   checkToken()
-  // },[])
+
+  useEffect(()=>{
+    // onCallCreateDeviceToken()
+  },[props.navigation])
+
+  const onCallCreateDeviceToken = () => {
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const charLength = characters.length;
+    let result = ' ';
+    for (let i = 0; i < 45; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charLength));
+    }
+    onCallCreateOTP(result);
+    setCreateDeviceToken(result);
+  };
 
 
   const isValid = () => {
@@ -36,13 +49,14 @@ const LoginScreen = (props) => {
 
 
 
-  const onCallCreateOTP = () => {
+  const onCallCreateOTP = (deviceToken) => {
     if(isValid())
     {
       let data = {
         mobile: `+${countryCode}${mobNo}`,
-        device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+        device_token: deviceToken,
       };
+      console.log('LOGINDATA',data)
       dispatch(
         CreateOTPRequest(data, response => {
           console.log('RESPONSE CREATE OTP', response);
@@ -53,6 +67,7 @@ const LoginScreen = (props) => {
               fromScreen: 'LoginScreen',
               mobValue: mobNo,
               countryCode: countryCode,
+              deviceToken: createDeviceToken
             });
             Toast.show(response.OTP, Toast.LONG);
           } else {
@@ -156,7 +171,7 @@ const LoginScreen = (props) => {
           </KeyboardAvoidingView>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              onPress={() => onCallCreateOTP()}
+              onPress={() => onCallCreateDeviceToken()}
               // onPress={() => props.navigation.navigate('OtpScreen')}
               marginHorizontal={R.fontSize.Size35}
               title={'Sign In'}
@@ -181,18 +196,22 @@ const LoginScreen = (props) => {
                 borderWidth: 1,
               }}> */}
 
-        {
-          countyModalPicker &&
+        {countyModalPicker && (
           <View
-          style={{position:'absolute', top:0, bottom:0, left:0, right:0}}
-          >
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}>
             <CountryPicker
               visible={countyModalPicker}
               withFilter={true}
               withFlag={true}
               withCallingCode={true}
-              onClose={close=>{
-                console.log("CLOSED",close);
+              onClose={close => {
+                console.log('CLOSED', close);
                 setCountyModalPicker(false);
               }}
               onSelect={country => {
@@ -205,7 +224,7 @@ const LoginScreen = (props) => {
               }}
             />
           </View>
-        }
+        )}
         {/* <CountryPicker
               
                 show={countyModalPicker}

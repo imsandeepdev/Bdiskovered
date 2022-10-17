@@ -22,6 +22,8 @@ import { SignInRequest, SignUpRequest, UserLogoutAllRequest } from '../../action
 import Toast from 'react-native-simple-toast';
 import DeviceInfo from 'react-native-device-info';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 
@@ -42,6 +44,7 @@ const OtpScreen = (props) => {
 
   useEffect(()=>{
 
+    console.log('DEVICE TOKEN', props.route.params?.deviceToken);
     console.log('SIGNUPVALUE', props.route.params?.signupValue);
     onCallDeviceName();
     // setSignUpData(props.route.params?.signupValue);
@@ -54,6 +57,18 @@ const OtpScreen = (props) => {
       console.log('DEVICE NAME', deviceName);
     });
   };
+
+const onSaveDeviceToken = async () => {
+  try {
+    await AsyncStorage.setItem(
+      'deviceAccess_token',
+      props.route.params?.deviceToken,
+    );
+  } catch (e) {
+    Toast.show('Failed to save device token',Toast.SHORT);
+  }
+};
+
 
 
   const onCallCheckVerify = () => {
@@ -78,6 +93,7 @@ const OtpScreen = (props) => {
           if (response.status == 'success' && response.token != null) {
             props.navigation.replace('HomeMenu');
             Toast.show(response.message, Toast.SHORT);
+            onSaveDeviceToken()
           } 
           else if (
             response.message == 'your account has been logged in another device'
@@ -138,6 +154,8 @@ const OtpScreen = (props) => {
         if (response.status == 'success' && response.token != null) {
           props.navigation.navigate('TalentFinishScreen');
           Toast.show(response.message, Toast.SHORT);
+          onSaveDeviceToken();
+
         } else {
           Toast.show(response.message, Toast.SHORT);
         }
@@ -163,6 +181,8 @@ const OtpScreen = (props) => {
        if (response.status == 'success') {
          props.navigation.navigate(props.route.params?.userType == 'Viewer' ? 'TalentFinishScreen' : 'TalentScreen');
          Toast.show(response.message, Toast.SHORT);
+          onSaveDeviceToken();
+
        } else {
          Toast.show(response.message, Toast.SHORT);
        }
@@ -207,7 +227,7 @@ const OtpScreen = (props) => {
         type: 'All',
         mobile: `+${props.route.params?.countryCode}${props.route.params?.mobValue}`,
         device_name: deviceName,
-        device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+        device_token: props.route.params?.deviceToken,
       };
       console.log('AllLogout Data',data)
       dispatch(UserLogoutAllRequest(data,response => {
@@ -229,17 +249,16 @@ const OtpScreen = (props) => {
 
       const onCallResndOTP = () => {
         
-        
         let data =
           props.route.params?.fromScreen == 'SignUpScreen'
             ? {
                 mobile: `+${props.route.params?.countryCode}${props.route.params?.mobValue}`,
                 number_available: "0",
-                device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+                device_token: props.route.params?.deviceToken,
               }
             : {
                 mobile: `+${props.route.params?.countryCode}${props.route.params?.mobValue}`,
-                device_token: 'sjdusadhouisodjswesd3budedksaheedeff2dee',
+                device_token: props.route.params?.deviceToken,
               };
           console.log("RESND OTP DATA", data)
 
@@ -411,14 +430,16 @@ const OtpScreen = (props) => {
             style={{
               flex: 1,
               backgroundColor: R.colors.modelBackground,
-              justifyContent: 'flex-end',
+              justifyContent: 'center',
             }}>
             <View
               style={{
-                paddingVertical: R.fontSize.Size25,
+                paddingVertical: R.fontSize.Size40,
                 paddingHorizontal: R.fontSize.Size20,
                 backgroundColor: R.colors.white,
-                paddingBottom: R.fontSize.Size20,
+                paddingBottom: R.fontSize.Size2,
+                marginHorizontal:R.fontSize.Size15,
+                borderRadius:R.fontSize.Size8
               }}>
               <View
                 style={{alignItems: 'center', marginBottom: R.fontSize.Size5}}>

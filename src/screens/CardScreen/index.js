@@ -14,13 +14,18 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from 'react-native';
-import {CustomCardView, Header, StoryScreen,AppButton, CustomCardTextInput}from '../../components'
+import {CustomCardView, Header, StoryScreen,AppButton, CustomCardTextInput, PaymentScreen}from '../../components'
 import CarouselCards from '../../components/CarouselCard';
 import R from '../../res/R';
+import {CardField, useStripe, initStripe, confirmPayment} from '@stripe/stripe-react-native';
+import { Config } from '../../config';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
+
+
 
 const cardListData = [
   {
@@ -161,16 +166,64 @@ const CarouselCardItem = ({item, index}) => {
 
 const CardScreen = (props) => {
 
+const stripe = useStripe()
+const name ='sandeep'
 const [modalPicker, setModalPicker] = useState(false)
 const [cardNo, setCardNo] = useState('')
 const [cardHolderName, setCardHolderName] = useState('');
 const [cardCVV, setCardCVV] = useState('');
 const [cardExpiry, setCardExpiry] = useState('');
+const [cardName, setCardName] = useState('')
+const [cardVisible, setCardVisible] = useState(false)
+
+
+useEffect(()=>{
+initStripe({
+  publishableKey:
+    'pk_live_51LHlAaKGqRlE9chSdPqWWpAEHyL0bNjvAnhobShTKIJUEdKbc3PVYWwdxFQsaZ9wojTayZTvvE2KzIHtoFTebonm00oT7QkoTp',
+  // merchantIdentifier: 'merchant.identifier',
+  urlScheme: 'your-url-scheme',
+});
+
+},[props.navigate])
+
 
  const onCallPayment = () => {
    setModalPicker(false);
    props.navigation.navigate('PaymentResultScreen');
  };
+
+ const onSelectCard = (card) => {
+  setCardVisible(true)
+  setCardName(card)
+ }
+
+const getCreditCardAPI = async() => {
+
+    const response = await fetch(`${Config.API_URL}create-payment-intent`,{
+      method:'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        paymentMethodType: 'card',
+        currency: 'usd'
+      })
+    })
+   
+    const {clientSecret} = await response.json()
+
+    const {error,paymentIntent} = await confirmPayment(clientSecret,{
+      type:'Card',
+      billingDetails:{name}
+    })
+    if(error){
+      Alert.alert(`ErrorCode:${error.code}`,error.message)
+    } else if(paymentIntent) {
+      Alert.alert('Success',`Payment Successful:${paymentIntent.id}`)
+    }
+}
+
 
 
     return (
@@ -181,34 +234,56 @@ const [cardExpiry, setCardExpiry] = useState('');
             leftSource={R.images.chevronBack}
           />
           <View style={{flex: 1}}>
-            <View style={{marginTop: R.fontSize.Size45}}>
+            {/* <View style={{marginTop: R.fontSize.Size45}}>
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
                   fontSize: R.fontSize.Size18,
                   fontWeight: '700',
                   color: R.colors.primaryTextColor,
-                  marginHorizontal:R.fontSize.Size20
+                  marginHorizontal: R.fontSize.Size20,
                 }}
-                numberOfLines={1}
-                >
+                numberOfLines={1}>
                 {'Your Previous Cards'}
               </Text>
 
-              <View
-              style={{marginTop:R.fontSize.Size20}}
-              >
+              <View style={{marginTop: R.fontSize.Size20}}>
                 <CarouselCards
                   cardData={cardListData}
                   cardDataLength={cardListData.length}
                   renderItem={CarouselCardItem}
                 />
               </View>
-            </View>
+            </View> */}
+            {cardVisible && (
+              <View
+                style={{
+                  marginTop: R.fontSize.Size45,
+                  marginHorizontal: R.fontSize.Size20,
+                }}>
+                <PaymentScreen cardType={cardName} />
+
+                <Pressable
+                  onPress={() => getCreditCardAPI()}
+                  style={({pressed}) => [
+                    {
+                      opacity: pressed ? 0.5 : 1,
+                      height: 50,
+                      width: 200,
+                      backgroundColor: R.colors.appColor,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    },
+                  ]}>
+                  <Text>Pay</Text>
+                </Pressable>
+              </View>
+            )}
             <View
               style={{
                 paddingHorizontal: R.fontSize.Size20,
                 flex: 1,
+                marginTop: R.fontSize.Size10,
               }}>
               <View>
                 <Text
@@ -233,7 +308,7 @@ const [cardExpiry, setCardExpiry] = useState('');
               </View>
               <View style={{marginTop: R.fontSize.Size30}}>
                 <CustomCardView
-                  onPress={() => setModalPicker(true)}
+                  onPress={() => getCreditCardAPI()}
                   title={'Debit Card'}
                   cardHeight={R.fontSize.Size80}
                   fontWeight={'400'}
@@ -244,7 +319,7 @@ const [cardExpiry, setCardExpiry] = useState('');
                   Iconheight={R.fontSize.Size18}
                 />
                 <CustomCardView
-                  onPress={() => setModalPicker(true)}
+                  onPress={() => onSelectCard('Credit Card')}
                   cardHeight={R.fontSize.Size80}
                   title={'Credit Card'}
                   fontWeight={'400'}

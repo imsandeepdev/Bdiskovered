@@ -29,7 +29,7 @@ import { ShowAllPostRequest } from '../../actions/showAllPost.action';
 import { Config } from '../../config';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
 import axios from 'axios';
-
+import moment from 'moment';
 const screenHeight = Dimensions.get('screen').height;
 
 
@@ -293,7 +293,11 @@ const HomeScreen = (props) => {
     if(type == 'videoDetailModal')
     {
       setVideoModalDetail(item)
-      setVideoModalPersonalDetail([item?.birth, item?.gender, 'gurugram'])
+      setVideoModalPersonalDetail([
+        `${moment().diff(item?.birth, 'years')} Year`,
+        item?.gender,
+        'gurugram',
+      ]);
       let tempTalentArray = item?.category;
       let useTalentArray = tempTalentArray.split(',');
       console.log('useTalentArray', useTalentArray);
@@ -387,9 +391,21 @@ const HomeScreen = (props) => {
   const onCallConnectNow = (profileID) => 
   {
     setModalPicker(false)
-    props.navigation.navigate('ConnectedProfileScreen',{
-      profileId: profileID
-    });
+     props.userProfile.Profile?.subscription != 0
+       ? props.navigation.navigate('ConnectedProfileScreen', {
+           profileId: profileID,
+         })
+       : props.navigation.navigate('SubscriptionScreen');
+  }
+
+
+  const onPressOrangeAppIcon = (profileID) => {
+    console.log('PROFILESUB', props.userProfile.Profile?.subscription);
+    props.userProfile.Profile?.subscription != 0
+      ? props.navigation.navigate('ConnectedProfileScreen', {
+          profileId: profileID,
+        })
+      : props.navigation.navigate('SubscriptionScreen');
   }
   
   return (
@@ -402,7 +418,9 @@ const HomeScreen = (props) => {
           rightSource={R.images.filterIcon}
           rightSourceOnPress={() => onCallModal('filterModal')}
           rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() => props.navigation.navigate('NotificationScreen')}
+          rightSourceOnPress2={() =>
+            props.navigation.navigate('NotificationScreen')
+          }
         />
         <View style={{flex: 1}}>
           <SwiperFlatList
@@ -521,11 +539,20 @@ const HomeScreen = (props) => {
                       height: screenHeight - R.fontSize.Size290,
                     }}>
                     <VideoCard
-                      poster={`${Config.API_URL}${item?.avatar.slice(22)}`}
+                      poster={`${Config.API_URL}${item?.avatar.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`}
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
-                      videoUrl={`${Config.API_URL}${item?.post.slice(22)}`}
-                      userImage={`${Config.API_URL}${item?.avatar.slice(22)}`}
+                      videoUrl={`${Config.API_URL}${item?.post.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`}
+                      userImage={`${Config.API_URL}${item?.avatar.replace(
+                        'http://localhost:8080/',
+                        '',
+                      )}`}
                       userName={item?.username}
                       videoCat={item?.category}
                       bottomTitle={item?.title}
@@ -661,11 +688,7 @@ const HomeScreen = (props) => {
                       </View>
                     </View>
                     <Pressable
-                      onPress={() =>
-                        props.navigation.navigate('ConnectedProfileScreen', {
-                          profileId: item?.profileID,
-                        })
-                      }
+                      onPress={() => onPressOrangeAppIcon(item?.profileID)}
                       style={({pressed}) => [
                         {
                           marginHorizontal: R.fontSize.Size15,
@@ -809,7 +832,10 @@ const HomeScreen = (props) => {
                               source={{
                                 uri: `${
                                   Config.API_URL
-                                }${videoModalDetail?.avatar.slice(22)}`,
+                                }${videoModalDetail?.avatar.replace(
+                                  'http://localhost:8080/',
+                                  '',
+                                )}`,
                               }}
                               style={{
                                 height: R.fontSize.Size30,
@@ -874,8 +900,8 @@ const HomeScreen = (props) => {
                                   Styles.videoModalAvailView,
                                   {
                                     backgroundColor:
-                                      (item != '' ||
-                                      item != null )&& R.colors.appColor,
+                                      (item != '' || item != null) &&
+                                      R.colors.appColor,
                                   },
                                 ]}>
                                 <Text style={Styles.videoModalAvailItemText}>

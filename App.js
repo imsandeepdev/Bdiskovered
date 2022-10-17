@@ -8,7 +8,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 import { RequestLocationPermission } from './src/helper/locationServices';
 // import { notificationListner } from './src/helper/notificationServices';
 
-
 const App = () => {
   useEffect(()=>{
     RequestLocationPermission()
@@ -16,11 +15,12 @@ const App = () => {
   },[])
 
   return (
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <AppNavigator />
-      </PersistGate>
-    </Provider>
+   
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <AppNavigator />
+        </PersistGate>
+      </Provider>
   );
 };
 

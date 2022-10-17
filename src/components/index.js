@@ -12,6 +12,8 @@ import CustomCardLine from './CustomCardLine';
 import SubscriptionCard from './SubscriptionCard';
 import VideoCard from './VideoCard';
 import CustomLineTextInput from './CustomLineTextInput';
+import PaymentScreen from './CreateCard';
+import AlartModal from './AlartModal';
 
 export{
     StoryScreen,
@@ -28,5 +30,6 @@ export{
     SubscriptionCard,
     VideoCard,
     CustomLineTextInput,
-
+    PaymentScreen,
+    AlartModal
 }

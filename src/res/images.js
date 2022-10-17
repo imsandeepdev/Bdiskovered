@@ -44,9 +44,12 @@ const images = {
 
   // BottomTab
   activeHomeIcon: require('./images/activeHomeIcon.png'),
+  inActiveHomeIcon: require('./images/inActiveHomeIcon.png'),
+
   inActiveSearchIcon: require('./images/inActiveSearchIcon.png'),
-  activeAddIcon: require('./images/addIcon.png'),
+  activeSearchIcon: require('./images/activeSearchIcon.png'),
   inActiveAddIcon: require('./images/inActiveAddIcon.png'),
+  activeAddIcon: require('./images/activeAddIcon.png'),
   inActiveProfileIcon: require('./images/user_placeholder.png'),
 
   // Payment Result
