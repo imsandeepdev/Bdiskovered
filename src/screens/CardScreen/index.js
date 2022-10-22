@@ -21,6 +21,8 @@ import CarouselCards from '../../components/CarouselCard';
 import R from '../../res/R';
 import {CardField, useStripe, initStripe, confirmPayment} from '@stripe/stripe-react-native';
 import { Config } from '../../config';
+import {connect, useDispatch} from 'react-redux';
+import { PayPaymentRequest } from '../../actions/stripePayment.action';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
@@ -166,6 +168,8 @@ const CarouselCardItem = ({item, index}) => {
 
 const CardScreen = (props) => {
 
+const dispatch = useDispatch();
+
 const stripe = useStripe()
 const name ='sandeep'
 const [modalPicker, setModalPicker] = useState(false)
@@ -175,22 +179,28 @@ const [cardCVV, setCardCVV] = useState('');
 const [cardExpiry, setCardExpiry] = useState('');
 const [cardName, setCardName] = useState('')
 const [cardVisible, setCardVisible] = useState(false)
+const [subPlanItem, setSubPlanItem] = useState({})
 
 
 useEffect(()=>{
-initStripe({
-  publishableKey:
-    'pk_live_51LHlAaKGqRlE9chSdPqWWpAEHyL0bNjvAnhobShTKIJUEdKbc3PVYWwdxFQsaZ9wojTayZTvvE2KzIHtoFTebonm00oT7QkoTp',
-  // merchantIdentifier: 'merchant.identifier',
-  urlScheme: 'your-url-scheme',
-});
+
+  console.log('SUB PLAN ITEM', props.route.params?.SubPlanItem);
+  setSubPlanItem(props.route.params?.SubPlanItem);
+  console.log('PROFILE DETAILS', props.userProfile);
+
+// initStripe({
+//   publishableKey:
+//     'pk_live_51LHlAaKGqRlE9chSdPqWWpAEHyL0bNjvAnhobShTKIJUEdKbc3PVYWwdxFQsaZ9wojTayZTvvE2KzIHtoFTebonm00oT7QkoTp',
+//   // merchantIdentifier: 'merchant.identifier',
+//   urlScheme: 'your-url-scheme',
+// });
 
 },[props.navigate])
 
 
  const onCallPayment = () => {
    setModalPicker(false);
-   props.navigation.navigate('PaymentResultScreen');
+   onCallStripePayPayment();
  };
 
  const onSelectCard = (card) => {
@@ -224,6 +234,54 @@ const getCreditCardAPI = async() => {
     }
 }
 
+const onCallStripePayPayment = () => {
+
+  let expMonthSplit = cardExpiry.split("/")
+  let expMonth = expMonthSplit[0]
+  let expYear = expMonthSplit[1]
+
+  let data = {
+    cardNumber: cardNo,
+    month: expMonth,
+    year: expYear,
+    cvv: cardCVV,
+    currency: 'usd',
+    name: cardHolderName,
+    email: props.userProfile?.Profile?.email,
+    amount: subPlanItem?.price.replace('USD ',''),
+    subscription_plan: subPlanItem?.plan_name,
+  };
+
+  const headerAuth = {
+    Accept: 'application/json',
+    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
+    token: props.authToken,
+  };
+  const config = {
+    method: 'POST',
+    headerAuth,
+    body: data,
+  };
+
+  const requestUrl = Config.API_URL + Config.stripePaymentAPI
+
+  console.log("DATA",data)
+  
+  fetch(requestUrl,config)
+  .then(res => console.log("RESPONSE",res))
+
+}
+
+const expCardDate = number => {
+  let tempNumber = number;
+  if (number.match(/^\d{2}$/) !== null) {
+    tempNumber = number + '/';
+  }
+  console.log("TEMP NO",tempNumber)
+  setCardExpiry(tempNumber)
+  // setExpDate(tempNumber);
+};
+
 
 
     return (
@@ -234,7 +292,7 @@ const getCreditCardAPI = async() => {
             leftSource={R.images.chevronBack}
           />
           <View style={{flex: 1}}>
-            {/* <View style={{marginTop: R.fontSize.Size45}}>
+            <View style={{marginTop: R.fontSize.Size45}}>
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
@@ -254,8 +312,8 @@ const getCreditCardAPI = async() => {
                   renderItem={CarouselCardItem}
                 />
               </View>
-            </View> */}
-            {cardVisible && (
+            </View>
+            {/* {cardVisible && (
               <View
                 style={{
                   marginTop: R.fontSize.Size45,
@@ -278,7 +336,7 @@ const getCreditCardAPI = async() => {
                   <Text>Pay</Text>
                 </Pressable>
               </View>
-            )}
+            )} */}
             <View
               style={{
                 paddingHorizontal: R.fontSize.Size20,
@@ -308,7 +366,7 @@ const getCreditCardAPI = async() => {
               </View>
               <View style={{marginTop: R.fontSize.Size30}}>
                 <CustomCardView
-                  onPress={() => getCreditCardAPI()}
+                  onPress={() => setModalPicker(true)}
                   title={'Debit Card'}
                   cardHeight={R.fontSize.Size80}
                   fontWeight={'400'}
@@ -413,6 +471,7 @@ const getCreditCardAPI = async() => {
                           onChangeText={cardNo => setCardNo(cardNo)}
                           placeholder={'Enter Card Number'}
                           keyboardType={'number-pad'}
+                          maxLength={16}
                         />
                         <CustomCardTextInput
                           value={cardHolderName}
@@ -420,18 +479,21 @@ const getCreditCardAPI = async() => {
                             setCardHolderName(holderName)
                           }
                           placeholder={'Enter Card Holder Name'}
+                          maxLength={30}
                         />
                         <CustomCardTextInput
                           value={cardCVV}
                           onChangeText={cvv => setCardCVV(cvv)}
                           placeholder={'Enter CVV'}
                           keyboardType={'number-pad'}
+                          maxLength={3}
                         />
                         <CustomCardTextInput
                           value={cardExpiry}
-                          onChangeText={expiryDate => setCardExpiry(expiryDate)}
-                          placeholder={'Enter Expiry MM/YY'}
+                          onChangeText={expiryDate => expCardDate(expiryDate)}
+                          placeholder={'MM/YYYY'}
                           keyboardType={'number-pad'}
+                          maxLength={7}
                         />
                       </View>
                     </View>
@@ -452,4 +514,11 @@ const getCreditCardAPI = async() => {
     );
 }
 
-export default CardScreen;
+
+const mapStateToProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+export default connect(mapStateToProps)(CardScreen);

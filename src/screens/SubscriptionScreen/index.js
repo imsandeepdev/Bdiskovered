@@ -75,6 +75,7 @@ const SubscriptionScreen = props => {
   const [getSubDesc, setGetSubDesc] = useState([]);
   const [getSubDescActive, setGetSubDescActive] = useState(false)
   const [checkSubActive, setCheckSubActive] = useState(true)
+  const [subPlanItem, setSubPlanItem] = useState({})
 
   const [loading, setLoading] = useState(false)
 
@@ -169,13 +170,22 @@ const SubscriptionScreen = props => {
 
   const onCallPayment = () => {
     setModalPicker(false)
-    props.navigation.navigate('CardScreen');
+    props.navigation.navigate('CardScreen',{
+      SubPlanItem: subPlanItem
+    });
   }
 
   const onCheckModal = () => {
      props.userProfile.Profile?.subscription != 0 ?
      setModalPicker(true) :
      setAlartModalPicker(true)
+  }
+
+  const onOpenPaymentModal = (item) => {
+    console.log("ITEM",item)
+    setSubPlanItem(item)
+    setModalPicker(true);
+
   }
   
   return (
@@ -501,7 +511,7 @@ const SubscriptionScreen = props => {
                       }
                       price={`${item?.price}`}
                       month={item?.validity}
-                      onPressAdd={() => setModalPicker(true)}
+                      onPressAdd={() => onOpenPaymentModal(item)}
                     />
                   );
                 })}

@@ -1,5 +1,5 @@
 export const Config = {
-  API_URL: 'https://bdiskovered.shunyaekai.com/',
+  API_URL: 'https://bdiskshunya.shunyaekai.com/',
 
   createOTPAPI: 'user/createOTP',
   signInAPI: 'user/signin',
@@ -21,6 +21,10 @@ export const Config = {
   userLogOutAllAPI: 'user/logout-all',
   connectedUsersAPI: 'profile/connect-user-list',
   postDeleteAPI: 'post/delete',
-  getsubscriberGetAPI: 'subscriber/get'
+  getsubscriberGetAPI: 'subscriber/get',
+
+  stripePaymentAPI: 'payment/pay',
+  stripePaymentCardListAPI: 'payment/list-card',
+  stripePaymentDeleteCardAPI: 'payment/delete-card',
 };
 

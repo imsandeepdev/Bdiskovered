@@ -50,6 +50,7 @@ const CustomCardTextInput = (props) => {
               onChangeText={props.onChangeText}
               keyboardType={props.keyboardType ?? 'default'}
               onFocus={props.onFocus}
+              maxLength={props.maxLength}
             />
           </View>
           <View>

@@ -96,3 +96,8 @@ export const connected_Users_error = 'connected_Users_error';
 export const post_Delete = 'post_Delete';
 export const post_Delete_success = 'post_Delete_success';
 export const post_Delete_error = 'post_Delete_error';
+
+// payPayment
+export const pay_Payment = 'pay_Payment';
+export const pay_Payment_success = 'pay_Payment_success';
+export const pay_Payment_error = 'pay_Payment_error';
