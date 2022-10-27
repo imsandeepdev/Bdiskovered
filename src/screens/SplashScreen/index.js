@@ -1,10 +1,14 @@
 import * as React from 'react';
 import {useEffect} from 'react';
-import {View, Image, StatusBar} from 'react-native';
+import {View, Image, StatusBar, Dimensions} from 'react-native';
 import {FullViewStoryScreen} from '../../components';
 import {hideNavigationBar} from 'react-native-navigation-bar-color';
 import Styles from './styles';
 import R from '../../res/R';
+
+const screenHeight = Dimensions.get('screen').height
+const screenWidth = Dimensions.get('screen').width
+
 
 const SplashScreen = props => {
   useEffect(() => {
@@ -17,7 +21,10 @@ const SplashScreen = props => {
   return (
     <FullViewStoryScreen statusBarStyle="light-content">
       <View style={Styles.mainView}>
-        <Image source={R.images.SplashIcon} />
+        <Image source={R.images.SplashIcon} 
+              style={{height: screenHeight, width: screenWidth}}
+              resizeMode={'cover'}
+        />
       </View>
     </FullViewStoryScreen>
   );

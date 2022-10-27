@@ -1,5 +1,6 @@
 export const Config = {
-  API_URL: 'https://bdiskshunya.shunyaekai.com/',
+  // API_URL: 'https://bdiskshunya.shunyaekai.com/',
+  API_URL: 'https://disk.shunyaekai.com/',
 
   createOTPAPI: 'user/createOTP',
   signInAPI: 'user/signin',
@@ -26,5 +27,6 @@ export const Config = {
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',
   stripePaymentDeleteCardAPI: 'payment/delete-card',
+  stripePaymentSaveCardAPI: 'payment/add-card',
 };
 

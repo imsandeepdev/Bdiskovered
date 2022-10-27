@@ -101,3 +101,18 @@ export const post_Delete_error = 'post_Delete_error';
 export const pay_Payment = 'pay_Payment';
 export const pay_Payment_success = 'pay_Payment_success';
 export const pay_Payment_error = 'pay_Payment_error';
+
+// cardList
+export const card_List = 'card_List';
+export const card_List_success = 'card_List_success';
+export const card_List_error = 'card_List_error';
+
+// cardDelete
+export const card_Delete = 'card_Delete';
+export const card_Delete_success = 'card_Delete_success';
+export const card_Delete_error = 'card_Delete_error';
+
+// saveCard
+export const save_Card = 'save_Card';
+export const save_Card_success = 'save_Card_success';
+export const save_Card_error = 'save_Card_error';

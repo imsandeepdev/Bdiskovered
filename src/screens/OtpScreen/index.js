@@ -96,12 +96,12 @@ const onSaveDeviceToken = async () => {
             onSaveDeviceToken()
           } 
           else if (
-            response.message == 'your account has been logged in another device'
+            response.message ==
+            'your account has been logged in other device please logout from device'
           ) {
             Toast.show(response.message, Toast.SHORT);
-            setPickerModal(true)
-          } 
-          else {
+            setPickerModal(true);
+          } else {
             Toast.show(response.message, Toast.SHORT);
           }
         })

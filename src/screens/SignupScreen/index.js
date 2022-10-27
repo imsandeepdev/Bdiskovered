@@ -14,7 +14,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   Platform,
-  Modal
+  Modal,
+  Alert
 } from 'react-native';
 import { CustomTextInput, StoryScreen, AppButton, Header, CustomCardTextInput, CustomMaleFemale, CustomCardView } from '../../components';
 import CalendarPicker from 'react-native-calendar-picker';
@@ -373,7 +374,8 @@ const onCheckDocument = () => {
                 deviceToken: createDeviceToken,
               });
             Toast.show(response?.OTP, Toast.LONG);
-
+            Alert.alert(response?.OTP);
+              
            }
            else
            {
@@ -456,6 +458,7 @@ const onCheckDocument = () => {
               deviceToken: createDeviceToken,
             });
             Toast.show(response?.OTP, Toast.LONG);
+            Alert.alert(response?.OTP);
            }
            else
            {

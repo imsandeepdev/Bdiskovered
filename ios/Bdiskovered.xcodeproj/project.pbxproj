@@ -528,7 +528,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XX4XMMC75V;
+				DEVELOPMENT_TEAM = R27938QZDV;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Bdiskovered/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -540,7 +540,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.ios.BdiskoveredApp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.ios.Bdiskovered;
 				PRODUCT_NAME = Bdiskovered;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -555,7 +555,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = XX4XMMC75V;
+				DEVELOPMENT_TEAM = R27938QZDV;
 				INFOPLIST_FILE = Bdiskovered/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -566,7 +566,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.ios.BdiskoveredApp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.ios.Bdiskovered;
 				PRODUCT_NAME = Bdiskovered;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

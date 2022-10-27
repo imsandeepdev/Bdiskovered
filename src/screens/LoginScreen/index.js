@@ -1,6 +1,6 @@
 import * as react from 'react';
 import {useState, useEffect} from 'react';
-import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput,ScrollView,TouchableWithoutFeedback,KeyboardAvoidingView, Keyboard,Platform,Modal} from 'react-native';
+import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput,ScrollView,TouchableWithoutFeedback,KeyboardAvoidingView, Keyboard,Platform,Modal, Alert} from 'react-native';
 import { CustomTextInput, StoryScreen, AppButton } from '../../components';
 import {connect, useDispatch} from 'react-redux';
 import CountryPicker from 'react-native-country-picker-modal';
@@ -70,6 +70,8 @@ const LoginScreen = (props) => {
               deviceToken: createDeviceToken
             });
             Toast.show(response.OTP, Toast.LONG);
+            Alert.alert(response?.OTP);
+
           } else {
             Toast.show(response.message, Toast.SHORT);
           }

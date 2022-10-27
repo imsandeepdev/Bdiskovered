@@ -22,8 +22,13 @@ import R from '../../res/R';
 import {CardField, useStripe, initStripe, confirmPayment} from '@stripe/stripe-react-native';
 import { Config } from '../../config';
 import {connect, useDispatch} from 'react-redux';
-import { PayPaymentRequest } from '../../actions/stripePayment.action';
+import { CardDeleteRequest, CardListRequest, PayPaymentRequest, SaveCardRequest } from '../../actions/stripePayment.action';
+import Toast from 'react-native-simple-toast';
+import CommonFunctions from '../../utils/CommonFuntions';
+import moment from 'moment';
 
+const currentMonth = moment().format('MM');
+const currentYear = moment().format('YYYY');
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -55,6 +60,42 @@ const cardListData = [
     expDate: '08/33',
   },
 ];
+
+const CardScreen = (props) => {
+
+const dispatch = useDispatch();
+
+const stripe = useStripe()
+const name ='sandeep'
+const [loading, setLoading] = useState(false)
+const [modalPicker, setModalPicker] = useState(false)
+const [cardNo, setCardNo] = useState('')
+const [cardHolderName, setCardHolderName] = useState('');
+const [cardCVV, setCardCVV] = useState('');
+const [cardExpiry, setCardExpiry] = useState('');
+const [cardName, setCardName] = useState('')
+const [cardVisible, setCardVisible] = useState(false)
+const [subPlanItem, setSubPlanItem] = useState({})
+const [stripeCardList, setStripeCardList] = useState([])
+const [saveCardStatus, setSaveCardStatus] = useState(false)
+
+
+useEffect(()=>{
+
+  console.log('SUB PLAN ITEM', props.route.params?.SubPlanItem);
+  setSubPlanItem(props.route.params?.SubPlanItem);
+  console.log('PROFILE DETAILS', props.userProfile);
+  onCallcardListAPI()
+
+// initStripe({
+//   publishableKey:
+//     'pk_live_51LHlAaKGqRlE9chSdPqWWpAEHyL0bNjvAnhobShTKIJUEdKbc3PVYWwdxFQsaZ9wojTayZTvvE2KzIHtoFTebonm00oT7QkoTp',
+//   // merchantIdentifier: 'merchant.identifier',
+//   urlScheme: 'your-url-scheme',
+// });
+
+},[props.navigate])
+
 
 const getHiddenCardNumber = item => {
   let number = '';
@@ -110,7 +151,7 @@ const CarouselCardItem = ({item, index}) => {
               fontWeight: '700',
               color: R.colors.white,
             }}>
-            {`${item?.bankName} Account`}
+            {`Visa Card`}
           </Text>
           <Text
             style={{
@@ -119,13 +160,11 @@ const CarouselCardItem = ({item, index}) => {
               fontWeight: '400',
               color: R.colors.white,
             }}>
-            {getHiddenCardNumber(item?.cardNo)}
+            {getHiddenCardNumber(item?.card_number)}
           </Text>
         </View>
       </View>
-      <View
-      style={{flex:1,justifyContent:'flex-end'}}
-      >
+      <View style={{flex: 1, justifyContent: 'flex-end'}}>
         <Text
           style={{
             fontFamily: R.fonts.regular,
@@ -142,97 +181,158 @@ const CarouselCardItem = ({item, index}) => {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-          <Text
-            style={{
-              fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size12,
-              fontWeight: '700',
-              color: R.colors.white,
-            }}>
-            {item?.holderName}
-          </Text>
-          <Text
-            style={{
-              fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size12,
-              fontWeight: '700',
-              color: R.colors.white,
-            }}>
-            {item?.expDate}
-          </Text>
+          <View>
+            <Text
+              style={{
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size12,
+                fontWeight: '700',
+                color: R.colors.white,
+              }}>
+              {`${item?.expire_month}/${item?.expire_year}`}
+            </Text>
+            <Text
+              style={{
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size12,
+                fontWeight: '700',
+                color: R.colors.white,
+              }}>
+              {item?.holder_name}
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => onCardDeleteAlart(item?._id)}
+            style={({pressed}) => [
+              {
+                borderWidth: 1,
+                padding: R.fontSize.Size5,
+                borderRadius: R.fontSize.Size5,
+                backgroundColor: R.colors.redColor,
+                opacity: pressed ? 0.5 : 1,
+              },
+            ]}>
+            <Image
+              source={R.images.deleteIcon}
+              style={{height: R.fontSize.Size20, width: R.fontSize.Size20}}
+              resizeMode={'contain'}
+            />
+          </Pressable>
         </View>
       </View>
     </View>
   );
 };
 
-const CardScreen = (props) => {
 
-const dispatch = useDispatch();
+const onCardDeleteAlart = card_Id => {
+  Alert.alert(
+    'Delete Card!',
+    'Are you sure want to delete this card?',
+    [
+      {
+        text: 'Yes',
+        onPress: () => onCallCardDeleteAPI(card_Id),
+      },
+      {
+        text: 'No',
+      },
+    ],
+    {
+      cancelable: true,
+    },
+  );
+};
 
-const stripe = useStripe()
-const name ='sandeep'
-const [modalPicker, setModalPicker] = useState(false)
-const [cardNo, setCardNo] = useState('')
-const [cardHolderName, setCardHolderName] = useState('');
-const [cardCVV, setCardCVV] = useState('');
-const [cardExpiry, setCardExpiry] = useState('');
-const [cardName, setCardName] = useState('')
-const [cardVisible, setCardVisible] = useState(false)
-const [subPlanItem, setSubPlanItem] = useState({})
+const onCallCardDeleteAPI = card_Id => {
+  setLoading(true)
+  console.log('CARD ID', card_Id);
+  let data = {
+    id: card_Id,
+  };
+  dispatch(
+    CardDeleteRequest(data, response => {
+      onCallcardListAPI();
+      setLoading(false)
+      console.log('Card Del Res', response);
+      Toast.show("Card Deleted Succesfuuly",Toast.SHORT)
+    }),
+  );
+};
 
 
-useEffect(()=>{
+const onCallcardListAPI = () => {
+  
+  setLoading(true)
+  dispatch(CardListRequest(response => {
+    console.log("CARD LIST RES",response)
+    if(response.status == "success")
+    {
+          setStripeCardList(response?.List);
+          setLoading(false);
+    }
+    else
+    {
+          setStripeCardList([]);
+          setLoading(false);
+    }
+  }))
+}
 
-  console.log('SUB PLAN ITEM', props.route.params?.SubPlanItem);
-  setSubPlanItem(props.route.params?.SubPlanItem);
-  console.log('PROFILE DETAILS', props.userProfile);
-
-// initStripe({
-//   publishableKey:
-//     'pk_live_51LHlAaKGqRlE9chSdPqWWpAEHyL0bNjvAnhobShTKIJUEdKbc3PVYWwdxFQsaZ9wojTayZTvvE2KzIHtoFTebonm00oT7QkoTp',
-//   // merchantIdentifier: 'merchant.identifier',
-//   urlScheme: 'your-url-scheme',
-// });
-
-},[props.navigate])
 
 
  const onCallPayment = () => {
-   setModalPicker(false);
-   onCallStripePayPayment();
+   onCallValidCardPayment();
  };
 
- const onSelectCard = (card) => {
-  setCardVisible(true)
-  setCardName(card)
- }
+ 
 
-const getCreditCardAPI = async() => {
 
-    const response = await fetch(`${Config.API_URL}create-payment-intent`,{
-      method:'POST',
-      headers:{
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        paymentMethodType: 'card',
-        currency: 'usd'
-      })
-    })
-   
-    const {clientSecret} = await response.json()
-
-    const {error,paymentIntent} = await confirmPayment(clientSecret,{
-      type:'Card',
-      billingDetails:{name}
-    })
-    if(error){
-      Alert.alert(`ErrorCode:${error.code}`,error.message)
-    } else if(paymentIntent) {
-      Alert.alert('Success',`Payment Successful:${paymentIntent.id}`)
-    }
+const onCheckValid = () => {
+  return checkMonthLength() &&
+  checkExpYear()
 }
+
+const checkMonthLength = () => {
+  let expMonth = cardExpiry.substring(0, 2);
+  if (expMonth > 12) {
+    CommonFunctions.showToast('Please Enter Valid Month');
+    return false;
+  }
+  return true;
+};
+
+const checkExpYear = () => {
+  let expMonth = cardExpiry.substring(0, 2);
+  let expYear = cardExpiry.substring(3, 7);
+  console.log(expMonth,expYear)
+  console.log(currentYear)
+
+  if (expYear < currentYear) {
+    CommonFunctions.showToast('Please Enter Valid Exp Date');
+    return false;
+  } else if (expYear === currentYear) {
+    if (expMonth < currentMonth) {
+      CommonFunctions.showToast('Please Enter Valid Exp Date');
+      return false;
+    } else {
+      return true;
+    }
+  } else {
+    return true;
+  }
+};
+
+
+const onCallValidCardPayment = () => {
+  if(onCheckValid())
+  {
+    onCallStripePayPayment()
+   setModalPicker(false);
+
+  }
+}
+
 
 const onCallStripePayPayment = () => {
 
@@ -245,31 +345,87 @@ const onCallStripePayPayment = () => {
     month: expMonth,
     year: expYear,
     cvv: cardCVV,
-    currency: 'usd',
+    currency: 'inr',
     name: cardHolderName,
     email: props.userProfile?.Profile?.email,
     amount: subPlanItem?.price.replace('USD ',''),
     subscription_plan: subPlanItem?.plan_name,
   };
-
   const headerAuth = {
     Accept: 'application/json',
-    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
-    token: props.authToken,
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    Authorization: `Bearer ${props.authToken}`,
   };
+  const headers = headerAuth;
+
+  var formBody = [];
+  for (var property in data) {
+    var encodedKey = encodeURIComponent(property);
+    var encodedValue = encodeURIComponent(data[property]);
+    formBody.push(encodedKey + '=' + encodedValue);
+  }
+  formBody = formBody.join('&');
+
   const config = {
     method: 'POST',
-    headerAuth,
-    body: data,
+    headers,
+    body: formBody,
   };
 
   const requestUrl = Config.API_URL + Config.stripePaymentAPI
 
   console.log("DATA",data)
-  
+  console.log('DATA FORM DATA', config);
+  console.log("REQUEST URL", requestUrl)
+  setLoading(true)
   fetch(requestUrl,config)
-  .then(res => console.log("RESPONSE",res))
+  .then(res => res.json())
+  .then(response => {
+    console.log(" PAYMENT RESPONSE", response)
+    if(response.status == 'success')
+    {
+      Toast.show(response.message, Toast.SHORT)
+      props.navigation.navigate('PaymentResultScreen',{
+        paymentStatus: 'Success'
+      });
+      if(saveCardStatus)
+      {
+        onCallSaveCardAPI(data)
+      }
+      setLoading(false);
+    }
+    else
+    {
+      Toast.show(response.message, Toast.SHORT);
+      props.navigation.navigate('PaymentResultScreen', {
+        paymentStatus: 'Failed',
+      });
+      setLoading(false);
+    }
+  })
+}
 
+const onCallSaveCardAPI = (data) => {
+
+  let dataValue = {
+    holder_name: data?.name,
+    card_number: data?.cardNumber,
+    expire_month: data?.month,
+    expire_year: data?.year,
+    cvv_number: data?.cvv,
+    bank_name: data?.name,
+  };
+  setLoading(true)
+  console.log("SAVE CARD DATA",dataValue)
+  dispatch(
+    SaveCardRequest(dataValue, response => {
+    
+      console.log("SAVE CARD RED", response)
+      Toast.show('Successfully! Save Card',Toast.SHORT)
+      setLoading(false);
+
+    })
+  )
 }
 
 const expCardDate = number => {
@@ -279,40 +435,69 @@ const expCardDate = number => {
   }
   console.log("TEMP NO",tempNumber)
   setCardExpiry(tempNumber)
-  // setExpDate(tempNumber);
 };
 
+const onCallOpenModal = (cardname) => {
+  setCardName(cardname);
+  setModalPicker(true);
+
+}
 
 
     return (
-      <StoryScreen>
+      <StoryScreen loading={loading}>
         <SafeAreaView style={{flex: 1}}>
           <Header
             onPress={() => props.navigation.goBack()}
             leftSource={R.images.chevronBack}
           />
           <View style={{flex: 1}}>
-            <View style={{marginTop: R.fontSize.Size45}}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size18,
-                  fontWeight: '700',
-                  color: R.colors.primaryTextColor,
-                  marginHorizontal: R.fontSize.Size20,
-                }}
-                numberOfLines={1}>
-                {'Your Previous Cards'}
-              </Text>
+            {stripeCardList.length != 0 ? (
+              <View style={{marginTop: R.fontSize.Size45}}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size18,
+                    fontWeight: '700',
+                    color: R.colors.primaryTextColor,
+                    marginHorizontal: R.fontSize.Size20,
+                  }}
+                  numberOfLines={1}>
+                  {'Your Previous Cards'}
+                </Text>
 
-              <View style={{marginTop: R.fontSize.Size20}}>
-                <CarouselCards
-                  cardData={cardListData}
-                  cardDataLength={cardListData.length}
-                  renderItem={CarouselCardItem}
-                />
+                <View style={{marginTop: R.fontSize.Size20}}>
+                  <CarouselCards
+                    cardData={stripeCardList}
+                    cardDataLength={stripeCardList.length}
+                    renderItem={CarouselCardItem}
+                  />
+                </View>
               </View>
-            </View>
+            ) : (
+              <View
+                style={{
+                  marginHorizontal: R.fontSize.Size20,
+                  height: R.fontSize.Size210,
+                  borderRadius: R.fontSize.Size8,
+                  borderWidth: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderColor: R.colors.placeholderTextColor,
+                  marginVertical: R.fontSize.Size10,
+                  backgroundColor:R.colors.placeholderTextColor
+                }}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size12,
+                    color: R.colors.primaryTextColor,
+                    textAlign: 'center',
+                  }}>
+                  {'No have a save cards'}
+                </Text>
+              </View>
+            )}
             {/* {cardVisible && (
               <View
                 style={{
@@ -366,7 +551,7 @@ const expCardDate = number => {
               </View>
               <View style={{marginTop: R.fontSize.Size30}}>
                 <CustomCardView
-                  onPress={() => setModalPicker(true)}
+                  onPress={() => onCallOpenModal('Debit Card')}
                   title={'Debit Card'}
                   cardHeight={R.fontSize.Size80}
                   fontWeight={'400'}
@@ -377,7 +562,7 @@ const expCardDate = number => {
                   Iconheight={R.fontSize.Size18}
                 />
                 <CustomCardView
-                  onPress={() => onSelectCard('Credit Card')}
+                  onPress={() => onCallOpenModal('Credit Card')}
                   cardHeight={R.fontSize.Size80}
                   title={'Credit Card'}
                   fontWeight={'400'}
@@ -399,15 +584,17 @@ const expCardDate = number => {
             style={{
               flex: 1,
               backgroundColor: R.colors.modelBackground,
-              justifyContent: 'flex-end',
+              justifyContent: 'center',
             }}>
             <View
               style={{
                 height: screenHeight / 1.6,
                 backgroundColor: R.colors.white,
-                borderTopLeftRadius: R.fontSize.Size8,
-                borderTopRightRadius: R.fontSize.Size8,
-                paddingVertical: R.fontSize.Size30,
+                // borderTopLeftRadius: R.fontSize.Size8,
+                // borderTopRightRadius: R.fontSize.Size8,
+                paddingVertical: R.fontSize.Size20,
+                borderRadius:R.fontSize.Size8,
+                marginHorizontal:R.fontSize.Size10
               }}>
               <View
                 style={{
@@ -432,74 +619,114 @@ const expCardDate = number => {
                   />
                 </Pressable>
               </View>
-              <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
-                style={{flex: 1}}>
-                <ScrollView
-                  contentContainerStyle={{flexGrow: 1}}
-                  showsVerticalScrollIndicator={false}>
-                  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                    <View
-                      style={{
-                        flex: 1,
-                        marginHorizontal: R.fontSize.Size20,
-                      }}>
-                      <View>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            color: R.colors.primaryTextColor,
-                            fontWeight: '400',
-                            fontSize: R.fontSize.Size15,
-                          }}>
-                          {'Card Details'}
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            color: R.colors.primaryTextColor,
-                            fontWeight: '700',
-                            fontSize: R.fontSize.Size18,
-                            marginTop: R.fontSize.Size10,
-                          }}>
-                          {`Enter your card details ( Debit Card )`}
-                        </Text>
+              <View
+              style={{flex:1}}
+              >
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
+                  style={{flex: 1}}>
+                  <ScrollView
+                    contentContainerStyle={{flexGrow: 1}}
+                    showsVerticalScrollIndicator={false}>
+                    <TouchableWithoutFeedback
+                      onPress={() => Keyboard.dismiss()}>
+                      <View
+                        style={{
+                          flex: 1,
+                          marginHorizontal: R.fontSize.Size20,
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              color: R.colors.primaryTextColor,
+                              fontWeight: '400',
+                              fontSize: R.fontSize.Size15,
+                            }}>
+                            {'Card Details'}
+                          </Text>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              color: R.colors.primaryTextColor,
+                              fontWeight: '700',
+                              fontSize: R.fontSize.Size18,
+                              marginTop: R.fontSize.Size10,
+                            }}>
+                            {`Enter your card details ( ${cardName} )`}
+                          </Text>
+                        </View>
+                        <View style={{flex: 1, marginTop: R.fontSize.Size30}}>
+                          <CustomCardTextInput
+                            value={cardNo}
+                            onChangeText={cardNo => setCardNo(cardNo)}
+                            placeholder={'Enter Card Number'}
+                            keyboardType={'number-pad'}
+                            maxLength={16}
+                          />
+                          <CustomCardTextInput
+                            value={cardHolderName}
+                            onChangeText={holderName =>
+                              setCardHolderName(holderName)
+                            }
+                            placeholder={'Enter Card Holder Name'}
+                            maxLength={30}
+                          />
+                          <CustomCardTextInput
+                            value={cardCVV}
+                            onChangeText={cvv => setCardCVV(cvv)}
+                            placeholder={'Enter CVV'}
+                            keyboardType={'number-pad'}
+                            maxLength={3}
+                          />
+                          <CustomCardTextInput
+                            value={cardExpiry}
+                            onChangeText={expiryDate => expCardDate(expiryDate)}
+                            placeholder={'MM/YYYY'}
+                            keyboardType={'number-pad'}
+                            maxLength={7}
+                          />
+                          {stripeCardList.length < 3 ? (
+                            <Pressable
+                              onPress={() => setSaveCardStatus(!saveCardStatus)}
+                              style={({pressed}) => [
+                                {
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  paddingBottom: R.fontSize.Size10,
+                                  opacity: pressed ? 0.5 : 1,
+                                },
+                              ]}>
+                              <Image
+                                source={
+                                  saveCardStatus
+                                    ? R.images.checkTermsIcon
+                                    : R.images.unCheckTermsIcon
+                                }
+                                style={{
+                                  height: R.fontSize.Size30,
+                                  width: R.fontSize.Size30,
+                                }}
+                                resizeMode={'contain'}
+                              />
+                              <Text
+                                style={{
+                                  fontFamily: R.fonts.regular,
+                                  color: R.colors.primaryTextColor,
+                                  fontSize: R.fontSize.Size14,
+                                  marginLeft: R.fontSize.Size10,
+                                }}
+                                numberOfLines={1}>
+                                {'Save card for future payments'}
+                              </Text>
+                            </Pressable>
+                          ) : null}
+                        </View>
                       </View>
-                      <View style={{flex: 1, marginTop: R.fontSize.Size30}}>
-                        <CustomCardTextInput
-                          value={cardNo}
-                          onChangeText={cardNo => setCardNo(cardNo)}
-                          placeholder={'Enter Card Number'}
-                          keyboardType={'number-pad'}
-                          maxLength={16}
-                        />
-                        <CustomCardTextInput
-                          value={cardHolderName}
-                          onChangeText={holderName =>
-                            setCardHolderName(holderName)
-                          }
-                          placeholder={'Enter Card Holder Name'}
-                          maxLength={30}
-                        />
-                        <CustomCardTextInput
-                          value={cardCVV}
-                          onChangeText={cvv => setCardCVV(cvv)}
-                          placeholder={'Enter CVV'}
-                          keyboardType={'number-pad'}
-                          maxLength={3}
-                        />
-                        <CustomCardTextInput
-                          value={cardExpiry}
-                          onChangeText={expiryDate => expCardDate(expiryDate)}
-                          placeholder={'MM/YYYY'}
-                          keyboardType={'number-pad'}
-                          maxLength={7}
-                        />
-                      </View>
-                    </View>
-                  </TouchableWithoutFeedback>
-                </ScrollView>
-              </KeyboardAvoidingView>
+                    </TouchableWithoutFeedback>
+                  </ScrollView>
+                </KeyboardAvoidingView>
+              </View>
               <View style={{paddingVertical: R.fontSize.Size10}}>
                 <AppButton
                   onPress={() => onCallPayment()}

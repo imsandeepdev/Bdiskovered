@@ -184,37 +184,25 @@ const onSelectPicker = params => {
 };
 
 
-const onCallCompressVideo = (source) => {
-   const options = {
-     startTime: 0,
-     endTime: 10, // iOS only
-     saveToCameraRoll: true, // default is false // iOS only
-     saveWithCurrentDate: true, // default is false // iOS only
-   };
-   ProcessingManager.trim(source, options) // like VideoPlayer trim options
-     .then(data => console.log('Compress video data',data));
-}
+// const onCallCompressVideo = (source) => {
+//    const options = {
+//      startTime: 0,
+//      endTime: 10, // iOS only
+//      saveToCameraRoll: true, // default is false // iOS only
+//      saveWithCurrentDate: true, // default is false // iOS only
+//    };
+//    ProcessingManager.trim(source, options) // like VideoPlayer trim options
+//      .then(data => console.log('Compress video data',data));
+// }
 
 const onCallVideoCompress = async (videoURL) => {
   console.log('URL', videoURL);
-
-  // const result = await ImageCompressor.compress(videoURL, {
-  //   compressionMethod: 'auto',
-  // });
   const result = await VideoCompressor.compress(
     videoURL,
     {
       compressionMethod: 'auto',
     },
-    // progress => {
-    //   console.log('Compression: ', progress);
-
-    //   if (backgroundMode) {
-    //     console.log('Compression Progress: ', progress);
-    //   } else {
-    //     setCompressingProgress(progress);
-    //   }
-    // },
+  
   );
   console.log('RESULT', result);
  

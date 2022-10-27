@@ -17,6 +17,7 @@ const colors = {
   whatsAppColor: '#25D366',
   cardColor: '#292C46',
   cardColor1: '#00AE99',
+  redColor: '#FF0000',
 };
 
 export {colors};
