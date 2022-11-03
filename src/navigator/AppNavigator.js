@@ -34,6 +34,7 @@ import TailentVideoList from '../screens/TailentVideoList';
 import WebViewScreen from '../screens/WebViewScreen';
 import ConnectionScreen from '../screens/ConnectionScreen';
 import NotificationScreen from '../screens/NotificationScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -185,6 +186,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="NotificationScreen"
           component={NotificationScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

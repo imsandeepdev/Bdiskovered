@@ -80,19 +80,19 @@ const UploadVideoScreen = props => {
     [
   {
     id: '1',
-    title: 'Dance',
-  },
-  {
-    id: '2',
-    title: 'Fashon',
-  },
-  {
-    id: '3',
     title: 'Music',
   },
   {
+    id: '2',
+    title: 'Art',
+  },
+  {
+    id: '3',
+    title: 'Dance',
+  },
+  {
     id: '4',
-    title: 'Sing',
+    title: 'Fashon',
   },
 ]
   )
@@ -431,7 +431,6 @@ console.log("FORMD",formdata)
                         flexWrap: 'wrap',
                         alignItems: 'center',
                         flexDirection: 'row',
-                        justifyContent: 'space-between',
                       }}>
                       {videoTypeList.map((item, index) => {
                         return (
@@ -443,6 +442,7 @@ console.log("FORMD",formdata)
                                 opacity: pressed ? 0.5 : 1,
                                 width: screenWidth / 4,
                                 marginVertical: R.fontSize.Size10,
+                                marginLeft: R.fontSize.Size10,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 backgroundColor: item?.selected
