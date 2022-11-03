@@ -116,3 +116,8 @@ export const card_Delete_error = 'card_Delete_error';
 export const save_Card = 'save_Card';
 export const save_Card_success = 'save_Card_success';
 export const save_Card_error = 'save_Card_error';
+
+// userLocation
+export const user_Location = 'user_Location';
+export const user_Location_success = 'user_Location_success';
+export const user_Location_error = 'user_Location_error';

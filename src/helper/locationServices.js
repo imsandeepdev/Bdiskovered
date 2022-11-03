@@ -11,13 +11,17 @@ import {Alert} from 'react-native';
 export const RequestLocationPermission = async () => {
   if(Platform.OS == 'ios')
   {
-    console.log("LOCATION")
+    console.log("LOCATION ON LOCATION SERVICE")
      Geolocation.setRNConfiguration({
        authorizationLevel: 'whenInUse',
      });
-     getOneTimeLocation()
-    // let reqVal = await Geolocation.requestAuthorization();
-    // IOS permission request does not offer a callback :/
+    let permissionResult = await Geolocation.requestAuthorization('whenInUse');
+    console.log(permissionResult);
+    if (permissionResult == 'granted') {
+      getOneTimeLocation();
+    } else {
+      console.log('Location Error Location Denied', error);
+    }
     return null;
   }
   else if(Platform.OS == 'android')
@@ -50,18 +54,23 @@ export const RequestLocationPermission = async () => {
 
   const getOneTimeLocation = async () => {
     console.log("ONE TIME")
-    let chcekLatitude = AsyncStorage.getItem('userLatitude');
-    let chcekLongitude = AsyncStorage.getItem('userLongitude');
-    if(!chcekLatitude && !chcekLongitude)
-    {
+    // let chcekLatitude = AsyncStorage.getItem('userLatitude');
+    // let chcekLongitude = AsyncStorage.getItem('userLongitude');
+    // if(!chcekLatitude && !chcekLongitude)
+    // {
          Geolocation.getCurrentPosition(
            position => {
-             console.log('POSITION', position);
+             console.log('POSITION ON LOCATION', position);
              const currentLongitude = position.coords.longitude;
              const currentLatitude = position.coords.latitude;
-             Alert.alert("CURRENT LAT", currentLatitude, "CURRENT LONG", currentLongitude)
-             AsyncStorage.setItem('userLongitude', currentLongitude);
-             AsyncStorage.setItem('userLatitude', currentLatitude);
+             AsyncStorage.setItem(
+               'userLongitude',
+               `${position.coords.longitude},${position.coords.latitude}`,
+             );
+             AsyncStorage.setItem(
+               'userLatitude',
+               `${position.coords.latitude}`,
+             );
            },
            error => {
              console.log('Location Error', error);
@@ -73,5 +82,5 @@ export const RequestLocationPermission = async () => {
              forceRequestLocation: true,
            },
          );
-    }
+    // }
   };

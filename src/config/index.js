@@ -23,6 +23,7 @@ export const Config = {
   connectedUsersAPI: 'profile/connect-user-list',
   postDeleteAPI: 'post/delete',
   getsubscriberGetAPI: 'subscriber/get',
+  userLocationAPI:'user/location',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

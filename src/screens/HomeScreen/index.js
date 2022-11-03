@@ -31,6 +31,8 @@ import { VideoRatingRequest } from '../../actions/videoRating.action';
 import axios from 'axios';
 import moment from 'moment';
 const screenHeight = Dimensions.get('screen').height;
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserLocationRequest } from '../../actions/userLocation.action';
 
 
 const persnalDetails = [
@@ -234,6 +236,9 @@ const HomeScreen = (props) => {
       name: 'Music',
     },
   ]);
+  const [userLat, setUserLat] = useState('');
+  const [userLong, setUserLong] = useState('');
+
 
   const [allVideoPostList, setAllVideoPostList] = useState([])
 
@@ -253,6 +258,7 @@ const HomeScreen = (props) => {
 
 
   useEffect(()=>{
+    onCallLatitudeLongitude();
       let arr = tailentList.map((item, index) => {
         item.selected = false;
         return {...item};
@@ -267,6 +273,28 @@ const HomeScreen = (props) => {
 
   
   },[props.navigation])
+
+
+  const onCallLatitudeLongitude = () => { 
+    AsyncStorage.getItem('userLongitude', (err, result) => {
+      console.log('RESULT LONGITUDE', result);
+      const myArray = result.split(",")
+      console.log("Result1",myArray[0])
+      console.log('Result2', myArray[1]);
+      onCallLatLong(myArray[0], myArray[1]);
+    });
+  }
+
+  const onCallLatLong = (lat,long) => {
+    let data = {
+      latitude: lat,
+      longitude: long,
+    };
+    console.log("DATA",data)
+    dispatch(UserLocationRequest(data,response=>{
+      console.log("UserLOC RES",response)
+    }))
+  }
 
   const screenFocus = () => {
     Platform.OS === 'android' &&

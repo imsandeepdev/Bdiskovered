@@ -184,6 +184,10 @@ const [profilePic, setProfilePic] = useState([]);
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
+        onCallUserLocation(
+          response.Profile?.latitude,
+          response.Profile?.longitude,
+        );
         setLoading(false);
       }
       else if (response.status == 'success' && props.userType != 'Talent'){
@@ -244,6 +248,13 @@ const [profilePic, setProfilePic] = useState([]);
       //   }
       // }))
     };
+
+    const onCallUserLocation = (lat,long) => {
+
+      console.log("LATN LONG",lat,long)
+      
+
+    }
 
     return (
       <StoryScreen loading={loading}>
