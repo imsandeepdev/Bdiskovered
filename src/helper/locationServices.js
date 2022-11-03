@@ -16,7 +16,7 @@ export const RequestLocationPermission = async () => {
        authorizationLevel: 'whenInUse',
      });
      getOneTimeLocation()
-    // Geolocation.requestAuthorization();
+    // let reqVal = await Geolocation.requestAuthorization();
     // IOS permission request does not offer a callback :/
     return null;
   }
