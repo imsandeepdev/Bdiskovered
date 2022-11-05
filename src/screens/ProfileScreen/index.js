@@ -758,7 +758,6 @@ const [profilePic, setProfilePic] = useState([]);
                 <View
                   style={{
                     marginTop: R.fontSize.Size20,
-                    borderWidth: 1,
                     alignItems: 'flex-start',
                     flexDirection: 'row',
                     paddingHorizontal: R.fontSize.Size10,

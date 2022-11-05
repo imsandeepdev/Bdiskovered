@@ -33,10 +33,11 @@ const ChatScreen = props => {
       ...msg,
       sentBy: props.route.params?.MyUserId,
       sentTo: props.route.params?.tailentUserId,
+      createdAt: new Date()
     };
-    //   setMessages(previousMessages =>
-    //     GiftedChat.append(previousMessages, messages),
-    //   );
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, mymsg),
+      );
   };
 
   return (

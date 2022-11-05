@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "750257452147",
+    "firebase_url": "https://bdiskoveredapp-default-rtdb.firebaseio.com",
+    "project_id": "bdiskoveredapp",
+    "storage_bucket": "bdiskoveredapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750257452147:android:74ea7111e9b207b40fe606",
+        "android_client_info": {
+          "package_name": "com.bdiskovered"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750257452147-f9riteua8hkb9mlbtnb6abfvtgm4og7p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRQlleisluEvZPWco1HTTdhEgP6AmibNk"
+        },
+        {
+          "current_key": "AIzaSyB_IGubgLXyGK-nWV4qYooW4wUusgs0Po0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750257452147-f9riteua8hkb9mlbtnb6abfvtgm4og7p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "750257452147-7pi559jjohatl656bmlr7gm0am8ls0us.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.ios.BdiskoveredApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750257452147:android:9bb3ecee856c4ef40fe606",
+        "android_client_info": {
+          "package_name": "com.shunyaekai.bdiskovered"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750257452147-97cj6s9vsgj7ag0eg2kba9lbscma77gg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shunyaekai.bdiskovered",
+            "certificate_hash": "ed614e195b351983fad21f6555c3ff717412207a"
+          }
+        },
+        {
+          "client_id": "750257452147-td0a5v9df0mksre0rcjvpf4v2h457hja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shunyaekai.bdiskovered",
+            "certificate_hash": "537f288bc935cf557b577484e94c562f799788b6"
+          }
+        },
+        {
+          "client_id": "750257452147-f9riteua8hkb9mlbtnb6abfvtgm4og7p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRQlleisluEvZPWco1HTTdhEgP6AmibNk"
+        },
+        {
+          "current_key": "AIzaSyB_IGubgLXyGK-nWV4qYooW4wUusgs0Po0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750257452147-f9riteua8hkb9mlbtnb6abfvtgm4og7p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "750257452147-7pi559jjohatl656bmlr7gm0am8ls0us.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.ios.BdiskoveredApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
