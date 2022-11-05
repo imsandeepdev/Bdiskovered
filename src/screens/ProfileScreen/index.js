@@ -9,6 +9,7 @@ import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import { Config } from '../../config';
 import { PostDeleteRequest } from '../../actions/uploadNewVideo.action';
 import moment from 'moment';
+import Geocoder from 'react-native-geocoder-reborn';
 
 const screenWidth = Dimensions.get('screen').width
 
@@ -61,22 +62,25 @@ const CustomTimeRow = props => {
   return (
     <View
       style={{
-        flexDirection: 'row',
         alignItems: 'center',
         marginBottom: R.fontSize.Size10,
+        marginLeft:R.fontSize.Size10
       }}>
       <View
         style={{
-            flexDirection: 'row',
             alignItems: 'center',
-            width: screenWidth / 2.5,
+            width: screenWidth / 3.8,
+            height:R.fontSize.Size35,
+            backgroundColor:R.colors.appColor,
+            justifyContent:'center',
+            borderRadius:R.fontSize.Size8
           }}>
         <Text
           style={{
             fontFamily: R.fonts.regular,
             fontSize: R.fontSize.Size14,
             fontWeight: '700',
-            color: R.colors.appColor,
+            color: R.colors.lightWhite,
             marginHorizontal: R.fontSize.Size12,
           }}>
           {props.leftTitle}
@@ -86,9 +90,9 @@ const CustomTimeRow = props => {
         <View
           style={{
             flexDirection: 'row',
-            flex: 1,
             alignItems: 'center',
-            justifyContent:'center'
+            justifyContent:'center',
+            marginTop:R.fontSize.Size5
           }}>
           <Text
             style={{
@@ -101,8 +105,8 @@ const CustomTimeRow = props => {
           </Text>
           <Text
             style={{
-              height: R.fontSize.Size20,
-              marginHorizontal: R.fontSize.Size8,
+              // height: R.fontSize.Size20,
+              marginHorizontal: R.fontSize.Size4,
               textAlign: 'center',
               borderBottomWidth: 1,
               borderColor: R.colors.appColor,
@@ -185,8 +189,7 @@ const [profilePic, setProfilePic] = useState([]);
           filename: 'profile.jpeg',
         });
         onCallUserLocation(
-          response.Profile?.latitude,
-          response.Profile?.longitude,
+          response.Profile
         );
         setLoading(false);
       }
@@ -249,11 +252,23 @@ const [profilePic, setProfilePic] = useState([]);
       // }))
     };
 
-    const onCallUserLocation = (lat,long) => {
+    const onCallUserLocation = (profileData) => {
 
-      console.log("LATN LONG",lat,long)
-      
-
+      console.log("profile Data", profileData)
+      var NY = {
+        lat: parseInt(profileData?.latitude),
+        lng: parseInt(profileData?.longitude),
+      };
+      Geocoder.geocodePosition(NY)
+        .then(res => {
+          console.log("response",res)
+          setPersonalArray([
+            profileData?.gender,
+            `${moment().diff(profileData?.birth, 'years')} Year`,
+            `${res[0].locality}, ${res[0].country}`,
+          ]);
+        })
+        .catch(err => console.log("ERROR",err));
     }
 
     return (
@@ -477,13 +492,14 @@ const [profilePic, setProfilePic] = useState([]);
               <View
                 style={{
                   flex: 1,
-                  paddingHorizontal: R.fontSize.Size20,
+                  // paddingHorizontal: R.fontSize.Size20,
                 }}>
                 <View
                   style={{
                     marginTop: R.fontSize.Size30,
                     flexDirection: 'row',
                     paddingVertical: R.fontSize.Size10,
+                    paddingHorizontal: R.fontSize.Size20,
                   }}>
                   <View style={{flex: 1, justifyContent: 'space-around'}}>
                     <View
@@ -575,7 +591,11 @@ const [profilePic, setProfilePic] = useState([]);
                     </Text>
                   </View>
                 </View>
-                <View style={{marginTop: R.fontSize.Size10}}>
+                <View
+                  style={{
+                    marginTop: R.fontSize.Size10,
+                    paddingHorizontal: R.fontSize.Size20,
+                  }}>
                   <Pressable
                     onPress={() =>
                       props.navigation.navigate('UpdateProfileScreen', {
@@ -615,7 +635,11 @@ const [profilePic, setProfilePic] = useState([]);
                   </Pressable>
                 </View>
                 {profileDetails?.bio != '' && (
-                  <View style={{marginTop: R.fontSize.Size30}}>
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size30,
+                      paddingHorizontal: R.fontSize.Size20,
+                    }}>
                     <Text
                       style={{
                         fontFamily: R.fonts.regular,
@@ -634,6 +658,7 @@ const [profilePic, setProfilePic] = useState([]);
                     flexDirection: 'row',
                     alignItems: 'center',
                     marginTop: R.fontSize.Size30,
+                    paddingHorizontal: R.fontSize.Size20,
                   }}>
                   {personalArray.map((item, index) => {
                     return (
@@ -669,45 +694,55 @@ const [profilePic, setProfilePic] = useState([]);
 
                 <View
                   style={{
-                    flexWrap: 'wrap',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: R.fontSize.Size20,
+                    height: R.fontSize.Size80,
+                    justifyContent: 'center',
+                    paddingHorizontal: R.fontSize.Size20,
                   }}>
-                  {taletArray.map((item, index) => {
-                    console.log('ITEM', item);
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          alignItems: 'center',
-                          marginRight: R.fontSize.Size14,
-                          justifyContent: 'center',
-                          paddingHorizontal: R.fontSize.Size20,
-                          paddingVertical: R.fontSize.Size6,
-                          backgroundColor: R.colors.placeholderTextColor,
-                          borderRadius: R.fontSize.Size8,
-                          marginBottom: R.fontSize.Size6,
-                        }}>
-                        <Text
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                      alignItems: 'center',
+                    }}>
+                    {taletArray.map((item, index) => {
+                      console.log('ITEM', item);
+                      return (
+                        <View
+                          key={index}
                           style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size14,
-                            fontWeight: '700',
-                            color: R.colors.primaryTextColor,
-                            marginLeft: R.fontSize.Size8,
+                            alignItems: 'center',
+                            marginRight: R.fontSize.Size14,
+                            justifyContent: 'center',
+                            paddingHorizontal: R.fontSize.Size20,
+                            paddingVertical: R.fontSize.Size6,
+                            backgroundColor: R.colors.placeholderTextColor,
+                            borderRadius: R.fontSize.Size8,
+                            marginBottom: R.fontSize.Size6,
                           }}>
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size14,
+                              fontWeight: '700',
+                              color: R.colors.primaryTextColor,
+                              marginLeft: R.fontSize.Size8,
+                            }}>
+                            {item}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </ScrollView>
                 </View>
 
                 {profileDetails?.full_time_amount != '' ||
                 profileDetails?.part_time_amount != '' ||
                 profileDetails?.gigs_amount != '' ? (
-                  <View style={{marginTop: R.fontSize.Size30}}>
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size2,
+                      paddingHorizontal: R.fontSize.Size20,
+                    }}>
                     <Text
                       style={{
                         fontFamily: R.fonts.regular,
@@ -723,14 +758,17 @@ const [profilePic, setProfilePic] = useState([]);
                 <View
                   style={{
                     marginTop: R.fontSize.Size20,
-                    alignItems: 'center',
+                    borderWidth: 1,
+                    alignItems: 'flex-start',
+                    flexDirection: 'row',
+                    paddingHorizontal: R.fontSize.Size10,
                   }}>
                   {profileDetails?.full_time_amount != '' &&
                     profileDetails?.full_time_amount != null && (
                       <CustomTimeRow
                         leftTitle={profileDetails?.job_type1}
                         rightText={profileDetails?.full_time_amount}
-                        rightDayHours={'/ Day'}
+                        rightDayHours={'/Day'}
                       />
                     )}
                   {profileDetails?.part_time_amount != '' &&
@@ -738,7 +776,7 @@ const [profilePic, setProfilePic] = useState([]);
                       <CustomTimeRow
                         leftTitle={profileDetails?.job_type2}
                         rightText={profileDetails?.part_time_amount}
-                        rightDayHours={'/ Hours'}
+                        rightDayHours={'/Hours'}
                       />
                     )}
                   {profileDetails?.gigs_amount != '' &&
@@ -746,7 +784,7 @@ const [profilePic, setProfilePic] = useState([]);
                     <CustomTimeRow
                       leftTitle={profileDetails?.job_type3}
                       rightText={profileDetails?.gigs_amount}
-                      rightDayHours={'/ Hours'}
+                      rightDayHours={'/Hours'}
                     />
                   ) : null}
                 </View>

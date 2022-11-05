@@ -1,7 +1,8 @@
+import * as React from 'react';
 import {View, Pressable, Text, Image, TextInput} from 'react-native'
 import R from '../res/R'
 
-const CustomCardTextInput = (props) => {
+const CustomCardTextInput = React.forwardRef((props,ref) => {
     return (
       <View
         style={{
@@ -37,6 +38,7 @@ const CustomCardTextInput = (props) => {
           ]}>
           <View style={{flex: 1, justifyContent: 'center'}}>
             <TextInput
+              ref={ref}
               style={{
                 fontFamily: R.fonts.regular,
                 fontSize: R.fontSize.Size15,
@@ -51,6 +53,8 @@ const CustomCardTextInput = (props) => {
               keyboardType={props.keyboardType ?? 'default'}
               onFocus={props.onFocus}
               maxLength={props.maxLength}
+              onSubmitEditing={props.onSubmitEditing}
+              returnKeyType={props.returnKeyType}
             />
           </View>
           <View>
@@ -63,6 +67,6 @@ const CustomCardTextInput = (props) => {
         </Pressable>
       </View>
     );
-}
+});
 
 export default CustomCardTextInput

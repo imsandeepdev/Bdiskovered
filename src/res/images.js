@@ -33,6 +33,8 @@ const images = {
   orangeAppIcon: require('./images/oragne_star.png'),
   redHeartIcon: require('./images/redHeartIcon.png'),
 
+  shareIcon: require('./images/shareIcon.png'),
+
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 
   // Drawer

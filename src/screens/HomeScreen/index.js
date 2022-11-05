@@ -33,6 +33,7 @@ import moment from 'moment';
 const screenHeight = Dimensions.get('screen').height;
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
+import Geocoder from 'react-native-geocoder-reborn';
 
 
 const persnalDetails = [
@@ -238,6 +239,8 @@ const HomeScreen = (props) => {
   ]);
   const [userLat, setUserLat] = useState('');
   const [userLong, setUserLong] = useState('');
+  const [tailentLocation, setTailentLocation] = useState('');
+
 
 
   const [allVideoPostList, setAllVideoPostList] = useState([])
@@ -348,9 +351,7 @@ const HomeScreen = (props) => {
         setAllVideoPostList(response?.Post)
         setLoading(false);
       }
-    }))
-
-  
+    }))  
   }
 
   const onChangeIndex = ({index}) => {
@@ -435,6 +436,20 @@ const HomeScreen = (props) => {
         })
       : props.navigation.navigate('SubscriptionScreen');
   }
+
+  const onCallUserLocation = (lat, long) => {
+    var NY = {
+      lat: parseInt(lat),
+      lng: parseInt(long),
+    };
+    Geocoder.geocodePosition(NY)
+      .then(res => {
+        console.log('response', res);
+        setTailentLocation(`${res[0]?.locality}, ${res[0]?.country}`);
+       
+      })
+      .catch(err => console.log('ERROR', err));
+  };
   
   return (
     <StoryScreen loading={loading}>
@@ -556,6 +571,20 @@ const HomeScreen = (props) => {
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
             renderItem={({item, index}) => {
+
+
+              onCallUserLocation(item?.latitude, item?.longitude);
+              // var NY = {
+              //   lat: parseInt(item?.latitude),
+              //   lng: parseInt(item?.longitude),
+              // };
+              // Geocoder.geocodePosition(NY)
+              //   .then(res => {
+              //     console.log('response', res);
+              //     setTailentLocation(`${res[0]?.locality}, ${res[0]?.country}`);
+              //   })
+              //   .catch(err => console.log('ERROR', err));
+
               return (
                 <View
                   key={index}
@@ -582,7 +611,7 @@ const HomeScreen = (props) => {
                         '',
                       )}`}
                       userName={item?.username}
-                      videoCat={item?.category}
+                      videoCat={tailentLocation!= '' ? tailentLocation : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}

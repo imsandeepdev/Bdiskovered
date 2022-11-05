@@ -65,7 +65,7 @@ export const RequestLocationPermission = async () => {
              const currentLatitude = position.coords.latitude;
              AsyncStorage.setItem(
                'userLongitude',
-               `${position.coords.longitude},${position.coords.latitude}`,
+               `${position.coords.latitude},${position.coords.longitude}`,
              );
              AsyncStorage.setItem(
                'userLatitude',

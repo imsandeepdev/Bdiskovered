@@ -44,7 +44,7 @@ const VideoCard = props => {
         // setControls={true}
         paused={props.paused}
         onLoad={props.onLoad}
-        controls={true}
+        controls={false}
         resizeMode={'cover'}
         repeat
         style={{
@@ -66,8 +66,8 @@ const VideoCard = props => {
           }}>
           <View
             style={{
-              height: R.fontSize.Size30,
-              width: R.fontSize.Size30,
+              height: R.fontSize.Size35,
+              width: R.fontSize.Size35,
               overflow: 'hidden',
               borderRadius: R.fontSize.Size20,
             }}>
@@ -76,8 +76,8 @@ const VideoCard = props => {
                 uri: props.userImage,
               }}
               style={{
-                height: R.fontSize.Size30,
-                width: R.fontSize.Size30,
+                height: R.fontSize.Size35,
+                width: R.fontSize.Size35,
               }}
               resizeMode={'cover'}
             />
@@ -86,14 +86,24 @@ const VideoCard = props => {
             <Text
               style={{
                 fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size14,
+                fontSize: R.fontSize.Size16,
                 fontWeight: '700',
                 color: R.colors.white,
               }}
               numberOfLines={1}>
               {props.userName}
             </Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                fontFamily: R.fonts.regular,
+                fontWeight: '400',
+                fontSize: R.fontSize.Size12,
+                color: R.colors.lightWhite,
+              }}
+              numberOfLines={1}>
+              {props.videoCat}
+            </Text>
+            {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
                 // source={R.images.musicIcon}
                 source={props.musicIcon}
@@ -103,17 +113,17 @@ const VideoCard = props => {
                 }}
                 resizeMode={'contain'}
               />
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontWeight: '400',
-                  fontSize: R.fontSize.Size10,
-                  color: R.colors.lightWhite,
-                  marginHorizontal: R.fontSize.Size5,
-                }}>
-                {props.videoCat}
-              </Text>
-            </View>
+            <Text
+              style={{
+                fontFamily: R.fonts.regular,
+                fontWeight: '400',
+                fontSize: R.fontSize.Size10,
+                color: R.colors.lightWhite,
+                marginHorizontal: R.fontSize.Size5,
+              }}>
+              {props.videoCat}
+            </Text>
+            </View> */}
           </View>
           <View>
             <Pressable
@@ -166,42 +176,67 @@ const VideoCard = props => {
       </View> */}
 
       <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-        <View
-          style={{
-            marginVertical: R.fontSize.Size20,
-            marginHorizontal: R.fontSize.Size20,
-          }}>
-          <Text
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
             style={{
-              fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size14,
-              fontWeight: '700',
-              color: R.colors.white,
+              flex: 1,
+              marginVertical: R.fontSize.Size20,
+              marginHorizontal: R.fontSize.Size20,
             }}>
-            {props.bottomTitle}
-          </Text>
-          <Text
-            style={{
-              fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size12,
-              fontWeight: '400',
-              color: R.colors.lightWhite,
-              marginTop: R.fontSize.Size5,
-              width: screenWidth / 1.2,
-            }}
-            numberOfLines={3}>
-            {props.bottomDiscription}
-          </Text>
-          <Text
-            style={{
-              marginTop:R.fontSize.Size4,
-              fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size14,
-              fontWeight: '700',
-              color: R.colors.white,
-            }}>
-            {props.usdPrice}
-          </Text>
+            <Text
+              style={{
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size14,
+                fontWeight: '700',
+                color: R.colors.white,
+              }}>
+              {props.bottomTitle}
+            </Text>
+            <Text
+              style={{
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size12,
+                fontWeight: '400',
+                color: R.colors.lightWhite,
+                marginTop: R.fontSize.Size5,
+                width: screenWidth / 1.2,
+              }}
+              numberOfLines={3}>
+              {props.bottomDiscription}
+            </Text>
+            <Text
+              style={{
+                marginTop: R.fontSize.Size4,
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size14,
+                fontWeight: '700',
+                color: R.colors.white,
+              }}>
+              {props.usdPrice}
+            </Text>
+          </View>
+          <View style={{marginRight: R.fontSize.Size10,alignItems:'center'}}>
+            <Pressable
+            style={({pressed})=>[{
+              opacity: pressed?0.3:0.8,
+              height:R.fontSize.Size50,
+              width:R.fontSize.Size50,
+              borderRadius:R.fontSize.Size8,
+              backgroundColor:R.colors.lightBlack,
+              alignItems:'center',
+              justifyContent:'center'
+            }]}
+            >
+              <Image
+                source={R.images.shareIcon}
+                style={{height:R.fontSize.Size35, width:R.fontSize.Size35}}
+                resizeMode={'contain'}
+              />
+            </Pressable>
+            <Text
+            style={{color:R.colors.lightWhite, fontSize:R.fontSize.Size14, fontFamily:R.fonts.regular, fontWeight:'400'}}
+            >Share</Text>
+          </View>
         </View>
       </View>
     </View>
