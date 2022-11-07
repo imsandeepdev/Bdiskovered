@@ -175,11 +175,12 @@ const [profilePic, setProfilePic] = useState([]);
          console.log('useTalentArray', useTalentArray);
           setTalentArray(useTalentArray)
           setTailentPostVideo(response.Profile?.post)
-        setPersonalArray([
-          response.Profile?.gender,
-          `${moment().diff(response.Profile?.birth, 'years')} Year`,
-          'Guru',
-        ]);
+        // setPersonalArray([
+        //   response.Profile?.gender,
+        //   `${moment().diff(response.Profile?.birth, 'years')} Year`,
+        //   '',
+        // ]);
+         onCallUserLocation(response.Profile);
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace(
             'http://localhost:8080/',
@@ -188,9 +189,7 @@ const [profilePic, setProfilePic] = useState([]);
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
-        onCallUserLocation(
-          response.Profile
-        );
+       
         setLoading(false);
       }
       else if (response.status == 'success' && props.userType != 'Talent'){
@@ -253,6 +252,7 @@ const [profilePic, setProfilePic] = useState([]);
     };
 
     const onCallUserLocation = (profileData) => {
+        setLoading(true);
 
       console.log("profile Data", profileData)
       var NY = {
@@ -269,6 +269,8 @@ const [profilePic, setProfilePic] = useState([]);
           ]);
         })
         .catch(err => console.log("ERROR",err));
+        setLoading(false);
+
     }
 
     return (

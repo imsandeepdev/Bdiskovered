@@ -30,9 +30,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-   if ([FIRApp defaultApp] == nil) {
-     [FIRApp configure];
-   }
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
 
   RCTAppSetupPrepareApp(application);
 
