@@ -178,8 +178,9 @@ const [profilePic, setProfilePic] = useState([]);
         setPersonalArray([
           response.Profile?.gender,
           `${moment().diff(response.Profile?.birth, 'years')} Year`,
-          'Guru',
+          '',
         ]);
+         onCallUserLocation(response.Profile);
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace(
             'http://localhost:8080/',
@@ -188,9 +189,7 @@ const [profilePic, setProfilePic] = useState([]);
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
-        onCallUserLocation(
-          response.Profile
-        );
+       
         setLoading(false);
       }
       else if (response.status == 'success' && props.userType != 'Talent'){
@@ -253,6 +252,7 @@ const [profilePic, setProfilePic] = useState([]);
     };
 
     const onCallUserLocation = (profileData) => {
+        setLoading(true);
 
       console.log("profile Data", profileData)
       var NY = {
@@ -269,6 +269,8 @@ const [profilePic, setProfilePic] = useState([]);
           ]);
         })
         .catch(err => console.log("ERROR",err));
+        setLoading(false);
+
     }
 
     return (
@@ -694,16 +696,13 @@ const [profilePic, setProfilePic] = useState([]);
 
                 <View
                   style={{
-                    height: R.fontSize.Size80,
-                    justifyContent: 'center',
-                    paddingHorizontal: R.fontSize.Size20,
+                    flexWrap: 'wrap',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: R.fontSize.Size20,
+                    paddingHorizontal:R.fontSize.Size20
                   }}>
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                      alignItems: 'center',
-                    }}>
+                 
                     {taletArray.map((item, index) => {
                       console.log('ITEM', item);
                       return (
@@ -717,7 +716,9 @@ const [profilePic, setProfilePic] = useState([]);
                             paddingVertical: R.fontSize.Size6,
                             backgroundColor: R.colors.placeholderTextColor,
                             borderRadius: R.fontSize.Size8,
-                            marginBottom: R.fontSize.Size6,
+                            marginBottom: R.fontSize.Size10,
+                            width:R.fontSize.Size100,
+                            height:R.fontSize.Size35
                           }}>
                           <Text
                             style={{
@@ -732,7 +733,6 @@ const [profilePic, setProfilePic] = useState([]);
                         </View>
                       );
                     })}
-                  </ScrollView>
                 </View>
 
                 {profileDetails?.full_time_amount != '' ||
@@ -740,7 +740,7 @@ const [profilePic, setProfilePic] = useState([]);
                 profileDetails?.gigs_amount != '' ? (
                   <View
                     style={{
-                      marginTop: R.fontSize.Size2,
+                      marginTop: R.fontSize.Size20,
                       paddingHorizontal: R.fontSize.Size20,
                     }}>
                     <Text
@@ -758,7 +758,6 @@ const [profilePic, setProfilePic] = useState([]);
                 <View
                   style={{
                     marginTop: R.fontSize.Size20,
-                    borderWidth: 1,
                     alignItems: 'flex-start',
                     flexDirection: 'row',
                     paddingHorizontal: R.fontSize.Size10,

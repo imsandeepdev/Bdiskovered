@@ -230,6 +230,7 @@ const UpdateProfileScreen = (props) => {
      };
 
      const onCallUpdateProfile = () => {
+      console.log('PROFILE PATH', profilePic.path);
       setLoading(true)
       let formData = new FormData()
       let dataType = 'formdata';
@@ -243,7 +244,8 @@ const UpdateProfileScreen = (props) => {
 
       formData.append(
         'avatar',
-        profilePic.path == null || profilePic?.path == null
+        profilePic.path == null ||
+          profilePic?.path == 'https://disk.shunyaekai.com/profile/user.png'
           ? ''
           : {
               uri:

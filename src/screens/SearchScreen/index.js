@@ -36,66 +36,6 @@ const screenWidth = Dimensions.get('screen').width;
 
 
 const SearchScreen = props => {
-
-  const RequestLocationPermission = async () => {
-    if (Platform.OS == 'ios') {
-      console.log('LOCATION');
-      Geolocation.setRNConfiguration({
-        authorizationLevel: 'whenInUse',
-      });
-      let permissionResult = await Geolocation.requestAuthorization('whenInUse');
-      console.log(permissionResult)
-      if (permissionResult == 'granted') {
-        getOneTimeLocation();
-      } else {
-        console.log('Location Error Location Denied', error);
-      }
-        // IOS permission request does not offer a callback :/
-        return null;
-    } else if (Platform.OS == 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Bdiskovered Access your Location Permission',
-            message: 'Want to access your location ' + 'so you can Allow us.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        
-        } else {
-          console.log('Location Error Location Denied', error);
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  };
-
-    const getOneTimeLocation =  () => {
-      console.log('ONE TIME');
-    
-      
-        Geolocation.getCurrentPosition(
-          position => {
-            console.log('POSITION', position);
-            
-          },
-          error => {
-            console.log('Location Error', error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 30000,
-            maximumAge: 0,
-            forceRequestLocation: true,
-          },
-        );
-      
-    };
  
   return (
     <StoryScreen>
@@ -120,9 +60,7 @@ const SearchScreen = props => {
                   }}>
                   <Text>{'Work On Progress'}</Text>
                 </View>
-                <TouchableOpacity onPress={() => RequestLocationPermission()}>
-                  <Text>LOCATION</Text>
-                </TouchableOpacity>
+               
               </View>
             </TouchableWithoutFeedback>
           </ScrollView>

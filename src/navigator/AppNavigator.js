@@ -35,6 +35,7 @@ import WebViewScreen from '../screens/WebViewScreen';
 import ConnectionScreen from '../screens/ConnectionScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import ChatScreen from '../screens/ChatScreen';
+import CardDetailScreen from '../screens/CardDetailScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -59,8 +60,7 @@ const AppNavigator = props => {
     setInitialRoute(initialRouteName);
 
   },[]);
- 
-  
+
 
   return (
     <NavigationContainer ref={navigationRef} linking={props.linking}>
@@ -191,6 +191,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="ChatScreen"
           component={ChatScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CardDetailScreen"
+          component={CardDetailScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

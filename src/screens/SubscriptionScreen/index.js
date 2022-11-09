@@ -203,7 +203,7 @@ const SubscriptionScreen = props => {
               marginHorizontal: R.fontSize.Size20,
             }}>
             <View style={{flex: 1}}>
-              {getSubDesc.length != 0 ?? (
+              {getSubDesc.length != 0 && (
                 <View style={{marginTop: R.fontSize.Size45}}>
                   <Text
                     style={{

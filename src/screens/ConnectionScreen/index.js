@@ -74,6 +74,7 @@ const ConnectionScreen = props => {
                   props.navigation.navigate('ChatScreen', {
                     tailentUserId: item?._id,
                     MyUserId: myUserId,
+                    userName: item?.name
                   })
                 }
                 style={({pressed}) => [

@@ -34,6 +34,7 @@ const screenHeight = Dimensions.get('screen').height;
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
 import Geocoder from 'react-native-geocoder-reborn';
+import Share from 'react-native-share';
 
 
 const persnalDetails = [
@@ -329,6 +330,7 @@ const HomeScreen = (props) => {
         item?.gender,
         'gurugram',
       ]);
+      onCallModalUserLocation(item);
       let tempTalentArray = item?.category;
       let useTalentArray = tempTalentArray.split(',');
       console.log('useTalentArray', useTalentArray);
@@ -340,6 +342,27 @@ const HomeScreen = (props) => {
       ]);
     }
   }
+
+ const onCallModalUserLocation = item => {
+   setLoading(true);
+
+   console.log('profile Data', item);
+   var NY = {
+     lat: parseInt(item?.latitude),
+     lng: parseInt(item?.longitude),
+   };
+   Geocoder.geocodePosition(NY)
+     .then(res => {
+       console.log('response', res);
+       setVideoModalPersonalDetail([
+         `${moment().diff(item?.birth, 'years')} Year`,
+         item?.gender,
+         `${res[0].locality}, ${res[0].country}`,
+       ]);
+     })
+     .catch(err => console.log('ERROR', err));
+   setLoading(false);
+ };
 
   const onCallShowAllPost = () => {
     setLoading(true)
@@ -450,6 +473,22 @@ const HomeScreen = (props) => {
       })
       .catch(err => console.log('ERROR', err));
   };
+
+  const myCustomShare = async () => {
+    const shareOptions = {
+      title: 'App Link',
+      message: `Hey, have you tried Bdiskovered? 
+AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
+      url: `https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
+    };
+
+    try {
+      const ShareResponse = await Share.open(shareOptions);
+      console.log(JSON.stringify(ShareResponse));
+    } catch (error) {
+      console.log('Error => ', error);
+    }
+  };
   
   return (
     <StoryScreen loading={loading}>
@@ -458,8 +497,8 @@ const HomeScreen = (props) => {
           onPress={() => props.navigation.toggleDrawer()}
           headerHeight={R.fontSize.Size50}
           leftSource={R.images.menuIcon}
-          rightSource={R.images.filterIcon}
-          rightSourceOnPress={() => onCallModal('filterModal')}
+          // rightSource={R.images.filterIcon}
+          // rightSourceOnPress={() => onCallModal('filterModal')}
           rightSource2={R.images.bellIcon}
           rightSourceOnPress2={() =>
             props.navigation.navigate('NotificationScreen')
@@ -611,7 +650,7 @@ const HomeScreen = (props) => {
                         '',
                       )}`}
                       userName={item?.username}
-                      videoCat={tailentLocation!= '' ? tailentLocation : ''}
+                      videoCat={tailentLocation != '' ? tailentLocation : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}
@@ -619,6 +658,45 @@ const HomeScreen = (props) => {
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
                       // paused={true}
+                      shareFiled={
+                        <View
+                          style={{
+                            marginRight: R.fontSize.Size10,
+                            alignItems: 'center',
+                          }}>
+                          <Pressable
+                            onPress={() => myCustomShare()}
+                            style={({pressed}) => [
+                              {
+                                opacity: pressed ? 0.3 : 0.8,
+                                height: R.fontSize.Size50,
+                                width: R.fontSize.Size50,
+                                borderRadius: R.fontSize.Size8,
+                                backgroundColor: R.colors.lightBlack,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              },
+                            ]}>
+                            <Image
+                              source={R.images.shareIcon}
+                              style={{
+                                height: R.fontSize.Size35,
+                                width: R.fontSize.Size35,
+                              }}
+                              resizeMode={'contain'}
+                            />
+                          </Pressable>
+                          <Text
+                            style={{
+                              color: R.colors.lightWhite,
+                              fontSize: R.fontSize.Size14,
+                              fontFamily: R.fonts.regular,
+                              fontWeight: '400',
+                            }}>
+                            Share
+                          </Text>
+                        </View>
+                      }
                     />
                   </View>
                   <View

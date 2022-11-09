@@ -29,7 +29,11 @@ const PaymentResultScreen = props => {
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <View>
             <Image
-              source={props.route.params?.paymentStatus ? R.images.paymentSuccessIcon : R.images.paymentFailedIcon}
+              source={
+                props.route.params?.paymentStatus == 'Success'
+                  ? R.images.paymentSuccessIcon
+                  : R.images.paymentFailedIcon
+              }
               style={{height: R.fontSize.Size220, width: R.fontSize.Size220}}
               resizeMode={'contain'}
             />
@@ -39,17 +43,20 @@ const PaymentResultScreen = props => {
                 fontSize: R.fontSize.Size20,
                 color: R.colors.primaryTextColor,
                 fontWeight: '700',
-                marginTop:R.fontSize.Size25,
-                textAlign:'center'
+                marginTop: R.fontSize.Size25,
+                textAlign: 'center',
               }}>
-              {props.route.params?.paymentStatus ? 'Payment Completed' : `Payment Not Completed\n Please Try Again`}
+              {props.route.params?.paymentStatus == 'Success'
+                ? 'Payment Completed'
+                : `Payment Not Completed\n Please Try Again`}
             </Text>
           </View>
         </View>
         <View style={{marginHorizontal: R.fontSize.Size20}}>
-          <AppButton 
-          onPress = {()=> props.navigation.navigate('HomeMenu')}
-          title={'Proceed'} />
+          <AppButton
+            onPress={() => props.navigation.navigate('HomeMenu')}
+            title={'Proceed'}
+          />
         </View>
       </SafeAreaView>
     </StoryScreen>

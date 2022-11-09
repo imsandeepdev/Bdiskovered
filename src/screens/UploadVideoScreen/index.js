@@ -365,7 +365,7 @@ console.log("FORMD",formdata)
                           justifyContent: 'center',
                           flexDirection: 'row',
                           borderWidth: 1,
-                          borderRadius: R.fontSize.Size8,
+                          borderRadius: R.fontSize.Size30,
                           borderColor: R.colors.placeHolderColor,
                           opacity: pressed ? 0.5 : 1,
                         },
@@ -430,6 +430,7 @@ console.log("FORMD",formdata)
                       style={{
                         flexWrap: 'wrap',
                         alignItems: 'center',
+                        justifyContent:'flex-start',
                         flexDirection: 'row',
                       }}>
                       {videoTypeList.map((item, index) => {
@@ -441,7 +442,7 @@ console.log("FORMD",formdata)
                               {
                                 opacity: pressed ? 0.5 : 1,
                                 width: screenWidth / 4,
-                                marginVertical: R.fontSize.Size10,
+                                marginVertical: R.fontSize.Size8,
                                 marginLeft: R.fontSize.Size10,
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -450,7 +451,7 @@ console.log("FORMD",formdata)
                                   : R.colors.white,
                                 borderWidth: 1,
                                 paddingVertical: R.fontSize.Size10,
-                                borderRadius: R.fontSize.Size5,
+                                borderRadius: R.fontSize.Size20,
                                 borderColor: R.colors.placeHolderColor,
                               },
                             ]}>

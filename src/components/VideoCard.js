@@ -216,26 +216,7 @@ const VideoCard = props => {
             </Text>
           </View>
           <View style={{marginRight: R.fontSize.Size10,alignItems:'center'}}>
-            <Pressable
-            style={({pressed})=>[{
-              opacity: pressed?0.3:0.8,
-              height:R.fontSize.Size50,
-              width:R.fontSize.Size50,
-              borderRadius:R.fontSize.Size8,
-              backgroundColor:R.colors.lightBlack,
-              alignItems:'center',
-              justifyContent:'center'
-            }]}
-            >
-              <Image
-                source={R.images.shareIcon}
-                style={{height:R.fontSize.Size35, width:R.fontSize.Size35}}
-                resizeMode={'contain'}
-              />
-            </Pressable>
-            <Text
-            style={{color:R.colors.lightWhite, fontSize:R.fontSize.Size14, fontFamily:R.fonts.regular, fontWeight:'400'}}
-            >Share</Text>
+            {props.shareFiled}
           </View>
         </View>
       </View>
