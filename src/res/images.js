@@ -67,6 +67,9 @@ const images = {
 
   balaceIcon: require('./images/balance_union.png'),
 
+  phoneIcon: require('./images/phone_icon.png'),
+  helpIconNew: require('./images/help_icon.png'),
+
   // Notification
   deleteIcon: require('./images/deleteIcon.png'),
 };

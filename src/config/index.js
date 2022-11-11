@@ -24,6 +24,7 @@ export const Config = {
   postDeleteAPI: 'post/delete',
   getsubscriberGetAPI: 'subscriber/get',
   userLocationAPI:'user/location',
+  changeOwnershipAPI: 'user/change-ownership',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

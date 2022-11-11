@@ -143,7 +143,7 @@ const Menu = (props) => {
                 from: 'help',
               })
             }
-            leftSource={R.images.helpIcon}
+            leftSource={props.userType == 'Business'? R.images.phoneIcon:R.images.helpIcon}
             title={'Help'}
           />
           <CustomMenuButton
@@ -152,7 +152,7 @@ const Menu = (props) => {
                 from: 'faq',
               })
             }
-            leftSource={R.images.faqIcon}
+            leftSource={props.userType == 'Business'? R.images.helpIconNew : R.images.faqIcon}
             title={'FAQ'}
           />
           <CustomMenuButton
@@ -201,6 +201,7 @@ const Menu = (props) => {
 
 const mapStatetoProps = (state, props) => ({
   authToken: state.auth.authToken,
+  userType: state.auth.userType,
 });
 
 export default connect (mapStatetoProps)(Menu);

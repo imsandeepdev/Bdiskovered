@@ -121,3 +121,8 @@ export const save_Card_error = 'save_Card_error';
 export const user_Location = 'user_Location';
 export const user_Location_success = 'user_Location_success';
 export const user_Location_error = 'user_Location_error';
+
+// changeOwnership
+export const change_Ownership = 'change_Ownership';
+export const change_Ownership_success = 'change_Ownership_success';
+export const change_Ownership_error = 'change_Ownership_error';

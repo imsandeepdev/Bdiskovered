@@ -13,7 +13,6 @@
     "@digieggs/rn-country-code-picker": "^1.4.4",
     "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/cameraroll": "^4.1.2",
-    "@react-native-community/image-editor": "^2.3.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^16.4.3",
     "@react-native-firebase/firestore": "^16.4.3",

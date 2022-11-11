@@ -92,11 +92,32 @@ const onSaveDeviceToken = async () => {
       };
       console.log('LOGINDATA',data)
       dispatch(SignInRequest(data, response =>{
-          console.log('LOGIN RES', response)
+        let tempArray = []
+        tempArray = response.data?.profile_info;
+        console.log("TEMP LENGTH", tempArray?.length)
+        console.log('LOGIN RES PROFILE INFO',response);
+          
+           if (response.data?.user_type == 'Talent' && tempArray?.length == 0) {
+             console.log('YES DONE');
+           } else {
+             console.log('FAILED');
+           } 
+
+
           if (response.status == 'success' && response.token != null) {
-            props.navigation.replace('HomeMenu');
-            Toast.show(response.message, Toast.SHORT);
-            onSaveDeviceToken()
+            if (
+              response.data?.user_type == 'Talent' &&
+              tempArray?.length == 0
+            ) {
+              props.navigation.replace('TalentScreen');
+              Toast.show(response.message, Toast.SHORT);
+              onSaveDeviceToken();
+            } else {
+              props.navigation.replace('HomeMenu');
+              Toast.show(response.message, Toast.SHORT);
+              onSaveDeviceToken();
+            }
+             
           } 
           else if (
             response.message ==

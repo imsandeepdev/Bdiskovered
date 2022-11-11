@@ -575,7 +575,11 @@ const [companyAddress, setCompanyAddress] = useState('');
                       justifyContent: 'center',
                     }}>
                     <AppButton
-                      onPress={() => props.userType == 'Business' ? onCallUpdateBusinessProfile() : onCallUpdateViewerProfile()}
+                      onPress={() =>
+                        props.userType == 'Business'
+                          ? onCallUpdateBusinessProfile()
+                          : onCallUpdateViewerProfile()
+                      }
                       title={'Update Profile'}
                       textColor={R.colors.white}
                       paddingHorizontal={R.fontSize.Size30}
@@ -604,7 +608,6 @@ const [companyAddress, setCompanyAddress] = useState('');
                   /> */}
                     <CustomCardLine disabled={true} title={companyContact} />
 
-                   
                     <CustomLineTextInput
                       value={companyAddress}
                       onChangeText={cAdd => setCompanyAddress(cAdd)}
@@ -657,11 +660,37 @@ const [companyAddress, setCompanyAddress] = useState('');
 
                     <CustomCardLine disabled={true} title={mobNo} />
 
-                    <CustomLineTextInput
+                    <View
+                      style={{
+                        backgroundColor: R.colors.white,
+                        borderBottomWidth: 1,
+                        borderColor: R.colors.placeholderTextColor,
+                        paddingBottom:R.fontSize.Size2
+                      }}>
+                      <TextInput
+                        style={{
+                          minHeight: R.fontSize.Size40,
+                          padding: 0,
+                          color: R.colors.primaryTextColor,
+                          textAlignVertical: 'top',
+                          fontSize: R.fontSize.Size15,
+                          fontFamily: R.fonts.regular,
+                          fontWeight: '700',
+                        }}
+                        value={userBio}
+                        placeholder="Bio"
+                        placeholderTextColor={R.colors.placeholderTextColor}
+                        onChangeText={bio => setUserBio(bio)}
+                        numberOfLines={3}
+                        multiline={true}
+                      />
+                    </View>
+
+                    {/* <CustomLineTextInput
                       value={userBio}
                       onChangeText={bio => setUserBio(bio)}
                       placeholder={'Bio'}
-                    />
+                    /> */}
                   </View>
                 )}
               </View>

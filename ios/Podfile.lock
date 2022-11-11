@@ -934,9 +934,6 @@ PODS:
     - React
   - react-native-geolocation-service (5.3.1):
     - React
-  - react-native-image-editor (2.3.0):
-    - React
-    - React-RCTImage
   - react-native-safe-area-context (4.4.1):
     - RCT-Folly
     - RCTRequired
@@ -1106,7 +1103,6 @@ DEPENDENCIES:
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-geocoder-reborn (from `../node_modules/react-native-geocoder-reborn`)
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
-  - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
   - react-native-video (from `../node_modules/react-native-video`)
@@ -1213,8 +1209,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-geocoder-reborn"
   react-native-geolocation-service:
     :path: "../node_modules/react-native-geolocation-service"
-  react-native-image-editor:
-    :path: "../node_modules/@react-native-community/image-editor"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-simple-toast:
@@ -1320,7 +1314,6 @@ SPEC CHECKSUMS:
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
   react-native-geocoder-reborn: c31cbc630d9307ebbceea1dea2746d0054be35c4
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
-  react-native-image-editor: 9361a215c3991cafbe5e7f28cbbad6e72c9c2705
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-simple-toast: 8ee5d23f0b92b935ab7434cdb65159ce12dfb4b7
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253

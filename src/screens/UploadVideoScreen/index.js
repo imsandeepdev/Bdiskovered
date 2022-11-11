@@ -24,6 +24,7 @@ import {
   ShadowHeader,
   CustomCardLine,
   CustomLineTextInput,
+  AlartModal,
 } from '../../components';
 import { connect, useDispatch} from 'react-redux';
 import R from '../../res/R';
@@ -33,6 +34,10 @@ import { UploadNewVideoRequest } from '../../actions/uploadNewVideo.action';
 import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
 import { ProcessingManager } from 'react-native-video-processing';
+import { ChangeOwnerShipRequest } from '../../actions/ownership.action';
+import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserSignOutRequest } from '../../actions/signUp.action';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -63,6 +68,7 @@ const UploadVideoScreen = props => {
 
   const dispatch = useDispatch();
   const [modalPicker, setModalPicker] = useState(false);
+  const [customModalPicker, setCustomModalPicker] = useState(false)
   const [loading, setLoading] = useState(false);
   const [cardNo, setCardNo] = useState('');
   const [cardHolderName, setCardHolderName] = useState('');
@@ -99,7 +105,7 @@ const UploadVideoScreen = props => {
 
 
 useEffect(()=>{
-
+  onCheckUserType()
   let arr = videoTypeList.map((item, index) => {
     item.selected = false;
     return {...item};
@@ -107,6 +113,13 @@ useEffect(()=>{
   console.log('VideoListArray', arr);
   setVideoTypeList(arr)
 },[props.navigation])
+
+const onCheckUserType = () => {
+ props.userType != 'Talent' ?
+ setCustomModalPicker(true):
+ setCustomModalPicker(false) 
+
+}
 
 const onCallVideoSelect = (item,ind) => {
   const dummyData = videoTypeList;
@@ -281,10 +294,7 @@ const onCallVideoPostAPI = () => {
         },
   );
 console.log("FORMD",formdata)
-
   let dataType = 'formdata';
-
-  // Alert.alert('FORMDATA',JSON.stringify(formdata))
   dispatch(UploadNewVideoRequest(formdata,dataType, response =>{
     console.log('UPLOAD VIDEO RES', response);
     if(response.status == 'success')
@@ -300,6 +310,61 @@ console.log("FORMD",formdata)
   }))
   
 }
+
+const onCallForTailentType = () => {
+
+  dispatch(ChangeOwnerShipRequest(response => {
+    console.log("CHANGE OWNERSHIP RESPONSE", response)
+    if(response.status == 'success')
+    {
+    onCallDeviceName();
+    }
+    else
+    {
+      Toast.show(response.message, Toast.SHORT)
+      onCallClosedCustomModal()
+    }
+  }))
+  console.log("CHANGE TYPE")
+}
+
+const onCallDeviceName = () => {
+  DeviceInfo.getDeviceName().then(deviceName => {
+    console.log('DEVICE NAME', deviceName);
+    onCallLogout(deviceName);
+  });
+};
+
+ const onCallLogout = async deviceName => {
+   const value = await AsyncStorage.getItem('deviceAccess_token');
+   console.log('VALUE', value);
+   let data = {
+     device_name: deviceName,
+     device_token: value,
+   };
+   console.log('LOGDATA', data);
+   dispatch(
+     UserSignOutRequest(data, response => {
+       console.log('LOGOUT RES', response);
+       if (response.status == 'success') {
+          setCustomModalPicker(false);
+         props.navigation.replace('LoginScreen');
+
+       } else {
+         Toast.show(response.message, Toast.SHORT);
+          setCustomModalPicker(false);
+
+       }
+     }),
+   );
+ };
+
+
+ const onCallClosedCustomModal = () => {
+
+  setCustomModalPicker(false)
+  props.navigation.replace("HomeMenu")
+ }
 
 
   return (
@@ -322,15 +387,16 @@ console.log("FORMD",formdata)
             showsVerticalScrollIndicator={false}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               {props.userType != 'Talent' ? (
-                <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
+                <View
+                  style={{flex: 1, backgroundColor: R.colors.modelBackground}}>
                   <View
                     style={{
                       alignItems: 'center',
                       justifyContent: 'center',
                       flex: 1,
                     }}>
-                    <Text>{'Only Talent User Can Create a Video'}</Text>
-                    <Text>{'On Progress'}</Text>
+                    {/* <Text>{'Only Talent User Can Create a Video'}</Text>
+                    <Text>{'On Progress'}</Text> */}
                   </View>
                 </View>
               ) : (
@@ -437,7 +503,7 @@ console.log("FORMD",formdata)
                         alignItems: 'center',
                         justifyContent: 'flex-start',
                         flexDirection: 'row',
-                        marginLeft:-R.fontSize.Size14
+                        marginLeft: -R.fontSize.Size14,
                       }}>
                       {videoTypeList.map((item, index) => {
                         return (
@@ -619,6 +685,102 @@ console.log("FORMD",formdata)
           </View>
         </View>
       </Modal>
+      <AlartModal
+        visible={customModalPicker}
+        onRequestClose={() => setCustomModalPicker(false)}
+        title={
+          props.userType == 'Business'
+            ? `Please create a talent profile to upload videos.`
+            : `you will be required to login again to update your profile as a talent. Proceed ?`
+        }
+        customButton={
+          props.userType == 'Business' ?
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Pressable
+              onPress={() => onCallClosedCustomModal()}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  borderWidth: 2,
+
+                  borderColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size35,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.appColor,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Ok'}
+              </Text>
+            </Pressable>
+            </View>
+          :
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Pressable
+              onPress={() => onCallClosedCustomModal()}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  borderWidth: 2,
+
+                  borderColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.appColor,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Cancel'}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => onCallForTailentType()}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  backgroundColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.white,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Proceed'}
+              </Text>
+            </Pressable>
+          </View>
+        }
+      />
     </StoryScreen>
   );
 };

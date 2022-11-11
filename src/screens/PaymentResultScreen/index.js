@@ -52,7 +52,7 @@ const PaymentResultScreen = props => {
             </Text>
           </View>
         </View>
-        <View style={{marginHorizontal: R.fontSize.Size20}}>
+        <View style={{marginHorizontal: R.fontSize.Size20, marginVertical:R.fontSize.Size25}}>
           <AppButton
             onPress={() => props.navigation.navigate('HomeMenu')}
             title={'Proceed'}
