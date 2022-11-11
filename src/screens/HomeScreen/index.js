@@ -31,6 +31,8 @@ import { VideoRatingRequest } from '../../actions/videoRating.action';
 import axios from 'axios';
 import moment from 'moment';
 const screenHeight = Dimensions.get('screen').height;
+const screenWidth = Dimensions.get('screen').width;
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
 import Geocoder from 'react-native-geocoder-reborn';
@@ -165,46 +167,78 @@ const PopularList = [
   },
 ];
 
-const CustomHeading = (props) => {
+const CustomTimeRow = props => {
   return (
     <View
       style={{
-        marginTop: R.fontSize.Size45,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginHorizontal: R.fontSize.Size20,
+        marginBottom: R.fontSize.Size10,
+        marginLeft: R.fontSize.Size14,
       }}>
-      <Text
+      <View
         style={{
-          fontFamily: R.fonts.regular,
-          fontSize: R.fontSize.Size18,
-          fontWeight: '700',
-          color: R.colors.primaryTextColor,
+          alignItems: 'center',
+          width: screenWidth / 3.8,
+          height: R.fontSize.Size30,
+          backgroundColor: R.colors.appColor,
+          justifyContent: 'center',
+          borderRadius: R.fontSize.Size8,
         }}>
-        {props.leftTitle}
-      </Text>
-      <Pressable
-        onPress={props.rightOnPress}
-        style={({pressed}) => [
-          {
-            padding: R.fontSize.Size4,
-            opacity: pressed ? 0.5 : 1,
-          },
-        ]}>
         <Text
           style={{
             fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size12,
-            color: R.colors.appColor,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+            color: R.colors.lightWhite,
+            marginHorizontal: R.fontSize.Size12,
+          }}>
+          {props.leftTitle}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: R.fontSize.Size5,
+        }}>
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            color: R.colors.primaryTextColor,
+            fontSize: R.fontSize.Size14,
             fontWeight: '700',
           }}>
-          {props.buttonTitle}
+          {'USD'}
         </Text>
-      </Pressable>
+        <Text
+          style={{
+            // height: R.fontSize.Size20,
+            marginHorizontal: R.fontSize.Size4,
+            textAlign: 'center',
+            borderBottomWidth: 1,
+            borderColor: R.colors.appColor,
+            fontFamily: R.fonts.regular,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+            color: R.colors.black,
+          }}>
+          {props.rightText}
+        </Text>
+        <Text
+          style={{
+            fontFamily: R.fonts.regular,
+            color: R.colors.primaryTextColor,
+            fontSize: R.fontSize.Size14,
+            fontWeight: '700',
+          }}>
+          {props.rightDayHours}
+        </Text>
+      </View>
     </View>
   );
-}
+};
 
 const HomeScreen = (props) => {
 
@@ -336,9 +370,9 @@ const HomeScreen = (props) => {
       console.log('useTalentArray', useTalentArray);
       setVideoModalTalentDetail(useTalentArray);
       setVideoModalAvailableDetail([
-        item?.job_type1,
-        item?.job_type2,
-        item?.job_type3,
+        {'type': item?.job_type1,'amount':item?.full_time_amount},
+        {'type': item?.job_type2,'amount':item?.part_time_amount},
+        {'type': item?.job_type3,'amount':item?.gigs_amount}
       ]);
     }
   }
@@ -632,7 +666,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                   }}>
                   <View
                     style={{
-                      height: screenHeight - R.fontSize.Size290,
+                      height: screenHeight - R.fontSize.Size279,
                     }}>
                     <VideoCard
                       poster={`${Config.API_URL}${item?.avatar.replace(
@@ -680,8 +714,8 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                             <Image
                               source={R.images.shareIcon}
                               style={{
-                                height: R.fontSize.Size35,
-                                width: R.fontSize.Size35,
+                                height: R.fontSize.Size30,
+                                width: R.fontSize.Size30,
                               }}
                               resizeMode={'contain'}
                             />
@@ -843,8 +877,8 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       <Text
                         style={{
                           fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size12,
-                          fontWeight: '400',
+                          fontSize: R.fontSize.Size14,
+                          fontWeight: '500',
                           color: R.colors.placeHolderColor,
                         }}
                         numberOfLines={1}>
@@ -973,21 +1007,23 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                 )}`,
                               }}
                               style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
+                                height: R.fontSize.Size60,
+                                width: R.fontSize.Size60,
                               }}
                               resizeMode={'cover'}
                             />
                           </View>
                           <Text style={Styles.videoModalTitleText}>
-                            {videoModalDetail?.title}
+                            {videoModalDetail?.username}
                           </Text>
                         </View>
-                        <View style={{marginTop: R.fontSize.Size30}}>
+                        {
+                          videoModalDetail?.bio != ''&&
+                          <View style={{marginTop: R.fontSize.Size20}}>
                           <Text style={Styles.videoModalDescText}>
-                            {videoModalDetail?.description}
+                            {videoModalDetail?.bio}
                           </Text>
-                        </View>
+                        </View>}
                         <View style={Styles.videoModalMapMainView}>
                           {videoModalPersonalDetail.map((item, index) => {
                             return (
@@ -1012,7 +1048,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               <View
                                 key={index}
                                 style={Styles.videoModalTalentView}>
-                                <Text style={Styles.videoModalTalentText}>
+                                <Text style={Styles.videoModalTalentText} numberOfLines={1}>
                                   {item}
                                 </Text>
                               </View>
@@ -1020,28 +1056,19 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           })}
                         </View>
 
-                        <View style={{marginTop: R.fontSize.Size30}}>
-                          <Text style={Styles.videoModalAvailableText}>
-                            {'Available for :'}
-                          </Text>
-                        </View>
 
-                        <View style={Styles.videoModalMapMainView}>
+                        <View style={{flexWrap:'wrap', flexDirection:'row',marginLeft:-R.fontSize.Size14, marginTop:R.fontSize.Size20}}>
                           {videoModalAvailableDetail.map((item, index) => {
                             return (
-                              <View
-                                key={index}
-                                style={[
-                                  Styles.videoModalAvailView,
-                                  {
-                                    backgroundColor:
-                                      (item != '' || item != null) &&
-                                      R.colors.appColor,
-                                  },
-                                ]}>
-                                <Text style={Styles.videoModalAvailItemText}>
-                                  {item}
-                                </Text>
+                              <View key={index}>
+                                {item?.amount != '' &&
+                                item?.amount != null ? (
+                                  <CustomTimeRow
+                                    leftTitle={item?.type}
+                                    rightText={item?.amount}
+                                    rightDayHours={item?.type == 'Full Time'?'/day':'/hrs'}
+                                  />
+                                ) : null}
                               </View>
                             );
                           })}
@@ -1060,7 +1087,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                     ? console.log('Filter')
                     : onCallConnectNow(videoModalDetail?.profileID);
                 }}
-                title={modalType == 'filterModal' ? 'Apply' : 'Connect Now'}
+                title={modalType == 'filterModal' ? 'Apply' : 'Connect'}
                 marginHorizontal={R.fontSize.Size55}
               />
             </View>

@@ -42,7 +42,7 @@ const images = {
   faqIcon: require('./images/FaqIcon.png'),
   signoutIcon: require('./images/SignoutIcon.png'),
   premiumIcon: require('./images/premiumIcon.png'),
-  connectionsIcon: require('./images/connectionIcon.png'),
+  connectionsIcon: require('./images/connection_icon.png'),
 
   // BottomTab
   activeHomeIcon: require('./images/activeHomeIcon.png'),
@@ -61,6 +61,11 @@ const images = {
   // Profile
   profileEditIcon: require('./images/editProfileIcon.png'),
   chatIcon: require('./images/chatIcon.png'),
+  chatIconWhite: require('./images/chat_iconwhite.png'),
+  plusIconGrey: require('./images/plus_gray.png'),
+  plusIconOrage: require('./images/addIcon.png'),
+
+  balaceIcon: require('./images/balance_union.png'),
 
   // Notification
   deleteIcon: require('./images/deleteIcon.png'),

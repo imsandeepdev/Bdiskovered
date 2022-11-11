@@ -86,6 +86,9 @@ const onSaveDeviceToken = async () => {
       let data = {
         ...loginData,
         otp: otpValue,
+        device_name: deviceName,
+        type: props.route.params?.type,
+        subscription_status: props.route.params?.subscription_status,
       };
       console.log('LOGINDATA',data)
       dispatch(SignInRequest(data, response =>{

@@ -373,7 +373,10 @@ const CardScreen = props => {
       email: props.userProfile?.Profile?.email,
       amount: subPlanItem?.price.replace('USD ', ''),
       subscription_plan: subPlanItem?.plan_name,
+      plan_type: subPlanItem?.type == 'AddOn' ? 'Custom' : ''
     };
+    console.log('PAYMENT DETAILS', data);
+
     const headerAuth = {
       token:props.authToken,
     };

@@ -23,7 +23,8 @@ const AlartModal = (props) => {
                     // borderTopRightRadius:R.fontSize.Size8 ,
                     padding:R.fontSize.Size20, 
                     paddingBottom:R.fontSize.Size20,
-                    marginHorizontal:R.fontSize.Size15
+                    marginHorizontal:R.fontSize.Size15,
+                    paddingVertical:R.fontSize.Size20
                 }}
                 >
                     <View
@@ -34,20 +35,22 @@ const AlartModal = (props) => {
                          resizeMode={'contain'}
                         />
                     </View>
-                    <View style={{marginVertical:R.fontSize.Size12, marginHorizontal:R.fontSize.Size10}}>
+                    <View style={{marginVertical:R.fontSize.Size12, marginHorizontal:R.fontSize.Size20}}>
                         <Text
                         style={{
                             fontFamily:R.fonts.regular,
                             fontWeight:'700',
                             color:R.colors.primaryTextColor,
-                            fontSize:R.fontSize.Size15,
+                            fontSize:R.fontSize.Size16,
                             textAlign:'center'
                         }}
                         >
                             {props.title}
                         </Text>
                     </View>
-                    <Pressable
+                   {
+                   props.customButton ??
+                   <Pressable
                     onPress={props.onPress}
                     style={({pressed})=>[{
                         marginVertical:R.fontSize.Size4,
@@ -65,7 +68,7 @@ const AlartModal = (props) => {
                             fontWeight:'700',
                             fontSize:R.fontSize.Size16
                         }}>{'OK'}</Text>
-                    </Pressable>
+                    </Pressable>}
 
 
                 </View>

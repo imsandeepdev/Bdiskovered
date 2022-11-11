@@ -3,7 +3,7 @@ import R from '../res/R';
 
 const ShadowHeader = props => {
   return (
-    <View style={{overflow: 'hidden', paddingBottom:R.fontSize.Size5}}>
+    <View style={{overflow: 'hidden'}}>
       <View
         style={{
           flexDirection: 'row',
@@ -17,6 +17,8 @@ const ShadowHeader = props => {
           shadowOpacity: 0.4,
           shadowRadius: 3,
           elevation: 5,
+          borderBottomWidth: props.headerBottomWidth ?? null,
+          borderColor:R.colors.placeholderTextColor
         }}>
         <View style={{flex: 1}}>
           <Pressable

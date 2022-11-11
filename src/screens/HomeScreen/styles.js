@@ -2,6 +2,8 @@ import * as React from 'react';
 import {View, StyleSheet, Dimensions, Text} from 'react-native';
 import R from '../../res/R';
 const screenHeight = Dimensions.get('screen').height;
+const screenWidth = Dimensions.get('screen').width;
+
 
 
 const Styles = StyleSheet.create({
@@ -93,10 +95,12 @@ const Styles = StyleSheet.create({
     color: R.colors.primaryTextColor,
   },
   videoModalMainView: {
-    height: R.fontSize.Size30,
-    width: R.fontSize.Size30,
+    height: R.fontSize.Size60,
+    width: R.fontSize.Size60,
     overflow: 'hidden',
-    borderRadius: R.fontSize.Size20,
+    borderRadius: R.fontSize.Size30,
+    borderWidth:1,
+    borderColor:R.colors.placeholderTextColor
   },
   videoModalMapMainView: {
     flexWrap: 'wrap',
@@ -126,18 +130,19 @@ const Styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: R.fontSize.Size14,
     justifyContent: 'center',
-    paddingHorizontal: R.fontSize.Size20,
     paddingVertical: R.fontSize.Size6,
-    backgroundColor: R.colors.placeholderTextColor,
+    backgroundColor: R.colors.appColor,
     borderRadius: R.fontSize.Size8,
-    marginBottom: R.fontSize.Size6,
+    marginBottom: R.fontSize.Size14,
+    width: screenWidth/3.8
   },
   videoModalTalentText: {
     fontFamily: R.fonts.regular,
     fontSize: R.fontSize.Size14,
     fontWeight: '700',
-    color: R.colors.primaryTextColor,
+    color: R.colors.white,
     marginLeft: R.fontSize.Size8,
+    textAlign:'center'
   },
   videoModalAvailableText: {
     fontFamily: R.fonts.regular,

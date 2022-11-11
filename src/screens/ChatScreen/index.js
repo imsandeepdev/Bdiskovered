@@ -6,6 +6,9 @@ import R from '../../res/R';
 import {GiftedChat,Bubble,InputToolbar,Send} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore'
 
+// import {useSafeAreaInsets} from 'react-native-safe-area-context';
+// const insets = useSafeAreaInsets();
+
 const ChatScreen = props => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -129,79 +132,75 @@ const ChatScreen = props => {
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: R.colors.lightWhite,
-                }}>
-                <GiftedChat
-                
-                  scrollToBottom
-                  messages={messages}
-                  onSend={messages => onSend(messages)}
-                  user={{
-                    _id: props.route.params?.MyUserId,
-                  }}
-                  renderBubble={props => {
-                    return (
-                      <Bubble
-                        {...props}
-                        wrapperStyle={{
-                          right: {
-                            backgroundColor: R.colors.appColor,
-                          },
-                          left: {
-                            backgroundColor: R.colors.placeholderTextColor,
-                          },
-                        }}
-                      />
-                    );
-                  }}
-                  renderInputToolbar={props => {
-                    return (
-                      <InputToolbar
-                        {...props}
-                        containerStyle={{
-                          position:'absolute',
-                          bottom:-30,
-                          left:0,
-                          right:0,
-                          height:45,
-                          borderTopColor: R.colors.appColor,
-                        }}
-                        textInputStyle={{color: R.colors.primaryTextColor}}
-                      />
-                    );
-                  }}
-                  renderSend={props => {
-                    return (
-                      <Send {...props}>
-                        <View
-                        style={{
-                          position:'absolute',
-                          bottom:30,
-                          right:0,
-                          width:50,
-                          height:45,
-                          alignItems:'center',
-                          justifyContent:'center',
-                        }}
-                        >
-                          <Image
-                            source={R.images.shareIcon}
-                            resizeMode={'contain'}
-                            style={{
-                              height: R.fontSize.Size30,
-                              width: R.fontSize.Size30,
-                            }}
-                          />
-                        </View>
-                      </Send>
-                    );
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: R.colors.lightWhite,
+            // paddingTop: insets.top,
+            // paddingLeft: insets.left,
+            // paddingRight: insets.right,
+            // paddingBottom: insets.bottom,
+          }}>
+          <GiftedChat
+            scrollToBottom
+            messages={messages}
+            onSend={messages => onSend(messages)}
+            user={{
+              _id: props.route.params?.MyUserId,
+            }}
+            renderBubble={props => {
+              return (
+                <Bubble
+                  {...props}
+                  wrapperStyle={{
+                    right: {
+                      backgroundColor: R.colors.appColor,
+                    },
+                    left: {
+                      backgroundColor: R.colors.placeholderTextColor,
+                    },
                   }}
                 />
-              </View>
-            {/* </TouchableWithoutFeedback>
+              );
+            }}
+            renderInputToolbar={props => {
+              return (
+                <InputToolbar
+                  {...props}
+                  containerStyle={{
+                  
+                    borderTopColor: R.colors.appColor,
+                  }}
+                  textInputStyle={{color: R.colors.primaryTextColor}}
+                />
+              );
+            }}
+            renderSend={props => {
+              return (
+                <Send {...props}>
+                  <View
+                    style={{
+                      
+                      width: 50,
+                      height: 45,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={R.images.shareIcon}
+                      resizeMode={'contain'}
+                      style={{
+                        height: R.fontSize.Size30,
+                        width: R.fontSize.Size30,
+                      }}
+                    />
+                  </View>
+                </Send>
+              );
+            }}
+          />
+        </View>
+        {/* </TouchableWithoutFeedback>
           </ScrollView>
         </KeyboardAvoidingView> */}
       </SafeAreaView>

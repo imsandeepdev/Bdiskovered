@@ -33,7 +33,7 @@ const CustomMenuButton = (props) => {
             flexDirection: 'row',
             alignItems: 'center',
             opacity: pressed ? 0.5 : 1,
-            marginBottom:R.fontSize.Size50
+            marginBottom:R.fontSize.Size25
           },
         ]}>
         <Image
@@ -127,6 +127,11 @@ const Menu = (props) => {
           />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
+          <CustomMenuButton
+            onPress={() => props.navigation.toggleDrawer()}
+            leftSource={R.images.inActiveHomeIcon}
+            title={'Home'}
+          />
           <CustomMenuButton
             onPress={() => props.navigation.navigate('ConnectionScreen')}
             leftSource={R.images.connectionsIcon}

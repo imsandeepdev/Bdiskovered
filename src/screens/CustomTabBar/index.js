@@ -37,10 +37,11 @@ const CustomTabBar = props => {
       style={{
         backgroundColor: R.colors.white,
         overflow: 'hidden',
-        paddingTop: R.fontSize.Size5,
       }}>
       <View
         style={{
+          borderTopWidth:0.2,
+          borderColor:R.colors.placeholderTextColor,
           justifyContent: 'space-around',
           height: R.fontSize.Size80,
           flexDirection: 'row',
@@ -78,29 +79,6 @@ const CustomTabBar = props => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={navigateToSecondScreen}
-          activeOpacity={0.6}
-          style={{
-            height: R.fontSize.Size60,
-            paddingVertical: R.fontSize.Size5,
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexGrow: 1,
-          }}>
-          <Image
-            source={
-              select === 'SearchScreen'
-                ? R.images.activeSearchIcon
-                : R.images.inActiveSearchIcon
-            }
-            resizeMode={'contain'}
-            style={{
-              height: R.fontSize.Size28,
-              width: R.fontSize.Size28,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
           onPress={navigateToThirdScreen}
           activeOpacity={0.6}
           style={{
@@ -115,6 +93,29 @@ const CustomTabBar = props => {
               select === 'UploadScreen'
                 ? R.images.activeAddIcon
                 : R.images.inActiveAddIcon
+            }
+            resizeMode={'contain'}
+            style={{
+              height: R.fontSize.Size28,
+              width: R.fontSize.Size28,
+            }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={navigateToSecondScreen}
+          activeOpacity={0.6}
+          style={{
+            height: R.fontSize.Size60,
+            paddingVertical: R.fontSize.Size5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexGrow: 1,
+          }}>
+          <Image
+            source={
+              select === 'SearchScreen'
+                ? R.images.activeSearchIcon
+                : R.images.inActiveSearchIcon
             }
             resizeMode={'contain'}
             style={{
@@ -165,15 +166,15 @@ const CustomTabBar = props => {
                 }}
               />
             ) : ( */}
-              <Image
-                source={R.images.inActiveProfileIcon}
-                resizeMode={'cover'}
-                style={{
-                  height: R.fontSize.Size35,
-                  width: R.fontSize.Size35,
-                  borderRadius: R.fontSize.Size20,
-                }}
-              />
+            <Image
+              source={R.images.inActiveProfileIcon}
+              resizeMode={'cover'}
+              style={{
+                height: R.fontSize.Size35,
+                width: R.fontSize.Size35,
+                borderRadius: R.fontSize.Size20,
+              }}
+            />
             {/* )} */}
           </View>
         </TouchableOpacity>

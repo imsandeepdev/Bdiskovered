@@ -119,12 +119,6 @@ const UpdateProfileScreen = (props) => {
     const [calPickerModal, setCalPickerModal] = useState(false)
     const [profilePic, setProfilePic] = useState([])
     const [pickerModal, setPickerModal] = useState(false)
-    const [companyName, setCompanyName] = useState('')
-    const [companyType, setCompanyType] = useState('')
-    const [companyEmail, setCompanyEmail] = useState('')
-    const [companyContact, setCompanyContact] = useState('')
-    const [companyAddress, setCompanyAddress] = useState('')
-
     const [selectFullTime, setSelectFullTime] = useState(false);
     const [fullTimePrice, setFullTimePrice] = useState('');
     const [selectPartTime, setSelectPartTime] = useState(false);
@@ -169,25 +163,6 @@ const UpdateProfileScreen = (props) => {
             setSelectPartTime(response.Profile?.part_time_amount != '' ?? true);
             setSelectGigs(response.Profile?.gigs_amount != '' ?? true);
 
-            setLoading(false);
-          } else if (
-            response.status == 'success' &&
-            props.userType == 'Business'
-          ) {
-            console.log('BUSINESS');
-            setCompanyName(response.Profile?.company_name);
-            setCompanyAddress(response.Profile?.company_address);
-            setCompanyType(response.Profile?.company_type);
-            setCompanyEmail(response.Profile?.email);
-            setCompanyContact(response.Profile?.mobile);
-            setProfilePic({
-              path: `${Config.API_URL}${response.Profile?.avatar.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`,
-              mime: 'profile/jpeg',
-              filename: 'profile.jpeg',
-            });
             setLoading(false);
           } else {
             setLoading(false);
@@ -238,6 +213,10 @@ const UpdateProfileScreen = (props) => {
       formData.append('email', userMail);
       formData.append('bio', userBio);
       formData.append('mobile', mobNo);
+      formData.append('birth', userDob);
+      formData.append('job_type1', selectFullTime ? 'Full Time' : null);
+      formData.append('job_type2', selectPartTime ? 'Part Time': null);
+      formData.append('job_type3', selectGigs ? 'Gigs' : null);
       formData.append('full_time_amount', fullTimePrice);
       formData.append('part_time_amount', partTimePrice);
       formData.append('gigs_amount', gigsPrice);
@@ -292,52 +271,6 @@ const UpdateProfileScreen = (props) => {
       }))
      }
 
-          const onCallUpdateBusinessProfile = () => {
-            setLoading(true);
-            let formData = new FormData();
-            let dataType = 'formdata';
-            formData.append('company_type', companyType);
-            formData.append('company_email', companyEmail);
-            formData.append('company_contact', companyContact);
-            formData.append('company_address', companyAddress);
-            formData.append(
-              'avatar',
-              profilePic.path == null || profilePic?.path == null
-                ? ''
-                : {
-                    uri:
-                      Platform.OS === 'android'
-                        ? profilePic.path
-                        : profilePic.path?.replace('file://', ''),
-                    type: profilePic.mime,
-                    name: profilePic.filename ?? 'image.jpg',
-                  },
-            );
-            dispatch(
-              ProfileUpdateRequest(formData, dataType, response => {
-                console.log('UpDate Profile BUSINESS RES', response);
-                if (response.status == 'success') {
-                  setCompanyName(response.Profile?.company_name);
-                  setCompanyAddress(response.Profile?.company_address);
-                  setCompanyType(response.Profile?.company_type);
-                  setCompanyEmail(response.Profile?.email);
-                  setCompanyContact(response.Profile?.mobile);
-                  setProfilePic({
-                    path: `${Config.API_URL}${response.Profile?.avatar.slice(
-                      22,
-                    )}`,
-                    mime: 'profile/jpeg',
-                    filename: 'profile.jpeg',
-                  });
-                  Toast.show(response.message, Toast.SHORT);
-                  setLoading(false);
-                } else {
-                  Toast.show(response.message, Toast.SHORT);
-                  setLoading(false);
-                }
-              }),
-            );
-          };
 
 
      const onCallFullTimeRow = () => {
@@ -455,179 +388,160 @@ const UpdateProfileScreen = (props) => {
                     justifyContent: 'center',
                   }}>
                   <AppButton
-                    onPress={() =>
-                      props.userType != 'Business'
-                        ? onCallUpdateProfile()
-                        : onCallUpdateBusinessProfile()
-                    }
+                    onPress={() => onCallUpdateProfile()}
                     title={'Update Profile'}
                     textColor={R.colors.white}
                     paddingHorizontal={R.fontSize.Size30}
                   />
                 </View>
               </View>
-              {props.userType != 'Business' ? (
+
+              <View
+                style={{
+                  marginTop: R.fontSize.Size40,
+                  flex: 1,
+                }}>
+                <CustomLineTextInput
+                  value={actualName}
+                  onChangeText={name => setActualName(name)}
+                  placeholder={'Actual Name'}
+                />
+                <CustomCardLine disabled={true} title={userName} />
+
+                <CustomLineTextInput
+                  value={userMail}
+                  onChangeText={mail => setUserMail(mail)}
+                  placeholder={'Email'}
+                />
+                <Pressable
+                  onPress={() => setCalPickerModal(!calPickerModal)}
+                  style={({pressed}) => [
+                    {
+                      height: R.fontSize.Size50,
+                      justifyContent: 'center',
+                      opacity: pressed ? 0.5 : 1,
+                      marginBottom: R.fontSize.Size12,
+                      borderBottomWidth: 1,
+                      borderColor: R.colors.placeholderTextColor,
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      fontSize: R.fontSize.Size15,
+                      color: R.colors.primaryTextColor,
+                      fontWeight: '700',
+                    }}>
+                    {userDob != '' ? userDob : 'Date of Birth'}
+                  </Text>
+                </Pressable>
+
+                <CustomCardLine disabled={true} title={mobNo} />
+
+                {/* <CustomLineTextInput
+                  value={userBio}
+                  onChangeText={bio => setUserBio(bio)}
+                  placeholder={'Bio'}
+                /> */}
+
                 <View
                   style={{
-                    marginTop: R.fontSize.Size40,
-                    flex: 1,
+                    backgroundColor: R.colors.white,
+                    borderBottomWidth: 1,
+                    borderColor: R.colors.placeholderTextColor,
                   }}>
-                  <CustomLineTextInput
-                    value={actualName}
-                    onChangeText={name => setActualName(name)}
-                    placeholder={'Actual Name'}
+                  <TextInput
+                    style={{
+                      minHeight: R.fontSize.Size40,
+                      padding: 0,
+                      color: R.colors.primaryTextColor,
+                      textAlignVertical: 'top',
+                      fontSize: R.fontSize.Size15,
+                      fontFamily: R.fonts.regular,
+                      fontWeight: '700',
+                    }}
+                    value={userBio}
+                    placeholder="Bio"
+                    placeholderTextColor={R.colors.placeholderTextColor}
+                    onChangeText={bio => setUserBio(bio)}
+                    numberOfLines={3}
+                    multiline={true}
                   />
-                  <CustomLineTextInput
-                    value={userName}
-                    onChangeText={uname => setUserName(uname)}
-                    placeholder={'User Name'}
-                  />
-                  <CustomLineTextInput
-                    value={userMail}
-                    onChangeText={mail => setUserMail(mail)}
-                    placeholder={'Email'}
-                  />
-                  <Pressable
-                    onPress={() => setCalPickerModal(!calPickerModal)}
-                    style={({pressed}) => [
-                      {
-                        height: R.fontSize.Size50,
-                        justifyContent: 'center',
-                        opacity: pressed ? 0.5 : 1,
-                        marginBottom: R.fontSize.Size12,
-                        borderBottomWidth: 1,
-                        borderColor: R.colors.placeholderTextColor,
-                      },
-                    ]}>
+                </View>
+
+                <View
+                  style={{
+                    marginTop: R.fontSize.Size10,
+                  }}>
+                  <View>
                     <Text
                       style={{
                         fontFamily: R.fonts.regular,
+                        fontWeight: '900',
                         fontSize: R.fontSize.Size15,
-                        color: R.colors.primaryTextColor,
-                        fontWeight: '700',
+                        color: R.colors.black,
                       }}>
-                      {userDob != '' ? userDob : 'Date of Birth'}
+                      {'Open For'}
                     </Text>
-                  </Pressable>
-
-                  <CustomLineTextInput
-                    value={mobNo}
-                    onChangeText={mob => setMobNo(mob)}
-                    placeholder={'Contact Number'}
-                  />
-                  <CustomLineTextInput
-                    value={userBio}
-                    onChangeText={bio => setUserBio(bio)}
-                    placeholder={'Bio'}
-                  />
-                {
-
-                props.userType == 'Talent' &&
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size10,
-                    }}>
-                    <View>
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontWeight: '900',
-                          fontSize: R.fontSize.Size15,
-                          color: R.colors.black,
-                        }}>
-                        {'Open For'}
-                      </Text>
-                      <View style={{marginTop: R.fontSize.Size10}}>
-                        <CustomTimeRow
-                          leftOnPress={() => onCallFullTimeRow()}
-                          leftImageSource={
-                            selectFullTime
-                              ? R.images.checkTermsIcon
-                              : R.images.unCheckTermsIcon
-                          }
-                          leftTitle={'Full Time'}
-                          leftTextColor={
-                            selectFullTime
-                              ? R.colors.appColor
-                              : R.colors.placeholderTextColor
-                          }
-                          rightStatus={selectFullTime}
-                          rightValue={fullTimePrice}
-                          rightOnChangeText={price => setFullTimePrice(price)}
-                          rightDayHours={'/ Day'}
-                        />
-                        <CustomTimeRow
-                          leftOnPress={() => onCallPartTimeRow()}
-                          leftImageSource={
-                            selectPartTime
-                              ? R.images.checkTermsIcon
-                              : R.images.unCheckTermsIcon
-                          }
-                          leftTitle={'Part Time'}
-                          leftTextColor={
-                            selectPartTime
-                              ? R.colors.appColor
-                              : R.colors.placeholderTextColor
-                          }
-                          rightStatus={selectPartTime}
-                          rightValue={partTimePrice}
-                          rightOnChangeText={price => setPartTimePrice(price)}
-                          rightDayHours={'/ Hours'}
-                        />
-                        <CustomTimeRow
-                          leftOnPress={() => onCallGigsRow()}
-                          leftImageSource={
-                            selectGigs
-                              ? R.images.checkTermsIcon
-                              : R.images.unCheckTermsIcon
-                          }
-                          leftTitle={'Gigs'}
-                          leftTextColor={
-                            selectGigs
-                              ? R.colors.appColor
-                              : R.colors.placeholderTextColor
-                          }
-                          rightStatus={selectGigs}
-                          rightValue={gigsPrice}
-                          rightOnChangeText={price => setGigsPrice(price)}
-                          rightDayHours={'/ Hours'}
-                        />
-                      </View>
+                    <View style={{marginTop: R.fontSize.Size10}}>
+                      <CustomTimeRow
+                        leftOnPress={() => onCallFullTimeRow()}
+                        leftImageSource={
+                          selectFullTime
+                            ? R.images.checkTermsIcon
+                            : R.images.unCheckTermsIcon
+                        }
+                        leftTitle={'Full Time'}
+                        leftTextColor={
+                          selectFullTime
+                            ? R.colors.appColor
+                            : R.colors.placeholderTextColor
+                        }
+                        rightStatus={selectFullTime}
+                        rightValue={fullTimePrice}
+                        rightOnChangeText={price => setFullTimePrice(price)}
+                        rightDayHours={'/ day'}
+                      />
+                      <CustomTimeRow
+                        leftOnPress={() => onCallPartTimeRow()}
+                        leftImageSource={
+                          selectPartTime
+                            ? R.images.checkTermsIcon
+                            : R.images.unCheckTermsIcon
+                        }
+                        leftTitle={'Part Time'}
+                        leftTextColor={
+                          selectPartTime
+                            ? R.colors.appColor
+                            : R.colors.placeholderTextColor
+                        }
+                        rightStatus={selectPartTime}
+                        rightValue={partTimePrice}
+                        rightOnChangeText={price => setPartTimePrice(price)}
+                        rightDayHours={'/ hrs'}
+                      />
+                      <CustomTimeRow
+                        leftOnPress={() => onCallGigsRow()}
+                        leftImageSource={
+                          selectGigs
+                            ? R.images.checkTermsIcon
+                            : R.images.unCheckTermsIcon
+                        }
+                        leftTitle={'Gigs'}
+                        leftTextColor={
+                          selectGigs
+                            ? R.colors.appColor
+                            : R.colors.placeholderTextColor
+                        }
+                        rightStatus={selectGigs}
+                        rightValue={gigsPrice}
+                        rightOnChangeText={price => setGigsPrice(price)}
+                        rightDayHours={'/ hrs'}
+                      />
                     </View>
                   </View>
-                }
-
                 </View>
-              ) : (
-                <View
-                  style={{
-                    marginTop: R.fontSize.Size40,
-                    flex: 1,
-                  }}>
-                  <CustomCardLine disabled={true} title={companyName} />
-
-                  <CustomLineTextInput
-                    value={companyType}
-                    onChangeText={cType => setCompanyType(cType)}
-                    placeholder={'Company Type'}
-                  />
-                  <CustomLineTextInput
-                    value={companyEmail}
-                    onChangeText={cEmail => setCompanyEmail(cEmail)}
-                    placeholder={'Company Email'}
-                  />
-                  <CustomLineTextInput
-                    value={companyContact}
-                    onChangeText={cPhone => setCompanyContact(cPhone)}
-                    placeholder={'Company Contact Number'}
-                  />
-                  <CustomLineTextInput
-                    value={companyAddress}
-                    onChangeText={cAdd => setCompanyAddress(cAdd)}
-                    placeholder={'Company Address'}
-                  />
-                </View>
-              )}
+              </View>
             </View>
           </ScrollView>
         </SafeAreaView>

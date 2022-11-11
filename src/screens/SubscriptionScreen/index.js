@@ -67,6 +67,8 @@ const SubscriptionScreen = props => {
 
   const dispatch = useDispatch()
   const [modalPicker, setModalPicker] = useState(false);
+  const [customModalPicker, setCustomModalPicker] = useState(false);
+
   const [alartModalPicker, setAlartModalPicker] = useState(false);
   const [subGetPlan, setSubGetPlan] = useState([])
   const [getPlanDesc, setGetPlanDesc] = useState([]);
@@ -76,6 +78,8 @@ const SubscriptionScreen = props => {
   const [getSubDescActive, setGetSubDescActive] = useState(false)
   const [checkSubActive, setCheckSubActive] = useState(true)
   const [subPlanItem, setSubPlanItem] = useState({})
+  const [expDate, setExpDate] = useState('')
+  const [addOnPlanDetail,setAddOnPlanDetail] = useState({})
 
   const [loading, setLoading] = useState(false)
 
@@ -90,6 +94,7 @@ const SubscriptionScreen = props => {
 
   const onCallCheckSubActive = () => {
     setLoading(true)
+    console.log('SUB STATUS ON SCREEN', props.userProfile.Profile?.subscription);
     props.userProfile.Profile?.subscription != 0 ?
     setCheckSubActive(true) : setCheckSubActive(false)
     setLoading(false)
@@ -100,7 +105,9 @@ const SubscriptionScreen = props => {
       console.log('GetSubGet Res',response)
       if(response.status == 'success')
       {
-        setGetSubData(response?.data)
+        
+        setGetSubData(response?.data);
+        setExpDate(response.data?.exp_date);
         setGetSubDesc([
           response?.description?.feature_1,
           response?.description?.feature_2,
@@ -175,9 +182,11 @@ const SubscriptionScreen = props => {
     });
   }
 
-  const onCheckModal = () => {
+  const onCheckModal = (item) => {
+    console.log("ADD ON PLAN",item)
+    setAddOnPlanDetail(item)
      props.userProfile.Profile?.subscription != 0 ?
-     setModalPicker(true) :
+     setCustomModalPicker(true) :
      setAlartModalPicker(true)
   }
 
@@ -186,6 +195,14 @@ const SubscriptionScreen = props => {
     setSubPlanItem(item)
     setModalPicker(true);
 
+  }
+
+  const onCallAddOnPackage = () => {
+    console.log('PLANNAME', addOnPlanDetail?.plan_name);
+    props.navigation.navigate('CardScreen', {
+      SubPlanItem: {plan_name:addOnPlanDetail?.plan_name ,price:addOnPlanDetail?.price, type:'AddOn'},
+    });
+    setCustomModalPicker(false);
   }
   
   return (
@@ -326,7 +343,7 @@ const SubscriptionScreen = props => {
                             numberOfLines={1}>
                             {'Connections'}
                           </Text>
-                          <TouchableOpacity style={{padding: R.fontSize.Size5}}>
+                          {/* <TouchableOpacity style={{padding: R.fontSize.Size5}}>
                             <Image
                               source={R.images.activeAddIcon}
                               style={{
@@ -335,7 +352,7 @@ const SubscriptionScreen = props => {
                               }}
                               resizeMode={'contain'}
                             />
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </View>
 
                         <View
@@ -366,7 +383,7 @@ const SubscriptionScreen = props => {
                             numberOfLines={1}>
                             {'Boots'}
                           </Text>
-                          <TouchableOpacity style={{padding: R.fontSize.Size5}}>
+                          {/* <TouchableOpacity style={{padding: R.fontSize.Size5}}>
                             <Image
                               source={R.images.activeAddIcon}
                               style={{
@@ -375,7 +392,7 @@ const SubscriptionScreen = props => {
                               }}
                               resizeMode={'contain'}
                             />
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </View>
                       </View>
                     </View>
@@ -489,28 +506,35 @@ const SubscriptionScreen = props => {
                 {subGetPlan.map((item, index) => {
                   return (
                     <SubscriptionCard
+                      disabled={checkSubActive}
                       key={index}
                       marginTop={R.fontSize.Size28}
-                      borderWidth={!checkSubActive ? R.fontSize.Size2 : null}
+                      borderWidth={R.fontSize.Size2}
                       borderColor={
                         !checkSubActive
                           ? R.colors.appColor
                           : R.colors.placeholderTextColor
                       }
-                      topTitle={
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontWeight: '700',
-                            fontSize: R.fontSize.Size14,
-                            color: R.colors.primaryTextColor,
-                            marginTop: R.fontSize.Size20,
-                          }}>
-                          {item?.plan_name}
-                        </Text>
+                      priceTextColor={
+                        !checkSubActive
+                          ? R.colors.appColor
+                          : R.colors.placeholderTextColor
                       }
+                      // topTitle={
+                      //   <Text
+                      //     style={{
+                      //       fontFamily: R.fonts.regular,
+                      //       fontWeight: '700',
+                      //       fontSize: R.fontSize.Size14,
+                      //       color: R.colors.primaryTextColor,
+                      //       marginTop: R.fontSize.Size20,
+                      //     }}>
+                      //     {item?.plan_name}
+                      //   </Text>
+                      // }
                       price={`${item?.price}`}
                       month={item?.validity}
+                      rightIcon={R.images.balaceIcon}
                       onPressAdd={() => onOpenPaymentModal(item)}
                     />
                   );
@@ -546,11 +570,12 @@ const SubscriptionScreen = props => {
                           ? R.colors.appColor
                           : R.colors.placeholderTextColor
                       }
+                      rightIcon={checkSubActive? R.images.plusIconOrage: R.images.plusIconGrey}
                       marginTop={R.fontSize.Size15}
                       price={`USD ${item?.price}`}
                       // noText={'5'}
                       month={item?.validity}
-                      onPressAdd={() => onCheckModal()}
+                      onPressAdd={() => onCheckModal(item)}
                     />
                   );
                 })}
@@ -705,7 +730,67 @@ const SubscriptionScreen = props => {
         visible={alartModalPicker}
         onRequestClose={() => setAlartModalPicker(false)}
         title={`First buy the subscription plan after that you can buy add-on services.`}
-        onPress={()=>setAlartModalPicker(false)}
+        onPress={() => setAlartModalPicker(false)}
+      />
+
+      <AlartModal
+        visible={customModalPicker}
+        onRequestClose={() => setCustomModalPicker(false)}
+        title={`Your Add on plan will expire on ${moment(getSubData?.exp_date).format('Do MMMM YYYY')}.`}
+        customButton={
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Pressable
+              onPress={()=> setCustomModalPicker(false)}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  backgroundColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.white,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Cancel'}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={()=> onCallAddOnPackage()}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  backgroundColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.white,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Proceed'}
+              </Text>
+            </Pressable>
+          </View>
+        }
       />
     </StoryScreen>
   );

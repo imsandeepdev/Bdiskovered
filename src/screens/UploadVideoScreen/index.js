@@ -92,7 +92,7 @@ const UploadVideoScreen = props => {
   },
   {
     id: '4',
-    title: 'Fashon',
+    title: 'Fashion',
   },
 ]
   )
@@ -308,6 +308,7 @@ console.log("FORMD",formdata)
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
           leftSource={R.images.menuIcon}
+          headerBottomWidth={0.5}
           rightSource2={R.images.bellIcon}
           rightSourceOnPress2={() =>
             props.navigation.navigate('NotificationScreen')
@@ -352,10 +353,10 @@ console.log("FORMD",formdata)
                         color: R.colors.primaryTextColor,
                         marginTop: R.fontSize.Size10,
                       }}>
-                      {'Select Type of Talent to View'}
+                      {'Upload the video showcasing your talent.'}
                     </Text>
                   </View>
-                  <View style={{marginTop: R.fontSize.Size50}}>
+                  <View style={{marginTop: R.fontSize.Size40}}>
                     <Pressable
                       onPress={() => setPickerModal(true)}
                       style={({pressed}) => [
@@ -390,18 +391,22 @@ console.log("FORMD",formdata)
                       </Text>
                     </Pressable>
                   </View>
-                  <View
-                  style={{marginVertical:R.fontSize.Size4}}
-                  >
+                  <View style={{marginVertical: R.fontSize.Size4}}>
                     <Text
-                    style={{fontFamily:R.fonts.regular, fontSize:R.fontSize.Size10, color:R.colors.placeHolderColor, fontWeight:'300'}}
-                    >{videoPath?.uri}</Text>
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        fontSize: R.fontSize.Size10,
+                        color: R.colors.placeHolderColor,
+                        fontWeight: '300',
+                      }}>
+                      {videoPath?.uri}
+                    </Text>
                   </View>
                   <View style={{marginTop: R.fontSize.Size20, flex: 1}}>
                     <CustomLineTextInput
                       value={videoTitle}
                       onChangeText={title => setVideoTitle(title)}
-                      placeholder={'Video Title'}
+                      placeholder={'Title'}
                     />
                     <CustomLineTextInput
                       value={videoDesc}
@@ -430,8 +435,9 @@ console.log("FORMD",formdata)
                       style={{
                         flexWrap: 'wrap',
                         alignItems: 'center',
-                        justifyContent:'flex-start',
+                        justifyContent: 'flex-start',
                         flexDirection: 'row',
+                        marginLeft:-R.fontSize.Size14
                       }}>
                       {videoTypeList.map((item, index) => {
                         return (
@@ -441,9 +447,9 @@ console.log("FORMD",formdata)
                             style={({pressed}) => [
                               {
                                 opacity: pressed ? 0.5 : 1,
-                                width: screenWidth / 4,
+                                width: screenWidth / 3.8,
                                 marginVertical: R.fontSize.Size8,
-                                marginLeft: R.fontSize.Size10,
+                                marginLeft: R.fontSize.Size14,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 backgroundColor: item?.selected

@@ -7,6 +7,7 @@ import R from '../res/R';
 const SubscriptionCard = (props) => {
     return (
       <Pressable
+        disabled={props.disabled}
         onPress={props.onPressAdd}
         style={({pressed})=>[{
           overflow: 'hidden',
@@ -15,7 +16,7 @@ const SubscriptionCard = (props) => {
           paddingLeft: R.fontSize.Size2,
           borderRadius: R.fontSize.Size5,
           marginTop: props.marginTop,
-          opacity: pressed ? 0.5: 1
+          opacity: pressed ? 0.5: 1,
         }]}>
         <View
           style={{
@@ -104,7 +105,7 @@ const SubscriptionCard = (props) => {
                   },
                 ]}>
                 <Image
-                  source={R.images.activeAddIcon}
+                  source={props.rightIcon ?? R.images.activeAddIcon}
                   style={{
                     height: R.fontSize.Size18,
                     width: R.fontSize.Size18,

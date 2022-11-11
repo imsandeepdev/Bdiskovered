@@ -67,7 +67,9 @@ const LoginScreen = (props) => {
               fromScreen: 'LoginScreen',
               mobValue: mobNo,
               countryCode: countryCode,
-              deviceToken: createDeviceToken
+              deviceToken: createDeviceToken,
+              type: response.type,
+              subscription_status: response.subscription_status,
             });
             Toast.show(response.OTP, Toast.LONG);
             Alert.alert(response?.OTP);

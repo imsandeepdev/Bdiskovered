@@ -17,6 +17,8 @@ import { connect, Connect,useDispatch } from 'react-redux';
 import { Config } from '../../config';
 
 const screenWidth = Dimensions.get('screen').width;
+import moment from 'moment';
+
 
 const persnalDetails = [
   {
@@ -68,22 +70,25 @@ const CustomTimeRow = props => {
   return (
     <View
       style={{
-        flexDirection: 'row',
         alignItems: 'center',
         marginBottom: R.fontSize.Size10,
+        marginLeft: R.fontSize.Size14,
       }}>
       <View
         style={{
-          flexDirection: 'row',
           alignItems: 'center',
-          width: screenWidth / 2.5,
+          width: screenWidth / 3.8,
+          height: R.fontSize.Size35,
+          backgroundColor: R.colors.appColor,
+          justifyContent: 'center',
+          borderRadius: R.fontSize.Size8,
         }}>
         <Text
           style={{
             fontFamily: R.fonts.regular,
             fontSize: R.fontSize.Size14,
             fontWeight: '700',
-            color: R.colors.appColor,
+            color: R.colors.lightWhite,
             marginHorizontal: R.fontSize.Size12,
           }}>
           {props.leftTitle}
@@ -93,9 +98,9 @@ const CustomTimeRow = props => {
       <View
         style={{
           flexDirection: 'row',
-          flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
+          marginTop: R.fontSize.Size5,
         }}>
         <Text
           style={{
@@ -108,15 +113,15 @@ const CustomTimeRow = props => {
         </Text>
         <Text
           style={{
-            height: R.fontSize.Size20,
-            marginHorizontal: R.fontSize.Size8,
+            // height: R.fontSize.Size20,
+            marginHorizontal: R.fontSize.Size4,
             textAlign: 'center',
             borderBottomWidth: 1,
             borderColor: R.colors.appColor,
             fontFamily: R.fonts.regular,
             fontSize: R.fontSize.Size14,
             fontWeight: '700',
-            color: R.colors.black,
+            color: R.colors.primaryTextColor,
           }}>
           {props.rightText}
         </Text>
@@ -164,11 +169,11 @@ const ConnectedProfileScreen = props => {
          console.log('useTalentArray', useTalentArray);
           setTalentArray(useTalentArray)
           setTailentPostVideo(response.Profile?.post)
-        setPersonalArray([
-          response.Profile?.gender,
-          response.Profile?.birth,
-          'Guru',
-        ]);
+         setPersonalArray([
+           response.Profile?.gender,
+           `${moment().diff(response.Profile?.birth, 'years')} Year`,
+           'Gurugram',
+         ]);
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace('http://localhost:8080/','')}`,
           mime: 'profile/jpeg',
@@ -187,25 +192,25 @@ const ConnectedProfileScreen = props => {
         <ShadowHeader
           onPress={() => props.navigation.goBack()}
           leftSource={R.images.chevronBack}
-          rightSource={R.images.chatIcon}
-          rightSourceOnPress={() => console.log('chat')}
-          marginRightSource={R.fontSize.Size6}
-          rightTitle={
-            <Text
-              style={{
-                marginRight: R.fontSize.Size10,
-                color: R.colors.primaryTextColor,
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size14,
-                fontWeight: '700',
-              }}>
-              {'Send Message'}
-            </Text>
-          }
-          rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() =>
-            props.navigation.navigate('NotificationScreen')
-          }
+          // rightSource={R.images.chatIcon}
+          // rightSourceOnPress={() => console.log('chat')}
+          // marginRightSource={R.fontSize.Size6}
+          // rightTitle={
+          //   <Text
+          //     style={{
+          //       marginRight: R.fontSize.Size10,
+          //       color: R.colors.primaryTextColor,
+          //       fontFamily: R.fonts.regular,
+          //       fontSize: R.fontSize.Size14,
+          //       fontWeight: '700',
+          //     }}>
+          //     {'Send Message'}
+          //   </Text>
+          // }
+          // rightSource2={R.images.bellIcon}
+          // rightSourceOnPress2={() =>
+          //   props.navigation.navigate('NotificationScreen')
+          // }
         />
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
@@ -217,23 +222,28 @@ const ConnectedProfileScreen = props => {
                 flexDirection: 'row',
                 paddingVertical: R.fontSize.Size10,
               }}>
-              <View style={{flex: 1, justifyContent: 'space-around'}}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                }}>
                 <View
                   style={{
                     height: R.fontSize.Size50,
                     width: R.fontSize.Size50,
                     borderRadius: R.fontSize.Size25,
                     overflow: 'hidden',
-                    borderWidth: 2,
-                    borderColor: R.colors.appColor,
+                    borderWidth: 1,
+                    borderColor: R.colors.placeholderTextColor,
                   }}>
                   <Image
                     source={{
                       uri: profilePic?.path,
                     }}
                     style={{
-                      height: R.fontSize.Size45,
-                      width: R.fontSize.Size45,
+                      height: R.fontSize.Size50,
+                      width: R.fontSize.Size50,
                     }}
                     resizeMode={'cover'}
                   />
@@ -241,12 +251,12 @@ const ConnectedProfileScreen = props => {
                 <Text
                   style={{
                     fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
+                    fontSize: R.fontSize.Size15,
                     fontWeight: '700',
                     color: R.colors.primaryTextColor,
                   }}
                   numberOfLines={1}>
-                  {profileDetails?.name}
+                  {profileDetails?.username}
                 </Text>
               </View>
               <View
@@ -275,7 +285,7 @@ const ConnectedProfileScreen = props => {
                 <Text
                   style={{
                     fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
+                    fontSize: R.fontSize.Size15,
                     fontWeight: '700',
                     color: R.colors.primaryTextColor,
                   }}
@@ -297,13 +307,14 @@ const ConnectedProfileScreen = props => {
                     justifyContent: 'center',
                   },
                 ]}>
-                <View
-                  style={{justifyContent:'center'}}
-                >
+                <View style={{justifyContent: 'center'}}>
                   <Image
-                      source={R.images.chatIcon}
-                      style={{height:R.fontSize.Size20,width:R.fontSize.Size20}}
-                      resizeMode={'contain'}
+                    source={R.images.chatIconWhite}
+                    style={{
+                      height: R.fontSize.Size20,
+                      width: R.fontSize.Size20,
+                    }}
+                    resizeMode={'contain'}
                   />
                 </View>
                 <Text
@@ -318,7 +329,9 @@ const ConnectedProfileScreen = props => {
                 </Text>
               </Pressable>
             </View>
-            <View style={{marginTop: R.fontSize.Size30}}>
+            {
+              profileDetails?.bio !='' &&
+              <View style={{marginTop: R.fontSize.Size20}}>
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
@@ -328,14 +341,14 @@ const ConnectedProfileScreen = props => {
                 }}>
                 {`${profileDetails?.bio}`}
               </Text>
-            </View>
+            </View>}
 
             <View
               style={{
                 flexWrap: 'wrap',
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: R.fontSize.Size30,
+                marginTop: R.fontSize.Size20,
               }}>
               {personalArray.map((item, index) => {
                 return (
@@ -368,6 +381,7 @@ const ConnectedProfileScreen = props => {
                 );
               })}
             </View>
+
             <View
               style={{
                 flexWrap: 'wrap',
@@ -386,16 +400,18 @@ const ConnectedProfileScreen = props => {
                       justifyContent: 'center',
                       paddingHorizontal: R.fontSize.Size20,
                       paddingVertical: R.fontSize.Size6,
-                      backgroundColor: R.colors.placeholderTextColor,
+                      backgroundColor: R.colors.appColor,
                       borderRadius: R.fontSize.Size8,
-                      marginBottom: R.fontSize.Size6,
+                      marginBottom: R.fontSize.Size10,
+                      width: screenWidth / 3.8,
+                      height: R.fontSize.Size35,
                     }}>
                     <Text
                       style={{
                         fontFamily: R.fonts.regular,
                         fontSize: R.fontSize.Size14,
                         fontWeight: '700',
-                        color: R.colors.primaryTextColor,
+                        color: R.colors.white,
                         marginLeft: R.fontSize.Size8,
                       }}>
                       {item}
@@ -405,56 +421,43 @@ const ConnectedProfileScreen = props => {
               })}
             </View>
 
-            {profileDetails?.job_type1 != null &&
-            profileDetails?.job_type2 != null &&
-            profileDetails?.job_type3 != null ? (
-              <View style={{marginTop: R.fontSize.Size30}}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontWeight: '700',
-                    fontSize: R.fontSize.Size18,
-                    color: R.colors.primaryTextColor,
-                  }}>
-                  {'Available for :'}
-                </Text>
-              </View>
-            ) : null}
-
             <View
               style={{
                 marginTop: R.fontSize.Size20,
-                alignItems: 'center',
+                alignItems: 'flex-start',
+                flexDirection: 'row',
+                paddingHorizontal: R.fontSize.Size10,
+                marginLeft: -R.fontSize.Size22,
               }}>
-              {profileDetails?.job_type1 != '' &&
-                profileDetails?.job_type1 != null && (
+              {profileDetails?.full_time_amount != '' &&
+                profileDetails?.full_time_amount != null && (
                   <CustomTimeRow
                     leftTitle={profileDetails?.job_type1}
                     rightText={profileDetails?.full_time_amount}
-                    rightDayHours={'/ Day'}
+                    rightDayHours={'/Day'}
                   />
                 )}
-              {profileDetails?.job_type2 != '' &&
-                profileDetails?.job_type2 != null && (
+              {profileDetails?.part_time_amount != '' &&
+                profileDetails?.part_time_amount != null && (
                   <CustomTimeRow
                     leftTitle={profileDetails?.job_type2}
                     rightText={profileDetails?.part_time_amount}
-                    rightDayHours={'/ Hours'}
+                    rightDayHours={'/hrs'}
                   />
                 )}
-              {profileDetails?.job_type3 != '' &&
-              profileDetails?.job_type3 != null ? (
+              {profileDetails?.gigs_amount != '' &&
+              profileDetails?.gigs_amount != null ? (
                 <CustomTimeRow
                   leftTitle={profileDetails?.job_type3}
                   rightText={profileDetails?.gigs_amount}
-                  rightDayHours={'/ Hours'}
+                  rightDayHours={'/hrs'}
                 />
               ) : null}
             </View>
 
             <View
               style={{
-                marginTop: R.fontSize.Size45,
+                marginTop: R.fontSize.Size10,
                 flexWrap: 'wrap',
                 flexDirection: 'row',
               }}>

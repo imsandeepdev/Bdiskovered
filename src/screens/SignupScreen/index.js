@@ -63,7 +63,6 @@ const SignupScreen = (props) => {
     const [userType, setUserType] = useState('')
     const [onFocusName, setOnFocusName] = useState('')
 
-    const [companyUserNameStatue, setCompanyUserNameStatus] = useState(false);
     const [companyName, setCompanyName] = useState('')
     const [companyType, setCompanyType] = useState('')   
     const [companytradeNo, setCompanyTradeNo] = useState('') 
@@ -131,7 +130,6 @@ const SignupScreen = (props) => {
           onFocusName == 'userName' && setUserNameStatus(true);
           onFocusName == 'userEmail' && setUserMailStatus(true);
           onFocusName == 'userPhone' && setUserPhoneStatus(true);
-          onFocusName == 'companyUserName' && setCompanyUserNameStatus(true);
           onFocusName == 'companyMail' && setCompanyMailStatus(true);
           onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
         } else {
@@ -139,7 +137,6 @@ const SignupScreen = (props) => {
           onFocusName == 'userName' && setUserNameStatus(false);
           onFocusName == 'userEmail' && setUserMailStatus(false);
           onFocusName == 'userPhone' && setUserPhoneStatus(false);
-          onFocusName == 'companyUserName' && setCompanyUserNameStatus(false);
           onFocusName == 'companyMail' && setCompanyMailStatus(false);
           onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
         }
@@ -214,17 +211,17 @@ const SignupScreen = (props) => {
 
     // For Business 
 
-    const onCallSetCompanyUserNameValue = value => {
-      console.log('On Focus', onFocusName);
-      let userVerifyAPI = Config.verifyUsernameAPI;
-      let data = {
-        username: value,
-      };
-      setCompanyName(value);
-      value.length > 2
-        ? onCheckVerifyAPI(data, userVerifyAPI)
-        : setCompanyUserNameStatus(false);
-    };
+    // const onCallSetCompanyUserNameValue = value => {
+    //   console.log('On Focus', onFocusName);
+    //   let userVerifyAPI = Config.verifyUsernameAPI;
+    //   let data = {
+    //     username: value,
+    //   };
+    //   setCompanyName(value);
+    //   value.length > 2
+    //     ? onCheckVerifyAPI(data, userVerifyAPI)
+    //     : setCompanyUserNameStatus(false);
+    // };
 
     const onCallSetCompanyEmailValue = value => {
       console.log('On Focus', onFocusName);
@@ -634,15 +631,10 @@ const onCheckDocument = () => {
                             <CustomCardTextInput
                               value={companyName}
                               onChangeText={cname =>
-                                onCallSetCompanyUserNameValue(cname)
+                                setCompanyName(cname)
                               }
                               placeholder={'Company Name'}
-                              onFocus={() => setOnFocusName('companyUserName')}
-                              rightIcon={
-                                companyUserNameStatue
-                                  ? R.images.checkOrangeIcon
-                                  : R.images.checkGreyIcon
-                              }
+                              
                             />
                             <CustomCardTextInput
                               value={companyType}

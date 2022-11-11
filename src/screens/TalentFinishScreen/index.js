@@ -171,6 +171,36 @@ const onCallFinish = () => {
                   />
                 );
               }}
+              ListFooterComponent={()=>{
+                return (
+                  <View
+                    style={{
+                      justifyContent: 'flex-end',
+                      alignItems: 'flex-end',
+                      marginTop: R.fontSize.Size15,
+                      marginHorizontal: R.fontSize.Size8,
+                    }}>
+                    <Pressable
+                    onPress={()=> props.navigation.navigate('HomeMenu')}
+                    style={({pressed})=>[{
+                      opacity: pressed?0.5:1
+                      ,padding:R.fontSize.Size8,
+                    }]}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size14,
+                          color: R.colors.appColor,
+                          fontWeight: '500',
+                        }}>
+                        Skip
+                      </Text>
+                    </Pressable>
+                  </View>
+                );
+              }}
+
             />
           </View>
           <View style={{paddingVertical: R.fontSize.Size16}}>
