@@ -13,6 +13,9 @@ import uploadNewVideoRoot from '../reducers/uploadNewVideo.reducer';
 import subGetPlanRoot from '../reducers/subGetPlan.reducer';
 import connectedUserRoot from '../reducers/connectedUser.reducer';
 import changeOwnerRoot from '../reducers/ownership.reducer';
+import postFilterRoot from '../reducers/postFilter.reducer';
+import notificationRoot from '../reducers/notification.reducer';
+import boostPostRoot from '../reducers/boostPost.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -31,6 +34,9 @@ videoRateRoot,
 uploadNewVideoRoot,
 subGetPlanRoot,
 connectedUserRoot,
-changeOwnerRoot
+changeOwnerRoot,
+postFilterRoot,
+notificationRoot,
+boostPostRoot
 
 });

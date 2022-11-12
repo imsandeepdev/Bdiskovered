@@ -23,6 +23,15 @@ const CommonFunctions = {
     return true;
   },
 
+  isUndefined: (value, msg) => {
+    if (value == undefined) {
+      CommonFunctions.showToast(msg);
+      return false;
+    }
+    return true;
+  },
+  
+
   isEmailValid: (value, msg) => {
     let reg =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

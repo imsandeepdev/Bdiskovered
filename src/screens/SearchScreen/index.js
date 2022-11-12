@@ -27,24 +27,16 @@ import {
   CustomCardLine,
   CustomLineTextInput,
 } from '../../components';
-import {connect, Connect, useDispatch} from 'react-redux';
+import {connect,useDispatch} from 'react-redux';
 import R from '../../res/R';
 import Geolocation from 'react-native-geolocation-service';
 import Styles from './style';
+import CommonFunctions from '../../utils/CommonFuntions';
+import { PostFilterRequest } from '../../actions/postFilter.action';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
-  const USDList = [
-    'USD 0 - USD 0',
-    'USD 0 - USD 10',
-    'USD 10 - USD 50',
-    'USD 50 - USD 100',
-    'USD 100 - USD 200',
-    'USD 200 - USD 500',
-    'USD 500 - USD 1000',
-    'USD 1000+',
-  ];
 
 const CustomTitle = (props) => {
   return (
@@ -65,6 +57,7 @@ const CustomTitle = (props) => {
 
 const SearchScreen = props => {
 
+  const dispatch = useDispatch()
   const [videoTypes, setVideoTypes] = useState([]);
    const [tailentList, setTailentList] = useState([
      {
@@ -73,77 +66,78 @@ const SearchScreen = props => {
      },
      {
        id: '2',
-       name: 'Dance',
+       name: 'Art',
      },
      {
        id: '3',
-       name: 'Fashion',
+       name: 'Dance',
      },
      {
        id: '4',
-       name: 'Music',
+       name: 'Fashion',
      },
    ]);
   const [usdToggle, setUsdToggle] = useState(false);
   const [dropDownList, setDropDownList] = useState([]);
   const [dropDownTitle, setDropDownTitle] = useState('');
   const [modalPicker, setModalPicker] = useState(false);
-  const [filterPrice, setFilterPrice] = useState('');
-  const [filterAge, setFilterAge] = useState('');
-  const [filterRating, setFilterRating] = useState('');
-
+  const [filterPrice, setFilterPrice] = useState();
+  const [filterAge, setFilterAge] = useState();
+  const [filterRating, setFilterRating] = useState();
+  const [location, setLocation] = useState('')
 
 
 
   const onCallOpenModal = (modalType) => {
 
    { 
-    modalType == 'Price' && (
-    setDropDownTitle(modalType),
-    setDropDownList([
-      'USD 0 - USD 0',
-      'USD 0 - USD 10',
-      'USD 10 - USD 50',
-      'USD 50 - USD 100',
-      'USD 100 - USD 200',
-      'USD 200 - USD 500',
-      'USD 500 - USD 1000',
-      'USD 1000+',
-    ]))
+    modalType == 'Price' &&
+      (setDropDownTitle(modalType),
+      setDropDownList([
+        {firstValue: 'USD 0', secondValue: 'USD 0'},
+        {firstValue: 'USD 0', secondValue: 'USD 10'},
+        {firstValue: 'USD 10', secondValue: 'USD 50'},
+        {firstValue: 'USD 50', secondValue: 'USD 100'},
+        {firstValue: 'USD 100', secondValue: 'USD 200'},
+        {firstValue: 'USD 200', secondValue: 'USD 500'},
+        {firstValue: 'USD 500', secondValue: 'USD 1000'},
+        {firstValue: 'USD 1000', secondValue: ''},
+      ]));
     }
     {
       modalType == 'Age' &&
         (setDropDownTitle(modalType),
         setDropDownList([
-          '0 - 0',
-          '16 - 24',
-          '24 - 28',
-          '29 - 35',
-          '36 - 50',
-          '51 - 65',
-          '65+',
+          {firstValue: '0', secondValue: '0'},
+          {firstValue: '16', secondValue: '24'},
+          {firstValue: '25', secondValue: '28'},
+          {firstValue: '29', secondValue: '35'},
+          {firstValue: '36', secondValue: '50'},
+          {firstValue: '51', secondValue: '65'},
+          {firstValue: '65', secondValue: ''},
         ]));
     }
     {
       modalType == 'Rating' &&
         (setDropDownTitle(modalType),
         setDropDownList([
-          '0.0 - 0.0',
-          '0.0 - 1.0',
-          '1.0 - 1.5',
-          '1.5 - 2.0',
-          '2.0 - 2.5',
-          '2.5 - 3.0',
-          '3.0 - 3.5',
-          '3.5 - 4.0',
-          '4.0 - 4.5',
-          '4.5 - 5.0',
+          {firstValue: '0.0', secondValue: '0.0'},
+          {firstValue: '0.0', secondValue: '1.0'},
+          {firstValue: '1.0', secondValue: '1.5'},
+          {firstValue: '1.5', secondValue: '2.0'},
+          {firstValue: '2.0', secondValue: '2.5'},
+          {firstValue: '2.5', secondValue: '3.0'},
+          {firstValue: '3.0', secondValue: '3.5'},
+          {firstValue: '3.5', secondValue: '4.0'},
+          {firstValue: '4.0', secondValue: '4.5'},
+          {firstValue: '4.5', secondValue: '5.0'},
         ]));
     }
     setModalPicker(true)
   }
 
   const onCallModalClosed = (item, type) => {
+    console.log("ITEM", item)
     {
       type == 'Price' && setFilterPrice(item)
     }
@@ -176,6 +170,37 @@ const SearchScreen = props => {
     setTailentList(arr);
   };
 
+
+  // const checkValid = () => {
+  //   return(
+  //     CommonFunctions.isUndefined(filterPrice?.firstValue.trim(), 'Please Select Price')&&
+  //     CommonFunctions.isUndefined(filterAge?.firstValue.trim(), 'Please Select Age')&&
+  //     CommonFunctions.isBlank(location?.trim(), 'Please Enter Location')
+  //   )
+  // }
+
+  const onCallfilterApply = () => {
+    console.log(filterPrice?.firstValue.trim());
+    
+
+    let data = {
+      Startp: filterPrice?.firstValue,
+      PrS: filterPrice?.secondValue,
+      start_age: filterAge?.firstValue,
+      end_age: filterAge?.secondValue,
+      start_rating: filterRating?.firstValue,
+      end_rating: filterRating?.secondValue,
+      Category:  'Music',
+      location: location,
+    };
+    console.log('Tailent Data List', data);
+    dispatch(PostFilterRequest(data, response => {
+      console.log("FILTER RES", response)
+    }))
+    
+
+  }
+
  
   return (
     <StoryScreen>
@@ -195,22 +220,42 @@ const SearchScreen = props => {
               <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
                 <View style={{flex: 1}}>
                   <View style={{marginTop: R.fontSize.Size20}}>
-                    <CustomTitle fontSize={R.fontSize.Size18} title={'Filter:'} />
+                    <CustomTitle
+                      fontSize={R.fontSize.Size18}
+                      title={'Filter:'}
+                    />
                   </View>
 
                   <View style={{flex: 1, marginVertical: R.fontSize.Size20}}>
                     <CustomTitle title={'Price'} />
                     <CustomCardLine
                       onPress={() => onCallOpenModal('Price')}
-                      title={filterPrice != '' ? filterPrice : 'Select Price'}
+                      title={
+                        filterPrice != null
+                          ? `${filterPrice?.firstValue}${
+                              filterPrice?.secondValue != '' ? ' - ' : '+'
+                            }${filterPrice?.secondValue}`
+                          : 'Select Price'
+                      }
                       rightIcon={R.images.chevronDown}
                     />
                     <CustomTitle title={'Location'} />
-                    <CustomLineTextInput placeholder={'Location'} />
+                    <CustomLineTextInput
+                      placeholder={'Location'}
+                      value={location}
+                      onChangeText={location => setLocation(location)}
+                      maxLength={30}
+                    />
                     <CustomTitle title={'Age'} />
                     <CustomCardLine
                       onPress={() => onCallOpenModal('Age')}
-                      title={filterAge != '' ? filterAge : 'Select Age'}
+                      title={
+                        filterAge != null
+                          ? `${filterAge?.firstValue}${
+                              filterAge?.secondValue != '' ? ' - ' : '+'
+                            }${filterAge?.secondValue}`
+                          : 'Select Age'
+                      }
                       rightIcon={R.images.chevronDown}
                     />
                     <View
@@ -262,7 +307,11 @@ const SearchScreen = props => {
                     <CustomCardLine
                       onPress={() => onCallOpenModal('Rating')}
                       title={
-                        filterRating != '' ? filterRating : 'Select Rating'
+                        filterRating != null
+                          ? `${filterRating?.firstValue}${
+                              filterRating?.secondValue != '' ? ' - ' : '+'
+                            }${filterRating?.secondValue}`
+                          : 'Select Rating'
                       }
                       rightIcon={R.images.chevronDown}
                     />
@@ -271,7 +320,7 @@ const SearchScreen = props => {
 
                 <View style={{paddingVertical: R.fontSize.Size30}}>
                   <AppButton
-                    onPress={() => console.log('Apply')}
+                    onPress={() => onCallfilterApply()}
                     title={'Apply'}
                   />
                 </View>
@@ -348,7 +397,9 @@ const SearchScreen = props => {
                               color: R.colors.primaryTextColor,
                               fontWeight: '500',
                             }}>
-                            {item}
+                            {`${item?.firstValue}${
+                              item?.secondValue != '' ? ' - ' : '+'
+                            }${item?.secondValue}`}
                           </Text>
                         </Pressable>
                       );

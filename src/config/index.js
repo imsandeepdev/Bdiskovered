@@ -25,6 +25,9 @@ export const Config = {
   getsubscriberGetAPI: 'subscriber/get',
   userLocationAPI:'user/location',
   changeOwnershipAPI: 'user/change-ownership',
+  notificationListAPI: 'profile/notification',
+  postFilterAPI: 'post/post-filter',
+  boostPostAPI: 'post/post-boost',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

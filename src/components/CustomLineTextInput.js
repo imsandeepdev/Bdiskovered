@@ -31,6 +31,7 @@ const CustomLineTextInput = props => {
         placeholderTextColor={R.colors.placeholderTextColor}
         value={props.value}
         onChangeText={props.onChangeText}
+        maxLength={props.maxLength}
         keyboardType={props.keyboardType ?? 'default'}
       />
       <Image

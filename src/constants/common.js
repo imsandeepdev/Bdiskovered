@@ -126,3 +126,18 @@ export const user_Location_error = 'user_Location_error';
 export const change_Ownership = 'change_Ownership';
 export const change_Ownership_success = 'change_Ownership_success';
 export const change_Ownership_error = 'change_Ownership_error';
+
+// postFilter
+export const post_Filter = 'post_Filter';
+export const post_Filter_success = 'post_Filter_success';
+export const post_Filter_error = 'post_Filter_error';
+
+// notificationList
+export const notification_List = 'notification_List';
+export const notification_List_success = 'notification_List_success';
+export const notification_List_error = 'notification_List_error';
+
+// boostPost
+export const boost_Post = 'boost_Post';
+export const boost_Post_success = 'boost_Post_success';
+export const boost_Post_error = 'boost_Post_error';

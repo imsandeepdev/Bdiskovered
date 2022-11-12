@@ -128,7 +128,7 @@ const Menu = (props) => {
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <CustomMenuButton
-            onPress={() => props.navigation.toggleDrawer()}
+            onPress={() => props.navigation.replace('HomeMenu')}
             leftSource={R.images.inActiveHomeIcon}
             title={'Home'}
           />

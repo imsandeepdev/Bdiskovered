@@ -406,6 +406,8 @@ const HomeScreen = (props) => {
       if(response.status=='success')
       {
         setAllVideoPostList(response?.Post)
+          // setSliderValue(0);
+
         setLoading(false);
       }
     }))  
@@ -435,6 +437,9 @@ const HomeScreen = (props) => {
         {
           Toast.show(res.data.message, Toast.SHORT);
           onCallShowAllPost();
+          setTimeout(()=>{
+          setSliderValue(0);
+          },3000)
           setLoading(false);
         }
         else
@@ -811,7 +816,9 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                     ? parseInt(
                                         item.postInfo[0]?.percentage_like,
                                       )
-                                    : sliderValue.toFixed(0)}
+                                    : 
+                                      sliderValue.toFixed(0)
+                                    }
                                 </Text>
                               </ImageBackground>
                             </View>

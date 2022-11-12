@@ -11,11 +11,13 @@ import {
 } from 'react-native';
 import {Header, StoryScreen} from '../../components';
 import R from '../../res/R';
-import {Connect, useDispatch} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {Config} from '../../config';
 import {SwipeListView} from 'react-native-swipe-list-view';
+import { NotificationListRequest } from '../../actions/notification.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
+import Toast from 'react-native-simple-toast';
 
 const notificationList = [
   {
@@ -51,11 +53,34 @@ const notificationList = [
 const NotificationScreen = props => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [notiList, setNotiList] = useState([])
 
   useEffect(() => {
+    onCallNotificationList()
   }, [props.navigation]);
 
  
+const onCallNotificationList = () => {
+  setLoading(true)
+  dispatch(NotificationListRequest(response =>{
+    console.log("NOTIFICATION LIST RES", response)
+    if(response.status == 'success')
+    {
+    Toast.show(response.message, Toast.SHORT);
+
+    setNotiList(response.dataList)
+    setLoading(false);
+
+    }
+    else
+    {
+    Toast.show(response.message, Toast.SHORT)
+    setLoading(false);
+
+    }
+  }))
+}
+
 
   return (
     <StoryScreen loading={loading}>
@@ -77,7 +102,7 @@ const NotificationScreen = props => {
           paddingHorizontal: R.fontSize.Size20,
         }}>
         <SwipeListView
-          data={notificationList}
+          data={notiList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {
             return (
@@ -202,7 +227,7 @@ const NotificationScreen = props => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {'You have notifications'}
+                   {'no have notifications'}
                  </Text>
                </View>
              );
@@ -213,4 +238,9 @@ const NotificationScreen = props => {
   );
 };
 
-export default NotificationScreen;
+const mapStatetoProps = (state, props) => ({
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+export default connect(mapStatetoProps)(NotificationScreen);
