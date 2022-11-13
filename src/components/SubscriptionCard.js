@@ -9,15 +9,17 @@ const SubscriptionCard = (props) => {
       <Pressable
         disabled={props.disabled}
         onPress={props.onPressAdd}
-        style={({pressed})=>[{
-          overflow: 'hidden',
-          paddingBottom: R.fontSize.Size4,
-          paddingRight: R.fontSize.Size4,
-          paddingLeft: R.fontSize.Size2,
-          borderRadius: R.fontSize.Size5,
-          marginTop: props.marginTop,
-          opacity: pressed ? 0.5: 1,
-        }]}>
+        style={({pressed}) => [
+          {
+            overflow: 'hidden',
+            paddingBottom: R.fontSize.Size4,
+            paddingRight: R.fontSize.Size4,
+            paddingLeft: R.fontSize.Size2,
+            borderRadius: R.fontSize.Size5,
+            marginTop: props.marginTop,
+            opacity: pressed ? 0.5 : 1,
+          },
+        ]}>
         <View
           style={{
             borderWidth: props.borderWidth,
@@ -95,6 +97,7 @@ const SubscriptionCard = (props) => {
                 justifyContent: 'center',
               }}>
               <Pressable
+                disabled={props.disabled}
                 onPress={props.onPressAdd}
                 style={({pressed}) => [
                   {

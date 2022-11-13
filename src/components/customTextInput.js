@@ -88,6 +88,7 @@ const CustomTextInput = (props) => {
                   color: R.colors.placeHolderColor,
                 }}
                 placeholder={props.placeholder}
+                placeholderTextColor={R.colors.placeholderTextColor}
                 maxLength={props.maxLength}
                 keyboardType={'number-pad'}
                 value={props.value}

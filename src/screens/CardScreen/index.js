@@ -97,6 +97,8 @@ const CardScreen = props => {
   const cardholderNameRef = React.createRef();
   const cardCvvRef = React.createRef();
   const cardExpiryRef = React.createRef();
+  const [modalType, setModalType] = useState('')
+  const [cardDetail, setCardDetail] = useState({})
 
 
 
@@ -106,7 +108,7 @@ const CardScreen = props => {
     console.log('SUB PLAN ITEM', props.route.params?.SubPlanItem);
     setSubPlanItem(props.route.params?.SubPlanItem);
     console.log('PROFILE DETAILS', props.userProfile);
-    // onCallcardListAPI();
+    onCallcardListAPI();
 
    
   }, [props.navigate]);
@@ -148,16 +150,7 @@ const CardScreen = props => {
         key={index}>
         <View style={{flexDirection: 'row'}}>
           <PaymentIcon type="master" width={R.fontSize.Size50} />
-          {/* <Image
-          source={{
-            uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHwAAAB8CAMAAACcwCSMAAAAY1BMVEX///+wJ2Dds8GsD1euHVv++/zHcpKvI16tGFnbpLmqAFDFao2sAFP05Ovz3+fBXYT58PTlvs3Tkaq9Unzfr8G1Nmu3PW/RjKbrztnLfJrw2eK6SnbPhqL36u/YnLPCY4fnxdFFAJqbAAADwUlEQVRoge1bbXuCMAw0UmyniCCCqEP5/79yiPgClPbYs5R94D5PjpQkvVy7xWLGjBkz/i1CfzpuP/majvzgpdupuKNMqtNU5EdFUuTTcIdKEondNOQbQRWCwxTccc1N8lJMQJ7Jmpy8o3vuq0cNgrNr7iKVT3Kxcd3nTope8GK33KWUb3KZRU7JE0EfUFeX3IeAWggctvjiItvkYuUu546KOlClK+6zkl1ymbkKfSW63FXojmRFGfS5SUonLT5Keoteh+5EVnz1sq0J3YGsKHSLXrOn/OTf+sDJhazIB7mrcuPOuURTZq5ybjkc+D3nWGVFlGrL7AleKbv3TNyVrGDMuTMZA79LWT5ZsTNk2wN8OVdaFr1e+JCHO7pYA+cL/QoEzqVkC3OZPSAuLNyLlam/NJDEs7WdkUVn+uK+vcz45MwBWHQuIefbelsdOJOE3SOBM5VZCMTNNiojZUZrns4aA5lO6puF+2W/mMCl4KCmzqRdt0jgIuHJttOEZZZD2bZh4fZvCDnxiObl0GzWWvQ9C3fPftFBEo9oxZo6z262XQPcYsdSZr7OfumByYpClDqJFQu3D2Wb4LEfIe3k8exmBbLoXLPhsP3yGTjPbpZLaDdj4V4gcyGX+7aERhSeMosg7ZTyaKcjFPh14QMYyx1CIwqdVgjGampkLqyaeukJO7yRDpnWU+9C3PzmNNeCoBzDHZlczhe8SjuFHtIMdmO6IKTUHyPK9a/VRoRkGz2cAOhvx+gsTKk30WDNCN76IPtFJE0wkLaWAtTWkP1C69eIkkM6D5wqIAkhbu8fQF9JQPMUZL/Qp+EWIvagzBBym6deo51AX5AxCpRbCDynu5tBPUlmdqG5+U3TiP+m3GIoeXr2LlRuNtXjI9pJM6LkwK+s5Qaljk47QWm6NpZbiGgnUhpxgLX4xNTioXahtPeRBg6X2zCVG9Qoh27FQBIgGAzdh2TJ0IhiOOJ9Q79qd3Rvv2gx7ARg32xgd4OUOgWDxRr1L5Ho3l3/Y8h+MdUqVG763W2LLLo03TXFWnyq+WyY/WI23KAW72lucZUIt0zNQhBq8Zr5DhEEpJZG7sUZeIbGp4UalN0J+FW5FZB2sl/vhcr1PmaNf2NAfEONqm3OW+8j1AgQJyBDcq7lYGESArrpCNlInxULTTyo4QYddavXIoJNHTxFgU4f32fd/SuNGnRTdBhY1eYjXpUUbLhBI8+zZUAHpWPsXUzF15okXnt2BGP+c8LfBMgT7/lbLhGMcjlD5IkHpus8M2bMmPEv8AMWYDVHA7+S2wAAAABJRU5ErkJggg==',
-          }}
-          style={{
-            height: R.fontSize.Size35,
-            width: R.fontSize.Size35,
-          }}
-          resizeMode={'contain'}
-        /> */}
+
           <View style={{flex: 1, marginLeft: R.fontSize.Size15}}>
             <Text
               style={{
@@ -178,6 +171,24 @@ const CardScreen = props => {
               {getHiddenCardNumber(item?.card_number)}
             </Text>
           </View>
+          <Pressable
+            onPress={() => onCardDeleteAlart(item?._id)}
+            style={({pressed}) => [
+              {
+                paddingHorizontal: R.fontSize.Size6,
+                borderRadius: R.fontSize.Size5,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: R.colors.redColor,
+                opacity: pressed ? 0.5 : 1,
+              },
+            ]}>
+            <Image
+              source={R.images.deleteIcon}
+              style={{height: R.fontSize.Size15, width: R.fontSize.Size15}}
+              resizeMode={'contain'}
+            />
+          </Pressable>
         </View>
         <View style={{flex: 1, justifyContent: 'flex-end'}}>
           <Text
@@ -196,7 +207,7 @@ const CardScreen = props => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <View>
+            <View style={{flex:1}}>
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
@@ -216,28 +227,58 @@ const CardScreen = props => {
                 {item?.holder_name}
               </Text>
             </View>
-            <Pressable
-              onPress={() => onCardDeleteAlart(item?._id)}
-              style={({pressed}) => [
-                {
-                  borderWidth: 1,
-                  padding: R.fontSize.Size5,
-                  borderRadius: R.fontSize.Size5,
-                  backgroundColor: R.colors.redColor,
-                  opacity: pressed ? 0.5 : 1,
-                },
-              ]}>
-              <Image
-                source={R.images.deleteIcon}
-                style={{height: R.fontSize.Size20, width: R.fontSize.Size20}}
-                resizeMode={'contain'}
-              />
-            </Pressable>
+            {/* <View>
+              <View
+              style={{width:R.fontSize.Size50,height:R.fontSize.Size30, borderRadius:R.fontSize.Size20, backgroundColor:R.colors.lightWhite}}
+              >
+
+              </View>
+              </View> */}
+              
+              <Pressable
+                onPress={() => onCallCVVModal(item)}
+                style={({pressed}) => [
+                  {
+                    padding: R.fontSize.Size5,
+                    borderRadius: R.fontSize.Size5,
+                    borderWidth:1,
+                    borderColor:R.colors.white,
+                    // backgroundColor: R.colors.lightWhite,
+                    opacity: pressed ? 0.5 : 1,
+                    alignItems:'center',
+                    justifyContent:'center',
+                    paddingHorizontal:R.fontSize.Size20,
+                    paddingVertical:R.fontSize.Size6
+                  },
+                ]}>
+                  <Text
+                  style={{fontFamily:R.fonts.regular, color:R.colors.lightWhite, fontSize:R.fontSize.Size10}}
+                  >
+                    {'PAY'}
+                  </Text>
+                {/* <Image
+                  source={R.images.checkOrangeIcon}
+                  style={{height: R.fontSize.Size20, width: R.fontSize.Size20}}
+                  resizeMode={'contain'}
+                /> */}
+              </Pressable>
           </View>
         </View>
       </View>
     );
   };
+
+  const onCallCVVModal = (carddetails) => {
+    console.log("CARD DETAILS",carddetails)
+    setCardDetail(carddetails)
+    setModalType('CVV')
+    setModalPicker(true)
+  }
+
+  const onClosedModal = () => {
+    setModalType('')
+    setModalPicker(false)
+  }
 
   const onCardDeleteAlart = card_Id => {
     Alert.alert(
@@ -459,6 +500,85 @@ const CardScreen = props => {
     setModalPicker(true);
   };
 
+  const onCheckCVV = () => {
+    return CommonFunctions.isBlank(cardCVV.trim(),'Please Enter Valid CVV')&&
+    CommonFunctions.isCheckValidLength(cardCVV.trim(),3,'Please Enter Valid CVV')
+  }
+
+  const onCallCVVPayment = () => {
+
+    if (onCheckCVV())
+    {
+    onCallPaymentWithCvv()
+    console.log('SELECT CARD DETAILS', cardDetail);
+    }
+
+  }
+
+  const onCallPaymentWithCvv = () => {
+    let data = {
+      cardNumber: cardDetail?.card_number,
+      month: cardDetail?.expire_month,
+      year: cardDetail?.expire_year,
+      cvv: cardCVV,
+      currency: 'inr',
+      name: cardDetail?.holder_name,
+      email: props.userProfile?.Profile?.email,
+      amount: subPlanItem?.price.replace('USD ', ''),
+      subscription_plan: subPlanItem?.plan_name,
+      plan_type: subPlanItem?.type == 'AddOn' ? 'Custom' : '',
+    };
+    console.log('PAYMENT DETAILS', data);
+    onClosedModal();
+
+      const headerAuth = {
+        token: props.authToken,
+      };
+      const headers = headerAuth;
+
+      var formBody = [];
+      for (var property in data) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(data[property]);
+        formBody.push(encodedKey + '=' + encodedValue);
+      }
+      formBody = formBody.join('&');
+
+      const config = {
+        method: 'POST',
+        headers,
+        body: formBody,
+      };
+
+      const requestUrl = Config.API_URL + Config.stripePaymentAPI;
+
+      console.log('DATA', data);
+      console.log('DATA FORM DATA', config);
+      console.log('REQUEST URL', requestUrl);
+      setLoading(true);
+      fetch(requestUrl, config)
+        .then(res => res.json())
+        .then(response => {
+          console.log(' PAYMENT RESPONSE', response);
+          if (response.status == 'success') {
+            Toast.show(response.message, Toast.SHORT);
+            props.navigation.navigate('PaymentResultScreen', {
+              paymentStatus: 'Success',
+            });
+            setCardCVV('')
+            setLoading(false);
+          } else {
+            Toast.show(response.message, Toast.SHORT);
+            props.navigation.navigate('PaymentResultScreen', {
+              paymentStatus: 'Failed',
+            });
+            setLoading(false);
+          }
+        });
+
+
+  }
+
   return (
     <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
@@ -607,7 +727,7 @@ const CardScreen = props => {
               contentContainerStyle={{flexGrow: 1}}
               showsVerticalScrollIndicator={false}>
               <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <View style={{flex: 1, justifyContent:'center'}}>
+                <View style={{flex: 1, justifyContent: 'center'}}>
                   {/* <View
                   style={{height:screenHeight/2}}
                   /> */}
@@ -627,7 +747,7 @@ const CardScreen = props => {
                         marginHorizontal: R.fontSize.Size20,
                       }}>
                       <Pressable
-                        onPress={() => setModalPicker(false)}
+                        onPress={() => onClosedModal()}
                         style={({pressed}) => [
                           {
                             padding: R.fontSize.Size6,
@@ -644,57 +764,157 @@ const CardScreen = props => {
                         />
                       </Pressable>
                     </View>
-                    <View style={{flex: 1}}>
+                    {modalType != 'CVV' ? (
+                      <View style={{flex: 1}}>
+                        <View
+                          style={{
+                            flex: 1,
+                            marginHorizontal: R.fontSize.Size20,
+                          }}>
+                          <View>
+                            <Text
+                              style={{
+                                fontFamily: R.fonts.regular,
+                                color: R.colors.primaryTextColor,
+                                fontWeight: '400',
+                                fontSize: R.fontSize.Size15,
+                              }}>
+                              {'Card Details'}
+                            </Text>
+                            <Text
+                              style={{
+                                fontFamily: R.fonts.regular,
+                                color: R.colors.primaryTextColor,
+                                fontWeight: '700',
+                                fontSize: R.fontSize.Size18,
+                                marginTop: R.fontSize.Size10,
+                              }}>
+                              {`Enter your card details ( ${cardName} )`}
+                            </Text>
+                          </View>
+                          <View style={{flex: 1, marginTop: R.fontSize.Size30}}>
+                            <CustomCardTextInput
+                              ref={cardNoRef}
+                              value={cardNo}
+                              onChangeText={cardNo => setCardNo(cardNo)}
+                              placeholder={'Enter Card Number'}
+                              keyboardType={'number-pad'}
+                              maxLength={16}
+                              onSubmitEditing={() =>
+                                cardholderNameRef.current?.focus()
+                              }
+                              returnKeyType={'next'}
+                            />
+                            <CustomCardTextInput
+                              ref={cardholderNameRef}
+                              value={cardHolderName}
+                              onChangeText={holderName =>
+                                setCardHolderName(holderName)
+                              }
+                              placeholder={'Enter Card Holder Name'}
+                              maxLength={30}
+                              onSubmitEditing={() =>
+                                cardCvvRef.current?.focus()
+                              }
+                              returnKeyType={'next'}
+                            />
+                            <CustomCardTextInput
+                              ref={cardCvvRef}
+                              value={cardCVV}
+                              onChangeText={cvv => setCardCVV(cvv)}
+                              placeholder={'Enter CVV'}
+                              keyboardType={'number-pad'}
+                              maxLength={3}
+                              onSubmitEditing={() =>
+                                cardExpiryRef.current?.focus()
+                              }
+                              returnKeyType={'next'}
+                            />
+                            <CustomCardTextInput
+                              ref={cardExpiryRef}
+                              value={cardExpiry}
+                              onChangeText={expiryDate =>
+                                expCardDate(expiryDate)
+                              }
+                              placeholder={'MM/YYYY'}
+                              keyboardType={'number-pad'}
+                              maxLength={7}
+                              returnKeyType={'done'}
+                            />
+                            {stripeCardList.length < 3 ? (
+                              <Pressable
+                                onPress={() =>
+                                  setSaveCardStatus(!saveCardStatus)
+                                }
+                                style={({pressed}) => [
+                                  {
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    paddingBottom: R.fontSize.Size10,
+                                    opacity: pressed ? 0.5 : 1,
+                                  },
+                                ]}>
+                                <Image
+                                  source={
+                                    saveCardStatus
+                                      ? R.images.checkTermsIcon
+                                      : R.images.unCheckTermsIcon
+                                  }
+                                  style={{
+                                    height: R.fontSize.Size30,
+                                    width: R.fontSize.Size30,
+                                  }}
+                                  resizeMode={'contain'}
+                                />
+                                <Text
+                                  style={{
+                                    fontFamily: R.fonts.regular,
+                                    color: R.colors.primaryTextColor,
+                                    fontSize: R.fontSize.Size14,
+                                    marginLeft: R.fontSize.Size10,
+                                  }}
+                                  numberOfLines={1}>
+                                  {'Save card for future payments'}
+                                </Text>
+                              </Pressable>
+                            ) : null}
+                          </View>
+                        </View>
+                      </View>
+                    ) : (
                       <View
                         style={{
                           flex: 1,
                           marginHorizontal: R.fontSize.Size20,
                         }}>
-                        <View>
+                        <View style={{paddingBottom: R.fontSize.Size18}}>
                           <Text
                             style={{
+                              textAlign: 'center',
                               fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size14,
                               color: R.colors.primaryTextColor,
-                              fontWeight: '400',
-                              fontSize: R.fontSize.Size15,
+                              fontWeight: '500',
+                              marginVertical: R.fontSize.Size6,
                             }}>
-                            {'Card Details'}
+                            {`${subPlanItem?.plan_name}  |  USD ${subPlanItem?.price}`}
                           </Text>
                           <Text
                             style={{
+                              textAlign: 'center',
                               fontFamily: R.fonts.regular,
-                              color: R.colors.primaryTextColor,
-                              fontWeight: '700',
-                              fontSize: R.fontSize.Size18,
-                              marginTop: R.fontSize.Size10,
+                              fontSize: R.fontSize.Size12,
+                              color: R.colors.placeHolderColor,
+                              fontWeight: '500',
                             }}>
-                            {`Enter your card details ( ${cardName} )`}
+                            {`Enter CVV of card number XXXX XXXX XXXX ${cardDetail?.card_number.slice(
+                              12,
+                              16,
+                            )}`}{' '}
                           </Text>
                         </View>
-                        <View style={{flex: 1, marginTop: R.fontSize.Size30}}>
-                          <CustomCardTextInput
-                            ref={cardNoRef}
-                            value={cardNo}
-                            onChangeText={cardNo => setCardNo(cardNo)}
-                            placeholder={'Enter Card Number'}
-                            keyboardType={'number-pad'}
-                            maxLength={16}
-                            onSubmitEditing={() =>
-                              cardholderNameRef.current?.focus()
-                            }
-                            returnKeyType={'next'}
-                          />
-                          <CustomCardTextInput
-                            ref={cardholderNameRef}
-                            value={cardHolderName}
-                            onChangeText={holderName =>
-                              setCardHolderName(holderName)
-                            }
-                            placeholder={'Enter Card Holder Name'}
-                            maxLength={30}
-                            onSubmitEditing={() => cardCvvRef.current?.focus()}
-                            returnKeyType={'next'}
-                          />
+
+                        <View style={{marginHorizontal: R.fontSize.Size80}}>
                           <CustomCardTextInput
                             ref={cardCvvRef}
                             value={cardCVV}
@@ -702,61 +922,15 @@ const CardScreen = props => {
                             placeholder={'Enter CVV'}
                             keyboardType={'number-pad'}
                             maxLength={3}
-                            onSubmitEditing={() =>
-                              cardExpiryRef.current?.focus()
-                            }
-                            returnKeyType={'next'}
+                            borderWidth={1}
+                            alignItems={'center'}
                           />
-                          <CustomCardTextInput
-                            ref={cardExpiryRef}
-                            value={cardExpiry}
-                            onChangeText={expiryDate => expCardDate(expiryDate)}
-                            placeholder={'MM/YYYY'}
-                            keyboardType={'number-pad'}
-                            maxLength={7}
-                            returnKeyType={'done'}
-                          />
-                          {stripeCardList.length < 3 ? (
-                            <Pressable
-                              onPress={() => setSaveCardStatus(!saveCardStatus)}
-                              style={({pressed}) => [
-                                {
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                  paddingBottom: R.fontSize.Size10,
-                                  opacity: pressed ? 0.5 : 1,
-                                },
-                              ]}>
-                              <Image
-                                source={
-                                  saveCardStatus
-                                    ? R.images.checkTermsIcon
-                                    : R.images.unCheckTermsIcon
-                                }
-                                style={{
-                                  height: R.fontSize.Size30,
-                                  width: R.fontSize.Size30,
-                                }}
-                                resizeMode={'contain'}
-                              />
-                              <Text
-                                style={{
-                                  fontFamily: R.fonts.regular,
-                                  color: R.colors.primaryTextColor,
-                                  fontSize: R.fontSize.Size14,
-                                  marginLeft: R.fontSize.Size10,
-                                }}
-                                numberOfLines={1}>
-                                {'Save card for future payments'}
-                              </Text>
-                            </Pressable>
-                          ) : null}
                         </View>
                       </View>
-                    </View>
+                    )}
                     <View style={{paddingVertical: R.fontSize.Size10}}>
                       <AppButton
-                        onPress={() => onCallPayment()}
+                        onPress={() => modalType != 'CVV' ? onCallPayment() : onCallCVVPayment()}
                         title={'Make Payment'}
                         marginHorizontal={R.fontSize.Size55}
                       />

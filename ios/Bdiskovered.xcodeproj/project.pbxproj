@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* BdiskoveredTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BdiskoveredTests.m */; };
+		0611FED62920336700029FC4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0611FED52920336700029FC4 /* StoreKit.framework */; };
 		062791C6291A20350036D879 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 062791C5291A20350036D879 /* GoogleService-Info.plist */; };
 		0678818128CA5B5000E1A6BC /* Product Sans Bold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0678817D28CA5B5000E1A6BC /* Product Sans Bold Italic.ttf */; };
 		0678818228CA5B5000E1A6BC /* Product Sans Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0678817E28CA5B5000E1A6BC /* Product Sans Bold.ttf */; };
@@ -35,6 +36,7 @@
 		00E356EE1AD99517003FC87E /* BdiskoveredTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BdiskoveredTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* BdiskoveredTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BdiskoveredTests.m; sourceTree = "<group>"; };
+		0611FED52920336700029FC4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		062791C5291A20350036D879 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0678817D28CA5B5000E1A6BC /* Product Sans Bold Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Bold Italic.ttf"; sourceTree = "<group>"; };
 		0678817E28CA5B5000E1A6BC /* Product Sans Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Bold.ttf"; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D403E0368BCAB5AC4BE45D1 /* Pods_Bdiskovered.framework in Frameworks */,
+				0611FED62920336700029FC4 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,6 +131,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0611FED52920336700029FC4 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				15D93D299D966BE3395AECFC /* Pods_Bdiskovered.framework */,
 				190F61634062CB531B6BB226 /* Pods_Bdiskovered_BdiskoveredTests.framework */,

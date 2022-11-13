@@ -34,9 +34,13 @@ const CustomCardTextInput = React.forwardRef((props,ref) => {
               paddingHorizontal: R.fontSize.Size15,
               opacity: pressed ? 0.5 : 1,
               marginBottom: props.marginBottom ?? R.fontSize.Size20,
+              borderWidth:props.borderWidth,
+              borderColor:R.colors.placeholderTextColor,
+              
+              
             },
           ]}>
-          <View style={{flex: 1, justifyContent: 'center'}}>
+          <View style={{flex: 1, justifyContent: 'center',alignItems:props.alignItems}}>
             <TextInput
               ref={ref}
               style={{
@@ -55,6 +59,7 @@ const CustomCardTextInput = React.forwardRef((props,ref) => {
               maxLength={props.maxLength}
               onSubmitEditing={props.onSubmitEditing}
               returnKeyType={props.returnKeyType}
+              
             />
           </View>
           <View>

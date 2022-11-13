@@ -145,30 +145,6 @@ const SignupScreen = (props) => {
         console.log('Error', err)
         Toast.show('Please Connect Internet',Toast.SHORT)
       })
-      ;
-
-      // fetch(`${Config.API_URL}${verifyAPI}`, config)
-      //   .then(res => res.json())
-      //   .then(response => {
-      //     console.log('Check User Name Response', response);
-      //     if (response.status == 'success') {
-      //       onFocusName == 'userName' && setUserNameStatus(true);
-      //       onFocusName == 'userEmail' && setUserMailStatus(true);
-      //       onFocusName == 'userPhone' && setUserPhoneStatus(true);
-      //       onFocusName == 'companyUserName' && setCompanyUserNameStatus(true);
-      //       onFocusName == 'companyMail' && setCompanyMailStatus(true);
-      //       onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
-      //     }
-      //     else
-      //     {
-      //        onFocusName == 'userName' && setUserNameStatus(false);
-      //        onFocusName == 'userEmail' && setUserMailStatus(false);
-      //        onFocusName == 'userPhone' && setUserPhoneStatus(false);
-      //        onFocusName == 'companyUserName' && setCompanyUserNameStatus(false);
-      //        onFocusName == 'companyMail' && setCompanyMailStatus(false);
-      //        onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
-      //     }
-      //   });
     };
 
     
@@ -209,20 +185,7 @@ const SignupScreen = (props) => {
         : setUserPhoneStatus(false);
     };
 
-    // For Business 
-
-    // const onCallSetCompanyUserNameValue = value => {
-    //   console.log('On Focus', onFocusName);
-    //   let userVerifyAPI = Config.verifyUsernameAPI;
-    //   let data = {
-    //     username: value,
-    //   };
-    //   setCompanyName(value);
-    //   value.length > 2
-    //     ? onCheckVerifyAPI(data, userVerifyAPI)
-    //     : setCompanyUserNameStatus(false);
-    // };
-
+   
     const onCallSetCompanyEmailValue = value => {
       console.log('On Focus', onFocusName);
       let mailVerifyAPI = Config.verifyEmailAPI;
@@ -382,46 +345,6 @@ const onCheckDocument = () => {
        )
     }
 
-    // const onCallBusinessSignUpAPI = () => {
-    //   let data = {
-    //     device_token: '2wewe',
-    //     email: companyMail,
-    //     device_ip: deviceId,
-    //     user_type: userType,
-    //     company_name: companyName,
-    //     company_type: companyType,
-    //     license_number: companytradeNo,
-    //     company_registration_id: companyRegId,
-    //     owner_name: companyOwnerName,
-    //     company_address: '',
-    //     document: '',
-    //   };
-
-    //   console.log('DATA',data)
-
-    // }
-
-    //  const onCallUserTailentSignUpAPI = () => {
-    //    let data = {
-    //      username: userName,
-    //      gender: onGender,
-    //      birth: dob,
-    //      email: eMail,
-    //      name: fullName,
-    //      device_token: 'jkjk22',
-    //      device_ip: deviceId,
-    //      user_type: userType,
-    //      device_name: deviceName,
-    //    };
-
-    //   console.log('DATA', data);
-    //   dispatch(SignUpRequest(data, response =>{
-    //     console.log('RESPONSE', response)
-    //   }))
-      
-
-    //  };
-
 
      const onCallForTailentViewerCreateOTP = () => {
        let signupData = {
@@ -494,16 +417,6 @@ const onCheckDocument = () => {
     }
   }
 
-    //  const handleFilePicker = async() => {
-    //     try{
-    //       await FilePicker.pick({
-    //         presentationStyle: 'fullScreen'
-    //       })
-    //     }
-    //     catch(err) {
-    //       console.log('ErrorFilePicker', err)
-    //     }
-    //  }
 
     return (
       <StoryScreen>
@@ -732,13 +645,7 @@ const onCheckDocument = () => {
               </ScrollView>
             </KeyboardAvoidingView>
           </View>
-          {/* <View style={{paddingVertical: R.fontSize.Size16}}>
-            <AppButton
-              onPress={() => onCallSignUpAPI()}
-              marginHorizontal={R.fontSize.Size55}
-              title={'Proceed'}
-            />
-          </View> */}
+         
         </SafeAreaView>
         <Modal
           visible={calenderPicker}

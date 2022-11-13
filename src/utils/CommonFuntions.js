@@ -7,10 +7,10 @@ const CommonFunctions = {
     return Toast.show(msg, Toast.SHORT);
   },
 
-  isFalse: (value,msg) => {
-    if(value == false) {
-        CommonFunctions.showToast(msg);
-        return false;
+  isFalse: (value, msg) => {
+    if (value == false) {
+      CommonFunctions.showToast(msg);
+      return false;
     }
     return true;
   },
@@ -30,7 +30,6 @@ const CommonFunctions = {
     }
     return true;
   },
-  
 
   isEmailValid: (value, msg) => {
     let reg =
@@ -42,6 +41,13 @@ const CommonFunctions = {
   },
   isMobileValid: (value, msg) => {
     if (value.length.toString() < 10) {
+      CommonFunctions.showToast(msg);
+      return false;
+    } else return true;
+  },
+
+  isCheckValidLength: (value,length,msg) => {
+    if (value.length.toString() < length) {
       CommonFunctions.showToast(msg);
       return false;
     } else return true;
