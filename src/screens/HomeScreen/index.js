@@ -297,7 +297,6 @@ const HomeScreen = (props) => {
 
   useEffect(()=>{
     onCallLatitudeLongitude();
-    // onSaveMyUserId()
       let arr = tailentList.map((item, index) => {
         item.selected = false;
         return {...item};
@@ -313,14 +312,7 @@ const HomeScreen = (props) => {
   
   },[props.navigation])
 
-  // const onSaveMyUserId =  async() => {
-   
-  //     await AsyncStorage.setItem(
-  //       'MyUserId',
-  //       props.userProfile?.Profile?.user_id,
-  //     );
-    
-  // }
+  
 
   const onCallLatitudeLongitude = () => { 
     AsyncStorage.getItem('userLongitude', (err, result) => {

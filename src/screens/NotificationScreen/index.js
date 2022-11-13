@@ -18,6 +18,7 @@ import { NotificationListRequest } from '../../actions/notification.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const notificationList = [
   {
@@ -54,11 +55,20 @@ const NotificationScreen = props => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [notiList, setNotiList] = useState([])
+  const [fcmToken, setFcmToken] = useState();
+
 
   useEffect(() => {
     onCallNotificationList()
+    onCallFCMToken()
   }, [props.navigation]);
 
+const onCallFCMToken = async () => {
+  await AsyncStorage.getItem('fcmToken', (err, result) => {
+    console.log('FCM TOKEN', result);
+    setFcmToken(result);
+  });
+};
  
 const onCallNotificationList = () => {
   setLoading(true)
@@ -227,7 +237,12 @@ const onCallNotificationList = () => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {'no have notifications'}
+                   {`no have notifications`}
+                 </Text>
+                 <Text
+                 style={{fontSize:R.fontSize.Size8}}
+                 >
+                  {`MYTOKEN FOR CHECK ${fcmToken}`}
                  </Text>
                </View>
              );
