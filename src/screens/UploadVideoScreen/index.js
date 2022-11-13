@@ -81,6 +81,10 @@ const UploadVideoScreen = props => {
   const [videoPrice, setVideoPrice] = useState('');
   const [videoTypes, setVideoTypes] = useState([])
   const [videoPath, setVideoPath] = useState([])
+  const [selectNegotiable, setSelectNegotiable] = useState(false)
+  const [myLat, setMyLat] = useState('')
+  const [myLong, setMyLong] = useState('');
+
 
   const [videoTypeList, setVideoTypeList] = useState(
     [
@@ -112,6 +116,7 @@ useEffect(()=>{
   });
   console.log('VideoListArray', arr);
   setVideoTypeList(arr)
+  onCallLatitudeLongitude()
 },[props.navigation])
 
 const onCheckUserType = () => {
@@ -120,6 +125,17 @@ const onCheckUserType = () => {
  setCustomModalPicker(false) 
 
 }
+
+ const onCallLatitudeLongitude = () => {
+   AsyncStorage.getItem('userLongitude', (err, result) => {
+     console.log('RESULT LONGITUDE', result);
+     const myArray = result.split(',');
+     console.log('Result1', myArray[0]);
+     console.log('Result2', myArray[1]);
+     setMyLat(myArray[0])
+     setMyLong(myArray[1])
+   });
+ };
 
 const onCallVideoSelect = (item,ind) => {
   const dummyData = videoTypeList;
@@ -141,10 +157,7 @@ const onCallVideoSelect = (item,ind) => {
    setVideoTypeList(arr);
 }
 
-const onCallPayment = () => {
-  setModalPicker(false);
-  props.navigation.navigate('PaymentResultScreen');
-};
+
 
 const onSelectPicker = params => {
   if (params == 'camera') {
@@ -274,11 +287,12 @@ const onCallVideoPostAPI = () => {
   let formdata = new FormData();
 
   formdata.append('title', videoTitle);
-  formdata.append('latitude', '22222');
-  formdata.append('longitude', '22222');
+  formdata.append('latitude', myLat != ''? myLat : '');
+  formdata.append('longitude', myLong != ''? myLong : '');
   formdata.append('caption', videoDesc);
   formdata.append('amount', videoPrice);
   formdata.append('category', videoTypes);
+  formdata.append('negotiable', selectNegotiable ? 'Yes' : 'No');
   formdata.append(
     'post',
     videoPath.uri == null || videoPath?.uri == null
@@ -485,6 +499,29 @@ const onCallDeviceName = () => {
                       placeholder={'Price in USD'}
                       keyboardType={'number-pad'}
                     />
+
+                    <View
+                    style={{marginVertical:R.fontSize.Size10}}
+                    >
+                      <Pressable
+                      onPress={()=> setSelectNegotiable(!selectNegotiable)}
+                      style={({pressed})=>[
+                        {
+                          flexDirection:'row',
+                          alignItems:'center',
+                          opacity: pressed ?0.5:1
+                        }
+                      ]}
+                      >
+                        <Image
+                          source={selectNegotiable ? R.images.checkTermsIcon : R.images.unCheckTermsIcon}
+                          style={{height:R.fontSize.Size24, width:R.fontSize.Size24}}
+                          resizeMode={'contain'}
+                        />
+                        <Text style={{fontFamily:R.fonts.regular, color:R.colors.primaryTextColor, fontSize:R.fontSize.Size14, fontWeight:'500', marginLeft:R.fontSize.Size10}}>{'Negotiable'}</Text>
+                      </Pressable>
+
+                    </View>
 
                     <View style={{marginVertical: R.fontSize.Size8}}>
                       <Text

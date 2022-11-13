@@ -56,7 +56,13 @@ const VideoCard = props => {
           backgroundColor: R.colors.lightBlack,
         }}
       />
-      <View style={{position: 'absolute', top: 0, left: 0, right: 0}}>
+      <View
+        style={{
+          position: 'absolute',
+          top: props.fromTop ?? 0,
+          left: props.fromLeft ?? 0,
+          right: props.fromRight ?? 0,
+        }}>
         <View
           style={{
             marginHorizontal: R.fontSize.Size20,
@@ -215,7 +221,7 @@ const VideoCard = props => {
               {props.usdPrice}
             </Text>
           </View>
-          <View style={{marginRight: R.fontSize.Size10,alignItems:'center'}}>
+          <View style={{marginRight: R.fontSize.Size10, alignItems: 'center'}}>
             {props.shareFiled}
           </View>
         </View>

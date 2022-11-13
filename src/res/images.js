@@ -69,6 +69,7 @@ const images = {
 
   phoneIcon: require('./images/phone_icon.png'),
   helpIconNew: require('./images/help_icon.png'),
+  boostIcon: require('./images/boost_icon.png'),
 
   // Notification
   deleteIcon: require('./images/deleteIcon.png'),

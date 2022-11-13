@@ -33,6 +33,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Styles from './style';
 import CommonFunctions from '../../utils/CommonFuntions';
 import { PostFilterRequest } from '../../actions/postFilter.action';
+import Toast from 'react-native-simple-toast';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
@@ -80,8 +81,10 @@ const SearchScreen = props => {
   const [usdToggle, setUsdToggle] = useState(false);
   const [dropDownList, setDropDownList] = useState([]);
   const [dropDownTitle, setDropDownTitle] = useState('');
+  const [locationList, setLocationList] = useState([]);
   const [modalPicker, setModalPicker] = useState(false);
   const [filterPrice, setFilterPrice] = useState();
+  const [filterLocation, setFilterLocation] = useState();
   const [filterAge, setFilterAge] = useState();
   const [filterRating, setFilterRating] = useState();
   const [location, setLocation] = useState('')
@@ -133,6 +136,15 @@ const SearchScreen = props => {
           {firstValue: '4.5', secondValue: '5.0'},
         ]));
     }
+    {
+      modalType == 'Location' &&
+        (setDropDownTitle(modalType),
+        setLocationList([
+          {firstValue: 'KSA', secondValue: 'Saudi Arabia'},
+          {firstValue: 'UAE', secondValue: 'United Arab Emirates'},
+          {firstValue: 'Egypt', secondValue: 'Egypt'},
+        ]));
+    }
     setModalPicker(true)
   }
 
@@ -147,6 +159,10 @@ const SearchScreen = props => {
     {
       type == 'Rating' && setFilterRating(item);
     }
+    {
+       type == 'Location' && setFilterLocation(item);
+    }
+    setDropDownTitle('')
     setModalPicker(false)
   }
 
@@ -182,20 +198,32 @@ const SearchScreen = props => {
   const onCallfilterApply = () => {
     console.log(filterPrice?.firstValue.trim());
     
+    let CategoryValue = videoTypes.toString()
+    let Category = CategoryValue.replaceAll(',', ', ');
 
     let data = {
-      Startp: filterPrice?.firstValue,
-      PrS: filterPrice?.secondValue,
-      start_age: filterAge?.firstValue,
-      end_age: filterAge?.secondValue,
-      start_rating: filterRating?.firstValue,
-      end_rating: filterRating?.secondValue,
-      Category:  'Music',
-      location: location,
+      start_price: filterPrice?.firstValue != undefined ? filterPrice?.firstValue : '0',
+      end_price: filterPrice?.secondValue != undefined ? filterPrice?.secondValue : '0',
+      start_age: filterAge?.firstValue != undefined ?  filterAge?.firstValue : '0',
+      end_age: filterAge?.secondValue != undefined ?  filterAge?.secondValue : '0',
+      start_rating: filterRating?.firstValue != undefined ? filterRating?.firstValue : '0',
+      end_rating: filterRating?.secondValue != undefined ? filterRating?.secondValue : '0',
+      category:  `${Category}`,
+      location: filterLocation?.firstValue != undefined ? filterLocation?.secondValue: '',
     };
     console.log('Tailent Data List', data);
     dispatch(PostFilterRequest(data, response => {
       console.log("FILTER RES", response)
+      if(response.status == 'success' && response.message != 'No result found')
+      {
+        props.navigation.navigate('FilterVideoScreen', {
+          videoItems: response?.Post,
+        });
+      }
+      else
+      {
+        Toast.show(response.message, Toast.SHORT)
+      }
     }))
     
 
@@ -240,12 +268,21 @@ const SearchScreen = props => {
                       rightIcon={R.images.chevronDown}
                     />
                     <CustomTitle title={'Location'} />
-                    <CustomLineTextInput
+                    <CustomCardLine
+                      onPress={() => onCallOpenModal('Location')}
+                      title={
+                        filterLocation?.firstValue != null
+                          ? `${filterLocation?.firstValue}`
+                          : 'Select Location'
+                      }
+                      rightIcon={R.images.chevronDown}
+                    />
+                    {/* <CustomLineTextInput
                       placeholder={'Location'}
                       value={location}
                       onChangeText={location => setLocation(location)}
                       maxLength={30}
-                    />
+                    /> */}
                     <CustomTitle title={'Age'} />
                     <CustomCardLine
                       onPress={() => onCallOpenModal('Age')}
@@ -370,41 +407,81 @@ const SearchScreen = props => {
                 contentContainerStyle={{flexGrow: 1}}
                 showsVerticalScrollIndicator={false}>
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginHorizontal: R.fontSize.Size20,
-                      marginVertical: R.fontSize.Size20,
-                    }}>
-                    {dropDownList.map((item, index) => {
-                      return (
-                        <Pressable
-                          key={index}
-                          onPress={() => onCallModalClosed(item, dropDownTitle)}
-                          style={({pressed}) => [
-                            {
-                              opacity: pressed ? 0.5 : 1,
-                              height: R.fontSize.Size45,
-                              borderBottomWidth: 1,
-                              borderColor: R.colors.placeholderTextColor,
-                              justifyContent: 'center',
-                            },
-                          ]}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size14,
-                              color: R.colors.primaryTextColor,
-                              fontWeight: '500',
-                            }}>
-                            {`${item?.firstValue}${
-                              item?.secondValue != '' ? ' - ' : '+'
-                            }${item?.secondValue}`}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
-                  </View>
+                  {dropDownTitle != 'Location' ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        marginHorizontal: R.fontSize.Size20,
+                        marginVertical: R.fontSize.Size20,
+                      }}>
+                      {dropDownList.map((item, index) => {
+                        return (
+                          <Pressable
+                            key={index}
+                            onPress={() =>
+                              onCallModalClosed(item, dropDownTitle)
+                            }
+                            style={({pressed}) => [
+                              {
+                                opacity: pressed ? 0.5 : 1,
+                                height: R.fontSize.Size45,
+                                borderBottomWidth: 1,
+                                borderColor: R.colors.placeholderTextColor,
+                                justifyContent: 'center',
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                fontFamily: R.fonts.regular,
+                                fontSize: R.fontSize.Size14,
+                                color: R.colors.primaryTextColor,
+                                fontWeight: '500',
+                              }}>
+                              {`${item?.firstValue}${
+                                item?.secondValue != '' ? ' - ' : '+'
+                              }${item?.secondValue}`}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        flex: 1,
+                        marginHorizontal: R.fontSize.Size20,
+                        marginVertical: R.fontSize.Size20,
+                      }}>
+                      {locationList.map((item, index) => {
+                        return (
+                          <Pressable
+                            key={index}
+                            onPress={() =>
+                              onCallModalClosed(item, dropDownTitle)
+                            }
+                            style={({pressed}) => [
+                              {
+                                opacity: pressed ? 0.5 : 1,
+                                height: R.fontSize.Size45,
+                                borderBottomWidth: 1,
+                                borderColor: R.colors.placeholderTextColor,
+                                justifyContent: 'center',
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                fontFamily: R.fonts.regular,
+                                fontSize: R.fontSize.Size14,
+                                color: R.colors.primaryTextColor,
+                                fontWeight: '500',
+                              }}>
+                              {`${item?.firstValue}`}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  )}
                 </TouchableWithoutFeedback>
               </ScrollView>
             </KeyboardAvoidingView>

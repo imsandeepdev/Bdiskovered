@@ -666,7 +666,7 @@ const SubscriptionScreen = props => {
                       textAlign: 'center',
                       marginTop: R.fontSize.Size15,
                     }}>
-                    {`Get connections and boost to grow\n your reach beyond whatyou ever have`}
+                    {`Get connections and Boosts \n to expand your reach.`}
                   </Text>
                   <View
                     style={{

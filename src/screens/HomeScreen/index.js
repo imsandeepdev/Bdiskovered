@@ -933,73 +933,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       flex: 1,
                       marginHorizontal: R.fontSize.Size20,
                     }}>
-                    {modalType == 'filterModal' ? (
-                      <View style={{flex: 1}}>
-                        <Text style={Styles.modalFilterText}>{'Filter'}</Text>
-                        <View
-                          style={{flex: 1, marginVertical: R.fontSize.Size20}}>
-                          <CustomCardLine
-                            onPress={() => console.log('down')}
-                            title={'35 - 50 $'}
-                            rightIcon={R.images.chevronDown}
-                          />
-                          <CustomLineTextInput placeholder={'Location'} />
-                          <CustomCardLine
-                            onPress={() => console.log('down')}
-                            title={'Age 25 - 35'}
-                            rightIcon={R.images.chevronDown}
-                          />
-                          <View
-                            style={{
-                              flexWrap: 'wrap',
-                              flexDirection: 'row',
-                              paddingVertical: R.fontSize.Size10,
-                            }}>
-                            {tailentList.map((item, index) => {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    onCallSelectedTailent(item, index)
-                                  }
-                                  key={index}
-                                  style={({pressed}) => [
-                                    {
-                                      marginTop: R.fontSize.Size6,
-                                      paddingHorizontal: R.fontSize.Size15,
-                                      paddingVertical: R.fontSize.Size5,
-                                      borderRadius: R.fontSize.Size8,
-                                      backgroundColor: item.selected
-                                        ? R.colors.appColor
-                                        : R.colors.placeholderTextColor,
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      marginRight: R.fontSize.Size10,
-                                      opacity: pressed ? 0.5 : 1,
-                                    },
-                                  ]}>
-                                  <Text
-                                    style={{
-                                      fontFamily: R.fonts.regular,
-                                      color: item.selected
-                                        ? R.colors.white
-                                        : R.colors.placeHolderColor,
-                                      fontSize: R.fontSize.Size14,
-                                      fontWeight: '400',
-                                    }}>
-                                    {item?.name}
-                                  </Text>
-                                </Pressable>
-                              );
-                            })}
-                          </View>
-                          <CustomCardLine
-                            onPress={() => console.log('down')}
-                            title={'Above 3.5 Stars'}
-                            rightIcon={R.images.chevronDown}
-                          />
-                        </View>
-                      </View>
-                    ) : (
+                     
                       <View style={{flex: 1}}>
                         <View
                           style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -1059,11 +993,9 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                   {item}
                                 </Text>
                               </View>
-                            );
+                            )
                           })}
                         </View>
-
-
                         <View style={{flexWrap:'wrap', flexDirection:'row',marginLeft:-R.fontSize.Size14, marginTop:R.fontSize.Size20}}>
                           {videoModalAvailableDetail.map((item, index) => {
                             return (
@@ -1081,20 +1013,15 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           })}
                         </View>
                       </View>
-                    )}
                   </View>
                 </TouchableWithoutFeedback>
               </ScrollView>
             </KeyboardAvoidingView>
-
             <View style={{paddingVertical: R.fontSize.Size10}}>
               <AppButton
-                onPress={() => {
-                  modalType == 'filterModal'
-                    ? console.log('Filter')
-                    : onCallConnectNow(videoModalDetail?.profileID);
+                onPress={() => {onCallConnectNow(videoModalDetail?.profileID);
                 }}
-                title={modalType == 'filterModal' ? 'Apply' : 'Connect'}
+                title={'Connect'}
                 marginHorizontal={R.fontSize.Size55}
               />
             </View>

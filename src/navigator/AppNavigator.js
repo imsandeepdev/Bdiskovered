@@ -36,6 +36,7 @@ import ConnectionScreen from '../screens/ConnectionScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import ChatScreen from '../screens/ChatScreen';
 import CardDetailScreen from '../screens/CardDetailScreen';
+import FilterVideoScreen from '../screens/FilterVideoScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -196,6 +197,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="CardDetailScreen"
           component={CardDetailScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="FilterVideoScreen"
+          component={FilterVideoScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
