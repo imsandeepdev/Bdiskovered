@@ -482,7 +482,7 @@ const HomeScreen = (props) => {
   const onCallConnectNow = (profileID) => 
   {
     setModalPicker(false)
-     props.userProfile.Profile?.subscription != 0
+     props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
          })
@@ -491,8 +491,8 @@ const HomeScreen = (props) => {
 
 
   const onPressOrangeAppIcon = (profileID) => {
-    console.log('PROFILESUB', props.userProfile.Profile?.subscription);
-    props.userProfile.Profile?.subscription != 0
+    console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
+    props.userProfile?.Profile?.subscription != 0
       ? props.navigation.navigate('ConnectedProfileScreen', {
           profileId: profileID,
         })

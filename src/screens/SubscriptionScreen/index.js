@@ -94,8 +94,8 @@ const SubscriptionScreen = props => {
 
   const onCallCheckSubActive = () => {
     setLoading(true)
-    console.log('SUB STATUS ON SCREEN', props.userProfile.Profile?.subscription);
-    props.userProfile.Profile?.subscription != 0 ?
+    console.log('SUB STATUS ON SCREEN', props.userProfile?.Profile?.subscription);
+    props.userProfile?.Profile?.subscription != 0 ?
     setCheckSubActive(true) : setCheckSubActive(false)
     setLoading(false)
   }
@@ -185,7 +185,7 @@ const SubscriptionScreen = props => {
   const onCheckModal = (item) => {
     console.log("ADD ON PLAN",item)
     setAddOnPlanDetail(item)
-     props.userProfile.Profile?.subscription != 0 ?
+     props.userProfile?.Profile?.subscription != 0 ?
      setCustomModalPicker(true) :
      setAlartModalPicker(true)
   }

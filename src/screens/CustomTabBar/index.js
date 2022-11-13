@@ -156,7 +156,7 @@ const CustomTabBar = props => {
                 source={{
                   uri: `${
                     Config.API_URL
-                  }${props.userProfile.Profile?.avatar.slice(22)}`,
+                  }${props.userProfile?.Profile?.avatar.slice(22)}`,
                 }}
                 resizeMode={'cover'}
                 style={{

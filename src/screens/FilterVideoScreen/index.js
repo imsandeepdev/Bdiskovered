@@ -220,7 +220,17 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
 
    const onCallConnectNow = profileID => {
      setModalPicker(false);
-     props.userProfile.Profile?.subscription != 0
+     props.userProfile?.Profile?.subscription != 0
+       ? props.navigation.navigate('ConnectedProfileScreen', {
+           profileId: profileID,
+         })
+       : props.navigation.navigate('SubscriptionScreen');
+   };
+
+
+   const onPressOrangeAppIcon = profileID => {
+     console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
+     props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
          })
@@ -639,4 +649,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
   );
 };
 
-export default FilterVideoScreen;
+const mapStateToProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
+  authToken: state.auth.authToken,
+  userType: state.auth.userType,
+});
+
+export default connect(mapStateToProps) (FilterVideoScreen);
