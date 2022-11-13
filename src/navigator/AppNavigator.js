@@ -37,6 +37,8 @@ import NotificationScreen from '../screens/NotificationScreen';
 import ChatScreen from '../screens/ChatScreen';
 import CardDetailScreen from '../screens/CardDetailScreen';
 import FilterVideoScreen from '../screens/FilterVideoScreen';
+import ParticularVideoScreen from '../screens/ParticularVideoScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -54,6 +56,7 @@ const AppNavigator = props => {
     {
       dispatch(GetProfileDetailsRequest(response=>{
         console.log("PROFILE DETAIL ON APP NAVIGATOR",response)
+        AsyncStorage.setItem('MyUserId', response?.Profile?.user_id);
       }))
     }
     console.log(props.authToken)
@@ -202,6 +205,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="FilterVideoScreen"
           component={FilterVideoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ParticularVideoScreen"
+          component={ParticularVideoScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

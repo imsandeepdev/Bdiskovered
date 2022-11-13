@@ -18,6 +18,7 @@ import { Config } from '../../config';
 
 const screenWidth = Dimensions.get('screen').width;
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const persnalDetails = [
@@ -150,6 +151,7 @@ const ConnectedProfileScreen = props => {
   const [profilePic, setProfilePic] = useState([]);
 
   useEffect(()=>{
+    console.log('USER ID', props.route.params?.myUserId);
 
     onCallConnectTailentProfileAPI(props.route.params?.profileId);
 
@@ -184,6 +186,16 @@ const ConnectedProfileScreen = props => {
     }))
   }
 
+  const onCallMyUserId = () => {
+    AsyncStorage.getItem('MyUserId', (err, result) => {
+      console.log("MY USER ID",result)
+       props.navigation.navigate('ChatScreen', {
+         tailentUserId: profileDetails?.user_id,
+         MyUserId: result,
+         userName: profileDetails?.name,
+       });
+    })
+  }
 
 
   return (
@@ -230,9 +242,9 @@ const ConnectedProfileScreen = props => {
                 }}>
                 <View
                   style={{
-                    height: R.fontSize.Size50,
-                    width: R.fontSize.Size50,
-                    borderRadius: R.fontSize.Size25,
+                    height: R.fontSize.Size60,
+                    width: R.fontSize.Size60,
+                    borderRadius: R.fontSize.Size35,
                     overflow: 'hidden',
                     borderWidth: 1,
                     borderColor: R.colors.placeholderTextColor,
@@ -242,8 +254,8 @@ const ConnectedProfileScreen = props => {
                       uri: profilePic?.path,
                     }}
                     style={{
-                      height: R.fontSize.Size50,
-                      width: R.fontSize.Size50,
+                      height: R.fontSize.Size60,
+                      width: R.fontSize.Size60,
                     }}
                     resizeMode={'cover'}
                   />
@@ -296,6 +308,8 @@ const ConnectedProfileScreen = props => {
             </View>
             <View style={{marginTop: R.fontSize.Size10}}>
               <Pressable
+                onPress={
+                  () => onCallMyUserId()}
                 style={({pressed}) => [
                   {
                     backgroundColor: R.colors.appColor,
@@ -329,19 +343,19 @@ const ConnectedProfileScreen = props => {
                 </Text>
               </Pressable>
             </View>
-            {
-              profileDetails?.bio !='' &&
+            {profileDetails?.bio != '' && (
               <View style={{marginTop: R.fontSize.Size20}}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size12,
-                  fontWeight: '400',
-                  color: R.colors.primaryTextColor,
-                }}>
-                {`${profileDetails?.bio}`}
-              </Text>
-            </View>}
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size12,
+                    fontWeight: '400',
+                    color: R.colors.primaryTextColor,
+                  }}>
+                  {`${profileDetails?.bio}`}
+                </Text>
+              </View>
+            )}
 
             <View
               style={{
@@ -466,9 +480,9 @@ const ConnectedProfileScreen = props => {
                   <View key={index}>
                     <Pressable
                       onPress={() =>
-                        props.navigation.navigate('TailentVideoList', {
-                          videoItems: tailentPostVideo,
-                          playIndex: index,
+                        props.navigation.navigate('ParticularVideoScreen', {
+                          videoPostId: item?._id,
+                          from: 'TailentProfileScreen',
                         })
                       }
                       style={({pressed}) => [
@@ -507,6 +521,7 @@ const ConnectedProfileScreen = props => {
 const mapStatetoProps = (state, props) => ({
   authToken: state.auth.authToken,
   userType: state.auth.userType,
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
 });
 
 export default connect(mapStatetoProps) (ConnectedProfileScreen);

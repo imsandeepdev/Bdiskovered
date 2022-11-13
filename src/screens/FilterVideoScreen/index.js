@@ -138,7 +138,7 @@ const FilterVideoScreen = props => {
 
   useEffect(() => {
     setLoading(true);
-    console.log('VIDEO LIST', props.route.params?.videoItems);
+    console.log('MY PROFILE DETAILS USER ID', props.userProfile?.Profile?.user_id);
     setVideoList(props.route.params?.videoItems);
     setLoading(false);
   }, [props.navigation]);
@@ -223,19 +223,21 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
+           myUserId: props.userProfile?.Profile?.user_id,
          })
        : props.navigation.navigate('SubscriptionScreen');
    };
 
 
-   const onPressOrangeAppIcon = profileID => {
-     console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
-     props.userProfile?.Profile?.subscription != 0
-       ? props.navigation.navigate('ConnectedProfileScreen', {
-           profileId: profileID,
-         })
-       : props.navigation.navigate('SubscriptionScreen');
-   };
+    const onPressOrangeAppIcon = profileID => {
+      console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
+      props.userProfile?.Profile?.subscription != 0
+        ? props.navigation.navigate('ConnectedProfileScreen', {
+            profileId: profileID,
+            myUserId: props.userProfile?.Profile?.user_id,
+          })
+        : props.navigation.navigate('SubscriptionScreen');
+    };
 
   return (
     <View style={{flex: 1}}>

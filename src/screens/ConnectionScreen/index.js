@@ -24,7 +24,7 @@ const ConnectionScreen = props => {
   const [myUserId, setMyUserId] = useState('');
 
   useEffect(() => {
-    console.log('USER ID', props.userProfile);
+    console.log('USER ID', props.userProfile?.Profile?.user_id);
     onCallConnectedUserAPI();
   }, [props.navigation]);
 
@@ -72,9 +72,9 @@ const ConnectionScreen = props => {
                 key={index}
                 onPress={() =>
                   props.navigation.navigate('ChatScreen', {
-                    tailentUserId: item?._id,
+                    tailentUserId: item?.user_id,
                     MyUserId: myUserId,
-                    userName: item?.name
+                    userName: item?.name,
                   })
                 }
                 style={({pressed}) => [

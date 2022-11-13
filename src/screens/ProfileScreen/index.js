@@ -1007,11 +1007,19 @@ const [companyAddress, setCompanyAddress] = useState('');
                     return (
                       <View key={index}>
                         <Pressable
-                          onPress={() =>
-                            props.navigation.navigate('TailentVideoList', {
-                              videoItems: tailentPostVideo,
-                              playIndex: index,
-                            })
+                          onPress={
+                            () =>
+                              props.navigation.navigate(
+                                'ParticularVideoScreen',
+                                {
+                                  videoPostId: item?._id,
+                                  from:'ProfileScreen'
+                                },
+                              )
+                            // props.navigation.navigate('TailentVideoList', {
+                            //   videoItems: tailentPostVideo,
+                            //   playIndex: index,
+                            // })
                           }
                           style={({pressed}) => [
                             {

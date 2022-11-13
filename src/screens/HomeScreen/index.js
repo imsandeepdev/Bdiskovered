@@ -297,6 +297,7 @@ const HomeScreen = (props) => {
 
   useEffect(()=>{
     onCallLatitudeLongitude();
+    // onSaveMyUserId()
       let arr = tailentList.map((item, index) => {
         item.selected = false;
         return {...item};
@@ -312,6 +313,14 @@ const HomeScreen = (props) => {
   
   },[props.navigation])
 
+  // const onSaveMyUserId =  async() => {
+   
+  //     await AsyncStorage.setItem(
+  //       'MyUserId',
+  //       props.userProfile?.Profile?.user_id,
+  //     );
+    
+  // }
 
   const onCallLatitudeLongitude = () => { 
     AsyncStorage.getItem('userLongitude', (err, result) => {
@@ -485,6 +494,7 @@ const HomeScreen = (props) => {
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
+           myUserId: props.userProfile?.Profile?.user_id,
          })
        : props.navigation.navigate('SubscriptionScreen');
   }
@@ -495,6 +505,7 @@ const HomeScreen = (props) => {
     props.userProfile?.Profile?.subscription != 0
       ? props.navigation.navigate('ConnectedProfileScreen', {
           profileId: profileID,
+          myUserId: props.userProfile?.Profile?.user_id,
         })
       : props.navigation.navigate('SubscriptionScreen');
   }

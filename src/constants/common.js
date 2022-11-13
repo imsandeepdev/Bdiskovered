@@ -141,3 +141,8 @@ export const notification_List_error = 'notification_List_error';
 export const boost_Post = 'boost_Post';
 export const boost_Post_success = 'boost_Post_success';
 export const boost_Post_error = 'boost_Post_error';
+
+// playParticularVideo
+export const playParticularVideo = 'playParticularVideo';
+export const playParticularVideo_success = 'playParticularVideo_success';
+export const playParticularVideo_error = 'playParticularVideo_error';

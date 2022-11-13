@@ -28,7 +28,10 @@ const ChatScreen = props => {
     //     },
     //   },
     // ]);
-    // getAllMessages()
+    console.log('MY USER ID', props.route.params?.MyUserId);
+    console.log('TAILENT USER ID', props.route.params?.tailentUserId);
+
+    getAllMessages()
     getOnSnapMessage()
   }, [props.navigation]);
 
@@ -41,7 +44,7 @@ const ChatScreen = props => {
          : props.route.params?.tailentUserId +
            '-' +
            props.route.params?.MyUserId;
-     const messageRef = firestore().collection('chatrooms')
+       const messageRef = firestore().collection('chatrooms')
        .doc(docid)
        .collection('message')
        .orderBy('createdAt', 'desc')
