@@ -165,6 +165,8 @@ const [companyType, setCompanyType] = useState('');
 const [companyEmail, setCompanyEmail] = useState('');
 const [companyContact, setCompanyContact] = useState('');
 const [companyAddress, setCompanyAddress] = useState('');
+const [comLicenceNo, setComLicenceNo] = useState('');
+const [comOwnerName, setComOwnerName] = useState('');
 
 
   useEffect(()=>{
@@ -219,6 +221,8 @@ const [companyAddress, setCompanyAddress] = useState('');
         setCompanyType(response.Profile?.company_type);
         setCompanyEmail(response.Profile?.email);
         setCompanyContact(response.Profile?.mobile);
+        setComLicenceNo(response.Profile?.license_number);
+        setComOwnerName(response.Profile?.owner_name);
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace(
             'http://localhost:8080/',
@@ -346,6 +350,8 @@ const [companyAddress, setCompanyAddress] = useState('');
       formData.append('company_email', companyEmail);
       formData.append('company_contact', companyContact);
       formData.append('company_address', companyAddress);
+      formData.append('license_number', comLicenceNo);
+      formData.append('owner_name', comOwnerName);
       formData.append(
         'avatar',
         profilePic.path == null ||
@@ -369,6 +375,8 @@ const [companyAddress, setCompanyAddress] = useState('');
             setCompanyType(response.Profile?.company_type);
             setCompanyEmail(response.Profile?.email);
             setCompanyContact(response.Profile?.mobile);
+            setComLicenceNo(response.Profile?.license_number);
+            setComOwnerName(response.Profile?.owner_name);
             setProfilePic({
               path: `${
                 Config.API_URL
@@ -595,17 +603,23 @@ const [companyAddress, setCompanyAddress] = useState('');
                     }}>
                     <CustomCardLine disabled={true} title={companyName} />
 
+                    <CustomCardLine disabled={true} title={companyEmail} />
                     <CustomLineTextInput
                       value={companyType}
                       onChangeText={cType => setCompanyType(cType)}
                       placeholder={'Company Type'}
                     />
-                    <CustomCardLine disabled={true} title={companyEmail} />
-                    {/* <CustomLineTextInput
-                    value={companyEmail}
-                    onChangeText={cEmail => setCompanyEmail(cEmail)}
-                    placeholder={'Company Email'}
-                  /> */}
+                    <CustomLineTextInput
+                      value={comLicenceNo}
+                      onChangeText={LicNo => setComLicenceNo(LicNo)}
+                      placeholder={'Company Licence Number'}
+                    />
+                    <CustomLineTextInput
+                      value={comOwnerName}
+                      onChangeText={ownerName => setComOwnerName(ownerName)}
+                      placeholder={'Company Owner Name'}
+                    />
+
                     <CustomCardLine disabled={true} title={companyContact} />
 
                     <CustomLineTextInput
@@ -660,7 +674,7 @@ const [companyAddress, setCompanyAddress] = useState('');
 
                     <CustomCardLine disabled={true} title={mobNo} />
 
-                    <View
+                    {/* <View
                       style={{
                         backgroundColor: R.colors.white,
                         borderBottomWidth: 1,
@@ -684,7 +698,7 @@ const [companyAddress, setCompanyAddress] = useState('');
                         numberOfLines={3}
                         multiline={true}
                       />
-                    </View>
+                    </View> */}
 
                     {/* <CustomLineTextInput
                       value={userBio}
@@ -1013,7 +1027,7 @@ const [companyAddress, setCompanyAddress] = useState('');
                                 'ParticularVideoScreen',
                                 {
                                   videoPostId: item?._id,
-                                  from:'ProfileScreen'
+                                  from: 'ProfileScreen',
                                 },
                               )
                             // props.navigation.navigate('TailentVideoList', {

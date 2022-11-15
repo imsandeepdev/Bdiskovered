@@ -97,7 +97,6 @@ const SearchScreen = props => {
     modalType == 'Price' &&
       (setDropDownTitle(modalType),
       setDropDownList([
-        {firstValue: 'USD 0', secondValue: 'USD 0'},
         {firstValue: 'USD 0', secondValue: 'USD 10'},
         {firstValue: 'USD 10', secondValue: 'USD 50'},
         {firstValue: 'USD 50', secondValue: 'USD 100'},
@@ -111,7 +110,6 @@ const SearchScreen = props => {
       modalType == 'Age' &&
         (setDropDownTitle(modalType),
         setDropDownList([
-          {firstValue: '0', secondValue: '0'},
           {firstValue: '16', secondValue: '24'},
           {firstValue: '25', secondValue: '28'},
           {firstValue: '29', secondValue: '35'},
@@ -124,7 +122,6 @@ const SearchScreen = props => {
       modalType == 'Rating' &&
         (setDropDownTitle(modalType),
         setDropDownList([
-          {firstValue: '0.0', secondValue: '0.0'},
           {firstValue: '0.0', secondValue: '1.0'},
           {firstValue: '1.0', secondValue: '1.5'},
           {firstValue: '1.5', secondValue: '2.0'},

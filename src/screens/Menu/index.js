@@ -127,11 +127,12 @@ const Menu = (props) => {
           />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
-          <CustomMenuButton
+          {props.userType == 'Business' &&
+            <CustomMenuButton
             onPress={() => props.navigation.replace('HomeMenu')}
             leftSource={R.images.inActiveHomeIcon}
             title={'Home'}
-          />
+          />}
           <CustomMenuButton
             onPress={() => props.navigation.navigate('ConnectionScreen')}
             leftSource={R.images.connectionsIcon}

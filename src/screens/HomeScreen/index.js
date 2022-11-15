@@ -32,11 +32,13 @@ import axios from 'axios';
 import moment from 'moment';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
+import DeviceInfo from 'react-native-device-info';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
 import Geocoder from 'react-native-geocoder-reborn';
 import Share from 'react-native-share';
+import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
 
 const persnalDetails = [
@@ -275,6 +277,8 @@ const HomeScreen = (props) => {
   const [userLat, setUserLat] = useState('');
   const [userLong, setUserLong] = useState('');
   const [tailentLocation, setTailentLocation] = useState('');
+  const [deviceName, setDeviceName] = useState('')
+  const [fullScreenDevice, setFullScreenDevice] = useState(false)
 
 
 
@@ -297,6 +301,8 @@ const HomeScreen = (props) => {
 
   useEffect(()=>{
     onCallLatitudeLongitude();
+    onCallProfile();
+    onCallDeviceName();
       let arr = tailentList.map((item, index) => {
         item.selected = false;
         return {...item};
@@ -312,7 +318,23 @@ const HomeScreen = (props) => {
   
   },[props.navigation])
 
-  
+  const onCallDeviceName = () => {
+     DeviceInfo.getDeviceName().then(deviceName => {
+       setDeviceName(deviceName);
+       console.log('DEVICE NAME', deviceName);
+       
+       if(deviceName == 'iPhone 8' || 'iPhone 7' || 'iPhone X' || 'iPhone XS')
+       {
+        setFullScreenDevice(false)
+        console.log("NOT FULL DEVICE")
+       }
+       else
+       {
+        setFullScreenDevice(true);
+        console.log('FULL DEVICE');
+       }
+     });
+  }
 
   const onCallLatitudeLongitude = () => { 
     AsyncStorage.getItem('userLongitude', (err, result) => {
@@ -322,6 +344,14 @@ const HomeScreen = (props) => {
       console.log('Result2', myArray[1]);
       onCallLatLong(myArray[0], myArray[1]);
     });
+  }
+
+  const onCallProfile = () => {
+   dispatch(
+     GetProfileDetailsRequest(response => {
+       console.log('PROFILE DETAIL ON APP NAVIGATOR', response);
+     }),
+   );
   }
 
   const onCallLatLong = (lat,long) => {
@@ -340,6 +370,8 @@ const HomeScreen = (props) => {
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
     onCallShowAllPost();
+    onCallProfile();
+    onCallDeviceName();
   };
 
    const onCallSelectedTailent = (item, ind) => {
@@ -551,103 +583,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
             vertical={true}
             style={{flex: 1}}
             nestedScrollEnabled
-            // ListHeaderComponent={
-            //   <View>
-            //     <CustomHeading
-            //       leftTitle={'Connected User'}
-            //       buttonTitle={'View All'}
-            //       rightOnPress={() =>
-            //         props.navigation.navigate('UserViewAllScreen')
-            //       }
-            //     />
-            //     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            //       <View
-            //         style={{
-            //           marginTop: R.fontSize.Size30,
-            //           flexDirection: 'row',
-            //           marginHorizontal: R.fontSize.Size20,
-            //         }}>
-            //         {ConnectedUsers.map((item, index) => {
-            //           return (
-            //             <Pressable
-            //               key={index}
-            //               onPress={() =>
-            //                 props.navigation.navigate('ConnectedProfileScreen')
-            //               }
-            //               style={({pressed}) => [
-            //                 Styles.connectedUserMainView,
-            //                 {
-            //                   opacity: pressed ? 0.5 : 1,
-            //                 },
-            //               ]}>
-            //               <View style={Styles.connectedUserView}>
-            //                 <Image
-            //                   source={{
-            //                     uri: item?.source,
-            //                   }}
-            //                   style={Styles.connectedUserImage}
-            //                   resizeMode={'cover'}
-            //                 />
-            //               </View>
-            //               <Text
-            //                 style={Styles.connectedUserText}
-            //                 numberOfLines={1}>
-            //                 {item?.name}
-            //               </Text>
-            //             </Pressable>
-            //           );
-            //         })}
-            //       </View>
-            //     </ScrollView>
-            //     <CustomHeading
-            //       leftTitle={'Most Popular'}
-            //       buttonTitle={'View All'}
-            //       rightOnPress={() => props.navigation.navigate('PopularViewAllScreen')}
-            //     />
-
-            //     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            //       <View
-            //         style={{
-            //           marginTop: R.fontSize.Size30,
-            //           flexDirection: 'row',
-            //           marginHorizontal: R.fontSize.Size20,
-            //           alignItems:'center'
-            //         }}>
-            //         {allVideoPostList.map((item, index) => {
-            //           return (
-            //             <View key={index} style={Styles.connectedUserMainView}>
-            //               <View style={Styles.mostPopularView}>
-            //                 <VideoCard
-            //                   videoUrl={`${Config.API_URL}${item?.post.slice(
-            //                     22,
-            //                   )}`}
-            //                   paused={true}
-            //                 />
-            //               </View>
-            //               <View style={Styles.mostPopularBottomView}>
-            //                 <Image
-            //                   source={{
-            //                     uri: `${Config.API_URL}${item?.avatar.slice(
-            //                       22,
-            //                     )}`,
-            //                   }}
-            //                   style={Styles.mostPopularBottomImage}
-            //                   resizeMode={'cover'}
-            //                 />
-            //                 <Text
-            //                   style={Styles.mostPopularBottomText}
-            //                   numberOfLines={1}>
-            //                   {item?.name}
-            //                 </Text>
-            //               </View>
-            //             </View>
-            //           );
-            //         })}
-            //       </View>
-            //     </ScrollView>
-            //     <CustomHeading leftTitle={'Suggested Post'} />
-            //   </View>
-            // }
+            
             data={allVideoPostList}
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
@@ -655,17 +591,6 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
 
 
               onCallUserLocation(item?.latitude, item?.longitude);
-              // var NY = {
-              //   lat: parseInt(item?.latitude),
-              //   lng: parseInt(item?.longitude),
-              // };
-              // Geocoder.geocodePosition(NY)
-              //   .then(res => {
-              //     console.log('response', res);
-              //     setTailentLocation(`${res[0]?.locality}, ${res[0]?.country}`);
-              //   })
-              //   .catch(err => console.log('ERROR', err));
-
               return (
                 <View
                   key={index}
@@ -674,7 +599,11 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                   }}>
                   <View
                     style={{
-                      height: screenHeight - R.fontSize.Size279,
+                      height:
+                        deviceName ==
+                        ('iPhone 8' || 'iPhone 7' || 'iPhone X' || 'iPhone XS')
+                          ? screenHeight - R.fontSize.Size254
+                          : screenHeight - R.fontSize.Size279,
                     }}>
                     <VideoCard
                       poster={`${Config.API_URL}${item?.avatar.replace(
@@ -819,9 +748,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                     ? parseInt(
                                         item.postInfo[0]?.percentage_like,
                                       )
-                                    : 
-                                      sliderValue.toFixed(0)
-                                    }
+                                    : sliderValue.toFixed(0)}
                                 </Text>
                               </ImageBackground>
                             </View>
@@ -860,7 +787,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
                             {item?.total_rating != ''
-                              ? `${item?.total_rating}%`
+                              ? `${(
+                                  item?.total_rating /
+                                  (item?.total_likes * 20)
+                                ).toFixed(1)}%`
                               : '0%'}
                           </Text>
                         </Text>

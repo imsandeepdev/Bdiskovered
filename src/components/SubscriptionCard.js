@@ -60,6 +60,24 @@ const SubscriptionCard = (props) => {
                 }}>
                 {props.price}
               </Text>
+              {
+                props.DotValue &&
+                <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  fontSize: R.fontSize.Size22,
+                  color: R.colors.primaryTextColor,
+                  fontWeight: '700',
+                }}>
+                {'.'}
+                <Text
+                  style={{
+                    color: R.colors.appColor,
+                  }}>
+                  {'.'}
+                </Text>
+                <Text>{'.'}</Text>
+              </Text>}
               <Text
                 style={{
                   marginHorizontal: R.fontSize.Size5,

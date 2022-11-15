@@ -220,12 +220,12 @@ const SubscriptionScreen = props => {
               marginHorizontal: R.fontSize.Size20,
             }}>
             <View style={{flex: 1}}>
-              {getSubDesc.length != 0 && (
+              {props.userProfile?.Profile?.subscription != 0 && (
                 <View style={{marginTop: R.fontSize.Size45}}>
                   <Text
                     style={{
                       fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size16,
+                      fontSize: R.fontSize.Size18,
                       fontWeight: '700',
                       color: R.colors.primaryTextColor,
                     }}>
@@ -486,7 +486,7 @@ const SubscriptionScreen = props => {
                   style={{
                     fontFamily: R.fonts.regular,
                     color: R.colors.primaryTextColor,
-                    fontSize: R.fontSize.Size15,
+                    fontSize: R.fontSize.Size16,
                     fontWeight: '400',
                   }}
                   numberOfLines={1}>
@@ -540,11 +540,22 @@ const SubscriptionScreen = props => {
                   );
                 })}
 
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size18,
+                    fontWeight: '700',
+                    color: R.colors.primaryTextColor,
+                    marginTop:R.fontSize.Size10
+                  }}>
+                  {'Add-on'}
+                </Text>
                 {getCustomPlan.map((item, index) => {
                   return (
                     <SubscriptionCard
                       key={index}
                       borderWidth={R.fontSize.Size2}
+                      DotValue={true}
                       borderColor={
                         checkSubActive
                           ? R.colors.appColor
@@ -570,7 +581,11 @@ const SubscriptionScreen = props => {
                           ? R.colors.appColor
                           : R.colors.placeholderTextColor
                       }
-                      rightIcon={checkSubActive? R.images.plusIconOrage: R.images.plusIconGrey}
+                      rightIcon={
+                        checkSubActive
+                          ? R.images.plusIconOrage
+                          : R.images.plusIconGrey
+                      }
                       marginTop={R.fontSize.Size15}
                       price={`USD ${item?.price}`}
                       // noText={'5'}
@@ -736,11 +751,13 @@ const SubscriptionScreen = props => {
       <AlartModal
         visible={customModalPicker}
         onRequestClose={() => setCustomModalPicker(false)}
-        title={`Your Add on plan will expire on ${moment(getSubData?.exp_date).format('Do MMMM YYYY')}.`}
+        title={`Your Add on plan will expire on ${moment(
+          getSubData?.exp_date,
+        ).format('Do MMMM YYYY')}.`}
         customButton={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable
-              onPress={()=> setCustomModalPicker(false)}
+              onPress={() => setCustomModalPicker(false)}
               style={({pressed}) => [
                 {
                   flex: 1,
@@ -765,7 +782,7 @@ const SubscriptionScreen = props => {
               </Text>
             </Pressable>
             <Pressable
-              onPress={()=> onCallAddOnPackage()}
+              onPress={() => onCallAddOnPackage()}
               style={({pressed}) => [
                 {
                   flex: 1,
