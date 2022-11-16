@@ -319,6 +319,7 @@ const HomeScreen = (props) => {
   },[props.navigation])
 
   const onCallDeviceName = () => {
+    setLoading(true)
      DeviceInfo.getDeviceName().then(deviceName => {
        setDeviceName(deviceName);
        console.log('DEVICE NAME', deviceName);
@@ -333,6 +334,7 @@ const HomeScreen = (props) => {
         setFullScreenDevice(true);
         console.log('FULL DEVICE');
        }
+       setLoading(false)
      });
   }
 
@@ -601,7 +603,12 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                     style={{
                       height:
                         deviceName ==
-                        ('iPhone 8' || 'iPhone 7' || 'iPhone X' || 'iPhone XS')
+                        ('iPhone 8' ||
+                          'iPhone 7' ||
+                          'iPhone X' ||
+                          'iPhone XS' ||
+                          'iPhone 6s' ||
+                          'iPhone SE')
                           ? screenHeight - R.fontSize.Size254
                           : screenHeight - R.fontSize.Size279,
                     }}>

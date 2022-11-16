@@ -237,13 +237,9 @@ const onCallNotificationList = () => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {`no have notifications`}
+                   {`No notifications yet!`}
                  </Text>
-                 <Text
-                 style={{fontSize:R.fontSize.Size8}}
-                 >
-                  {`MYTOKEN FOR CHECK ${fcmToken}`}
-                 </Text>
+                
                </View>
              );
           }}

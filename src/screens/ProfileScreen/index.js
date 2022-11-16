@@ -598,10 +598,28 @@ const [comOwnerName, setComOwnerName] = useState('');
                 {props.userType == 'Business' && (
                   <View
                     style={{
-                      marginTop: R.fontSize.Size40,
+                      marginTop: R.fontSize.Size5,
                       flex: 1,
                     }}>
-                    <CustomCardLine disabled={true} title={companyName} />
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        fontWeight: '700',
+                        color: R.colors.black,
+                        fontSize: R.fontSize.Size18,
+                      }}>
+                      {companyName}
+                    </Text>
+                    <View
+                    style={{
+                      marginTop: R.fontSize.Size20,
+                      flex: 1,
+                    }}>
+                    <CustomLineTextInput
+                      value={comOwnerName}
+                      onChangeText={ownerName => setComOwnerName(ownerName)}
+                      placeholder={'Company Owner Name'}
+                    />
 
                     <CustomCardLine disabled={true} title={companyEmail} />
                     <CustomLineTextInput
@@ -614,11 +632,6 @@ const [comOwnerName, setComOwnerName] = useState('');
                       onChangeText={LicNo => setComLicenceNo(LicNo)}
                       placeholder={'Company Licence Number'}
                     />
-                    <CustomLineTextInput
-                      value={comOwnerName}
-                      onChangeText={ownerName => setComOwnerName(ownerName)}
-                      placeholder={'Company Owner Name'}
-                    />
 
                     <CustomCardLine disabled={true} title={companyContact} />
 
@@ -627,6 +640,7 @@ const [comOwnerName, setComOwnerName] = useState('');
                       onChangeText={cAdd => setCompanyAddress(cAdd)}
                       placeholder={'Company Address'}
                     />
+                    </View>
                   </View>
                 )}
 

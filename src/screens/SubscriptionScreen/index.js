@@ -101,6 +101,8 @@ const SubscriptionScreen = props => {
   }
 
   const onCallgetSubGetPlan = () => {
+    setLoading(true);
+
     dispatch(GetSubscruberGetRequest(response =>{
       console.log('GetSubGet Res',response)
       if(response.status == 'success')
@@ -113,7 +115,7 @@ const SubscriptionScreen = props => {
           response?.description?.feature_2,
           response?.description?.feature_3,
           response?.description?.feature_4,
-          response?.description?.feature_5,
+          // response?.description?.feature_5,
           response?.description?.feature_6,
           response?.description?.feature_7,
           response?.description?.feature_8,
@@ -123,6 +125,8 @@ const SubscriptionScreen = props => {
           response?.description?.feature_12,
         ]);
         console.log("GETSUBDESC",getSubDesc)
+    setLoading(false);
+
       }
     }))
   }
@@ -139,7 +143,7 @@ const SubscriptionScreen = props => {
             response.data[0]?.description[0]?.feature_2,
             response.data[0]?.description[0]?.feature_3,
             response.data[0]?.description[0]?.feature_4,
-            response.data[0]?.description[0]?.feature_5,
+            // response.data[0]?.description[0]?.feature_5,
             response.data[0]?.description[0]?.feature_6,
             response.data[0]?.description[0]?.feature_7,
             response.data[0]?.description[0]?.feature_8,
@@ -236,7 +240,7 @@ const SubscriptionScreen = props => {
                       marginTop: R.fontSize.Size30,
                       paddingTop: R.fontSize.Size10,
                       paddingBottom: R.fontSize.Size5,
-                      paddingHorizontal: R.fontSize.Size20,
+                      paddingHorizontal: R.fontSize.Size10,
                       borderWidth: R.fontSize.Size2,
                       borderRadius: R.fontSize.Size8,
                       borderColor: R.colors.appColor,
@@ -253,18 +257,18 @@ const SubscriptionScreen = props => {
                     <View
                       style={{
                         flexDirection: 'row',
-                        alignItems: 'center',
                         marginTop: R.fontSize.Size10,
+                        justifyContent:'space-between'
                       }}>
                       <View
                         style={{
-                          width: screenWidth / 5,
-                          alignItems: 'flex-start',
+                          alignItems: 'center',
+                          flex:1
                         }}>
                         <Text
                           style={{
                             fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size14,
+                            fontSize: R.fontSize.Size15,
                             color: R.colors.primaryTextColor,
                             fontWeight: '700',
                           }}
@@ -280,121 +284,76 @@ const SubscriptionScreen = props => {
                             textAlign: 'center',
                           }}
                           numberOfLines={1}>
-                          {moment(getSubData?.exp_date).format('Do')}
+                          {moment(expDate).format('DD')}
                         </Text>
                         <Text
                           style={{
                             fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size14,
+                            fontSize: R.fontSize.Size15,
                             color: R.colors.primaryTextColor,
-                            fontWeight: '400',
+                            fontWeight: '700',
                             textAlign: 'center',
                           }}
                           numberOfLines={1}>
-                          {moment(getSubData?.exp_date).format('MMMM')}
+                          {moment(expDate).format('MMMM')}
+                        </Text>
+                      </View>
+                      
+                      <View
+                        style={{
+                          justifyContent:'flex-start',
+                          flex: 1,
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {'Connections'}
                         </Text>
                         <Text
                           style={{
                             fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size14,
-                            color: R.colors.primaryTextColor,
-                            fontWeight: '400',
                             textAlign: 'center',
-                          }}
-                          numberOfLines={1}>
-                          {moment(getSubData?.exp_date).format('YYYY')}
+                            fontSize: R.fontSize.Size30,
+                            fontWeight: '700',
+                            color: R.colors.appColor,
+                          }}>
+                          {getSubData?.total_connection}
                         </Text>
                       </View>
                       <View
                         style={{
-                          marginHorizontal: R.fontSize.Size10,
-                          height: R.fontSize.Size80,
-                          width: 1,
-                          backgroundColor: R.colors.placeholderTextColor,
-                        }}
-                      />
-
-                      <View style={{flex: 1}}>
-                        <View
+                          alignItems: 'center',
+                          flex: 1,
+                        }}>
+                        <Text
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            flex: 1,
-                          }}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              textAlign: 'center',
-                              fontSize: R.fontSize.Size18,
-                              fontWeight: '700',
-                              color: R.colors.appColor,
-                            }}>
-                            {getSubData?.total_connection}
-                          </Text>
-                          <Text
-                            style={{
-                              flex: 1,
-                              fontFamily: R.fonts.regular,
-                              textAlign: 'center',
-                              fontSize: R.fontSize.Size18,
-                              fontWeight: '400',
-                              color: R.colors.primaryTextColor,
-                            }}
-                            numberOfLines={1}>
-                            {'Connections'}
-                          </Text>
-                          {/* <TouchableOpacity style={{padding: R.fontSize.Size5}}>
-                            <Image
-                              source={R.images.activeAddIcon}
-                              style={{
-                                height: R.fontSize.Size10,
-                                width: R.fontSize.Size10,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </TouchableOpacity> */}
-                        </View>
-
-                        <View
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {'Boost'}
+                        </Text>
+                        <Text
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            flex: 1,
+                            fontFamily: R.fonts.regular,
+                            textAlign: 'center',
+                            fontSize: R.fontSize.Size30,
+                            fontWeight: '700',
+                            color: R.colors.appColor,
                           }}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              textAlign: 'center',
-                              fontSize: R.fontSize.Size18,
-                              fontWeight: '700',
-                              color: R.colors.appColor,
-                            }}>
-                            {getSubData?.boost}
-                          </Text>
-                          <Text
-                            style={{
-                              flex: 1,
-                              fontFamily: R.fonts.regular,
-                              textAlign: 'center',
-                              fontSize: R.fontSize.Size18,
-                              fontWeight: '400',
-                              color: R.colors.primaryTextColor,
-                            }}
-                            numberOfLines={1}>
-                            {'Boots'}
-                          </Text>
-                          {/* <TouchableOpacity style={{padding: R.fontSize.Size5}}>
-                            <Image
-                              source={R.images.activeAddIcon}
-                              style={{
-                                height: R.fontSize.Size10,
-                                width: R.fontSize.Size10,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </TouchableOpacity> */}
-                        </View>
+                          {getSubData?.boost}
+                        </Text>
                       </View>
+
                     </View>
 
                     {getSubDescActive && (
@@ -533,7 +492,18 @@ const SubscriptionScreen = props => {
                       //   </Text>
                       // }
                       price={`${item?.price}`}
-                      month={item?.validity}
+                      monthTextColor={
+                        !checkSubActive
+                          ? R.colors.primaryTextColor
+                          : R.colors.placeholderTextColor
+                      }
+                      slashText={'/'}
+                      slashTextColor={
+                        !checkSubActive
+                          ? R.colors.primaryTextColor
+                          : R.colors.placeholderTextColor
+                      }
+                      month={'month'}
                       rightIcon={R.images.balaceIcon}
                       onPressAdd={() => onOpenPaymentModal(item)}
                     />
@@ -546,7 +516,7 @@ const SubscriptionScreen = props => {
                     fontSize: R.fontSize.Size18,
                     fontWeight: '700',
                     color: R.colors.primaryTextColor,
-                    marginTop:R.fontSize.Size10
+                    marginTop: R.fontSize.Size10,
                   }}>
                   {'Add-on'}
                 </Text>
@@ -578,7 +548,7 @@ const SubscriptionScreen = props => {
                       }
                       monthTextColor={
                         checkSubActive
-                          ? R.colors.appColor
+                          ? R.colors.primaryTextColor
                           : R.colors.placeholderTextColor
                       }
                       rightIcon={
@@ -751,9 +721,9 @@ const SubscriptionScreen = props => {
       <AlartModal
         visible={customModalPicker}
         onRequestClose={() => setCustomModalPicker(false)}
-        title={`Your Add on plan will expire on ${moment(
-          getSubData?.exp_date,
-        ).format('Do MMMM YYYY')}.`}
+        title={`Your Add on plan will expire on ${moment(expDate).format(
+          'Do MMMM YYYY',
+        )}.`}
         customButton={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable

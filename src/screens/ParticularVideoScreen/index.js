@@ -390,7 +390,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               {'Average Like '}
                               <Text style={{color: R.colors.appColor}}>
                                 {item?.total_rating != ''
-                                  ? `${item?.total_rating}%`
+                                  ? `${(
+                                      item?.total_rating /
+                                      (item?.total_likes * 20)
+                                    ).toFixed(1)}%`
                                   : '0%'}
                               </Text>
                             </Text>

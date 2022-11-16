@@ -66,7 +66,7 @@ const SubscriptionCard = (props) => {
                 style={{
                   fontFamily: R.fonts.regular,
                   fontSize: R.fontSize.Size22,
-                  color: R.colors.primaryTextColor,
+                  color: R.colors.placeholderTextColor,
                   fontWeight: '700',
                 }}>
                 {'.'}
@@ -86,7 +86,7 @@ const SubscriptionCard = (props) => {
                   color: props.slashTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '700',
                 }}>
-                {'/'}
+                {props.slashText}
               </Text>
               <Text
                 style={{
@@ -94,16 +94,15 @@ const SubscriptionCard = (props) => {
                   fontSize: R.fontSize.Size22,
                   color: props.noTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '700',
-                  marginRight: R.fontSize.Size5,
                 }}>
                 {props.noText}
               </Text>
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size15,
+                  fontSize: R.fontSize.Size20,
                   color: props.monthTextColor ?? R.colors.primaryTextColor,
-                  fontWeight: '400',
+                  fontWeight: '500',
                 }}>
                 {props.month}
               </Text>

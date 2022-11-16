@@ -263,8 +263,8 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       height: screenHeight - R.fontSize.Size100,
                     }}>
                     <VideoCard
-                    fromTop={R.fontSize.Size35}
-                    fromLeft={R.fontSize.Size50}
+                      fromTop={R.fontSize.Size35}
+                      fromLeft={R.fontSize.Size50}
                       poster={`${Config.API_URL}${item?.post.replace(
                         'http://localhost:8080/',
                         '',
@@ -444,7 +444,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
                             {item?.total_rating != ''
-                              ? `${item?.total_rating}%`
+                              ? `${(
+                                  item?.total_rating /
+                                  (item?.total_likes * 20)
+                                ).toFixed(1)}%`
                               : '0%'}
                           </Text>
                         </Text>
