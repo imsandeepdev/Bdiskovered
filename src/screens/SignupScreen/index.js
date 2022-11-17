@@ -34,14 +34,14 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 
 
-
 import DeviceInfo from 'react-native-device-info';
 import { SignUpRequest } from '../../actions/signUp.action';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
 import { Config } from '../../config';
 import CommonFunctions from '../../utils/CommonFuntions';
 
-
+let currYear = moment().subtract(16, 'years').calendar();
+let maxDate =  moment(currYear).format('YYYY,MM,DD');
 
 const SignupScreen = (props) => {
 
@@ -82,6 +82,8 @@ const SignupScreen = (props) => {
     const [createDeviceToken, setCreateDeviceToken] = useState('')
 
     useEffect(()=>{
+console.log('MAX DATE', maxDate);
+
         onCallCreateDeviceToken()
         console.log(props.route.params?.from);
         setUserType(props.route.params?.from);
@@ -701,7 +703,7 @@ const onCheckDocument = () => {
                   todayBackgroundColor={R.colors.appColor}
                   todayTextStyle={{color: R.colors.white, fontWeight: '700'}}
                   minDate={new Date('1920,1,1')}
-                  maxDate={new Date(moment().format('YYYY,MM,DD'))}
+                  maxDate={maxDate}
                   textStyle={{
                     fontFamily: R.fonts.regular,
                     color: R.colors.primaryTextColor,

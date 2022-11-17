@@ -10,7 +10,8 @@ import {
   TextInput,
   Modal,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import {
   CustomTextInput,
@@ -79,6 +80,7 @@ const SubscriptionScreen = props => {
   const [checkSubActive, setCheckSubActive] = useState(true)
   const [subPlanItem, setSubPlanItem] = useState({})
   const [expDate, setExpDate] = useState('')
+  const [expMonth, setExpMonth] = useState('')
   const [addOnPlanDetail,setAddOnPlanDetail] = useState({})
 
   const [loading, setLoading] = useState(false)
@@ -107,16 +109,22 @@ const SubscriptionScreen = props => {
       console.log('GetSubGet Res',response)
       if(response.status == 'success')
       {
-        
+        let Edate = moment(response?.data?.exp_date).format('DD');
+        console.log("DATE",Edate)
+        let EMonth = moment(response?.data?.exp_date).format('MMMM');
+        console.log('MONTH', EMonth);
+
         setGetSubData(response?.data);
-        setExpDate(response.data?.exp_date);
+        setExpDate(Edate);
+        setExpMonth(EMonth);
         setGetSubDesc([
           response?.description?.feature_1,
           response?.description?.feature_2,
           response?.description?.feature_3,
           response?.description?.feature_4,
-          // response?.description?.feature_5,
-          response?.description?.feature_6,
+          props.userType == '!Talent'
+            ? response?.description?.feature_5
+            : response?.description?.feature_6,
           response?.description?.feature_7,
           response?.description?.feature_8,
           response?.description?.feature_9,
@@ -143,8 +151,7 @@ const SubscriptionScreen = props => {
             response.data[0]?.description[0]?.feature_2,
             response.data[0]?.description[0]?.feature_3,
             response.data[0]?.description[0]?.feature_4,
-            // response.data[0]?.description[0]?.feature_5,
-            response.data[0]?.description[0]?.feature_6,
+            props.userType == '!Talent' ? response.data[0]?.description[0]?.feature_5 : response.data[0]?.description[0]?.feature_6,
             response.data[0]?.description[0]?.feature_7,
             response.data[0]?.description[0]?.feature_8,
             response.data[0]?.description[0]?.feature_9,
@@ -258,50 +265,57 @@ const SubscriptionScreen = props => {
                       style={{
                         flexDirection: 'row',
                         marginTop: R.fontSize.Size10,
-                        justifyContent:'space-between'
+                        justifyContent: 'space-between',
                       }}>
+                      {!loading ? (
+                        <View
+                          style={{
+                            alignItems: 'center',
+                            flex: 1,
+                          }}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size15,
+                              color: R.colors.primaryTextColor,
+                              fontWeight: '700',
+                            }}
+                            numberOfLines={1}>
+                            {'Valid Till'}
+                          </Text>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size35,
+                              color: R.colors.appColor,
+                              fontWeight: '700',
+                              textAlign: 'center',
+                            }}
+                            numberOfLines={1}>
+                            {moment(getSubData.data?.exp_date).format('DD')}
+                          </Text>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size15,
+                              color: R.colors.primaryTextColor,
+                              fontWeight: '700',
+                              textAlign: 'center',
+                            }}
+                            numberOfLines={1}>
+                            {moment(getSubData.data?.exp_date).format('MMMM')}
+                          </Text>
+                        </View>
+                      ) : (
+                        <ActivityIndicator
+                          size={'large'}
+                          color={R.colors.appColor}
+                        />
+                      )}
+
                       <View
                         style={{
-                          alignItems: 'center',
-                          flex:1
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size15,
-                            color: R.colors.primaryTextColor,
-                            fontWeight: '700',
-                          }}
-                          numberOfLines={1}>
-                          {'Valid Till'}
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size35,
-                            color: R.colors.appColor,
-                            fontWeight: '700',
-                            textAlign: 'center',
-                          }}
-                          numberOfLines={1}>
-                          {moment(expDate).format('DD')}
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size15,
-                            color: R.colors.primaryTextColor,
-                            fontWeight: '700',
-                            textAlign: 'center',
-                          }}
-                          numberOfLines={1}>
-                          {moment(expDate).format('MMMM')}
-                        </Text>
-                      </View>
-                      
-                      <View
-                        style={{
-                          justifyContent:'flex-start',
+                          justifyContent: 'flex-start',
                           flex: 1,
                         }}>
                         <Text
@@ -326,34 +340,35 @@ const SubscriptionScreen = props => {
                           {getSubData?.total_connection}
                         </Text>
                       </View>
-                      <View
-                        style={{
-                          alignItems: 'center',
-                          flex: 1,
-                        }}>
-                        <Text
+                      {props.userType == 'Talent' && (
+                        <View
                           style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size15,
-                            color: R.colors.primaryTextColor,
-                            fontWeight: '700',
-                            textAlign: 'center',
-                          }}
-                          numberOfLines={1}>
-                          {'Boost'}
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            textAlign: 'center',
-                            fontSize: R.fontSize.Size30,
-                            fontWeight: '700',
-                            color: R.colors.appColor,
+                            alignItems: 'center',
+                            flex: 1,
                           }}>
-                          {getSubData?.boost}
-                        </Text>
-                      </View>
-
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size15,
+                              color: R.colors.primaryTextColor,
+                              fontWeight: '700',
+                              textAlign: 'center',
+                            }}
+                            numberOfLines={1}>
+                            {'Boost'}
+                          </Text>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              textAlign: 'center',
+                              fontSize: R.fontSize.Size30,
+                              fontWeight: '700',
+                              color: R.colors.appColor,
+                            }}>
+                            {getSubData?.boost}
+                          </Text>
+                        </View>
+                      )}
                     </View>
 
                     {getSubDescActive && (
@@ -466,6 +481,7 @@ const SubscriptionScreen = props => {
                   return (
                     <SubscriptionCard
                       disabled={checkSubActive}
+                      disabledIcon={!checkSubActive ? true : false}
                       key={index}
                       marginTop={R.fontSize.Size28}
                       borderWidth={R.fontSize.Size2}
@@ -479,18 +495,9 @@ const SubscriptionScreen = props => {
                           ? R.colors.appColor
                           : R.colors.placeholderTextColor
                       }
-                      // topTitle={
-                      //   <Text
-                      //     style={{
-                      //       fontFamily: R.fonts.regular,
-                      //       fontWeight: '700',
-                      //       fontSize: R.fontSize.Size14,
-                      //       color: R.colors.primaryTextColor,
-                      //       marginTop: R.fontSize.Size20,
-                      //     }}>
-                      //     {item?.plan_name}
-                      //   </Text>
-                      // }
+                      onPressIcon={() => {
+                        Toast.show('Subscription Already Taken', Toast.SHORT);
+                      }}
                       price={`${item?.price}`}
                       monthTextColor={
                         !checkSubActive
@@ -721,9 +728,9 @@ const SubscriptionScreen = props => {
       <AlartModal
         visible={customModalPicker}
         onRequestClose={() => setCustomModalPicker(false)}
-        title={`Your Add on plan will expire on ${moment(expDate).format(
-          'Do MMMM YYYY',
-        )}.`}
+        title={`Your Add on plan will expire on ${moment(
+          getSubData.data?.exp_date,
+        ).format('DD')} ${moment(getSubData.data?.exp_date).format('MMMM')}`}
         customButton={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable

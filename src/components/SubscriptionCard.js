@@ -60,24 +60,24 @@ const SubscriptionCard = (props) => {
                 }}>
                 {props.price}
               </Text>
-              {
-                props.DotValue &&
-                <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size22,
-                  color: R.colors.placeholderTextColor,
-                  fontWeight: '700',
-                }}>
-                {'.'}
+              {props.DotValue && (
                 <Text
                   style={{
-                    color: R.colors.appColor,
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size22,
+                    color: R.colors.placeholderTextColor,
+                    fontWeight: '700',
                   }}>
                   {'.'}
+                  <Text
+                    style={{
+                      color: R.colors.appColor,
+                    }}>
+                    {'.'}
+                  </Text>
+                  <Text>{'.'}</Text>
                 </Text>
-                <Text>{'.'}</Text>
-              </Text>}
+              )}
               <Text
                 style={{
                   marginHorizontal: R.fontSize.Size5,
@@ -114,8 +114,8 @@ const SubscriptionCard = (props) => {
                 justifyContent: 'center',
               }}>
               <Pressable
-                disabled={props.disabled}
-                onPress={props.onPressAdd}
+                disabled={props.disabledIcon}
+                onPress={props.onPressIcon}
                 style={({pressed}) => [
                   {
                     opacity: pressed ? 0.5 : 1,

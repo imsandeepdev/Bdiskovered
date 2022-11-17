@@ -320,22 +320,9 @@ const HomeScreen = (props) => {
 
   const onCallDeviceName = () => {
     setLoading(true)
-     DeviceInfo.getDeviceName().then(deviceName => {
-       setDeviceName(deviceName);
-       console.log('DEVICE NAME', deviceName);
-       
-       if(deviceName == 'iPhone 8' || 'iPhone 7' || 'iPhone X' || 'iPhone XS')
-       {
-        setFullScreenDevice(false)
-        console.log("NOT FULL DEVICE")
-       }
-       else
-       {
-        setFullScreenDevice(true);
-        console.log('FULL DEVICE');
-       }
-       setLoading(false)
-     });
+     let deviceNotch = DeviceInfo.hasNotch();
+     console.log("DEVICE NOTCH",DeviceInfo.hasNotch())
+     setLoading(false)
   }
 
   const onCallLatitudeLongitude = () => { 
@@ -373,7 +360,6 @@ const HomeScreen = (props) => {
     StatusBar.setBarStyle('dark-content', true);
     onCallShowAllPost();
     onCallProfile();
-    onCallDeviceName();
   };
 
    const onCallSelectedTailent = (item, ind) => {
@@ -507,9 +493,7 @@ const HomeScreen = (props) => {
     // }))
   }
 
-  // const onProgress = (data) => {
-  //       console.log("ON PROGRESS", data)
-  //     }
+ 
   const onLoad = (data) => {
     console.log('ONLOAD',data)
   }
@@ -601,16 +585,9 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                   }}>
                   <View
                     style={{
-                      height:
-                        deviceName ==
-                        ('iPhone 8' ||
-                          'iPhone 7' ||
-                          'iPhone X' ||
-                          'iPhone XS' ||
-                          'iPhone 6s' ||
-                          'iPhone SE')
-                          ? screenHeight - R.fontSize.Size254
-                          : screenHeight - R.fontSize.Size279,
+                      height: DeviceInfo.hasNotch()
+                        ? screenHeight - R.fontSize.Size279
+                        : screenHeight - R.fontSize.Size254,
                     }}>
                     <VideoCard
                       poster={`${Config.API_URL}${item?.avatar.replace(
