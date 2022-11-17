@@ -3,6 +3,9 @@ export const Config = {
   // API_URL: 'https://disk.shunyaekai.com/',
   API_URL: 'https://localbdisk.shunyaekai.com/',
 
+  Google_URL: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=',
+  GoogleAPIKEY: 'AIzaSyDHB9O095O9iP0FcAYTGXZKlXGTvxZL5Q8',
+
   createOTPAPI: 'user/createOTP',
   signInAPI: 'user/signin',
   signUpAPI: 'user/signup',
@@ -24,7 +27,7 @@ export const Config = {
   connectedUsersAPI: 'profile/connect-user-list',
   postDeleteAPI: 'post/delete',
   getsubscriberGetAPI: 'subscriber/get',
-  userLocationAPI:'user/location',
+  userLocationAPI: 'user/location',
   changeOwnershipAPI: 'user/change-ownership',
   notificationListAPI: 'profile/notification',
   postFilterAPI: 'post/post-filter',

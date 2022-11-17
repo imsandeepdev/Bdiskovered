@@ -109,14 +109,27 @@ const SubscriptionScreen = props => {
       console.log('GetSubGet Res',response)
       if(response.status == 'success')
       {
-        let Edate = moment(response?.data?.exp_date).format('DD');
-        console.log("DATE",Edate)
-        let EMonth = moment(response?.data?.exp_date).format('MMMM');
-        console.log('MONTH', EMonth);
-
-        setGetSubData(response?.data);
-        setExpDate(Edate);
-        setExpMonth(EMonth);
+       
+        let MonthList = ['January', 'February','March','April','May','June','July','August','September','October','November','December'];
+        
+        let dataFormat = response?.data?.exp_date;
+        let ArrayDate = dataFormat.split('-');
+        let monthIndex = ArrayDate[0];
+        let tempDate = ArrayDate[1];
+        console.log('Month Name', MonthList[monthIndex-1]);
+        setExpMonth(MonthList[monthIndex - 1]);
+        console.log('ONLY DATE', tempDate);
+        if(tempDate < 9)
+        {
+          setExpDate(`0${tempDate}`)
+        }
+        else
+        {
+          setExpDate(tempDate);
+        }
+        setGetSubData(response?.data)
+        console.log("DATE",response?.data?.exp_date)
+        
         setGetSubDesc([
           response?.description?.feature_1,
           response?.description?.feature_2,
@@ -267,7 +280,7 @@ const SubscriptionScreen = props => {
                         marginTop: R.fontSize.Size10,
                         justifyContent: 'space-between',
                       }}>
-                      {!loading ? (
+                    
                         <View
                           style={{
                             alignItems: 'center',
@@ -292,7 +305,7 @@ const SubscriptionScreen = props => {
                               textAlign: 'center',
                             }}
                             numberOfLines={1}>
-                            {moment(getSubData.data?.exp_date).format('DD')}
+                            {expDate}
                           </Text>
                           <Text
                             style={{
@@ -303,15 +316,10 @@ const SubscriptionScreen = props => {
                               textAlign: 'center',
                             }}
                             numberOfLines={1}>
-                            {moment(getSubData.data?.exp_date).format('MMMM')}
+                            {expMonth}
                           </Text>
                         </View>
-                      ) : (
-                        <ActivityIndicator
-                          size={'large'}
-                          color={R.colors.appColor}
-                        />
-                      )}
+                    
 
                       <View
                         style={{
@@ -525,7 +533,7 @@ const SubscriptionScreen = props => {
                     color: R.colors.primaryTextColor,
                     marginTop: R.fontSize.Size10,
                   }}>
-                  {'Add-on'}
+                  {`Add-on`}
                 </Text>
                 {getCustomPlan.map((item, index) => {
                   return (
@@ -728,9 +736,7 @@ const SubscriptionScreen = props => {
       <AlartModal
         visible={customModalPicker}
         onRequestClose={() => setCustomModalPicker(false)}
-        title={`Your Add on plan will expire on ${moment(
-          getSubData.data?.exp_date,
-        ).format('DD')} ${moment(getSubData.data?.exp_date).format('MMMM')}`}
+        title={`Your Add on plan will expire on ${expDate} ${expMonth}`}
         customButton={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable

@@ -187,6 +187,26 @@ const [comOwnerName, setComOwnerName] = useState('');
     onCallProfileAPI();
   };
 
+  //  const onCallGoogleAPI = (lat, long) => {
+   
+  //    fetch(
+  //      `${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`,
+  //    )
+  //      .then(res => res.json())
+  //      .then(response => {
+  //        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+        //  let temparray = []
+        //  temparray = response?.results;
+        //  let tempLength = temparray.length;
+        //  let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+        //  let arrayAddress = arrayAdd.split(",")
+        //  let arrAddLength = arrayAddress.length
+        //  console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+
+        //  console.log('FORMAT ADDRESS',arrayAddress[arrAddLength-1]);
+  //      });
+  //  };
+
   const onCallProfileAPI = () => {
     setLoading(true)
     dispatch(GetProfileDetailsRequest(response => {
@@ -216,6 +236,10 @@ const [comOwnerName, setComOwnerName] = useState('');
         setLoading(false);
       } else if (response.status == 'success' && props.userType == 'Business') {
         console.log('BUSINESS');
+        // onCallGoogleAPI(
+        //   response.Profile?.latitude,
+        //   response.Profile?.longitude,
+        // );
         setCompanyName(response.Profile?.company_name);
         setCompanyAddress(response.Profile?.company_address);
         setCompanyType(response.Profile?.company_type);
