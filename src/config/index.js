@@ -1,7 +1,7 @@
 export const Config = {
   // API_URL: 'https://bdiskshunya.shunyaekai.com/',
-  // API_URL: 'https://disk.shunyaekai.com/',
-  API_URL: 'https://localbdisk.shunyaekai.com/',
+  API_URL: 'https://disk.shunyaekai.com/',
+  // API_URL: 'https://localbdisk.shunyaekai.com/',
 
   Google_URL: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=',
   GoogleAPIKEY: 'AIzaSyDHB9O095O9iP0FcAYTGXZKlXGTvxZL5Q8',

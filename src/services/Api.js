@@ -169,7 +169,8 @@ const RequestPostFetch = ({url, body, datatype}) =>
             .then(responseJson => {
               if (responseJson.status == 'success') {
                 resolve(responseJson);
-              } else {
+              } 
+              else {
                 Toast.show(responseJson.message, Toast.SHORT);
                 reject(responseJson);
               }

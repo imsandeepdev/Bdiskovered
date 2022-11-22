@@ -279,6 +279,7 @@ const HomeScreen = (props) => {
   const [tailentLocation, setTailentLocation] = useState('');
   const [deviceName, setDeviceName] = useState('')
   const [fullScreenDevice, setFullScreenDevice] = useState(false)
+  const [ratingVideoInfo, setRatingVideoInfo] = useState({})
 
 
 
@@ -427,6 +428,8 @@ const HomeScreen = (props) => {
       if(response.status=='success')
       {
         setAllVideoPostList(response?.Post)
+       
+
           // setSliderValue(0);
 
         setLoading(false);
@@ -663,15 +666,18 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
+                      {console.log(
+                        'POST INRO',
+                        item?.postInfo != 'undefined' && item?.postInfo!= null ? item?.postInfo[0] : '0000'
+                      )}
                       <View>
                         <Slider
-                          disabled={
-                            item.postInfo[0]?.percentage_like != null
+                          disabled={(item?.postInfo != 'undefined' && item?.postInfo!= null)&&  item.postInfo[0]?.percentage_like != null
                               ? true
                               : false
                           }
-                          value={
-                            item?.postInfo[0]?.percentage_like != null
+                          value={ (item?.postInfo != 'undefined' && item?.postInfo!= null) &&
+                            item.postInfo[0]?.percentage_like != null
                               ? parseInt(item.postInfo[0]?.percentage_like)
                               : sliderValue[index]
                           }
@@ -728,7 +734,9 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                     fontSize: R.fontSize.Size8,
                                     height: R.fontSize.Size20,
                                   }}>
-                                  {item?.postInfo[0]?.percentage_like != null
+                                  {
+                                  (item?.postInfo != 'undefined' && item?.postInfo!= null) &&
+                                  item.postInfo[0]?.percentage_like != null
                                     ? parseInt(
                                         item.postInfo[0]?.percentage_like,
                                       )
