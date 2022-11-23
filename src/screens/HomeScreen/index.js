@@ -36,7 +36,6 @@ import DeviceInfo from 'react-native-device-info';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
-import Geocoder from 'react-native-geocoder-reborn';
 import Share from 'react-native-share';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
@@ -296,26 +295,7 @@ const onCallGoogleAPI = profileDetails => {
     });
 };
 
-//  const onCallModalUserLocation = item => {
-//    setLoading(true);
 
-//    console.log('profile Data', item);
-//    var NY = {
-//      lat: parseInt(item?.latitude),
-//      lng: parseInt(item?.longitude),
-//    };
-//    Geocoder.geocodePosition(NY)
-//      .then(res => {
-//        console.log('response', res);
-//        setVideoModalPersonalDetail([
-//          `${moment().diff(item?.birth, 'years')} Year`,
-//          item?.gender,
-//          `${res[0].locality}, ${res[0].country}`,
-//        ]);
-//      })
-//      .catch(err => console.log('ERROR', err));
-//    setLoading(false);
-//  };
 
   const onCallShowAllPost = () => {
     setLoading(true)

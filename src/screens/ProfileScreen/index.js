@@ -12,6 +12,8 @@ import moment from 'moment';
 import ImagePicker from 'react-native-image-crop-picker';
 import CalendarPicker from 'react-native-calendar-picker';
 
+let currYear = moment().subtract(16, 'years').calendar();
+let maxDate = moment(currYear).format('YYYY-MM-DD');
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -606,35 +608,35 @@ const [userLocation, setUserLocation] = useState('')
                       {companyName}
                     </Text>
                     <View
-                    style={{
-                      marginTop: R.fontSize.Size20,
-                      flex: 1,
-                    }}>
-                    <CustomLineTextInput
-                      value={comOwnerName}
-                      onChangeText={ownerName => setComOwnerName(ownerName)}
-                      placeholder={'Company Owner Name'}
-                    />
+                      style={{
+                        marginTop: R.fontSize.Size20,
+                        flex: 1,
+                      }}>
+                      <CustomLineTextInput
+                        value={comOwnerName}
+                        onChangeText={ownerName => setComOwnerName(ownerName)}
+                        placeholder={'Company Owner Name'}
+                      />
 
-                    <CustomCardLine disabled={true} title={companyEmail} />
-                    <CustomLineTextInput
-                      value={companyType}
-                      onChangeText={cType => setCompanyType(cType)}
-                      placeholder={'Company Type'}
-                    />
-                    <CustomLineTextInput
-                      value={comLicenceNo}
-                      onChangeText={LicNo => setComLicenceNo(LicNo)}
-                      placeholder={'Company Licence Number'}
-                    />
+                      <CustomCardLine disabled={true} title={companyEmail} />
+                      <CustomLineTextInput
+                        value={companyType}
+                        onChangeText={cType => setCompanyType(cType)}
+                        placeholder={'Company Type'}
+                      />
+                      <CustomLineTextInput
+                        value={comLicenceNo}
+                        onChangeText={LicNo => setComLicenceNo(LicNo)}
+                        placeholder={'Company Licence Number'}
+                      />
 
-                    <CustomCardLine disabled={true} title={companyContact} />
+                      <CustomCardLine disabled={true} title={companyContact} />
 
-                    <CustomLineTextInput
-                      value={companyAddress}
-                      onChangeText={cAdd => setCompanyAddress(cAdd)}
-                      placeholder={'Company Address'}
-                    />
+                      <CustomLineTextInput
+                        value={companyAddress}
+                        onChangeText={cAdd => setCompanyAddress(cAdd)}
+                        placeholder={'Company Address'}
+                      />
                     </View>
                   </View>
                 )}
@@ -1273,14 +1275,16 @@ const [userLocation, setUserLocation] = useState('')
                   flex: 1,
                   marginHorizontal: R.fontSize.Size20,
                 }}>
+               
                 <CalendarPicker
                   startFromMonday={true}
                   onDateChange={onDateChange}
                   selectedDayColor={R.colors.appColor}
                   todayBackgroundColor={R.colors.appColor}
                   todayTextStyle={{color: R.colors.white, fontWeight: '700'}}
-                  minDate={new Date('1920,1,1')}
-                  maxDate={new Date(moment().format('YYYY,MM,DD'))}
+                  minDate={new Date('1920-01-01')}
+                  initialDate={maxDate}
+                  maxDate={maxDate}
                   textStyle={{
                     fontFamily: R.fonts.regular,
                     color: R.colors.primaryTextColor,

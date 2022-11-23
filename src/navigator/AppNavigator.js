@@ -39,6 +39,7 @@ import CardDetailScreen from '../screens/CardDetailScreen';
 import FilterVideoScreen from '../screens/FilterVideoScreen';
 import ParticularVideoScreen from '../screens/ParticularVideoScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NoResultScreen from '../screens/NoResultScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -210,6 +211,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="ParticularVideoScreen"
           component={ParticularVideoScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="NoResultScreen"
+          component={NoResultScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

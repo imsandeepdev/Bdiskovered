@@ -138,6 +138,7 @@ const SubscriptionScreen = props => {
           props.userType == '!Talent'
             ? response?.description?.feature_5
             : response?.description?.feature_6,
+          props.userType == '!Talent' && response?.description?.feature_6,
           response?.description?.feature_7,
           response?.description?.feature_8,
           response?.description?.feature_9,
@@ -164,8 +165,11 @@ const SubscriptionScreen = props => {
             response.data[0]?.description[0]?.feature_2,
             response.data[0]?.description[0]?.feature_3,
             response.data[0]?.description[0]?.feature_4,
-            props.userType == '!Talent' ? response.data[0]?.description[0]?.feature_5 : response.data[0]?.description[0]?.feature_6,
-            response.data[0]?.description[0]?.feature_7,
+            props.userType == '!Talent'
+              ? response.data[0]?.description[0]?.feature_5
+              : response.data[0]?.description[0]?.feature_6,
+            props.userType == '!Talent' && response.data[0]?.description[0]?.feature_6,
+              response.data[0]?.description[0]?.feature_7,
             response.data[0]?.description[0]?.feature_8,
             response.data[0]?.description[0]?.feature_9,
             response.data[0]?.description[0]?.feature_10,

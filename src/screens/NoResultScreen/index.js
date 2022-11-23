@@ -1,0 +1,79 @@
+import * as react from 'react';
+import {useState, useEffect} from 'react';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  Dimensions,
+  Image
+} from 'react-native';
+import {
+  StoryScreen,
+  Header,
+  AppButton,
+  CustomCardView,
+  CustomTimeCard,
+} from '../../components';
+import R from '../../res/R';
+const screenHeight = Dimensions.get('screen').height;
+const screenWidth = Dimensions.get('screen').width;
+import {connect, useDispatch} from 'react-redux';
+
+
+const NoResultScreen = props => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+ 
+
+    const onCallProcess = () => {
+        props.navigation.replace('HomeMenu')
+    }
+
+
+  return (
+    <StoryScreen>
+      <SafeAreaView style={{flex: 1}}>
+        <Header
+          onPress={() => props.navigation.goBack()}
+          leftSource={R.images.chevronBack}
+        />
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text
+            style={{
+              fontFamily: R.fonts.regular,
+              fontSize: R.fontSize.Size14,
+              color: R.colors.placeHolderColor,
+              fontWeight: '500',
+              textAlign: 'center',
+            }}>{`No Result Found`}</Text>
+          <View>
+            <Image
+              source={R.images.paymentSuccessIcon}
+              style={{height: R.fontSize.Size30, width: R.fontSize.Size30}}
+              resizeMode={'contain'}
+            />
+            <Text
+              style={{
+                marginTop:R.fontSize.Size10,
+                fontFamily: R.fonts.regular,
+                fontSize: R.fontSize.Size14,
+                color: R.colors.primaryTextColor,
+                fontWeight: '500',
+                textAlign: 'center',
+              }}>
+              {`Your Uploaded video is going to under review for publish`}
+            </Text>
+          </View>
+        </View>
+        <View style={{paddingVertical: R.fontSize.Size16}}>
+          <AppButton
+            onPress={() => onCallProcess()}
+            marginHorizontal={R.fontSize.Size35}
+            title={'Proceed'}
+          />
+        </View>
+      </SafeAreaView>
+    </StoryScreen>
+  );
+};
+export default NoResultScreen;

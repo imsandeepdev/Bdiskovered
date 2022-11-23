@@ -17,7 +17,7 @@ import {
   Modal,
   Alert
 } from 'react-native';
-import { CustomTextInput, StoryScreen, AppButton, Header, CustomCardTextInput, CustomMaleFemale, CustomCardView } from '../../components';
+import { CustomTextInput, StoryScreen, AppButton, Header, CustomCardTextInput, CustomMaleFemale, CustomCardView, AlartModal } from '../../components';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
 import R from '../../res/R';
@@ -41,7 +41,7 @@ import { Config } from '../../config';
 import CommonFunctions from '../../utils/CommonFuntions';
 
 let currYear = moment().subtract(16, 'years').calendar();
-let maxDate =  moment(currYear).format('YYYY,MM,DD');
+let maxDate =  moment(currYear).format('YYYY-MM-DD');
 
 const SignupScreen = (props) => {
 
@@ -72,6 +72,7 @@ const SignupScreen = (props) => {
     const [companyPhoneStatue, setCompanyPhoneStatus] = useState(false);
     const [companyMob, setCompanyMob] = useState('')
     const [companyOwnerName, setCompanyOwnerName] = useState('')
+    const [companyAddress, setCompanyAddress] = useState('');
 
     const [documentPic, setDocumentPic] = useState([])
     const [documentModalPicker, setDocumentModalPicker] = useState(false);
@@ -80,6 +81,8 @@ const SignupScreen = (props) => {
     const [countryFlag, setCountryFlag] = useState('ae');
 
     const [createDeviceToken, setCreateDeviceToken] = useState('')
+    const [alartModalPicker, setAlartModalPicker] = useState(false)
+    const [alartMessage, setAlartMessage] = useState('')
 
     useEffect(()=>{
 console.log('MAX DATE', maxDate);
@@ -135,7 +138,9 @@ console.log('MAX DATE', maxDate);
           onFocusName == 'companyMail' && setCompanyMailStatus(true);
           onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
         } else {
-          Toast.show(res.data.message, Toast.SHORT);
+          // Toast.show(res.data.message, Toast.SHORT);
+          setAlartMessage(res.data.message);
+          setAlartModalPicker(true)
           onFocusName == 'userName' && setUserNameStatus(false);
           onFocusName == 'userEmail' && setUserMailStatus(false);
           onFocusName == 'userPhone' && setUserPhoneStatus(false);
@@ -545,11 +550,8 @@ const onCheckDocument = () => {
                           <View style={{marginTop: R.fontSize.Size30}}>
                             <CustomCardTextInput
                               value={companyName}
-                              onChangeText={cname =>
-                                setCompanyName(cname)
-                              }
+                              onChangeText={cname => setCompanyName(cname)}
                               placeholder={'Company Name'}
-                              
                             />
                             <CustomCardTextInput
                               value={companyType}
@@ -605,6 +607,14 @@ const onCheckDocument = () => {
                             />
 
                             <CustomCardTextInput
+                              value={companyAddress}
+                              onChangeText={comAddress =>
+                                setCompanyAddress(comAddress)
+                              }
+                              placeholder={'Company Address'}
+                            />
+
+                            <CustomCardTextInput
                               value={companyOwnerName}
                               onChangeText={ownerName =>
                                 setCompanyOwnerName(ownerName)
@@ -647,7 +657,6 @@ const onCheckDocument = () => {
               </ScrollView>
             </KeyboardAvoidingView>
           </View>
-         
         </SafeAreaView>
         <Modal
           visible={calenderPicker}
@@ -702,7 +711,8 @@ const onCheckDocument = () => {
                   selectedDayColor={R.colors.appColor}
                   todayBackgroundColor={R.colors.appColor}
                   todayTextStyle={{color: R.colors.white, fontWeight: '700'}}
-                  minDate={new Date('1920,1,1')}
+                  minDate={new Date('1920-01-01')}
+                  initialDate={maxDate}
                   maxDate={maxDate}
                   textStyle={{
                     fontFamily: R.fonts.regular,
@@ -864,6 +874,12 @@ const onCheckDocument = () => {
             </View>
           </View>
         </Modal>
+        <AlartModal
+          visible={alartModalPicker}
+          onRequestClose={() => setAlartModalPicker(false)}
+          title={alartMessage}
+          onPress={() => setAlartModalPicker(false)}
+        />
       </StoryScreen>
     );
 }
