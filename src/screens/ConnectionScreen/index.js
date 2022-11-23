@@ -14,6 +14,7 @@ import R from '../../res/R';
 import {connect, Connect, useDispatch} from 'react-redux';
 import {ConnectedUsersRequest} from '../../actions/connectedUser.action';
 import {Config} from '../../config';
+import axios from 'axios';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -29,18 +30,40 @@ const ConnectionScreen = props => {
   }, [props.navigation]);
 
   const onCallConnectedUserAPI = () => {
-    dispatch(
-      ConnectedUsersRequest(response => {
-        console.log('Connected User Res', response);
-        if (response.status == 'success') {
-          setLoading(false);
-          setConnectedUserList(response.data?.connected);
-          setMyUserId(response.data?.userId);
-        } else {
-          setLoading(false);
-        }
-      }),
-    );
+    console.log(`${Config.API_URL}${Config.connectedUsersAPI}`);
+    console.log(props.authToken);
+
+   setLoading(true);
+   let headerAuth = {
+     token: props.authToken,
+   };
+
+    const headers = headerAuth;
+    const config = {
+      method: 'POST',
+      headers,
+    };
+
+   fetch(`${Config.API_URL}${Config.connectedUsersAPI}`, config)
+     .then(res => res.json())
+     .then(response => {
+       console.log('RES conn', response);
+       if (response.status == 'success') {
+         setLoading(false);
+         setConnectedUserList(response.data?.connected);
+         setMyUserId(response.data?.userId);
+       } else {
+         setLoading(false);
+       }
+     })
+     .catch(error => {
+       console.log('ERRORONAPI', error);
+      setLoading(false);
+
+     });
+    
+ 
+ 
   };
 
   return (
@@ -60,10 +83,9 @@ const ConnectionScreen = props => {
       <View
         style={{
           flex: 1,
-          paddingHorizontal: R.fontSize.Size20,
         }}>
         <FlatList
-          style={{flex: 1}}
+          style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}
           data={connectedUserList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {

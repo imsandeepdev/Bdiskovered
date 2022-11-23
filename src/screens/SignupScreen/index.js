@@ -317,7 +317,7 @@ const onCheckDocument = () => {
         license_number: companytradeNo,
         company_registration_id: companyRegId,
         owner_name: companyOwnerName,
-        company_address: '',
+        company_address: companyAddress,
         document: documentPic,
       };
 

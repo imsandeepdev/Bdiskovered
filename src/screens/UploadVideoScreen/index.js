@@ -314,6 +314,9 @@ console.log("FORMD",formdata)
     if(response.status == 'success')
     {
       Toast.show(response.message, Toast.SHORT)
+       props.navigation.navigate('NoResultScreen', {
+         from: 'UploadVideoScreen',
+       });
       setLoading(false)
     }
     else

@@ -192,6 +192,13 @@ const SearchScreen = props => {
   //   )
   // }
 
+  const onCallCheckSub = () => {
+     props.userProfile?.Profile?.subscription != 0
+       ? onCallfilterApply()
+       : props.navigation.navigate('SubscriptionScreen');
+  }
+
+
   const onCallfilterApply = () => {
     console.log(filterPrice?.firstValue.trim());
     
@@ -219,7 +226,10 @@ const SearchScreen = props => {
       }
       else
       {
-        Toast.show(response.message, Toast.SHORT)
+        // Toast.show(response.message, Toast.SHORT)
+        props.navigation.navigate('NoResultScreen', {
+          from: 'SearchScreen',
+        });
       }
     }))
     
@@ -262,7 +272,16 @@ const SearchScreen = props => {
                             }${filterPrice?.secondValue}`
                           : 'Select Price'
                       }
-                      rightIcon={R.images.chevronDown}
+                      onPressSecondRight={() => {
+                        filterPrice != null
+                          ? setFilterPrice()
+                          : onCallOpenModal('Price');
+                      }}
+                      rightIcon={
+                        filterPrice != null
+                          ? R.images.cancleIcon
+                          : R.images.chevronDown
+                      }
                     />
                     <CustomTitle title={'Location'} />
                     <CustomCardLine
@@ -272,7 +291,16 @@ const SearchScreen = props => {
                           ? `${filterLocation?.firstValue}`
                           : 'Select Location'
                       }
-                      rightIcon={R.images.chevronDown}
+                      onPressSecondRight={() => {
+                        filterLocation != null
+                          ? setFilterLocation()
+                          : onCallOpenModal('Location');
+                      }}
+                      rightIcon={
+                        filterLocation != null
+                          ? R.images.cancleIcon
+                          : R.images.chevronDown
+                      }
                     />
                     {/* <CustomLineTextInput
                       placeholder={'Location'}
@@ -290,7 +318,16 @@ const SearchScreen = props => {
                             }${filterAge?.secondValue}`
                           : 'Select Age'
                       }
-                      rightIcon={R.images.chevronDown}
+                      onPressSecondRight={() => {
+                        filterAge != null
+                          ? setFilterAge()
+                          : onCallOpenModal('Age');
+                      }}
+                      rightIcon={
+                        filterAge != null
+                          ? R.images.cancleIcon
+                          : R.images.chevronDown
+                      }
                     />
                     <View
                       style={{
@@ -347,16 +384,22 @@ const SearchScreen = props => {
                             }${filterRating?.secondValue}`
                           : 'Select Rating'
                       }
-                      rightIcon={R.images.chevronDown}
+                      onPressSecondRight={() => {
+                        filterRating != null
+                          ? setFilterRating()
+                          : onCallOpenModal('Rating');
+                      }}
+                      rightIcon={
+                        filterRating != null
+                          ? R.images.cancleIcon
+                          : R.images.chevronDown
+                      }
                     />
                   </View>
                 </View>
 
                 <View style={{paddingVertical: R.fontSize.Size30}}>
-                  <AppButton
-                    onPress={() => onCallfilterApply()}
-                    title={'Apply'}
-                  />
+                  <AppButton onPress={() => onCallCheckSub()} title={'Apply'} />
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -491,6 +534,7 @@ const SearchScreen = props => {
 
 const mapStatetoProps = (state, props) => ({
   authToken: state.auth.authToken,
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
   userType: state.auth.userType,
 });
 

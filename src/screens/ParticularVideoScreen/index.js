@@ -278,7 +278,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           <View>
                             <Slider
                               disabled={
-                                item.postInfo[0]?.percentage_like != null
+                                item?.postInfo[0]?.percentage_like != null
                                   ? true
                                   : false
                               }
@@ -389,7 +389,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               }}>
                               {'Average Like '}
                               <Text style={{color: R.colors.appColor}}>
-                                {item?.total_rating != ''
+                                {item?.total_rating != '' || item?.total_rating != null
                                   ? `${(
                                       item?.total_rating /
                                       (item?.total_likes * 20)

@@ -345,28 +345,6 @@ const onCallGoogleAPI = profileDetails => {
           Toast.show(res.data.message, Toast.SHORT);
         }
       })
-
-    // setLoading(true)
-    // let data = {
-    //   id:PostId,
-    //   percentage_like:`${PercentLike}`
-    // }
-    // console.log('LIKE DATA',data)
-    // dispatch(VideoRatingRequest(data,response=>{
-    //   console.log('VIDEO RATING RES', response);
-    //   if(response.status == 'success')
-    //   {
-    //     Toast.show(response.message, Toast.SHORT)
-    //     onCallShowAllPost();
-    //     setLoading(false);
-    //   }
-    //   else
-    //   {
-    //     Toast.show(response.message, Toast.SHORT);
-    //     setLoading(false);
-
-    //   }
-    // }))
   }
 
  

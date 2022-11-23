@@ -38,25 +38,35 @@ const NoResultScreen = props => {
           leftSource={R.images.chevronBack}
         />
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text
+          {
+            props.route.params?.from == 'SearchScreen' ?
+            <Text
             style={{
               fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size14,
+              fontSize: R.fontSize.Size16,
               color: R.colors.placeHolderColor,
               fontWeight: '500',
               textAlign: 'center',
-            }}>{`No Result Found`}</Text>
-          <View>
+            }}>{`No Result Found`}
+            </Text>
+            :
+          <View
+          style={{
+            alignItems:'center',
+            justifyContent:'center',
+            marginHorizontal:R.fontSize.Size20
+          }}
+          >
             <Image
               source={R.images.paymentSuccessIcon}
-              style={{height: R.fontSize.Size30, width: R.fontSize.Size30}}
+              style={{height: R.fontSize.Size140, width: R.fontSize.Size140}}
               resizeMode={'contain'}
             />
             <Text
               style={{
                 marginTop:R.fontSize.Size10,
                 fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size14,
+                fontSize: R.fontSize.Size16,
                 color: R.colors.primaryTextColor,
                 fontWeight: '500',
                 textAlign: 'center',
@@ -64,14 +74,17 @@ const NoResultScreen = props => {
               {`Your Uploaded video is going to under review for publish`}
             </Text>
           </View>
+            }
         </View>
+        {
+         props.route.params?.from != 'SearchScreen'   &&  
         <View style={{paddingVertical: R.fontSize.Size16}}>
           <AppButton
             onPress={() => onCallProcess()}
             marginHorizontal={R.fontSize.Size35}
             title={'Proceed'}
           />
-        </View>
+        </View>}
       </SafeAreaView>
     </StoryScreen>
   );
