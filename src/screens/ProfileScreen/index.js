@@ -9,7 +9,6 @@ import { GetProfileDetailsRequest, ProfileUpdateRequest } from '../../actions/ge
 import { Config } from '../../config';
 import { PostDeleteRequest } from '../../actions/uploadNewVideo.action';
 import moment from 'moment';
-import Geocoder from 'react-native-geocoder-reborn';
 import ImagePicker from 'react-native-image-crop-picker';
 import CalendarPicker from 'react-native-calendar-picker';
 
@@ -168,6 +167,8 @@ const [companyAddress, setCompanyAddress] = useState('');
 const [comLicenceNo, setComLicenceNo] = useState('');
 const [comOwnerName, setComOwnerName] = useState('');
 
+const [userLocation, setUserLocation] = useState('')
+
 
   useEffect(()=>{
 
@@ -187,43 +188,49 @@ const [comOwnerName, setComOwnerName] = useState('');
     onCallProfileAPI();
   };
 
-  //  const onCallGoogleAPI = (lat, long) => {
-   
-  //    fetch(
-  //      `${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`,
-  //    )
-  //      .then(res => res.json())
-  //      .then(response => {
-  //        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-        //  let temparray = []
-        //  temparray = response?.results;
-        //  let tempLength = temparray.length;
-        //  let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-        //  let arrayAddress = arrayAdd.split(",")
-        //  let arrAddLength = arrayAddress.length
-        //  console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+   const onCallGoogleAPI = (profileDetails) => {
+   setLoading(true)
+    console.log("PROFILE DETAILS ON GAPI", profileDetails)
 
-        //  console.log('FORMAT ADDRESS',arrayAddress[arrAddLength-1]);
-  //      });
-  //  };
+     
+     fetch(
+       `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
+     )
+       .then(res => res.json())
+       .then(response => {
+         console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+         let temparray = [];
+         temparray = response?.results;
+         let tempLength = temparray.length;
+         let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+         let arrayAddress = arrayAdd.split(',');
+         let arrAddLength = arrayAddress.length;
+         console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+
+         console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+         setPersonalArray([
+           profileDetails?.gender,
+           `${moment().diff(profileDetails?.birth, 'years')} Year`,
+           `${arrayAddress[arrAddLength - 3]}`,
+         ]);
+         setLoading(false);
+       });
+   };
 
   const onCallProfileAPI = () => {
     setLoading(true)
     dispatch(GetProfileDetailsRequest(response => {
       console.log('Get Profile Res', response)
       if (response.status == 'success' && props.userType == 'Talent') {
+        onCallGoogleAPI(response.Profile);
         setProfileDetails(response.Profile);
         let tempTalentArray = response.Profile?.category;
         let useTalentArray = tempTalentArray.split(',');
         console.log('useTalentArray', useTalentArray);
         setTalentArray(useTalentArray);
         setTailentPostVideo(response.Profile?.post);
-        setPersonalArray([
-          response.Profile?.gender,
-          `${moment().diff(response.Profile?.birth, 'years')} Year`,
-          'Gurugaon',
-        ]);
-        onCallUserLocation(response.Profile);
+       
+        
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace(
             'http://localhost:8080/',
@@ -236,10 +243,7 @@ const [comOwnerName, setComOwnerName] = useState('');
         setLoading(false);
       } else if (response.status == 'success' && props.userType == 'Business') {
         console.log('BUSINESS');
-        // onCallGoogleAPI(
-        //   response.Profile?.latitude,
-        //   response.Profile?.longitude,
-        // );
+        
         setCompanyName(response.Profile?.company_name);
         setCompanyAddress(response.Profile?.company_address);
         setCompanyType(response.Profile?.company_type);
@@ -304,43 +308,10 @@ const [comOwnerName, setComOwnerName] = useState('');
         postId: postId
       }
       console.log('PostId',data)
-      // dispatch(PostDeleteRequest(data,response =>{
-      //   console.log('DeletePost Resp',response)
-      //   if(response.status == 'success')
-      //   {
-      //     onCallProfileAPI();
-      //     Toast.show(response.message, Toast.SHORT);
-      //     setLoading(false)
-      //   }
-      //   else
-      //   {
-      //     Toast.show(response.message, Toast.SHORT)
-      //     setLoading(false);
-      //   }
-      // }))
+      
     };
 
-    const onCallUserLocation = (profileData) => {
-        setLoading(true);
-
-      console.log("profile Data", profileData)
-      var NY = {
-        lat: parseInt(profileData?.latitude),
-        lng: parseInt(profileData?.longitude),
-      };
-      Geocoder.geocodePosition(NY)
-        .then(res => {
-          console.log("response",res)
-          setPersonalArray([
-            profileData?.gender,
-            `${moment().diff(profileData?.birth, 'years')} Year`,
-            `${res[0].locality}, ${res[0].country}`,
-          ]);
-        })
-        .catch(err => console.log("ERROR",err));
-        setLoading(false);
-
-    }
+   
 
     const onSelectPicker = params => {
       if (params == 'camera') {

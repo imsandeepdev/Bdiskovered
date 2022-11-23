@@ -41,133 +41,6 @@ import Share from 'react-native-share';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
 
-const persnalDetails = [
-  {
-    id: '1',
-    title: 'Age 24',
-  },
-  {
-    id: '2',
-    title: 'Female',
-  },
-  {
-    id: '3',
-    title: 'Gurugram',
-  },
-];
-
-const timeDetails = [
-  {
-    id: '1',
-    title: 'Gigs',
-  },
-  {
-    id: '2',
-    title: 'Full Time',
-  },
-  {
-    id: '3',
-    title: 'Internship',
-  },
-];
-
-const SuggestedList = [
-  {
-    id: '1',
-    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
-  },
-  {
-    id: '2',
-    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
-  },
-  {
-    id: '3',
-    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
-  },
-  {
-    id: '4',
-    url: 'https://www.adgully.com/img/800/202003/mahabharat.png.jpg',
-  },
-];
-
-
-const TailentList = [
-  {
-    id: '1',
-    name: 'Music',
-  },
-  {
-    id: '2',
-    name: 'Dance',
-  },
-  {
-    id: '3',
-    name: 'Fashion',
-  },
-  {
-    id: '4',
-    name: 'Music',
-  },
-  
-];
-
-const ConnectedUsers = [
-  {
-    id: '1',
-    name: 'ABCD',
-    source:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80',
-  },
-  {
-    id: '2',
-    name: 'Priya',
-    source:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80',
-  },
-  {
-    id: '3',
-    name: 'RiyaD',
-    source:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80',
-  },
-  {
-    id: '4',
-    name: 'Dimple',
-    source:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80',
-  },
-];
-
-const PopularList = [
-  {
-    id: '1',
-    name: 'bhishmasurgghgffr',
-    videoImg: 'https://pbs.twimg.com/media/Brsi03SCEAE_BzM.jpg',
-    source:
-      'https://image.shutterstock.com/image-vector/king-dhritarashtra-sitting-on-throne-260nw-1893392059.jpg',
-  },
-  {
-    id: '2',
-    name: 'Priya',
-    videoImg: 'https://pbs.twimg.com/media/Brsi03SCEAE_BzM.jpg',
-    source:
-      'https://image.shutterstock.com/image-vector/king-dhritarashtra-sitting-on-throne-260nw-1893392059.jpg',
-  },
-  {
-    id: '3',
-    name: 'RiyaD',
-    videoImg: 'https://pbs.twimg.com/media/Brsi03SCEAE_BzM.jpg',
-    source:
-      'https://image.shutterstock.com/image-vector/king-dhritarashtra-sitting-on-throne-260nw-1893392059.jpg',
-  },
-  {
-    id: '4',
-    name: 'Dimple',
-    videoImg: 'https://pbs.twimg.com/media/Brsi03SCEAE_BzM.jpg',
-    source:
-      'https://image.shutterstock.com/image-vector/king-dhritarashtra-sitting-on-throne-260nw-1893392059.jpg',
-  },
-];
 
 const CustomTimeRow = props => {
   return (
@@ -381,12 +254,8 @@ const HomeScreen = (props) => {
     if(type == 'videoDetailModal')
     {
       setVideoModalDetail(item)
-      setVideoModalPersonalDetail([
-        `${moment().diff(item?.birth, 'years')} Year`,
-        item?.gender,
-        'gurugram',
-      ]);
-      onCallModalUserLocation(item);
+     
+      onCallGoogleAPI(item)
       let tempTalentArray = item?.category;
       let useTalentArray = tempTalentArray.split(',');
       console.log('useTalentArray', useTalentArray);
@@ -399,26 +268,54 @@ const HomeScreen = (props) => {
     }
   }
 
- const onCallModalUserLocation = item => {
-   setLoading(true);
+const onCallGoogleAPI = profileDetails => {
+  setLoading(true);
+  console.log('PROFILE DETAILS ON GAPI', profileDetails);
 
-   console.log('profile Data', item);
-   var NY = {
-     lat: parseInt(item?.latitude),
-     lng: parseInt(item?.longitude),
-   };
-   Geocoder.geocodePosition(NY)
-     .then(res => {
-       console.log('response', res);
-       setVideoModalPersonalDetail([
-         `${moment().diff(item?.birth, 'years')} Year`,
-         item?.gender,
-         `${res[0].locality}, ${res[0].country}`,
-       ]);
-     })
-     .catch(err => console.log('ERROR', err));
-   setLoading(false);
- };
+  fetch(
+    `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
+  )
+    .then(res => res.json())
+    .then(response => {
+      console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+      let temparray = [];
+      temparray = response?.results;
+      let tempLength = temparray.length;
+      let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+      let arrayAddress = arrayAdd.split(',');
+      let arrAddLength = arrayAddress.length;
+      console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+
+      console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+      setVideoModalPersonalDetail([
+        profileDetails?.gender,
+        `${moment().diff(profileDetails?.birth, 'years')} Year`,
+        `${arrayAddress[arrAddLength - 3]}`,
+      ]);
+      setLoading(false);
+    });
+};
+
+//  const onCallModalUserLocation = item => {
+//    setLoading(true);
+
+//    console.log('profile Data', item);
+//    var NY = {
+//      lat: parseInt(item?.latitude),
+//      lng: parseInt(item?.longitude),
+//    };
+//    Geocoder.geocodePosition(NY)
+//      .then(res => {
+//        console.log('response', res);
+//        setVideoModalPersonalDetail([
+//          `${moment().diff(item?.birth, 'years')} Year`,
+//          item?.gender,
+//          `${res[0].locality}, ${res[0].country}`,
+//        ]);
+//      })
+//      .catch(err => console.log('ERROR', err));
+//    setLoading(false);
+//  };
 
   const onCallShowAllPost = () => {
     setLoading(true)
@@ -428,10 +325,6 @@ const HomeScreen = (props) => {
       if(response.status=='success')
       {
         setAllVideoPostList(response?.Post)
-       
-
-          // setSliderValue(0);
-
         setLoading(false);
       }
     }))  
@@ -524,17 +417,22 @@ const HomeScreen = (props) => {
   }
 
   const onCallUserLocation = (lat, long) => {
-    var NY = {
-      lat: parseInt(lat),
-      lng: parseInt(long),
-    };
-    Geocoder.geocodePosition(NY)
-      .then(res => {
-        console.log('response', res);
-        setTailentLocation(`${res[0]?.locality}, ${res[0]?.country}`);
-       
-      })
-      .catch(err => console.log('ERROR', err));
+    fetch(
+      `${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`,
+    )
+      .then(res => res.json())
+      .then(response => {
+        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+        let temparray = [];
+        temparray = response?.results;
+        let tempLength = temparray.length;
+        let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+        let arrayAddress = arrayAdd.split(',');
+        let arrAddLength = arrayAddress.length;
+        console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+        console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+        setTailentLocation(arrayAddress[arrAddLength - 3]);     
+      });
   };
 
   const myCustomShare = async () => {
@@ -572,14 +470,17 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
             vertical={true}
             style={{flex: 1}}
             nestedScrollEnabled
-            
             data={allVideoPostList}
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
             renderItem={({item, index}) => {
 
-
-              onCallUserLocation(item?.latitude, item?.longitude);
+              
+                if (currIndex == index)
+                {
+                    onCallUserLocation(item?.latitude, item?.longitude);
+                }
+              
               return (
                 <View
                   key={index}
@@ -666,10 +567,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
-                      {console.log(
-                        'POST INRO',
-                        item?.postInfo != 'undefined' && item?.postInfo!= null ? item?.postInfo[0] : '0000'
-                      )}
+                      
                       <View>
                         <Slider
                           disabled={(item?.postInfo != 'undefined' && item?.postInfo!= null)&&  item.postInfo[0]?.percentage_like != null

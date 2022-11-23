@@ -1,33 +1,25 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {View, Text, Image, SafeAreaView,ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard  } from 'react-native';
+import {View, Text, Image, SafeAreaView,ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, ActivityIndicator  } from 'react-native';
 import {Header, StoryScreen} from '../../components';
 import R from '../../res/R';
 import {GiftedChat,Bubble,InputToolbar,Send} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore'
-
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 // import {useSafeAreaInsets} from 'react-native-safe-area-context';
 // const insets = useSafeAreaInsets();
+import {isIphoneX,getBottomSpace} from 'react-native-iphone-x-helper';
+import DeviceInfo from 'react-native-device-info';
+
 
 const ChatScreen = props => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // console.log('TAILENT USER ID', props.route.params?.tailentUserId);
-    // console.log('MY USER ID', props.route.params?.MyUserId);
-    // setMessages([
-    //   {
-    //     _id: 1,
-    //     text: 'Hello developer',
-    //     createdAt: new Date(),
-    //     user: {
-    //       _id: 2,
-    //       name: 'React Native',
-    //       avatar: 'https://placeimg.com/140/140/any',
-    //     },
-    //   },
-    // ]);
+
+    console.log("BOTTOM BAR S", getBottomSpace)
+  
     console.log('MY USER ID', props.route.params?.MyUserId);
     console.log('TAILENT USER ID', props.route.params?.tailentUserId);
 
@@ -36,6 +28,8 @@ const ChatScreen = props => {
   }, [props.navigation]);
 
    const getOnSnapMessage =  () => {
+      setLoading(true);
+
      const docid =
        props.route.params?.tailentUserId > props.route.params?.MyUserId
          ? props.route.params?.MyUserId +
@@ -56,6 +50,7 @@ const ChatScreen = props => {
         return {
           ...docSnap.data(),
           createdAt: docSnap.data().createdAt.toDate(),
+          
         };
       }
       else
@@ -68,11 +63,13 @@ const ChatScreen = props => {
        
      });
      setMessages(allmsg);
+      setLoading(false);
+
       })
    };
 
   const getAllMessages = async ()=> {
-
+      setLoading(true)
       const docid =
         props.route.params?.tailentUserId > props.route.params?.MyUserId
           ? props.route.params?.MyUserId +
@@ -93,6 +90,7 @@ const ChatScreen = props => {
         };
       });
       setMessages(allmsg);
+      setLoading(false)
   }
 
   const onSend = messagesArray => {
@@ -120,31 +118,35 @@ const ChatScreen = props => {
       .add({...mymsg, createdAt:firestore.FieldValue.serverTimestamp()})
   };
 
+
+
+
   return (
-    <StoryScreen>
-      <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: R.colors.white}}>
+     
+      <View style={{flex: 1}}>
         <Header
           onPress={() => props.navigation.goBack()}
           leftSource={R.images.chevronBack}
           title={props.route.params?.userName}
         />
-        {/* <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
-          style={{flex: 1}}>
-          <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            showsVerticalScrollIndicator={false}>
-            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
+        {
+        loading ?
+        <View
+        style={{flex:1, alignItems:'center',justifyContent:'center'}}
+        >
+          <ActivityIndicator size={'large'} color={R.colors.appColor} />
+        </View>
+      :
         <View
           style={{
             flex: 1,
             backgroundColor: R.colors.lightWhite,
-            // paddingTop: insets.top,
-            // paddingLeft: insets.left,
-            // paddingRight: insets.right,
-            // paddingBottom: insets.bottom,
+           
           }}>
           <GiftedChat
+            isAnimated
+            bottomOffset={ DeviceInfo.hasNotch() ? R.fontSize.Size70:0}
             scrollToBottom
             messages={messages}
             onSend={messages => onSend(messages)}
@@ -171,7 +173,6 @@ const ChatScreen = props => {
                 <InputToolbar
                   {...props}
                   containerStyle={{
-                  
                     borderTopColor: R.colors.appColor,
                   }}
                   textInputStyle={{color: R.colors.primaryTextColor}}
@@ -183,7 +184,6 @@ const ChatScreen = props => {
                 <Send {...props}>
                   <View
                     style={{
-                      
                       width: 50,
                       height: 45,
                       alignItems: 'center',
@@ -203,11 +203,11 @@ const ChatScreen = props => {
             }}
           />
         </View>
-        {/* </TouchableWithoutFeedback>
-          </ScrollView>
-        </KeyboardAvoidingView> */}
-      </SafeAreaView>
-    </StoryScreen>
+}  
+      </View>
+
+     
+    </SafeAreaView>
   );
 };
 

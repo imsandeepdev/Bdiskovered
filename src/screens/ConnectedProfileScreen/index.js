@@ -171,11 +171,8 @@ const ConnectedProfileScreen = props => {
          console.log('useTalentArray', useTalentArray);
           setTalentArray(useTalentArray)
           setTailentPostVideo(response.Profile?.post)
-         setPersonalArray([
-           response.Profile?.gender,
-           `${moment().diff(response.Profile?.birth, 'years')} Year`,
-           'Gurugram',
-         ]);
+          onCallGoogleAPI(response.Profile);
+        
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace('http://localhost:8080/','')}`,
           mime: 'profile/jpeg',
@@ -185,6 +182,34 @@ const ConnectedProfileScreen = props => {
       }
     }))
   }
+
+  const onCallGoogleAPI = profileDetails => {
+    setLoading(true);
+    console.log('PROFILE DETAILS ON GAPI', profileDetails);
+
+    fetch(
+      `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
+    )
+      .then(res => res.json())
+      .then(response => {
+        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+        let temparray = [];
+        temparray = response?.results;
+        let tempLength = temparray.length;
+        let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+        let arrayAddress = arrayAdd.split(',');
+        let arrAddLength = arrayAddress.length;
+        console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+
+        console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+       setPersonalArray([
+         profileDetails?.gender,
+         `${moment().diff(profileDetails?.birth, 'years')} Year`,
+         `${arrayAddress[arrAddLength - 3]}`,
+       ]);
+        setLoading(false);
+      });
+  };
 
   const onCallMyUserId = () => {
     AsyncStorage.getItem('MyUserId', (err, result) => {
