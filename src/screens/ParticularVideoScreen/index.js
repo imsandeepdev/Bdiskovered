@@ -66,26 +66,71 @@ const ParticularVideoScreen = props => {
   }, [props.navigation]);
 
   useEffect(() => {
+    console.log('VIDEO POST ID', props.route.params?.videoPostId);
     onCallParticularVideoPostAPI()
   }, [props.navigation]);
 
   const onCallParticularVideoPostAPI = () => {
-    setLoading(true)
-    let data = {
+
+   setLoading(true);
+   let headerAuth = {
+     token: props.authToken,
+   };
+
+   let data = {
       post_id: props.route.params?.videoPostId,
     };
-    dispatch(PlayParticularVideoRequest(data, response =>{
-        console.log("PLAY PARTICULAR VIDEO RES", response)
-        if(response.status == 'success')
-        {
-        setVideoList(response?.Post);
-        setLoading(false);
-        }
-        else{
-        Toast.show(response.message, Toast.SHORT);
-        setLoading(false);
-        }
-    }))
+    var formBody = [];
+    for (var property in data) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(data[property]);
+      formBody.push(encodedKey + '=' + encodedValue);
+    }
+   const headers = headerAuth;
+   const config = {
+     method: 'POST',
+     headers,
+     body: formBody
+   };
+
+   console.log("FORM CONFIG", config)
+
+   fetch(`${Config.API_URL}${Config.showAllPostAPI}`, config)
+     .then(res => res.json())
+     .then(response => {
+       console.log('PLAY PARTICULAR VIDEO RES', response);
+           if(response.status == 'success')
+           {
+           setVideoList(response?.Post);
+           setLoading(false);
+           }
+           else{
+           Toast.show(response.message, Toast.SHORT);
+           setLoading(false);
+           }
+     })
+     .catch(error => {
+       console.log('ERRORONAPI', error);
+       setLoading(false);
+     });
+
+
+    // setLoading(true)
+    // let data = {
+    //   post_id: props.route.params?.videoPostId,
+    // };
+    // dispatch(PlayParticularVideoRequest(data, response =>{
+    //     console.log("PLAY PARTICULAR VIDEO RES", response)
+    //     if(response.status == 'success')
+    //     {
+    //     setVideoList(response?.Post);
+    //     setLoading(false);
+    //     }
+    //     else{
+    //     Toast.show(response.message, Toast.SHORT);
+    //     setLoading(false);
+    //     }
+    // }))
   }
 
   const myCustomShare = async () => {
@@ -275,15 +320,15 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           justifyContent: 'center',
                         }}>
                         <View style={{flex: 1}}>
-                          <View>
+                          {/* <View>
                             <Slider
                               disabled={
-                                item?.postInfo[0]?.percentage_like != null
+                                (item?.postInfo != 'undefined' && item?.postInfo!= null &&  item.postInfo[0]?.percentage_like != null)
                                   ? true
                                   : false
                               }
                               value={
-                                item?.postInfo[0]?.percentage_like != null
+                                (item?.postInfo != 'undefined' && item?.postInfo!= null &&  item.postInfo[0]?.percentage_like != null)
                                   ? parseInt(item.postInfo[0]?.percentage_like)
                                   : sliderValue[index]
                               }
@@ -352,7 +397,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                 </View>
                               }
                             />
-                          </View>
+                          </View> */}
                           <View
                             style={{
                               flexDirection: 'row',

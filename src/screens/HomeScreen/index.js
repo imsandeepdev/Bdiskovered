@@ -469,7 +469,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       userName={item?.username}
                       videoCat={tailentLocation != '' ? tailentLocation : ''}
                       bottomTitle={item?.title}
-                      bottomDiscription={item?.bio}
+                      bottomDiscription={item?.description}
                       usdPrice={`USD ${item?.amount}`}
                       // onProgress={onProgress}
                       onLoad={onLoad}
@@ -525,14 +525,18 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
-                      
                       <View>
                         <Slider
-                          disabled={(item?.postInfo != 'undefined' && item?.postInfo!= null)&&  item.postInfo[0]?.percentage_like != null
+                          disabled={
+                            item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
+                            item.postInfo[0]?.percentage_like != null
                               ? true
                               : false
                           }
-                          value={ (item?.postInfo != 'undefined' && item?.postInfo!= null) &&
+                          value={
+                            item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
                             item.postInfo[0]?.percentage_like != null
                               ? parseInt(item.postInfo[0]?.percentage_like)
                               : sliderValue[index]
@@ -590,8 +594,8 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                     fontSize: R.fontSize.Size8,
                                     height: R.fontSize.Size20,
                                   }}>
-                                  {
-                                  (item?.postInfo != 'undefined' && item?.postInfo!= null) &&
+                                  {item?.postInfo != 'undefined' &&
+                                  item?.postInfo != null &&
                                   item.postInfo[0]?.percentage_like != null
                                     ? parseInt(
                                         item.postInfo[0]?.percentage_like,

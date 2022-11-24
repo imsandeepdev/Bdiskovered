@@ -24,7 +24,7 @@ const SubscriptionCard = (props) => {
           style={{
             borderWidth: props.borderWidth,
             borderColor: props.borderColor ?? R.colors.appColor,
-            paddingHorizontal: R.fontSize.Size20,
+            paddingHorizontal: R.fontSize.Size12,
             borderRadius: R.fontSize.Size8,
             backgroundColor: R.colors.white,
             shadowColor: '#000',
@@ -100,7 +100,7 @@ const SubscriptionCard = (props) => {
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size20,
+                  fontSize: R.fontSize.Size18,
                   color: props.monthTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '500',
                 }}>
