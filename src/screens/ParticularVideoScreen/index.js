@@ -72,65 +72,67 @@ const ParticularVideoScreen = props => {
 
   const onCallParticularVideoPostAPI = () => {
 
-   setLoading(true);
-   let headerAuth = {
-     token: props.authToken,
-   };
+  //  setLoading(true);
+  //  let headerAuth = {
+  //    Accept: 'application/json',
+  //    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
+  //    token: props.authToken,
+  //  };
 
-   let data = {
+  //  let data = {
+  //     post_id: props.route.params?.videoPostId,
+  //   };
+  //   var formBody = [];
+  //   for (var property in data) {
+  //     var encodedKey = encodeURIComponent(property);
+  //     var encodedValue = encodeURIComponent(data[property]);
+  //     formBody.push(encodedKey + '=' + encodedValue);
+  //   }
+  //  const headers = headerAuth;
+  //  const config = {
+  //    method: 'POST',
+  //    headers,
+  //    body: formBody
+  //  };
+
+  //  console.log("FORM CONFIG", config)
+
+  //  fetch(`${Config.API_URL}${Config.showAllPostAPI}`, config)
+  //    .then(res => res.json())
+  //    .then(response => {
+  //      console.log('PLAY PARTICULAR VIDEO RES', response);
+  //          if(response.status == 'success')
+  //          {
+  //          setVideoList(response?.Post);
+  //          setLoading(false);
+  //          }
+  //          else{
+  //          Toast.show(response.message, Toast.SHORT);
+  //          setLoading(false);
+  //          }
+  //    })
+  //    .catch(error => {
+  //      console.log('ERRORONAPI', error);
+  //      setLoading(false);
+  //    });
+
+
+    setLoading(true)
+    let data = {
       post_id: props.route.params?.videoPostId,
     };
-    var formBody = [];
-    for (var property in data) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(data[property]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-   const headers = headerAuth;
-   const config = {
-     method: 'POST',
-     headers,
-     body: formBody
-   };
-
-   console.log("FORM CONFIG", config)
-
-   fetch(`${Config.API_URL}${Config.showAllPostAPI}`, config)
-     .then(res => res.json())
-     .then(response => {
-       console.log('PLAY PARTICULAR VIDEO RES', response);
-           if(response.status == 'success')
-           {
-           setVideoList(response?.Post);
-           setLoading(false);
-           }
-           else{
-           Toast.show(response.message, Toast.SHORT);
-           setLoading(false);
-           }
-     })
-     .catch(error => {
-       console.log('ERRORONAPI', error);
-       setLoading(false);
-     });
-
-
-    // setLoading(true)
-    // let data = {
-    //   post_id: props.route.params?.videoPostId,
-    // };
-    // dispatch(PlayParticularVideoRequest(data, response =>{
-    //     console.log("PLAY PARTICULAR VIDEO RES", response)
-    //     if(response.status == 'success')
-    //     {
-    //     setVideoList(response?.Post);
-    //     setLoading(false);
-    //     }
-    //     else{
-    //     Toast.show(response.message, Toast.SHORT);
-    //     setLoading(false);
-    //     }
-    // }))
+    dispatch(PlayParticularVideoRequest(data, response =>{
+        console.log("PLAY PARTICULAR VIDEO RES", response)
+        if(response.status == 'success')
+        {
+        setVideoList(response?.Post);
+        setLoading(false);
+        }
+        else{
+        Toast.show(response.message, Toast.SHORT);
+        setLoading(false);
+        }
+    }))
   }
 
   const myCustomShare = async () => {
@@ -266,7 +268,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                             '',
                           )}`}
                           bottomTitle={item?.title}
-                          bottomDiscription={item?.bio}
+                          bottomDiscription={item?.description}
                           usdPrice={`USD ${item?.amount}`}
                           onLoad={onLoad}
                           paused={currIndex !== index || videoPlayPause}
@@ -320,17 +322,21 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           justifyContent: 'center',
                         }}>
                         <View style={{flex: 1}}>
-                          {/* <View>
+                          <View>
                             <Slider
                               disabled={
-                                (item?.postInfo != 'undefined' && item?.postInfo!= null &&  item.postInfo[0]?.percentage_like != null)
+                                item?.postInfo != 'undefined' &&
+                                item?.postInfo != null &&
+                                item.postInfo[0]?.percentage_like != null
                                   ? true
                                   : false
                               }
                               value={
-                                (item?.postInfo != 'undefined' && item?.postInfo!= null &&  item.postInfo[0]?.percentage_like != null)
+                                item?.postInfo != 'undefined' &&
+                                item?.postInfo != null &&
+                                item.postInfo[0]?.percentage_like != null
                                   ? parseInt(item.postInfo[0]?.percentage_like)
-                                  : sliderValue[index]
+                                  : sliderValue
                               }
                               minimumValue={0}
                               maximumValue={100}
@@ -371,7 +377,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                     left: 0,
                                     right: 0,
                                   }}>
-                                  <ImageBackground
+                                  <Image
                                     source={R.images.redHeartIcon}
                                     style={{
                                       width: R.fontSize.Size35,
@@ -379,25 +385,12 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                       justifyContent: 'center',
                                       alignItems: 'center',
                                     }}
-                                    resizeMode={'contain'}>
-                                    <Text
-                                      style={{
-                                        color: R.colors.white,
-                                        fontSize: R.fontSize.Size8,
-                                        height: R.fontSize.Size20,
-                                      }}>
-                                      {item?.postInfo[0]?.percentage_like !=
-                                      null
-                                        ? parseInt(
-                                            item.postInfo[0]?.percentage_like,
-                                          )
-                                        : sliderValue.toFixed(0)}
-                                    </Text>
-                                  </ImageBackground>
+                                    resizeMode={'contain'}
+                                    />          
                                 </View>
                               }
                             />
-                          </View> */}
+                          </View>
                           <View
                             style={{
                               flexDirection: 'row',
@@ -434,7 +427,8 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               }}>
                               {'Average Like '}
                               <Text style={{color: R.colors.appColor}}>
-                                {item?.total_rating != '' || item?.total_rating != null
+                                {item?.total_rating != '' ||
+                                item?.total_rating != null
                                   ? `${(
                                       item?.total_rating /
                                       (item?.total_likes * 20)
@@ -443,6 +437,24 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               </Text>
                             </Text>
                           </View>
+                        </View>
+                        <View
+                          style={{
+                            paddingHorizontal: R.fontSize.Size5,
+                            height: R.fontSize.Size26,
+                          }}>
+                          <Text
+                            style={{
+                              color: R.colors.appColor,
+                              fontSize: R.fontSize.Size12,
+                              fontWeight: '700',
+                            }}>
+                            {item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
+                            item.postInfo[0]?.percentage_like != null
+                              ? `${parseInt(item.postInfo[0]?.percentage_like)}`
+                              : sliderValue.toFixed(0)}
+                          </Text>
                         </View>
                         <Pressable
                           disabled={
@@ -453,7 +465,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           onPress={() => onPressBoostAPI(item?.postID)}
                           style={({pressed}) => [
                             {
-                              marginHorizontal: R.fontSize.Size15,
+                              marginHorizontal: R.fontSize.Size8,
                               alignItems: 'center',
                               opacity: pressed ? 0.5 : 1,
                             },

@@ -122,7 +122,7 @@ const FilterVideoScreen = props => {
   const [videoModalPersonalDetail, setVideoModalPersonalDetail] = useState([]);
   const [videoModalTalentDetail, setVideoModalTalentDetail] = useState([]);
   const [videoModalAvailableDetail, setVideoModalAvailableDetail] = useState([]);
-
+  const [saveVideoList, setSaveVideoList] = useState([])
 
   useEffect(() => {
     const blur = props.navigation.addListener('blur', () => {
@@ -185,10 +185,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
       console.log('LIKE RES', res);
       if (res.data.status == 'success') {
         Toast.show(res.data.message, Toast.SHORT);
-        setVideoList(props.route.params?.videoItems);
+        setVideoList(videoList);
         setTimeout(() => {
           setSliderValue(0);
-        }, 3000);
+        }, 2000);
         setLoading(false);
       } else {
         setLoading(false);
@@ -386,7 +386,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                 left: 0,
                                 right: 0,
                               }}>
-                              <ImageBackground
+                              <Image
                                 source={R.images.redHeartIcon}
                                 style={{
                                   width: R.fontSize.Size35,
@@ -394,20 +394,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                 }}
-                                resizeMode={'contain'}>
-                                <Text
-                                  style={{
-                                    color: R.colors.white,
-                                    fontSize: R.fontSize.Size8,
-                                    height: R.fontSize.Size20,
-                                  }}>
-                                  {item?.postInfo[0]?.percentage_like != null
-                                    ? parseInt(
-                                        item.postInfo[0]?.percentage_like,
-                                      )
-                                    : sliderValue.toFixed(0)}
-                                </Text>
-                              </ImageBackground>
+                                resizeMode={'contain'}/>
                             </View>
                           }
                         />
@@ -453,11 +440,29 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                         </Text>
                       </View>
                     </View>
+                    <View
+                      style={{
+                        paddingHorizontal: R.fontSize.Size5,
+                        height: R.fontSize.Size26,
+                      }}>
+                      <Text
+                        style={{
+                          color: R.colors.appColor,
+                          fontSize: R.fontSize.Size12,
+                          fontWeight: '700',
+                        }}>
+                        {item?.postInfo != 'undefined' &&
+                        item?.postInfo != null &&
+                        item.postInfo[0]?.percentage_like != null
+                          ? `${parseInt(item.postInfo[0]?.percentage_like)}`
+                          : sliderValue.toFixed(0)}
+                      </Text>
+                    </View>
                     <Pressable
                       onPress={() => onPressOrangeAppIcon(item?.profileID)}
                       style={({pressed}) => [
                         {
-                          marginHorizontal: R.fontSize.Size15,
+                          marginHorizontal: R.fontSize.Size8,
                           alignItems: 'center',
                           opacity: pressed ? 0.5 : 1,
                         },

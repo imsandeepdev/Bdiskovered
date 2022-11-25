@@ -43,26 +43,28 @@ const ChatScreen = props => {
        .collection('message')
        .orderBy('createdAt', 'desc')
       messageRef.onSnapshot((quarySnap) => {
-      const allmsg = quarySnap.docs.map(docSnap => {
-      const data = docSnap.data()
-      if(data.createdAt)
-      {
-        return {
-          ...docSnap.data(),
-          createdAt: docSnap.data().createdAt.toDate(),
+      console.log('QUARY SNAP', quarySnap);
+
+    //   const allmsg = quarySnap.docs.map(docSnap => {
+    //   const data = docSnap.data()
+    //   if(data.createdAt)
+    //   {
+    //     return {
+    //       ...docSnap.data(),
+    //       createdAt: docSnap.data().createdAt.toDate(),
           
-        };
-      }
-      else
-      {
-        return {
-          ...docSnap.data(),
-          createdAt: new Date()
-        };
-      }
+    //     };
+    //   }
+    //   else
+    //   {
+    //     return {
+    //       ...docSnap.data(),
+    //       createdAt: new Date()
+    //     };
+    //   }
        
-     });
-     setMessages(allmsg);
+    //  });
+    //  setMessages(allmsg);
       setLoading(false);
 
       })
@@ -83,13 +85,14 @@ const ChatScreen = props => {
         .collection('message')
         .orderBy('createdAt','desc')
         .get();
-      const allmsg = quarySnap.docs.map(docSnap=>{
-        return {
-          ...docSnap.data(),
-          createdAt: docSnap.data().createdAt.toDate(),
-        };
-      });
-      setMessages(allmsg);
+      console.log("QUARY SNAP",quarySnap)
+      // const allmsg = quarySnap.docs.map(docSnap=>{
+      //   return {
+      //     ...docSnap.data(),
+      //     createdAt: docSnap.data().createdAt.toDate(),
+      //   };
+      // });
+      // setMessages(allmsg);
       setLoading(false)
   }
 

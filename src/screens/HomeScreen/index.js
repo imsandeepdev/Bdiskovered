@@ -305,6 +305,8 @@ const onCallGoogleAPI = profileDetails => {
       if(response.status=='success')
       {
         setAllVideoPostList(response?.Post)
+          setSliderValue(0);
+
         setLoading(false);
       }
     }))  
@@ -334,9 +336,10 @@ const onCallGoogleAPI = profileDetails => {
         {
           Toast.show(res.data.message, Toast.SHORT);
           onCallShowAllPost();
-          setTimeout(()=>{
-          setSliderValue(0);
-          },3000)
+          // setTimeout(()=>{
+          // setSliderValue(0);
+          // },2000)
+
           setLoading(false);
         }
         else
@@ -579,7 +582,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                 left: 0,
                                 right: 0,
                               }}>
-                              <ImageBackground
+                              <Image
                                 source={R.images.redHeartIcon}
                                 style={{
                                   width: R.fontSize.Size35,
@@ -587,22 +590,8 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                 }}
-                                resizeMode={'contain'}>
-                                <Text
-                                  style={{
-                                    color: R.colors.white,
-                                    fontSize: R.fontSize.Size8,
-                                    height: R.fontSize.Size20,
-                                  }}>
-                                  {item?.postInfo != 'undefined' &&
-                                  item?.postInfo != null &&
-                                  item.postInfo[0]?.percentage_like != null
-                                    ? parseInt(
-                                        item.postInfo[0]?.percentage_like,
-                                      )
-                                    : sliderValue.toFixed(0)}
-                                </Text>
-                              </ImageBackground>
+                                resizeMode={'contain'}
+                              />
                             </View>
                           }
                         />
@@ -648,11 +637,30 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                         </Text>
                       </View>
                     </View>
+                    <View
+                    style={{
+                      paddingHorizontal:R.fontSize.Size5,
+                      height:R.fontSize.Size26,
+                    }}
+                    >
+                      <Text
+                        style={{
+                          color: R.colors.appColor,
+                          fontSize: R.fontSize.Size12,
+                          fontWeight:'700'
+                        }}>
+                        {item?.postInfo != 'undefined' &&
+                        item?.postInfo != null &&
+                        item.postInfo[0]?.percentage_like != null
+                          ? `${parseInt(item.postInfo[0]?.percentage_like)}`
+                          : sliderValue.toFixed(0)}
+                      </Text>
+                    </View>
                     <Pressable
                       onPress={() => onPressOrangeAppIcon(item?.profileID)}
                       style={({pressed}) => [
                         {
-                          marginHorizontal: R.fontSize.Size15,
+                          // marginHorizontal: R.fontSize.Size8,
                           alignItems: 'center',
                           opacity: pressed ? 0.5 : 1,
                         },

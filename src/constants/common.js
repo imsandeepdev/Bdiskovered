@@ -17,6 +17,11 @@ export const sign_In = 'sign_In';
 export const sign_In_success = 'sign_In_success';
 export const sign_In_error = 'sign_In_error';
 
+// loginSession
+export const login_Session = 'login_Session';
+export const login_Session_success = 'login_Session_success';
+export const login_Session_error = 'login_Session_error';
+
 // getTailent
 export const get_Tailent = 'get_Tailent';
 export const get_Tailent_success = 'get_Tailent_success';

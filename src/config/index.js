@@ -32,6 +32,7 @@ export const Config = {
   notificationListAPI: 'profile/notification',
   postFilterAPI: 'post/post-filter',
   boostPostAPI: 'post/post-boost',
+  loginSessionAPI: 'user/login-session',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

@@ -11,6 +11,9 @@ import { PostDeleteRequest } from '../../actions/uploadNewVideo.action';
 import moment from 'moment';
 import ImagePicker from 'react-native-image-crop-picker';
 import CalendarPicker from 'react-native-calendar-picker';
+import { LoginSessionAPI } from '../../helper/loginSessionAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoginSessionRequest } from '../../actions/signUp.action';
 
 let currYear = moment().subtract(16, 'years').calendar();
 let maxDate = moment(currYear).format('YYYY-MM-DD');
@@ -188,7 +191,58 @@ const [userLocation, setUserLocation] = useState('')
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
     onCallProfileAPI();
+    OnCallLoginSession()
   };
+
+  const OnCallLoginSession = async() => {
+     AsyncStorage.getItem('fcmToken', (err, result) => {
+       console.log('FCM TOKEN SESSION', result);
+       onCallLoginSessionAPI(result)
+     });
+  }
+
+  const onCallLoginSessionAPI = (fcmToken) => {
+    let data = {
+      mobile: props.userProfile?.Profile?.mobile,
+      device_token: fcmToken,
+    };
+    console.log('DATA', data);
+     let headerAuth = {
+       Accept: 'application/json',
+       'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
+       token: props.authToken,
+     };
+
+      var formBody = [];
+      for (var property in data) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(data[property]);
+        formBody.push(encodedKey + '=' + encodedValue);
+      }
+     const headers = headerAuth;
+     const config = {
+       method: 'POST',
+       headers,
+       body: formBody
+     };
+
+     console.log("FORM CONFIG", config)
+
+     fetch(`${Config.API_URL}${Config.loginSessionAPI}`, config)
+       .then(res => res.json())
+       .then(response => {
+         console.log('LOGIN SESSION RES', response);
+            
+       })
+       .catch(error => {
+         console.log('ERRORONAPI', error);
+         setLoading(false);
+       });
+
+    //  dispatch(LoginSessionRequest(data, response =>{
+    //   console.log("Response Login Session",response)
+    //  }))
+  }
 
    const onCallGoogleAPI = (profileDetails) => {
    setLoading(true)
@@ -1301,8 +1355,9 @@ const [userLocation, setUserLocation] = useState('')
 }
 
 const mapStatetoProps = (state, props) => ({
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
-  userType: state.auth.userType
+  userType: state.auth.userType,
 });
 
 export default connect(mapStatetoProps) (ProfileScreen);
