@@ -11,9 +11,6 @@ import {
     user_LogoutAll,
     user_LogoutAll_success,
     user_LogoutAll_error,
-    login_Session,
-    login_Session_success,
-    login_Session_error
 } from '../constants/common';
 
 const initial_state = {
@@ -21,13 +18,12 @@ const initial_state = {
   signUpInit: {},
   signInInit: {},
   authToken: null,
-  loginSessionIntin:{},
   userType: '',
   error: '',
 };
 
 const reducer = (state = initial_state, {type, payload}) => {
-  console.log('PAYLOAD',payload)
+  // console.log('PAYLOAD',payload)
   switch (type) {
     case sign_Up:
       return {
@@ -89,22 +85,7 @@ const reducer = (state = initial_state, {type, payload}) => {
         loading: false,
         error: payload.error,
       };
-    case login_Session:
-      return {
-        ...state,
-        loading: true,
-      };
-    case login_Session_success:
-      return {
-        loading: false,
-        loginSessionIntin: payload,
-        error: '',
-      };
-    case login_Session_error:
-      return {
-        loading: false,
-        error: payload.error,
-      };
+    
     default:
       return state;
   }

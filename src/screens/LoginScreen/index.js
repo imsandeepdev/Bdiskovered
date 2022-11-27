@@ -11,6 +11,7 @@ import { CreateOTPRequest } from '../../actions/createOTP.action';
 const screenHeight = Dimensions.get('screen').height;
 import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import messaging from '@react-native-firebase/messaging';
 
 
@@ -29,15 +30,20 @@ const LoginScreen = (props) => {
     // onCallCreateDeviceToken()
   },[props.navigation])
 
-  const onCallCreateDeviceToken = () => {
-    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    const charLength = characters.length;
-    let result = ' ';
-    for (let i = 0; i < 45; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charLength));
-    }
-    onCallCreateOTP(result);
-    setCreateDeviceToken(result);
+  const onCallCreateDeviceToken = async() => {
+    // const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    // const charLength = characters.length;
+    // let result = ' ';
+    // for (let i = 0; i < 45; i++) {
+    //   result += characters.charAt(Math.floor(Math.random() * charLength));
+    // }
+    await AsyncStorage.getItem('fcmToken', (err, result) => {
+      console.log('FCM TOKEN', result);
+      setFcmToken(result);
+      Toast.show(result, Toast.SHORT)
+      onCallCreateOTP(result);
+      setCreateDeviceToken(result);
+    });
   };
 
 
@@ -50,6 +56,7 @@ const LoginScreen = (props) => {
 
 
   const onCallCreateOTP = (deviceToken) => {
+    console.log("DEVICE TOKEN ON LOGIN SCREEN", deviceToken )
     if(isValid())
     {
       let data = {

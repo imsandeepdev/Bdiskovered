@@ -16,6 +16,7 @@ import changeOwnerRoot from '../reducers/ownership.reducer';
 import postFilterRoot from '../reducers/postFilter.reducer';
 import notificationRoot from '../reducers/notification.reducer';
 import boostPostRoot from '../reducers/boostPost.reducer';
+import loginSessionRoot from '../reducers/loginSession.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -37,6 +38,7 @@ connectedUserRoot,
 changeOwnerRoot,
 postFilterRoot,
 notificationRoot,
-boostPostRoot
+boostPostRoot,
+loginSessionRoot
 
 });

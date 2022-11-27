@@ -64,9 +64,12 @@ const NotificationScreen = props => {
   }, [props.navigation]);
 
 const onCallFCMToken = async () => {
+  setLoading(true)
   await AsyncStorage.getItem('fcmToken', (err, result) => {
     console.log('FCM TOKEN', result);
     setFcmToken(result);
+  setLoading(false);
+
   });
 };
  
@@ -239,6 +242,7 @@ const onCallNotificationList = () => {
                    }}>
                    {`No notifications yet!`}
                  </Text>
+                 <Text>{fcmToken}</Text>
                 
                </View>
              );
