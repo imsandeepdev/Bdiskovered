@@ -10,19 +10,20 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 // const insets = useSafeAreaInsets();
 import {isIphoneX,getBottomSpace} from 'react-native-iphone-x-helper';
 import DeviceInfo from 'react-native-device-info';
-
+import { connect, useDispatch } from 'react-redux';
+import { ConnectRequestRequest } from '../../actions/connectRequest.action';
 
 const ChatScreen = props => {
+
+  const dispatch = useDispatch()
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [connReqStatus, setConReqStatus] = useState(false);
 
   useEffect(() => {
-
-    console.log("BOTTOM BAR S", getBottomSpace)
-  
+    setConReqStatus(false);
     console.log('MY USER ID', props.route.params?.MyUserId);
     console.log('TAILENT USER ID', props.route.params?.tailentUserId);
-
     getAllMessages()
     getOnSnapMessage()
   }, [props.navigation]);
@@ -42,30 +43,34 @@ const ChatScreen = props => {
        .doc(docid)
        .collection('message')
        .orderBy('createdAt', 'desc')
-      messageRef.onSnapshot((quarySnap) => {
-      console.log('QUARY SNAP', quarySnap);
-
-    //   const allmsg = quarySnap.docs.map(docSnap => {
-    //   const data = docSnap.data()
-    //   if(data.createdAt)
-    //   {
-    //     return {
-    //       ...docSnap.data(),
-    //       createdAt: docSnap.data().createdAt.toDate(),
-          
-    //     };
-    //   }
-    //   else
-    //   {
-    //     return {
-    //       ...docSnap.data(),
-    //       createdAt: new Date()
-    //     };
-    //   }
        
-    //  });
-    //  setMessages(allmsg);
-      setLoading(false);
+      messageRef.onSnapshot((quarySnap) => {
+      let quaryDoc = quarySnap?._docs;
+      if (quaryDoc.length < 1) {
+        setConReqStatus(true);
+      }
+      console.log('QUARY SNAP ON SNAP', quarySnap);
+      const allmsg = quarySnap.docs.map(docSnap => {
+      const data = docSnap.data()
+      if(data.createdAt)
+      {
+        return {
+          ...docSnap.data(),
+          createdAt: docSnap.data().createdAt.toDate(),
+          
+        };
+      }
+      else
+      {
+        return {
+          ...docSnap.data(),
+          createdAt: new Date()
+        };
+      }
+       
+     });
+     setMessages(allmsg);
+     setLoading(false);
 
       })
    };
@@ -85,14 +90,21 @@ const ChatScreen = props => {
         .collection('message')
         .orderBy('createdAt','desc')
         .get();
-      console.log("QUARY SNAP",quarySnap)
-      // const allmsg = quarySnap.docs.map(docSnap=>{
-      //   return {
-      //     ...docSnap.data(),
-      //     createdAt: docSnap.data().createdAt.toDate(),
-      //   };
-      // });
-      // setMessages(allmsg);
+      let quaryDoc = quarySnap?._docs
+      if (quaryDoc.length < 1)
+      {
+        setConReqStatus(true)
+      }
+      
+      console.log('QUARY DOC LENGTH', quaryDoc.length);
+      console.log("QUARY SNAP ON ALL Message",quarySnap)
+      const allmsg = quarySnap.docs.map(docSnap=>{
+        return {
+          ...docSnap.data(),
+          createdAt: docSnap.data().createdAt.toDate(),
+        };
+      });
+      setMessages(allmsg);
       setLoading(false)
   }
 
@@ -108,7 +120,6 @@ const ChatScreen = props => {
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, mymsg),
       );
-
       const docid =
         props.route.params?.tailentUserId > props.route.params?.MyUserId
           ? props.route.params?.MyUserId + "-" + props.route.params?.tailentUserId
@@ -119,6 +130,21 @@ const ChatScreen = props => {
       .doc(docid)
       .collection('message')
       .add({...mymsg, createdAt:firestore.FieldValue.serverTimestamp()})
+      if(connReqStatus)
+      {
+        let data ={
+          id: props.route.params?.tailentUserId,
+          chat_id: docid
+        }
+        console.log("DATA",data)
+        dispatch(ConnectRequestRequest(data, response => {
+          if(response.status == 'success')
+          {
+            console.log('Connect Req Response', response);
+            setConReqStatus(false)
+          }
+        }))
+      }
   };
 
 

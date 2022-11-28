@@ -151,3 +151,8 @@ export const boost_Post_error = 'boost_Post_error';
 export const playParticularVideo = 'playParticularVideo';
 export const playParticularVideo_success = 'playParticularVideo_success';
 export const playParticularVideo_error = 'playParticularVideo_error';
+
+// connectRequest
+export const connect_Request = 'connect_Request';
+export const connect_Request_success = 'connect_Request_success';
+export const connect_Request_error = 'connect_Request_error';

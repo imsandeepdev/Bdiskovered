@@ -33,6 +33,7 @@ export const Config = {
   postFilterAPI: 'post/post-filter',
   boostPostAPI: 'post/post-boost',
   loginSessionAPI: 'user/login-session',
+  connectRequestAPI: 'profile/connect-request',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',
