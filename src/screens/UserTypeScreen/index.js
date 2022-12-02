@@ -105,8 +105,11 @@ const UserTypeScreen = (props) => {
                   }}>
                   <Text style={[Styles.termsText]}>
                     {'Accept '}
+                    
                     <Text
-                      onPress={() => console.log('Terms')}
+                      onPress={() => props.navigation.navigate('WebViewScreen',{
+                        from:'Terms & Conditions'
+                      })}
                       style={{color: R.colors.appColor}}>
                       {'Terms & Conditions'}
                     </Text>

@@ -985,7 +985,7 @@ PODS:
     - React
   - react-native-video/Video (5.2.1):
     - React-Core
-  - react-native-webview (11.23.1):
+  - react-native-webview (11.25.0):
     - React-Core
   - React-perflogger (0.68.2)
   - React-RCTActionSheet (0.68.2):
@@ -1374,7 +1374,7 @@ SPEC CHECKSUMS:
   react-native-simple-toast: 8ee5d23f0b92b935ab7434cdb65159ce12dfb4b7
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   react-native-video-helper: f5e1ccf46c0a1436c2b3c3891feeada00cf0d4fe
-  react-native-webview: d33e2db8925d090871ffeb232dfa50cb3a727581
+  react-native-webview: a71da846ed2e9085440e1d6659c04e285528834b
   React-perflogger: a18b4f0bd933b8b24ecf9f3c54f9bf65180f3fe6
   React-RCTActionSheet: 547fe42fdb4b6089598d79f8e1d855d7c23e2162
   React-RCTAnimation: bc9440a1c37b06ae9ebbb532d244f607805c6034

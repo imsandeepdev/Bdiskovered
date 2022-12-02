@@ -254,7 +254,7 @@ const SubscriptionScreen = props => {
               marginHorizontal: R.fontSize.Size20,
             }}>
             <View style={{flex: 1}}>
-              {props.userProfile?.Profile?.subscription != 0 && (
+              {/* {props.userProfile?.Profile?.subscription != 0 && (
                 <View style={{marginTop: R.fontSize.Size45}}>
                   <Text
                     style={{
@@ -469,7 +469,7 @@ const SubscriptionScreen = props => {
                     </View>
                   </View>
                 </View>
-              )}
+              )} */}
 
               {/* Subscription Selection */}
 
@@ -498,24 +498,24 @@ const SubscriptionScreen = props => {
                 {subGetPlan.map((item, index) => {
                   return (
                     <SubscriptionCard
-                      disabled={checkSubActive}
+                      // disabled={checkSubActive}
                       disabledIcon={!checkSubActive ? true : false}
                       key={index}
                       marginTop={R.fontSize.Size28}
                       borderWidth={R.fontSize.Size2}
-                      borderColor={
-                        !checkSubActive
-                          ? R.colors.appColor
-                          : R.colors.placeholderTextColor
-                      }
-                      priceTextColor={
-                        !checkSubActive
-                          ? R.colors.appColor
-                          : R.colors.placeholderTextColor
-                      }
-                      onPressIcon={() => {
-                        Toast.show('Subscription Already Taken', Toast.SHORT);
-                      }}
+                      // borderColor={
+                      //   !checkSubActive
+                      //     ? R.colors.appColor
+                      //     : R.colors.placeholderTextColor
+                      // }
+                      // priceTextColor={
+                      //   !checkSubActive
+                      //     ? R.colors.appColor
+                      //     : R.colors.placeholderTextColor
+                      // }
+                      // onPressIcon={() => {
+                      //   Toast.show('Subscription Already Taken', Toast.SHORT);
+                      // }}
                       price={`${item?.price}`}
                       monthTextColor={
                         !checkSubActive
@@ -585,26 +585,11 @@ const SubscriptionScreen = props => {
                       price={`USD ${item?.price}`}
                       // noText={'5'}
                       month={item?.validity}
-                      onPressAdd={() => onCheckModal(item)}
+                      // onPressAdd={() => onCheckModal(item)}
                     />
                   );
                 })}
-                {/* <SubscriptionCard
-                  borderWidth={R.fontSize.Size2}
-                  marginTop={R.fontSize.Size45}
-                  price={'30$'}
-                  noText={'5'}
-                  month={'Connections'}
-                  onPressAdd={() => setModalPicker(true)}
-                />
-                <SubscriptionCard
-                  borderWidth={R.fontSize.Size2}
-                  marginTop={R.fontSize.Size20}
-                  price={'10$'}
-                  noText={'1'}
-                  month={'Boost'}
-                  onPressAdd={() => setModalPicker(true)}
-                /> */}
+               
               </View>
             </View>
           </ScrollView>
@@ -727,7 +712,7 @@ const SubscriptionScreen = props => {
                 </View>
                 <View>
                   <AppButton
-                    onPress={() => onCallPayment()}
+                    // onPress={() => onCallPayment()}
                     title={'Make Payment'}
                   />
                 </View>

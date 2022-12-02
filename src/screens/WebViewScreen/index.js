@@ -3,6 +3,8 @@ import {useState, useEffect} from 'react';
 import {View,Image,SafeAreaView,Text,Pressable} from 'react-native';
 import { Header, StoryScreen } from '../../components';
 import R from '../../res/R';
+import {WebView} from 'react-native-webview';
+import { Config } from '../../config';
 
 const WebViewScreen = (props) => {
 
@@ -24,7 +26,10 @@ const WebViewScreen = (props) => {
             width: '100%',
           }}
         />
-
+        {props.route.params?.from == 'Terms & Conditions'
+        ?
+        <WebView source={{uri: `${Config.TermsNConditions}`}} />
+        :
         <View
           style={{
             flex: 1,
@@ -40,6 +45,7 @@ const WebViewScreen = (props) => {
             {props.route.params?.from == 'help' ? `HELP SCREEN` : `FAQ SCREEN`}
           </Text>
         </View>
+      }
       </StoryScreen>
     );
 }
