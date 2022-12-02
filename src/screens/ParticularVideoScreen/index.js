@@ -253,16 +253,6 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           height: screenHeight - R.fontSize.Size100,
                         }}>
                         <VideoCard
-                          // poster={`${Config.API_URL}${item?.post.replace(
-                          //   'http://localhost:8080/',
-                          //   '',
-                          // )}`}
-                          // userImage={`${Config.API_URL}${item?.avatar.replace(
-                          //   'http://localhost:8080/',
-                          //   '',
-                          // )}`}
-                          // userName={item?.username}
-                          // videoCat={'Gurugram'}
                           videoUrl={`${Config.API_URL}${item?.post.replace(
                             'http://localhost:8080/',
                             '',

@@ -19,6 +19,7 @@ const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { firebase } from '@react-native-firebase/messaging';
 
 const notificationList = [
   {
@@ -55,23 +56,37 @@ const NotificationScreen = props => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [notiList, setNotiList] = useState([])
-  const [fcmToken, setFcmToken] = useState();
+  const [fcmToken, setFcmToken] = useState('');
+  const [newFcmToken, setNewFcmToken] = useState('');
 
 
   useEffect(() => {
     onCallNotificationList()
     onCallFCMToken()
+    onCallFCM()
   }, [props.navigation]);
 
 const onCallFCMToken = async () => {
+  setLoading(true);
+  let checkToken = await AsyncStorage.getItem('fcmToken');
+  console.log('TOKEN', checkToken);
+  setFcmToken(checkToken)
+  // await AsyncStorage.getItem('fcmToken', (err, result) => {
+  //   console.log('FCM TOKEN', result);
+  //   setFcmToken(result);
+  // setLoading(false);
+
+  // });
+  setLoading(false);
+};
+
+const onCallFCM = async() => {
   setLoading(true)
-  await AsyncStorage.getItem('fcmToken', (err, result) => {
-    console.log('FCM TOKEN', result);
-    setFcmToken(result);
+  const fcmToken = await firebase.messaging().getToken();
+  setNewFcmToken(fcmToken)
   setLoading(false);
 
-  });
-};
+}
  
 const onCallNotificationList = () => {
   setLoading(true)
@@ -243,7 +258,8 @@ const onCallNotificationList = () => {
                    {`No notifications yet!`}
                  </Text>
                  <Text>{fcmToken}</Text>
-                
+                 <Text>{'NEW FCM TOKEN'}</Text>
+                 <Text>{newFcmToken}</Text>
                </View>
              );
           }}

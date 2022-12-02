@@ -159,11 +159,6 @@ const PopularViewAllScreen = props => {
                         borderWidth: 2,
                       }}>
                       <VideoCard
-                        poster={`${Config.API_URL}${item?.avatar.replace(
-                          'http://localhost:8080/',
-                          '',
-                        )}`}
-                        // eyeonPress={() => onCallModal('videoDetailModal', item)}
                         eyeIcon={R.images.eyeIcon}
                         videoUrl={`${Config.API_URL}${item?.post.replace(
                           'http://localhost:8080/',

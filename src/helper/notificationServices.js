@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import { Alert } from 'react-native';
+import firebase from '@react-native-firebase/app';
 
 export async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -15,12 +16,11 @@ export async function requestUserPermission() {
 }
 
 const getFcmToken = async () => {
-    let chcekToken = await AsyncStorage.getItem('fcmToken')
-    console.log("the otokenld ", chcekToken)
-    if(!chcekToken){ 
+    let checkToken = await AsyncStorage.getItem('fcmToken')
+    console.log("the oldtokenld ", checkToken)
+    if(!checkToken){ 
     try {
-      const fcmToken = await messaging().getToken();
-
+      const fcmToken = await firebase.messaging().getToken();
       if(!!fcmToken){
       console.log('FCM Token Genrated', fcmToken);
       await AsyncStorage.setItem('fcmToken', fcmToken)

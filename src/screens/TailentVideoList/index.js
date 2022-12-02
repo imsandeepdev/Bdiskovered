@@ -84,36 +84,12 @@ const onChangeIndex = ({index}) => {
                   style={{
                     flex: 1,
                   }}>
-                  {/* <View
-                    style={{
-                      height: screenHeight,
-                    }}>
-                    <VideoCard
-                      poster={`${Config.API_URL}${item?.post.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
-                      videoUrl={`${Config.API_URL}${item?.post.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
-                      videoCat={item?.category}
-                      bottomTitle={item?.title}
-                      bottomDiscription={item?.caption}
-                      onLoad={onLoad}
-                      paused={currIndex !== index || videoPlayPause}
-                      // paused={true}
-                    />
-                  </View> */}
+                  
                   <View
                     style={{
                       height: screenHeight-R.fontSize.Size100,
                     }}>
                     <VideoCard
-                      poster={`${Config.API_URL}${item?.post.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
                       videoUrl={`${Config.API_URL}${item?.post.replace(
                         'http://localhost:8080/',
                         '',

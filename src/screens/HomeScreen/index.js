@@ -455,10 +455,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                         : screenHeight - R.fontSize.Size254,
                     }}>
                     <VideoCard
-                      poster={`${Config.API_URL}${item?.avatar.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
+                     
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
                       videoUrl={`${Config.API_URL}${item?.post.replace(

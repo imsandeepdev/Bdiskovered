@@ -29,7 +29,6 @@ const VideoCard = props => {
   return (
     <View style={{flex: 1}}>
       <Video
-        poster={props.poster}
         posterResizeMode={'cover'}
         source={{
           uri: props.videoUrl,
@@ -40,8 +39,6 @@ const VideoCard = props => {
         ref={videoRef}
         onBuffer={onBuffer}
         onProgress={props.onProgress}
-        //   onError={this.videoError} // Callback when video cannot be loaded
-        // setControls={true}
         paused={props.paused}
         onLoad={props.onLoad}
         controls={false}
@@ -109,27 +106,7 @@ const VideoCard = props => {
               numberOfLines={1}>
               {props.videoCat}
             </Text>
-            {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                // source={R.images.musicIcon}
-                source={props.musicIcon}
-                style={{
-                  height: R.fontSize.Size10,
-                  width: R.fontSize.Size10,
-                }}
-                resizeMode={'contain'}
-              />
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontWeight: '400',
-                fontSize: R.fontSize.Size10,
-                color: R.colors.lightWhite,
-                marginHorizontal: R.fontSize.Size5,
-              }}>
-              {props.videoCat}
-            </Text>
-            </View> */}
+           
           </View>
           <View>
             <Pressable
@@ -149,37 +126,7 @@ const VideoCard = props => {
         </View>
       </View>
 
-      {/* <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100%',
-        }}>
-        <TouchableOpacity
-          style={{
-            height: R.fontSize.Size50,
-            width: R.fontSize.Size50,
-            borderRadius: R.fontSize.Size30,
-            backgroundColor: R.colors.placeHolderColor,
-          }}
-          onPress={handlePlayPause}>
-          {play ? (
-            <Image
-              source={R.images.paymentFailedIcon}
-              style={{height: 42, width: 42}}
-            />
-          ) : (
-            <Image
-              source={R.images.paymentSuccessIcon}
-              style={{height: 45, width: 45}}
-            />
-          )}
-        </TouchableOpacity>
-      </View> */}
+     
 
       <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>

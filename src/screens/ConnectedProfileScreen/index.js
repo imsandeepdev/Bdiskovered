@@ -520,11 +520,7 @@ const ConnectedProfileScreen = props => {
                           overflow: 'hidden',
                         },
                       ]}>
-                      <VideoCard
-                        poster={`${Config.API_URL}${item?.post.replace(
-                          'http://localhost:8080/',
-                          '',
-                        )}`}
+                      <VideoCard   
                         videoUrl={`${Config.API_URL}${item?.post.replace(
                           'http://localhost:8080/',
                           '',

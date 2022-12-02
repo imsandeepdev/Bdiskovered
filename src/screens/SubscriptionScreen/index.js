@@ -11,7 +11,8 @@ import {
   Modal,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from 'react-native';
 import {
   CustomTextInput,
@@ -27,41 +28,30 @@ import {
 import { connect, useDispatch } from 'react-redux';
 import Toast from 'react-native-simple-toast';
 import moment from 'moment';
+import RNIap  from 'react-native-iap';
+
 
 
 import R from '../../res/R';
 import { GetCustomPlanRequest, GetSubscruberGetRequest, SubscriberGetPlanRequest } from '../../actions/subGetPlan.action';
-import { concat } from 'react-native-reanimated';
+// import { concat } from 'react-native-reanimated';
+// import { getSubscriptions } from 'react-native-iap';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
 
-const paymentList = [
-  {
-    id: '1',
-    title: 'View Profile Talent',
-  },
-  {
-    id: '2',
-    title: 'Get 20 Connections',
-  },
-  {
-    id: '3',
-    title: 'Multiple location access',
-  },
-  {
-    id: '4',
-    title: '1 month add free',
-  },
-  {
-    id: '5',
-    title: 'Advance search filter',
-  },
-  {
-    id: '6',
-    title: 'Access 2 device',
-  },
-];
+const itemSubs = Platform.select({
+  ios: [
+    'Subscription_BasePlan_Pid',
+    'Subscription_AddonConnection_Pid',
+    'Subscription_Addonboost_Pid',
+  ],
+  android:[
+    'Subscription_BasePlan_Pid',
+    'Subscription_AddonConnection_Pid',
+    'Subscription_Addonboost_Pid',
+  ],
+});
 
 
 const SubscriptionScreen = props => {
@@ -86,12 +76,28 @@ const SubscriptionScreen = props => {
   const [loading, setLoading] = useState(false)
 
   useEffect(()=>{
-
+    // getSubscriptions()
     onCallCheckSubActive()
     onCallSubGetPlan()
     onCallGetCustomPlan()
     onCallgetSubGetPlan()
   },[props.navigation])
+
+
+  //  const getSubscriptions = async () => {
+  //   console.log("SUB IN APP")
+  //    try {
+  //      const products = await RNIap.getSubscriptions(itemSubs);
+  //     //  const sortedProducts = products.sort(
+  //     //    (a, b) => parseInt(a.price) - parseInt(b.price),
+  //     //  );
+  //     //  this.setState({products: sortedProducts});
+  //      console.log(' Subscription Products => ', products);
+  //    } catch (err) {
+       
+  //      console.warn('Error in getSubscriptions: ', err.code, err.message);
+  //    }
+  //  };
 
 
   const onCallCheckSubActive = () => {

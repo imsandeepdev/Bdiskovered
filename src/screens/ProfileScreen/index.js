@@ -190,7 +190,7 @@ const [userLocation, setUserLocation] = useState('')
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
     onCallProfileAPI();
-    OnCallLoginSession()
+    // OnCallLoginSession()
   };
 
   const OnCallLoginSession = async() => {
@@ -1110,10 +1110,6 @@ const [userLocation, setUserLocation] = useState('')
                             },
                           ]}>
                           <VideoCard
-                            poster={`${Config.API_URL}${item?.post.replace(
-                              'http://localhost:8080/',
-                              '',
-                            )}`}
                             videoUrl={`${Config.API_URL}${item?.post.slice(
                               22,
                             )}`}
