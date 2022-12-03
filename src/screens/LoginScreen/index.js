@@ -77,7 +77,7 @@ const LoginScreen = (props) => {
               fromScreen: 'LoginScreen',
               mobValue: mobNo,
               countryCode: countryCode,
-              deviceToken: createDeviceToken,
+              deviceToken: deviceToken,
               type: response.type,
               subscription_status: response.subscription_status,
             });

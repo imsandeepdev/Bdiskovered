@@ -286,17 +286,17 @@ const onSaveDeviceToken = async () => {
               };
           console.log("RESND OTP DATA", data)
 
-          // dispatch(
-          //   CreateOTPRequest(data, response => {
-          //     console.log('RESPONSE RESND OTP', response);
-          //     if (response.status == 'success') {
-          //       Toast.show(response.OTP, Toast.LONG);
-          //       setOtpArray([]);
-          //     } else {
-          //       Toast.show(response.message, Toast.SHORT);
-          //     }
-          //   }),
-          // );
+          dispatch(
+            CreateOTPRequest(data, response => {
+              console.log('RESPONSE RESND OTP', response);
+              if (response.status == 'success') {
+                Toast.show(response.OTP, Toast.LONG);
+                setOtpArray([]);
+              } else {
+                Toast.show(response.message, Toast.SHORT);
+              }
+            }),
+          );
         
       };
 
