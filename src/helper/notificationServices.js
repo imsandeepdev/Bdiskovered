@@ -20,7 +20,7 @@ const getFcmToken = async () => {
     console.log("the oldtokenld ", checkToken)
     if(!checkToken){ 
     try {
-      const fcmToken = await firebase.messaging().getToken();
+      const fcmToken = await messaging().getToken();
       if(!!fcmToken){
       console.log('FCM Token Genrated', fcmToken);
       await AsyncStorage.setItem('fcmToken', fcmToken)
@@ -32,25 +32,28 @@ const getFcmToken = async () => {
     }
 }
 
-// export const notificationListner = async() => {
-//     messaging().onNotificationOpenedApp(remoteMessage => {
-//         console.log("Notification caused app to open from background state:",
-//         remoteMessage.notification,
-//         );
-//         console.log("background state", remoteMessage.notification)
-//     });
+export const notificationListner = async() => {
+    messaging().onNotificationOpenedApp(remoteMessage => {
+        console.log("Notification caused app to open from background state:",
+        remoteMessage.notification,
+        );
+        console.log("background state", remoteMessage.notification)
+    });
 
-//     // Check whether notification is available
-//     messaging()
-//         .getInitialNotification()
-//         .then(remoteMessage => {
-//             if(remoteMessage){
-//                 console.log(
-//                     'Notification caused app to open from quit state:',
-//                     remoteMessage.notification,
-//                 );
-//             console.log('remote message',remoteMessage.notification)
-//             }
+    // Check whether notification is available
+    messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+            if(remoteMessage){
+                console.log(
+                    'Notification caused app to open from quit state:',
+                    remoteMessage.notification,
+                );
+            console.log('remote message',remoteMessage.notification)
+            }
             
-//         })
-// }
+        });
+        messaging().onMessage(async remoteMessage => {
+          console.log('notification on forground state.....',remoteMessage);
+        })
+}

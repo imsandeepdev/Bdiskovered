@@ -965,8 +965,6 @@ PODS:
     - React-Core
   - react-native-document-picker (8.1.1):
     - React-Core
-  - react-native-geocoder-reborn (0.9.0):
-    - React
   - react-native-geolocation-service (5.3.1):
     - React
   - react-native-safe-area-context (4.4.1):
@@ -1143,7 +1141,6 @@ DEPENDENCIES:
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-compressor (from `../node_modules/react-native-compressor`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
-  - react-native-geocoder-reborn (from `../node_modules/react-native-geocoder-reborn`)
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
@@ -1253,8 +1250,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-compressor"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
-  react-native-geocoder-reborn:
-    :path: "../node_modules/react-native-geocoder-reborn"
   react-native-geolocation-service:
     :path: "../node_modules/react-native-geolocation-service"
   react-native-safe-area-context:
@@ -1368,7 +1363,6 @@ SPEC CHECKSUMS:
   react-native-cameraroll: 2957f2bce63ae896a848fbe0d5352c1bd4d20866
   react-native-compressor: 2b33a85a50fddb4587165df3d4a79f9d9b8e13ef
   react-native-document-picker: f68191637788994baed5f57d12994aa32cf8bf88
-  react-native-geocoder-reborn: c31cbc630d9307ebbceea1dea2746d0054be35c4
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-simple-toast: 8ee5d23f0b92b935ab7434cdb65159ce12dfb4b7

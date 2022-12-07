@@ -80,6 +80,7 @@ const LoginScreen = (props) => {
               deviceToken: deviceToken,
               type: response.type,
               subscription_status: response.subscription_status,
+              otpValue:response?.OTP
             });
             Toast.show(response.OTP, Toast.LONG);
             Alert.alert(response?.OTP);

@@ -305,8 +305,7 @@ const onCallGoogleAPI = profileDetails => {
       if(response.status=='success')
       {
         setAllVideoPostList(response?.Post)
-          setSliderValue(0);
-
+        setSliderValue(0);
         setLoading(false);
       }
     }))  
@@ -352,7 +351,7 @@ const onCallGoogleAPI = profileDetails => {
 
  
   const onLoad = (data) => {
-    console.log('ONLOAD',data)
+    // console.log('ONLOAD',data)
   }
 
   const onCallConnectNow = (profileID) => 

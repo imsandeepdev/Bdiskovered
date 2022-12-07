@@ -1,7 +1,8 @@
 export const Config = {
-  TermsNConditions: 'https://bdiskovered.com/privacy/',
-  // API_URL: 'https://bdiskshunya.shunyaekai.com/',
-  API_URL: 'https://disk.shunyaekai.com/',
+  TermsNConditions: 'https://bdiskovered.com/Terms/',
+  PrivacyPolicy: 'https://bdiskovered.com/privacy/',
+  API_URL: 'https://bdiskshunya.shunyaekai.com/',
+  // API_URL: 'https://disk.shunyaekai.com/',
   // API_URL: 'https://localbdisk.shunyaekai.com/',
 
   Google_URL: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=',

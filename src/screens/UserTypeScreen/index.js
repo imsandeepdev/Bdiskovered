@@ -87,9 +87,7 @@ const UserTypeScreen = (props) => {
                             ? R.colors.white
                             : R.colors.primaryTextColor
                         }
-                        rightIcon={
-                           R.images.checkWhiteIcon
-                        }
+                        rightIcon={R.images.checkWhiteIcon}
                         Iconheight={R.fontSize.Size16}
                         Iconwidth={R.fontSize.Size16}
                       />
@@ -105,13 +103,29 @@ const UserTypeScreen = (props) => {
                   }}>
                   <Text style={[Styles.termsText]}>
                     {'Accept '}
-                    
+
                     <Text
-                      onPress={() => props.navigation.navigate('WebViewScreen',{
-                        from:'Terms & Conditions'
-                      })}
+                      onPress={() =>
+                        props.navigation.navigate('WebViewScreen', {
+                          from: 'Terms & Conditions',
+                          for:'terms'
+                        })
+                      }
                       style={{color: R.colors.appColor}}>
                       {'Terms & Conditions'}
+                    </Text>
+                    <Text style={[Styles.termsText]}>
+                      {' & '}
+                    </Text>
+                    <Text
+                      onPress={() =>
+                        props.navigation.navigate('WebViewScreen', {
+                          from: 'Privacy Policy',
+                          for:'policy'
+                        })
+                      }
+                      style={{color: R.colors.appColor}}>
+                      {'Privacy Policy'}
                     </Text>
                     <Text> {'of usage.'}</Text>
                   </Text>
@@ -121,26 +135,30 @@ const UserTypeScreen = (props) => {
                       {
                         height: R.fontSize.Size20,
                         width: R.fontSize.Size20,
-                        alignItems:'center',
-                        justifyContent:'center',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         padding: R.fontSize.Size2,
                         opacity: pressed ? 0.5 : 1,
                       },
                     ]}>
-                      <Image
-                        source={acceptTerms ? R.images.checkTermsIcon : R.images.unCheckTermsIcon}
-                        style={{height:R.fontSize.Size18, width:R.fontSize.Size18}}
-                        resizeMode={'contain'}
-                      />
-
-                    </Pressable>
+                    <Image
+                      source={
+                        acceptTerms
+                          ? R.images.checkTermsIcon
+                          : R.images.unCheckTermsIcon
+                      }
+                      style={{
+                        height: R.fontSize.Size18,
+                        width: R.fontSize.Size18,
+                      }}
+                      resizeMode={'contain'}
+                    />
+                  </Pressable>
                 </View>
               </View>
             </View>
           </ScrollView>
-          <View
-          style={{paddingVertical:R.fontSize.Size16}}
-          >
+          <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
               onPress={() => onCallProcess()}
               marginHorizontal={R.fontSize.Size55}

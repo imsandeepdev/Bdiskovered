@@ -43,7 +43,7 @@ const OtpScreen = (props) => {
     // const [signUpData, setSignUpData] = useState()
 
   useEffect(()=>{
-
+    // props.route.params?.fromScreen == 'LoginScreen' ? setOtpArray(props.route.params?.otpValue) : setOtpArray([])
     console.log('DEVICE TOKEN', props.route.params?.deviceToken);
     console.log('SIGNUPVALUE', props.route.params?.signupValue);
     onCallDeviceName();

@@ -280,7 +280,11 @@ const [userLocation, setUserLocation] = useState('')
         onCallGoogleAPI(response.Profile);
         setProfileDetails(response.Profile);
         let tempTalentArray = response.Profile?.category;
-        let useTalentArray = tempTalentArray.split(',');
+        let tempJson = JSON.stringify(tempTalentArray)
+        console.log('ARRAYNEW', tempJson);
+
+        console.log("ARRAYNEW2",tempTalentArray)
+        let useTalentArray = tempTalentArray.split(",");
         console.log('useTalentArray', useTalentArray);
         setTalentArray(useTalentArray);
         setTailentPostVideo(response.Profile?.post);
