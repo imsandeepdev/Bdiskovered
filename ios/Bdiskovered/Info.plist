@@ -42,11 +42,11 @@
 	<key>NSFileProviderDomainUsageDescription</key>
 	<string>$(PRODUCT_NAME)We will need to access video file</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need location to access current latitude and longitude</string>
+	<string>$(PRODUCT_NAME)We will need location show video feeds on their location </string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need location to access current latitude and longitude</string>
+	<string>$(PRODUCT_NAME)We will need location show video feeds on their location </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need location to access current latitude and longitude</string>
+	<string>$(PRODUCT_NAME)We will need location show video feeds on their location </string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) want to record audio for camera and share with chat.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

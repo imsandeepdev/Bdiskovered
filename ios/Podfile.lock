@@ -979,8 +979,6 @@ PODS:
   - react-native-video (5.2.1):
     - React-Core
     - react-native-video/Video (= 5.2.1)
-  - react-native-video-helper (1.5.0):
-    - React
   - react-native-video/Video (5.2.1):
     - React-Core
   - react-native-webview (11.25.0):
@@ -1145,7 +1143,6 @@ DEPENDENCIES:
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
   - react-native-video (from `../node_modules/react-native-video`)
-  - react-native-video-helper (from `../node_modules/react-native-video-helper`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -1258,8 +1255,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-simple-toast"
   react-native-video:
     :path: "../node_modules/react-native-video"
-  react-native-video-helper:
-    :path: "../node_modules/react-native-video-helper"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -1367,7 +1362,6 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-simple-toast: 8ee5d23f0b92b935ab7434cdb65159ce12dfb4b7
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
-  react-native-video-helper: f5e1ccf46c0a1436c2b3c3891feeada00cf0d4fe
   react-native-webview: a71da846ed2e9085440e1d6659c04e285528834b
   React-perflogger: a18b4f0bd933b8b24ecf9f3c54f9bf65180f3fe6
   React-RCTActionSheet: 547fe42fdb4b6089598d79f8e1d855d7c23e2162

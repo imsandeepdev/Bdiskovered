@@ -36,6 +36,7 @@ export const Config = {
   boostPostAPI: 'post/post-boost',
   loginSessionAPI: 'user/login-session',
   connectRequestAPI: 'profile/connect-request',
+  deactivatAccountAPI: 'user/deactive',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

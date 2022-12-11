@@ -13,6 +13,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import CalendarPicker from 'react-native-calendar-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginSessionRequest } from '../../actions/loginSession.action';
+import { DeactivateAccountRequest } from '../../actions/signUp.action';
 
 let currYear = moment().subtract(16, 'years').calendar();
 let maxDate = moment(currYear).format('YYYY-MM-DD');
@@ -513,6 +514,43 @@ const [userLocation, setUserLocation] = useState('')
             );
           };
 
+    const onDeleteAccountAlart = () => {
+      Alert.alert(
+        'Delete Account!',
+        'Are you sure want to delete account?',
+        [
+          {
+            text: 'YES',
+            onPress: () => onCallDeleteAccountAPI(),
+          },
+          {
+            text: 'CANCEL',
+          },
+        ],
+        {
+          cancelable: true,
+        },
+      );
+    };
+
+    const onCallDeleteAccountAPI = () => {
+      setLoading(true)
+      dispatch(DeactivateAccountRequest(response => {
+        console.log("Delete Account Response", response)
+        if (response.status == 'success')
+        {
+        setLoading(false)
+        props.navigation.replace('LoginScreen');
+        Toast.show(response.message, Toast.SHORT)
+        }
+        else
+        {
+          setLoading(false);
+          Toast.show(response.message, Toast.SHORT);
+        }
+      }))
+    }
+
 
 
     return (
@@ -545,204 +583,208 @@ const [userLocation, setUserLocation] = useState('')
           <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}>
-            {props.userType != 'Talent' ? (
-              <View
-                style={{
-                  flex: 1,
-                  paddingHorizontal: R.fontSize.Size20,
-                }}>
+            <View style={{flex: 1}}>
+              {props.userType != 'Talent' ? (
                 <View
                   style={{
-                    marginTop: R.fontSize.Size30,
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flex: 1,
+                    paddingHorizontal: R.fontSize.Size20,
                   }}>
                   <View
                     style={{
-                      height: R.fontSize.Size110,
-                      width: R.fontSize.Size110,
+                      marginTop: R.fontSize.Size30,
+                      flexDirection: 'row',
                       alignItems: 'center',
-                      justifyContent: 'center',
                     }}>
-                    {profilePic.path != null || profilePic.path != '' ? (
-                      <Image
-                        source={{
-                          uri: profilePic?.path,
-                        }}
-                        style={{
-                          height: R.fontSize.Size100,
-                          width: R.fontSize.Size100,
-                          borderRadius: R.fontSize.Size50,
-                          borderWidth: 2,
-                          borderColor: R.colors.appColor,
-                        }}
-                        resizeMode={'cover'}
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          height: R.fontSize.Size100,
-                          width: R.fontSize.Size100,
-                          borderRadius: R.fontSize.Size50,
-                          borderWidth: 2,
-                          borderColor: R.colors.appColor,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: R.colors.lightWhite,
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size50,
-                            fontWeight: '900',
-                            color: R.colors.appColor,
-                          }}>
-                          {((actualName[0] ?? '#') + '').toUpperCase()}
-                        </Text>
-                      </View>
-                    )}
                     <View
                       style={{
-                        position: 'absolute',
-                        top: -2,
-                        right: -15,
+                        height: R.fontSize.Size110,
+                        width: R.fontSize.Size110,
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                      <Pressable
-                        onPress={() => setPickerModal(true)}
-                        style={({pressed}) => [
-                          {
-                            padding: R.fontSize.Size5,
-                            opacity: pressed ? 0.5 : 1,
+                      {profilePic.path != null || profilePic.path != '' ? (
+                        <Image
+                          source={{
+                            uri: profilePic?.path,
+                          }}
+                          style={{
+                            height: R.fontSize.Size100,
+                            width: R.fontSize.Size100,
+                            borderRadius: R.fontSize.Size50,
+                            borderWidth: 2,
+                            borderColor: R.colors.appColor,
+                          }}
+                          resizeMode={'cover'}
+                        />
+                      ) : (
+                        <View
+                          style={{
+                            height: R.fontSize.Size100,
+                            width: R.fontSize.Size100,
+                            borderRadius: R.fontSize.Size50,
+                            borderWidth: 2,
+                            borderColor: R.colors.appColor,
                             alignItems: 'center',
                             justifyContent: 'center',
-                          },
-                        ]}>
-                        <Image
-                          source={R.images.profileEditIcon}
-                          style={{
-                            height: R.fontSize.Size22,
-                            width: R.fontSize.Size22,
-                          }}
-                          resizeMode={'contain'}
-                        />
-                      </Pressable>
+                            backgroundColor: R.colors.lightWhite,
+                          }}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size50,
+                              fontWeight: '900',
+                              color: R.colors.appColor,
+                            }}>
+                            {((actualName[0] ?? '#') + '').toUpperCase()}
+                          </Text>
+                        </View>
+                      )}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: -2,
+                          right: -15,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Pressable
+                          onPress={() => setPickerModal(true)}
+                          style={({pressed}) => [
+                            {
+                              padding: R.fontSize.Size5,
+                              opacity: pressed ? 0.5 : 1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            },
+                          ]}>
+                          <Image
+                            source={R.images.profileEditIcon}
+                            style={{
+                              height: R.fontSize.Size22,
+                              width: R.fontSize.Size22,
+                            }}
+                            resizeMode={'contain'}
+                          />
+                        </Pressable>
+                      </View>
                     </View>
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <AppButton
-                      onPress={() =>
-                        props.userType == 'Business'
-                          ? onCallUpdateBusinessProfile()
-                          : onCallUpdateViewerProfile()
-                      }
-                      title={'Update Profile'}
-                      textColor={R.colors.white}
-                      paddingHorizontal={R.fontSize.Size30}
-                    />
-                  </View>
-                </View>
-
-                {props.userType == 'Business' && (
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size5,
-                      flex: 1,
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontWeight: '700',
-                        color: R.colors.black,
-                        fontSize: R.fontSize.Size18,
-                      }}>
-                      {companyName}
-                    </Text>
                     <View
                       style={{
-                        marginTop: R.fontSize.Size20,
                         flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}>
-                      <CustomLineTextInput
-                        value={comOwnerName}
-                        onChangeText={ownerName => setComOwnerName(ownerName)}
-                        placeholder={'Company Owner Name'}
-                      />
-
-                      <CustomCardLine disabled={true} title={companyEmail} />
-                      <CustomLineTextInput
-                        value={companyType}
-                        onChangeText={cType => setCompanyType(cType)}
-                        placeholder={'Company Type'}
-                      />
-                      <CustomLineTextInput
-                        value={comLicenceNo}
-                        onChangeText={LicNo => setComLicenceNo(LicNo)}
-                        placeholder={'Company Licence Number'}
-                      />
-
-                      <CustomCardLine disabled={true} title={companyContact} />
-
-                      <CustomLineTextInput
-                        value={companyAddress}
-                        onChangeText={cAdd => setCompanyAddress(cAdd)}
-                        placeholder={'Company Address'}
+                      <AppButton
+                        onPress={() =>
+                          props.userType == 'Business'
+                            ? onCallUpdateBusinessProfile()
+                            : onCallUpdateViewerProfile()
+                        }
+                        title={'Update Profile'}
+                        textColor={R.colors.white}
+                        paddingHorizontal={R.fontSize.Size30}
                       />
                     </View>
                   </View>
-                )}
 
-                {props.userType == 'Viewer' && (
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size40,
-                      flex: 1,
-                    }}>
-                    <CustomLineTextInput
-                      value={actualName}
-                      onChangeText={name => setActualName(name)}
-                      placeholder={'Actual Name'}
-                    />
-
-                    <CustomCardLine disabled={true} title={userName} />
-
-                    <CustomLineTextInput
-                      value={userMail}
-                      onChangeText={mail => setUserMail(mail)}
-                      placeholder={'Email'}
-                    />
-                    <Pressable
-                      onPress={() => setCalPickerModal(!calPickerModal)}
-                      style={({pressed}) => [
-                        {
-                          height: R.fontSize.Size50,
-                          justifyContent: 'center',
-                          opacity: pressed ? 0.5 : 1,
-                          marginBottom: R.fontSize.Size12,
-                          borderBottomWidth: 1,
-                          borderColor: R.colors.placeholderTextColor,
-                        },
-                      ]}>
+                  {props.userType == 'Business' && (
+                    <View
+                      style={{
+                        marginTop: R.fontSize.Size5,
+                        flex: 1,
+                      }}>
                       <Text
                         style={{
                           fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size15,
-                          color: R.colors.primaryTextColor,
                           fontWeight: '700',
+                          color: R.colors.black,
+                          fontSize: R.fontSize.Size18,
                         }}>
-                        {userDob != '' ? userDob : 'Date of Birth'}
+                        {companyName}
                       </Text>
-                    </Pressable>
+                      <View
+                        style={{
+                          marginTop: R.fontSize.Size20,
+                          flex: 1,
+                        }}>
+                        <CustomLineTextInput
+                          value={comOwnerName}
+                          onChangeText={ownerName => setComOwnerName(ownerName)}
+                          placeholder={'Company Owner Name'}
+                        />
 
-                    <CustomCardLine disabled={true} title={mobNo} />
+                        <CustomCardLine disabled={true} title={companyEmail} />
+                        <CustomLineTextInput
+                          value={companyType}
+                          onChangeText={cType => setCompanyType(cType)}
+                          placeholder={'Company Type'}
+                        />
+                        <CustomLineTextInput
+                          value={comLicenceNo}
+                          onChangeText={LicNo => setComLicenceNo(LicNo)}
+                          placeholder={'Company Licence Number'}
+                        />
 
-                    {/* <View
+                        <CustomCardLine
+                          disabled={true}
+                          title={companyContact}
+                        />
+
+                        <CustomLineTextInput
+                          value={companyAddress}
+                          onChangeText={cAdd => setCompanyAddress(cAdd)}
+                          placeholder={'Company Address'}
+                        />
+                      </View>
+                    </View>
+                  )}
+
+                  {props.userType == 'Viewer' && (
+                    <View
+                      style={{
+                        marginTop: R.fontSize.Size40,
+                        flex: 1,
+                      }}>
+                      <CustomLineTextInput
+                        value={actualName}
+                        onChangeText={name => setActualName(name)}
+                        placeholder={'Actual Name'}
+                      />
+
+                      <CustomCardLine disabled={true} title={userName} />
+
+                      <CustomLineTextInput
+                        value={userMail}
+                        onChangeText={mail => setUserMail(mail)}
+                        placeholder={'Email'}
+                      />
+                      <Pressable
+                        onPress={() => setCalPickerModal(!calPickerModal)}
+                        style={({pressed}) => [
+                          {
+                            height: R.fontSize.Size50,
+                            justifyContent: 'center',
+                            opacity: pressed ? 0.5 : 1,
+                            marginBottom: R.fontSize.Size12,
+                            borderBottomWidth: 1,
+                            borderColor: R.colors.placeholderTextColor,
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                          }}>
+                          {userDob != '' ? userDob : 'Date of Birth'}
+                        </Text>
+                      </Pressable>
+
+                      <CustomCardLine disabled={true} title={mobNo} />
+
+                      {/* <View
                       style={{
                         backgroundColor: R.colors.white,
                         borderBottomWidth: 1,
@@ -768,263 +810,263 @@ const [userLocation, setUserLocation] = useState('')
                       />
                     </View> */}
 
-                    {/* <CustomLineTextInput
+                      {/* <CustomLineTextInput
                       value={userBio}
                       onChangeText={bio => setUserBio(bio)}
                       placeholder={'Bio'}
                     /> */}
-                  </View>
-                )}
-              </View>
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  // paddingHorizontal: R.fontSize.Size20,
-                }}>
+                    </View>
+                  )}
+                </View>
+              ) : (
                 <View
                   style={{
-                    marginTop: R.fontSize.Size30,
-                    flexDirection: 'row',
-                    paddingVertical: R.fontSize.Size10,
-                    paddingHorizontal: R.fontSize.Size20,
+                    flex: 1,
+                    // paddingHorizontal: R.fontSize.Size20,
                   }}>
                   <View
                     style={{
-                      flex: 1,
-                      justifyContent: 'space-around',
-                      alignItems: 'center',
+                      marginTop: R.fontSize.Size30,
+                      flexDirection: 'row',
+                      paddingVertical: R.fontSize.Size10,
+                      paddingHorizontal: R.fontSize.Size20,
                     }}>
                     <View
                       style={{
-                        height: R.fontSize.Size50,
-                        width: R.fontSize.Size50,
-                        borderRadius: R.fontSize.Size25,
-                        overflow: 'hidden',
-                        borderWidth: 1,
-                        borderColor: R.colors.placeHolderColor,
-                        backgroundColor: R.colors.lightWhite,
+                        flex: 1,
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
                       }}>
-                      {profilePic?.path != '' || profilePic?.path != null ? (
-                        <Image
-                          source={{
-                            uri: profilePic?.path,
-                          }}
-                          style={{
-                            height: R.fontSize.Size50,
-                            width: R.fontSize.Size50,
-                          }}
-                          resizeMode={'cover'}
-                        />
-                      ) : (
+                      <View
+                        style={{
+                          height: R.fontSize.Size50,
+                          width: R.fontSize.Size50,
+                          borderRadius: R.fontSize.Size25,
+                          overflow: 'hidden',
+                          borderWidth: 1,
+                          borderColor: R.colors.placeHolderColor,
+                          backgroundColor: R.colors.lightWhite,
+                        }}>
+                        {profilePic?.path != '' || profilePic?.path != null ? (
+                          <Image
+                            source={{
+                              uri: profilePic?.path,
+                            }}
+                            style={{
+                              height: R.fontSize.Size50,
+                              width: R.fontSize.Size50,
+                            }}
+                            resizeMode={'cover'}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              height: R.fontSize.Size50,
+                              width: R.fontSize.Size50,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Text
+                              style={{
+                                fontFamily: R.fonts.regular,
+                                fontWeight: '700',
+                                color: R.colors.appColor,
+                                fontSize: R.fontSize.Size20,
+                              }}>
+                              {(
+                                (profileDetails?.name[0] ?? '#') + ''
+                              ).toUpperCase()}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size15,
+                          fontWeight: '700',
+                          color: R.colors.primaryTextColor,
+                        }}
+                        numberOfLines={1}>
+                        {profileDetails?.username}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        height: R.fontSize.Size80,
+                        width: 1,
+                        backgroundColor: R.colors.placeholderTextColor,
+                      }}
+                    />
+                    <View
+                      style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'space-around',
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size24,
+                          fontWeight: '700',
+                          color: R.colors.primaryTextColor,
+                        }}
+                        numberOfLines={1}>
+                        {tailentPostVideo.length}
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size15,
+                          fontWeight: '700',
+                          color: R.colors.primaryTextColor,
+                        }}
+                        numberOfLines={1}>
+                        {'Posts'}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size10,
+                      paddingHorizontal: R.fontSize.Size20,
+                    }}>
+                    <Pressable
+                      onPress={() =>
+                        props.navigation.navigate('UpdateProfileScreen', {
+                          profileDetail: profileDetails,
+                        })
+                      }
+                      style={({pressed}) => [
+                        {
+                          paddingVertical: R.fontSize.Size8,
+                          borderRadius: R.fontSize.Size8,
+                          backgroundColor: R.colors.placeholderTextColor,
+                          opacity: pressed ? 0.5 : 1,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        },
+                      ]}>
+                      <View
+                        style={{
+                          height: R.fontSize.Size10,
+                          width: R.fontSize.Size10,
+                          borderRadius: R.fontSize.Size10,
+                          backgroundColor: R.colors.placeHolderColor,
+                        }}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size15,
+                          color: R.colors.primaryTextColor,
+                          fontWeight: '600',
+                          marginHorizontal: R.fontSize.Size8,
+                        }}>
+                        {'Edit Profile'}
+                      </Text>
+                    </Pressable>
+                  </View>
+                  {profileDetails?.bio != '' && (
+                    <View
+                      style={{
+                        marginTop: R.fontSize.Size30,
+                        paddingHorizontal: R.fontSize.Size20,
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size14,
+                          fontWeight: '500',
+                          color: R.colors.primaryTextColor,
+                        }}>
+                        {profileDetails?.bio}
+                      </Text>
+                    </View>
+                  )}
+
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: R.fontSize.Size20,
+                      paddingHorizontal: R.fontSize.Size20,
+                    }}>
+                    {personalArray.map((item, index) => {
+                      return (
                         <View
+                          key={index}
                           style={{
-                            height: R.fontSize.Size50,
-                            width: R.fontSize.Size50,
+                            flexDirection: 'row',
                             alignItems: 'center',
+                            marginRight: R.fontSize.Size14,
+                          }}>
+                          <View
+                            style={{
+                              height: R.fontSize.Size10,
+                              width: R.fontSize.Size10,
+                              backgroundColor: R.colors.appColor,
+                              borderRadius: R.fontSize.Size10,
+                            }}
+                          />
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size14,
+                              fontWeight: '700',
+                              color: R.colors.primaryTextColor,
+                              marginLeft: R.fontSize.Size8,
+                            }}>
+                            {item}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginTop: R.fontSize.Size20,
+                      paddingHorizontal: R.fontSize.Size20,
+                    }}>
+                    {taletArray.map((item, index) => {
+                      console.log('ITEM', item);
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            alignItems: 'center',
+                            marginRight: R.fontSize.Size14,
                             justifyContent: 'center',
+                            paddingHorizontal: R.fontSize.Size20,
+                            paddingVertical: R.fontSize.Size6,
+                            backgroundColor: R.colors.appColor,
+                            borderRadius: R.fontSize.Size8,
+                            marginBottom: R.fontSize.Size10,
+                            width: screenWidth / 3.8,
+                            height: R.fontSize.Size35,
                           }}>
                           <Text
                             style={{
                               fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size14,
                               fontWeight: '700',
-                              color: R.colors.appColor,
-                              fontSize: R.fontSize.Size20,
+                              color: R.colors.white,
+                              marginLeft: R.fontSize.Size8,
                             }}>
-                            {(
-                              (profileDetails?.name[0] ?? '#') + ''
-                            ).toUpperCase()}
+                            {item}
                           </Text>
                         </View>
-                      )}
-                    </View>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size15,
-                        fontWeight: '700',
-                        color: R.colors.primaryTextColor,
-                      }}
-                      numberOfLines={1}>
-                      {profileDetails?.username}
-                    </Text>
+                      );
+                    })}
                   </View>
-                  <View
-                    style={{
-                      height: R.fontSize.Size80,
-                      width: 1,
-                      backgroundColor: R.colors.placeholderTextColor,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'space-around',
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size24,
-                        fontWeight: '700',
-                        color: R.colors.primaryTextColor,
-                      }}
-                      numberOfLines={1}>
-                      {tailentPostVideo.length}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size15,
-                        fontWeight: '700',
-                        color: R.colors.primaryTextColor,
-                      }}
-                      numberOfLines={1}>
-                      {'Posts'}
-                    </Text>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    marginTop: R.fontSize.Size10,
-                    paddingHorizontal: R.fontSize.Size20,
-                  }}>
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate('UpdateProfileScreen', {
-                        profileDetail: profileDetails,
-                      })
-                    }
-                    style={({pressed}) => [
-                      {
-                        paddingVertical: R.fontSize.Size8,
-                        borderRadius: R.fontSize.Size8,
-                        backgroundColor: R.colors.placeholderTextColor,
-                        opacity: pressed ? 0.5 : 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      },
-                    ]}>
-                    <View
-                      style={{
-                        height: R.fontSize.Size10,
-                        width: R.fontSize.Size10,
-                        borderRadius: R.fontSize.Size10,
-                        backgroundColor: R.colors.placeHolderColor,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size15,
-                        color: R.colors.primaryTextColor,
-                        fontWeight: '600',
-                        marginHorizontal: R.fontSize.Size8,
-                      }}>
-                      {'Edit Profile'}
-                    </Text>
-                  </Pressable>
-                </View>
-                {profileDetails?.bio != '' && (
-                  <View
-                    style={{
-                      marginTop: R.fontSize.Size30,
-                      paddingHorizontal: R.fontSize.Size20,
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size14,
-                        fontWeight: '500',
-                        color: R.colors.primaryTextColor,
-                      }}>
-                      {profileDetails?.bio}
-                    </Text>
-                  </View>
-                )}
 
-                <View
-                  style={{
-                    flexWrap: 'wrap',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: R.fontSize.Size20,
-                    paddingHorizontal: R.fontSize.Size20,
-                  }}>
-                  {personalArray.map((item, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginRight: R.fontSize.Size14,
-                        }}>
-                        <View
-                          style={{
-                            height: R.fontSize.Size10,
-                            width: R.fontSize.Size10,
-                            backgroundColor: R.colors.appColor,
-                            borderRadius: R.fontSize.Size10,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size14,
-                            fontWeight: '700',
-                            color: R.colors.primaryTextColor,
-                            marginLeft: R.fontSize.Size8,
-                          }}>
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-
-                <View
-                  style={{
-                    flexWrap: 'wrap',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginTop: R.fontSize.Size20,
-                    paddingHorizontal: R.fontSize.Size20,
-                  }}>
-                  {taletArray.map((item, index) => {
-                    console.log('ITEM', item);
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          alignItems: 'center',
-                          marginRight: R.fontSize.Size14,
-                          justifyContent: 'center',
-                          paddingHorizontal: R.fontSize.Size20,
-                          paddingVertical: R.fontSize.Size6,
-                          backgroundColor: R.colors.appColor,
-                          borderRadius: R.fontSize.Size8,
-                          marginBottom: R.fontSize.Size10,
-                          width: screenWidth / 3.8,
-                          height: R.fontSize.Size35,
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size14,
-                            fontWeight: '700',
-                            color: R.colors.white,
-                            marginLeft: R.fontSize.Size8,
-                          }}>
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-
-                {/* {profileDetails?.full_time_amount != '' ||
+                  {/* {profileDetails?.full_time_amount != '' ||
                 profileDetails?.part_time_amount != '' ||
                 profileDetails?.gigs_amount != '' ? (
                   <View
@@ -1044,121 +1086,151 @@ const [userLocation, setUserLocation] = useState('')
                   </View>
                 ) : null} */}
 
-                <View
-                  style={{
-                    marginTop: R.fontSize.Size20,
-                    alignItems: 'flex-start',
-                    flexDirection: 'row',
-                    paddingHorizontal: R.fontSize.Size10,
-                    marginLeft: -R.fontSize.Size2,
-                  }}>
-                  {profileDetails?.full_time_amount != '' &&
-                    profileDetails?.full_time_amount != null && (
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size20,
+                      alignItems: 'flex-start',
+                      flexDirection: 'row',
+                      paddingHorizontal: R.fontSize.Size10,
+                      marginLeft: -R.fontSize.Size2,
+                    }}>
+                    {profileDetails?.full_time_amount != '' &&
+                      profileDetails?.full_time_amount != null && (
+                        <CustomTimeRow
+                          leftTitle={profileDetails?.job_type1}
+                          rightText={profileDetails?.full_time_amount}
+                          rightDayHours={'/day'}
+                        />
+                      )}
+                    {profileDetails?.part_time_amount != '' &&
+                      profileDetails?.part_time_amount != null && (
+                        <CustomTimeRow
+                          leftTitle={profileDetails?.job_type2}
+                          rightText={profileDetails?.part_time_amount}
+                          rightDayHours={'/hrs'}
+                        />
+                      )}
+                    {profileDetails?.gigs_amount != '' &&
+                    profileDetails?.gigs_amount != null ? (
                       <CustomTimeRow
-                        leftTitle={profileDetails?.job_type1}
-                        rightText={profileDetails?.full_time_amount}
-                        rightDayHours={'/day'}
-                      />
-                    )}
-                  {profileDetails?.part_time_amount != '' &&
-                    profileDetails?.part_time_amount != null && (
-                      <CustomTimeRow
-                        leftTitle={profileDetails?.job_type2}
-                        rightText={profileDetails?.part_time_amount}
+                        leftTitle={profileDetails?.job_type3}
+                        rightText={profileDetails?.gigs_amount}
                         rightDayHours={'/hrs'}
                       />
-                    )}
-                  {profileDetails?.gigs_amount != '' &&
-                  profileDetails?.gigs_amount != null ? (
-                    <CustomTimeRow
-                      leftTitle={profileDetails?.job_type3}
-                      rightText={profileDetails?.gigs_amount}
-                      rightDayHours={'/hrs'}
-                    />
-                  ) : null}
-                </View>
+                    ) : null}
+                  </View>
 
-                <View
-                  style={{
-                    marginTop: R.fontSize.Size10,
-                    flexWrap: 'wrap',
-                    flexDirection: 'row',
-                    paddingHorizontal: R.fontSize.Size20,
-                  }}>
-                  {tailentPostVideo.map((item, index) => {
-                    return (
-                      <View key={index}>
-                        <Pressable
-                          onPress={
-                            () =>
-                              props.navigation.navigate(
-                                'ParticularVideoScreen',
-                                {
-                                  videoPostId: item?._id,
-                                  from: 'ProfileScreen',
-                                },
-                              )
-                            // props.navigation.navigate('TailentVideoList', {
-                            //   videoItems: tailentPostVideo,
-                            //   playIndex: index,
-                            // })
-                          }
-                          style={({pressed}) => [
-                            {
-                              opacity: pressed ? 0.5 : 1,
-                              width: screenWidth / 3.7,
-                              height: screenWidth / 3,
-                              borderRadius: R.fontSize.Size8,
-                              margin: R.fontSize.Size5,
-                              overflow: 'hidden',
-                            },
-                          ]}>
-                          <VideoCard
-                            videoUrl={`${Config.API_URL}${item?.post.slice(
-                              22,
-                            )}`}
-                            paused={true}
-                          />
-                        </Pressable>
-                        <Pressable
-                          onPress={() => onDeleteVideoAlart(item?._id)}
-                          style={({pressed}) => [
-                            {
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 10,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              opacity: pressed ? 0.5 : 1,
-                            },
-                          ]}>
-                          <View
-                            style={{
-                              height: R.fontSize.Size30,
-                              width: R.fontSize.Size25,
-                              backgroundColor: R.colors.modelBackground,
-                              borderWidth: 0.5,
-                              borderColor: R.colors.lightWhite,
-                              borderRadius: R.fontSize.Size5,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            <Image
-                              source={R.images.deleteIcon}
-                              style={{
-                                height: R.fontSize.Size15,
-                                width: R.fontSize.Size15,
-                              }}
-                              resizeMode={'contain'}
+                  <View
+                    style={{
+                      marginTop: R.fontSize.Size10,
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      paddingHorizontal: R.fontSize.Size20,
+                    }}>
+                    {tailentPostVideo.map((item, index) => {
+                      return (
+                        <View key={index}>
+                          <Pressable
+                            onPress={
+                              () =>
+                                props.navigation.navigate(
+                                  'ParticularVideoScreen',
+                                  {
+                                    videoPostId: item?._id,
+                                    from: 'ProfileScreen',
+                                  },
+                                )
+                              // props.navigation.navigate('TailentVideoList', {
+                              //   videoItems: tailentPostVideo,
+                              //   playIndex: index,
+                              // })
+                            }
+                            style={({pressed}) => [
+                              {
+                                opacity: pressed ? 0.5 : 1,
+                                width: screenWidth / 3.7,
+                                height: screenWidth / 3,
+                                borderRadius: R.fontSize.Size8,
+                                margin: R.fontSize.Size5,
+                                overflow: 'hidden',
+                              },
+                            ]}>
+                            <VideoCard
+                              videoUrl={`${Config.API_URL}${item?.post.slice(
+                                22,
+                              )}`}
+                              paused={true}
                             />
-                          </View>
-                        </Pressable>
-                      </View>
-                    );
-                  })}
+                          </Pressable>
+                          <Pressable
+                            onPress={() => onDeleteVideoAlart(item?._id)}
+                            style={({pressed}) => [
+                              {
+                                position: 'absolute',
+                                bottom: 10,
+                                right: 10,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                opacity: pressed ? 0.5 : 1,
+                              },
+                            ]}>
+                            <View
+                              style={{
+                                height: R.fontSize.Size30,
+                                width: R.fontSize.Size25,
+                                backgroundColor: R.colors.modelBackground,
+                                borderWidth: 0.5,
+                                borderColor: R.colors.lightWhite,
+                                borderRadius: R.fontSize.Size5,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              <Image
+                                source={R.images.deleteIcon}
+                                style={{
+                                  height: R.fontSize.Size15,
+                                  width: R.fontSize.Size15,
+                                }}
+                                resizeMode={'contain'}
+                              />
+                            </View>
+                          </Pressable>
+                        </View>
+                      );
+                    })}
+                  </View>
                 </View>
+              )}
+              <View
+                style={{
+                  paddingBottom: R.fontSize.Size20,
+                  marginHorizontal: R.fontSize.Size20,
+                  borderTopWidth: 1,
+                  paddingTop: R.fontSize.Size10,
+                  borderColor: R.colors.placeholderTextColor,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size14,
+                    color: R.colors.placeHolderColor,
+                    marginBottom: R.fontSize.Size10,
+                    textAlign: 'center',
+                  }}>
+                  {
+                    'if you wish to delete your account click the button below. \nKeep in mind once it’s deleted your account will sadly be gone forever.'
+                  }
+                </Text>
+                <AppButton
+                  onPress={() => onDeleteAccountAlart()}
+                  title={'Delete Account'}
+                  marginHorizontal={R.fontSize.Size40}
+                  backgroundColor={R.colors.placeholderTextColor}
+                  textColor={R.colors.placeHolderColor}
+                  buttonHeight={R.fontSize.Size40}
+                />
               </View>
-            )}
+            </View>
           </ScrollView>
         </SafeAreaView>
         <Modal
@@ -1328,7 +1400,6 @@ const [userLocation, setUserLocation] = useState('')
                   flex: 1,
                   marginHorizontal: R.fontSize.Size20,
                 }}>
-               
                 <CalendarPicker
                   startFromMonday={true}
                   onDateChange={onDateChange}

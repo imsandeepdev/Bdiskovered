@@ -11,6 +11,9 @@ import {
     user_LogoutAll,
     user_LogoutAll_success,
     user_LogoutAll_error,
+    deactivate_Account,
+    deactivate_Account_success,
+    deactivate_Account_error
 } from '../constants/common';
 
 const initial_state = {
@@ -85,7 +88,19 @@ const reducer = (state = initial_state, {type, payload}) => {
         loading: false,
         error: payload.error,
       };
-    
+    case deactivate_Account:
+      return {
+        ...state,
+        loading: true,
+      };
+    case deactivate_Account_success:
+      return initial_state;
+    case deactivate_Account_error:
+      return {
+        loading: false,
+        error: payload.error,
+      };
+
     default:
       return state;
   }

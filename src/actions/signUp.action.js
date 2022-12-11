@@ -12,6 +12,9 @@ import {
   user_LogoutAll,
   user_LogoutAll_success,
   user_LogoutAll_error,
+  deactivate_Account,
+  deactivate_Account_success,
+  deactivate_Account_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -83,6 +86,25 @@ export const UserLogoutAllSuccess = payload => {
 export const UserLogoutAllError = error => {
   return {
     type: user_LogoutAll_error,
+    payload: error,
+  };
+};
+
+
+export const DeactivateAccount = () => {
+  return {
+    type: deactivate_Account,
+  };
+};
+export const DeactivateAccountSuccess = payload => {
+  return {
+    type: deactivate_Account_success,
+    payload,
+  };
+};
+export const DeactivateAccountError = error => {
+  return {
+    type: deactivate_Account_error,
     payload: error,
   };
 };
@@ -177,6 +199,28 @@ export const UserLogoutAllRequest = (
       })
       .catch(error => {
         dispatch(UserLogoutAllError(error));
+        failed?.(error);
+      });
+  };
+};
+
+
+export const DeactivateAccountRequest = (
+ 
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(DeactivateAccount());
+    Api.MultiPostFetch({
+      url: Config.deactivatAccountAPI,
+    })
+      .then(response => {
+        dispatch(DeactivateAccountSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(DeactivateAccountError(error));
         failed?.(error);
       });
   };

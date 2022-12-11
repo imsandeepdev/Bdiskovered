@@ -156,3 +156,8 @@ export const playParticularVideo_error = 'playParticularVideo_error';
 export const connect_Request = 'connect_Request';
 export const connect_Request_success = 'connect_Request_success';
 export const connect_Request_error = 'connect_Request_error';
+
+// deactivateAccount
+export const deactivate_Account = 'deactivate_Account';
+export const deactivate_Account_success = 'deactivate_Account_success';
+export const deactivate_Account_error = 'deactivate_Account_error';
