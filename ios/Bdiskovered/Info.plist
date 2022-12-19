@@ -36,9 +36,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need to access video file</string>
+	<string>$(PRODUCT_NAME)We will need to access photo and video file</string>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) want to capture photo and video from camera.</string>
+	<string>$(PRODUCT_NAME) want to capture photo and create video from camera.</string>
 	<key>NSFileProviderDomainUsageDescription</key>
 	<string>$(PRODUCT_NAME)We will need to access video file</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -50,9 +50,9 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) want to record audio for camera and share with chat.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>$(PRODUCT_NAME) want to upload photo from photo library.</string>
+	<string>$(PRODUCT_NAME) want to upload photo and video from photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) want to access photo library to upload photo.</string>
+	<string>$(PRODUCT_NAME) want to access photo library to upload photo and Video.</string>
 	<key>NSVideoSubscriberAccountUsageDescription</key>
 	<string>$(PRODUCT_NAME)We will need to access video file</string>
 	<key>UIAppFonts</key>

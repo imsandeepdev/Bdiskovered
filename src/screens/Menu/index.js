@@ -138,7 +138,7 @@ const Menu = (props) => {
             leftSource={R.images.connectionsIcon}
             title={'Connections'}
           />
-          <CustomMenuButton
+          {/* <CustomMenuButton
             onPress={() =>
               props.navigation.navigate('WebViewScreen', {
                 from: 'help',
@@ -155,7 +155,7 @@ const Menu = (props) => {
             }
             leftSource={props.userType == 'Business'? R.images.helpIconNew : R.images.faqIcon}
             title={'FAQ'}
-          />
+          /> */}
           <CustomMenuButton
             onPress={() => onLogout()}
             // onPress = {() => props.navigation.navigate('LoginScreen')}
