@@ -191,7 +191,7 @@ const [userLocation, setUserLocation] = useState('')
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
     onCallProfileAPI();
-    // OnCallLoginSession()
+    OnCallLoginSession()
   };
 
   const OnCallLoginSession = async() => {
@@ -207,38 +207,6 @@ const [userLocation, setUserLocation] = useState('')
       device_token: fcmToken,
     };
     console.log('DATA', data);
-    //  let headerAuth = {
-    //    Accept: 'application/json',
-    //    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
-    //    token: props.authToken,
-    //  };
-
-    //   var formBody = [];
-    //   for (var property in data) {
-    //     var encodedKey = encodeURIComponent(property);
-    //     var encodedValue = encodeURIComponent(data[property]);
-    //     formBody.push(encodedKey + '=' + encodedValue);
-    //   }
-    //  const headers = headerAuth;
-    //  const config = {
-    //    method: 'POST',
-    //    headers,
-    //    body: formBody
-    //  };
-
-    //  console.log("FORM CONFIG", config)
-
-    //  fetch(`${Config.API_URL}${Config.loginSessionAPI}`, config)
-    //    .then(res => res.json())
-    //    .then(response => {
-    //      console.log('LOGIN SESSION RES', response);
-            
-    //    })
-    //    .catch(error => {
-    //      console.log('ERRORONAPI', error);
-    //      setLoading(false);
-    //    });
-
      dispatch(LoginSessionRequest(data, response =>{
       console.log("Response Login Session",response)
      }))

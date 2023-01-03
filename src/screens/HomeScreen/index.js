@@ -299,8 +299,10 @@ const onCallGoogleAPI = profileDetails => {
 
   const onCallShowAllPost = () => {
     setLoading(true)
-
-    dispatch(ShowAllPostRequest(response => {
+    let data = {
+      mobile_type:'ios'
+    }
+    dispatch(ShowAllPostRequest(data,response => {
       console.log('SHOW ALL POST RES', response)
       if(response.status=='success')
       {

@@ -48,13 +48,14 @@ export const PlayParticularVideoError = error => {
 
 
 export const ShowAllPostRequest = (
-  
+  data,
   success?: () => void,
   failed?: () => void,
 ) => {
   return dispatch => {
     dispatch(ShowAllPost());
     Api.MultiPostFetch({
+      body:data,
       url: Config.showAllPostAPI,
     })
       .then(response => {

@@ -40,6 +40,10 @@ import FilterVideoScreen from '../screens/FilterVideoScreen';
 import ParticularVideoScreen from '../screens/ParticularVideoScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoResultScreen from '../screens/NoResultScreen';
+import { LoginSessionRequest } from '../actions/loginSession.action';
+import DeviceInfo from 'react-native-device-info';
+import { UserSignOutRequest } from '../actions/signUp.action';
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,6 +55,7 @@ const AppNavigator = props => {
   const [loading, setLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState('SplashScreen');
 
+
   useEffect(()=>{
 
     if(props.authToken)
@@ -58,17 +63,96 @@ const AppNavigator = props => {
       dispatch(GetProfileDetailsRequest(response=>{
         console.log("PROFILE DETAIL ON APP NAVIGATOR",response)
         AsyncStorage.setItem('MyUserId', response?.Profile?.user_id);
+        AsyncStorage.setItem('MyUserMobile', response?.Profile?.mobile);
+
       }))
     }
     console.log(props.authToken)
     const initialRouteName = props.authToken != '' ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
 
+    const interval = setInterval(() => onCheckAuthToken(), 3000);
+    return () => {
+      clearInterval(interval);
+    };
+
   },[]);
+
+  const onCheckAuthToken = () => {
+    if(props.authToken)
+    {
+      // OnCallLoginSession();
+     console.log("LOGIN SESSION");
+    }
+    else
+    {
+      console.log("DONT CALL")
+    }
+  }
+
+  const OnCallLoginSession = async () => {
+    let userFcmToken = await AsyncStorage.getItem('fcmToken')
+    let userMobileNo = await AsyncStorage.getItem('MyUserMobile');
+
+    console.log("USER FCM TOKEN", userFcmToken)
+    console.log('USER MOBILE NO', userMobileNo);
+    onCallLoginSessionAPI(userFcmToken, userMobileNo);
+  };
+
+    const onCallLoginSessionAPI = (fcmToken,userMobile) => {
+      let data = {
+        mobile: userMobile,
+        device_token: fcmToken,
+      };
+      console.log('DATA', data);
+
+      dispatch(
+        LoginSessionRequest(data, response => {
+          console.log('Response Login Session', response?.data);
+
+          if(response?.data == 'undefined')
+          {
+            console.log("VALUE")
+          }
+          else
+          {
+            console.log('LOGOUT');
+            onCallDeviceName()
+
+          }
+          
+        }),
+      );
+    };
+
+
+     const onCallDeviceName = () => {
+       DeviceInfo.getDeviceName().then(deviceName => {
+         console.log('DEVICE NAME', deviceName);
+         onCallLogout(deviceName);
+       });
+     };
+
+     const onCallLogout = async deviceName => {
+       const value = await AsyncStorage.getItem('deviceAccess_token');
+       console.log('VALUE', value);
+       let data = {
+         device_name: deviceName,
+         device_token: value,
+       };
+       console.log('LOGDATA', data);
+       dispatch(
+         UserSignOutRequest(data, response => {
+           console.log('LOGOUT ON APP NAVIGATOR', response);
+           
+         }),
+       );
+     };
 
 
   return (
-    <NavigationContainer ref={navigationRef} linking={props.linking}>
+    <NavigationContainer 
+    ref={navigationRef} linking={props.linking}>
       <Stack.Navigator
         // initialRouteName={initialRoute}
         initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
