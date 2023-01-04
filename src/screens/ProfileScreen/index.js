@@ -191,7 +191,7 @@ const [userLocation, setUserLocation] = useState('')
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
     onCallProfileAPI();
-    OnCallLoginSession()
+    // OnCallLoginSession()
   };
 
   const OnCallLoginSession = async() => {

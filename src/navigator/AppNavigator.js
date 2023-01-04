@@ -54,10 +54,13 @@ const AppNavigator = props => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true);
   const [initialRoute, setInitialRoute] = useState('SplashScreen');
+  const [sessionStatus, setSessionStatus] = useState(true);
+
 
 
   useEffect(()=>{
-
+    setLoading(true)
+    props.authToken && OnCallStartSessionStatus();
     if(props.authToken)
     {
       dispatch(GetProfileDetailsRequest(response=>{
@@ -68,29 +71,53 @@ const AppNavigator = props => {
       }))
     }
     console.log(props.authToken)
-    const initialRouteName = props.authToken != '' ? 'HomeMenu' : 'LoginScreen';
+    const initialRouteName = props.authToken  ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
-
-    const interval = setInterval(() => onCheckAuthToken(), 3000);
+    const interval = setInterval(() => {onCheckSessionStatus()}, 10000);
     return () => {
       clearInterval(interval);
-    };
+    },
+    setLoading(false);
+    
 
   },[]);
 
-  const onCheckAuthToken = () => {
-    if(props.authToken)
+  const OnCallStartSessionStatus = async()=>{
+      try {
+        await AsyncStorage.setItem('sessionStatus','start');
+      } catch (e) {
+        console.log("ERR",e)
+      }
+  }
+
+   const OnCallEndSessionStatus = async () => {
+     try {
+       await AsyncStorage.setItem('sessionStatus', 'end');
+     } catch (e) {
+       console.log("ERR",e)
+     }
+   };
+
+
+  const onCheckSessionStatus = async() => {
+    let tempSession = await AsyncStorage.getItem('sessionStatus');
+    console.log("TEM SESSION",tempSession)
+    if(tempSession == 'start')
     {
-      // OnCallLoginSession();
-     console.log("LOGIN SESSION");
+      OnCallLoginSession()
     }
     else
     {
-      console.log("DONT CALL")
+      OnEndLoginSession()
     }
   }
 
+  const OnEndLoginSession = () => {
+    console.log('End Session Now');
+  }
+
   const OnCallLoginSession = async () => {
+    
     let userFcmToken = await AsyncStorage.getItem('fcmToken')
     let userMobileNo = await AsyncStorage.getItem('MyUserMobile');
 
@@ -110,15 +137,15 @@ const AppNavigator = props => {
         LoginSessionRequest(data, response => {
           console.log('Response Login Session', response?.data);
 
-          if(response?.data == 'undefined')
-          {
-            console.log("VALUE")
-          }
-          else
-          {
-            console.log('LOGOUT');
-            onCallDeviceName()
+          if (
+            response?.data?._id != undefined &&
+            response?.data?.device_info?.isLoggedIn != 0
+          ) {
+            console.log(response?.data?._id);
+            console.log('Only Call Session ');
 
+          } else {
+            onCallDeviceName();
           }
           
         }),
@@ -134,6 +161,8 @@ const AppNavigator = props => {
      };
 
      const onCallLogout = async deviceName => {
+      setLoading(true)
+      OnCallEndSessionStatus();
        const value = await AsyncStorage.getItem('deviceAccess_token');
        console.log('VALUE', value);
        let data = {
@@ -144,18 +173,23 @@ const AppNavigator = props => {
        dispatch(
          UserSignOutRequest(data, response => {
            console.log('LOGOUT ON APP NAVIGATOR', response);
-           
+           setInitialRoute('LoginScreen')
+           setLoading(false)
          }),
        );
      };
-
+  
+    if(loading)
+    {
+      return <SplashScreen/>
+    }
 
   return (
     <NavigationContainer 
     ref={navigationRef} linking={props.linking}>
       <Stack.Navigator
-        // initialRouteName={initialRoute}
-        initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
+        initialRouteName={initialRoute}
+        // initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
         screenOptions={{gestureEnabled: false}}>
         <Stack.Screen
           name="SplashScreen"

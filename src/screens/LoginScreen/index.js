@@ -43,7 +43,7 @@ const LoginScreen = (props) => {
     await AsyncStorage.getItem('fcmToken', (err, result) => {
       console.log('FCM TOKEN', result);
       setFcmToken(result);
-      Toast.show(result, Toast.SHORT)
+      // Toast.show(result, Toast.SHORT)
       onCallCreateOTP(result);
       setCreateDeviceToken(result);
     });
