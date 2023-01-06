@@ -3,14 +3,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export function LoginSessionAPI  () {
+const LoginSessionAPI = () => {
 
+  setInitialRoute(initialRouteName);
+    const interval = setInterval(() => {onCheckSessionStatus()}, 10000);
+    return () => {
+      clearInterval(interval);
+  }
 
-
- AsyncStorage.getItem('fcmToken', (err, result) => {
-    console.log('FCM TOKEN SESSION', result);
     
-  });
-
-
 }
+
+export default LoginSessionAPI()

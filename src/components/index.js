@@ -14,6 +14,8 @@ import VideoCard from './VideoCard';
 import CustomLineTextInput from './CustomLineTextInput';
 import PaymentScreen from './CreateCard';
 import AlartModal from './AlartModal';
+import ReportModal from './ReportModal';
+import ReportDetailModal from './ReportDetailModal';
 
 export{
     StoryScreen,
@@ -31,5 +33,7 @@ export{
     VideoCard,
     CustomLineTextInput,
     PaymentScreen,
-    AlartModal
+    AlartModal,
+    ReportModal,
+    ReportDetailModal
 }

@@ -18,7 +18,7 @@ import {
   ImageBackground,
   StatusBar,
 } from 'react-native';
-import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard, CustomLineTextInput} from '../../components';
+import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard, CustomLineTextInput, ReportModal, ReportDetailModal} from '../../components';
 import Toast from 'react-native-simple-toast';
 import Slider from 'react-native-custom-slider';
 import {useDispatch, connect} from 'react-redux';
@@ -39,7 +39,36 @@ import { UserLocationRequest } from '../../actions/userLocation.action';
 import Share from 'react-native-share';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
-
+const ReportList = [
+  {
+    id: '1',
+    title: 'Sexual Content',
+  },
+  {
+    id: '2',
+    title: 'Violent or repulsive content',
+  },
+  {
+    id: '3',
+    title: 'Hateful or abusive content',
+  },
+  {
+    id: '4',
+    title: 'Harassment or dangerous acts',
+  },
+  {
+    id: '5',
+    title: 'Misinformation',
+  },
+  {
+    id: '6',
+    title: 'Child abuse',
+  },
+  {
+    id: '7',
+    title: 'Infrings my rights',
+  },
+];
 
 const CustomTimeRow = props => {
   return (
@@ -128,6 +157,12 @@ const HomeScreen = (props) => {
   const [modalPicker, setModalPicker] = useState(false);
   const [loading,setLoading] = useState(false)
   const [modalType, setModalType] = useState('')
+  const [reportModalPicker, setReportModalPicker] = useState(false);
+  const [reportDetailModalPicker, setReportDetailModalPicker] = useState(false);
+  const [selectReport, setSelectReport] = useState('')
+  const [selectTypeReport, setSelectTypeReport] = useState('');
+
+
   const [tailentList, setTailentList] = useState([
     {
       id: '1',
@@ -412,6 +447,32 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
       console.log('Error => ', error);
     }
   };
+
+  const onCallReportModalPress1 = (reportType) => {
+    setReportModalPicker(false)
+    setSelectTypeReport(reportType)
+    setReportDetailModalPicker(true)
+  }
+  const onCallReportModalPress2 = (reportType )=> {
+    setReportModalPicker(false);
+    setSelectTypeReport(reportType);
+    setReportDetailModalPicker(true);
+  };
+  const onCallReportModalPress3 = (reportType) => {
+    setReportModalPicker(false);
+    setSelectTypeReport(reportType);
+    setReportDetailModalPicker(true);
+  };
+
+  const OnCallSelectReport = (index) => {
+    setSelectReport(index)
+  }
+
+  const onCallClosedReportDetailModal = () => {
+    setSelectTypeReport('')
+    setReportDetailModalPicker(false)
+    setSelectReport('')
+  }
   
   return (
     <StoryScreen loading={loading}>
@@ -436,13 +497,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
             renderItem={({item, index}) => {
+              if (currIndex == index) {
+                onCallUserLocation(item?.latitude, item?.longitude);
+              }
 
-              
-                if (currIndex == index)
-                {
-                    onCallUserLocation(item?.latitude, item?.longitude);
-                }
-              
               return (
                 <View
                   key={index}
@@ -456,7 +514,6 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                         : screenHeight - R.fontSize.Size254,
                     }}>
                     <VideoCard
-                     
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
                       videoUrl={`${Config.API_URL}${item?.post.replace(
@@ -513,6 +570,29 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                             }}>
                             Share
                           </Text>
+                          <Pressable
+                            onPress={() => setReportModalPicker(true)}
+                            style={({pressed}) => [
+                              {
+                                opacity: pressed ? 0.3 : 0.8,
+                                height: R.fontSize.Size20,
+                                width: R.fontSize.Size50,
+                                borderRadius: R.fontSize.Size8,
+                                backgroundColor: R.colors.lightBlack,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginVertical: R.fontSize.Size15,
+                              },
+                            ]}>
+                            <Image
+                              source={R.images.oragneDotsIcon}
+                              style={{
+                                height: R.fontSize.Size30,
+                                width: R.fontSize.Size30,
+                              }}
+                              resizeMode={'contain'}
+                            />
+                          </Pressable>
                         </View>
                       }
                     />
@@ -636,16 +716,15 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       </View>
                     </View>
                     <View
-                    style={{
-                      paddingHorizontal:R.fontSize.Size5,
-                      height:R.fontSize.Size26,
-                    }}
-                    >
+                      style={{
+                        paddingHorizontal: R.fontSize.Size5,
+                        height: R.fontSize.Size26,
+                      }}>
                       <Text
                         style={{
                           color: R.colors.appColor,
                           fontSize: R.fontSize.Size12,
-                          fontWeight:'700'
+                          fontWeight: '700',
                         }}>
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
@@ -724,93 +803,99 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       flex: 1,
                       marginHorizontal: R.fontSize.Size20,
                     }}>
-                     
-                      <View style={{flex: 1}}>
-                        <View
-                          style={{flexDirection: 'row', alignItems: 'center'}}>
-                          <View style={Styles.videoModalMainView}>
-                            <Image
-                              source={{
-                                uri: `${
-                                  Config.API_URL
-                                }${videoModalDetail?.avatar.replace(
-                                  'http://localhost:8080/',
-                                  '',
-                                )}`,
-                              }}
-                              style={{
-                                height: R.fontSize.Size60,
-                                width: R.fontSize.Size60,
-                              }}
-                              resizeMode={'cover'}
-                            />
-                          </View>
-                          <Text style={Styles.videoModalTitleText}>
-                            {videoModalDetail?.username}
-                          </Text>
+                    <View style={{flex: 1}}>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View style={Styles.videoModalMainView}>
+                          <Image
+                            source={{
+                              uri: `${
+                                Config.API_URL
+                              }${videoModalDetail?.avatar.replace(
+                                'http://localhost:8080/',
+                                '',
+                              )}`,
+                            }}
+                            style={{
+                              height: R.fontSize.Size60,
+                              width: R.fontSize.Size60,
+                            }}
+                            resizeMode={'cover'}
+                          />
                         </View>
-                        {
-                          videoModalDetail?.bio != ''&&
-                          <View style={{marginTop: R.fontSize.Size20}}>
+                        <Text style={Styles.videoModalTitleText}>
+                          {videoModalDetail?.username}
+                        </Text>
+                      </View>
+                      {videoModalDetail?.bio != '' && (
+                        <View style={{marginTop: R.fontSize.Size20}}>
                           <Text style={Styles.videoModalDescText}>
                             {videoModalDetail?.bio}
                           </Text>
-                        </View>}
-                        <View style={Styles.videoModalMapMainView}>
-                          {videoModalPersonalDetail.map((item, index) => {
-                            return (
+                        </View>
+                      )}
+                      <View style={Styles.videoModalMapMainView}>
+                        {videoModalPersonalDetail.map((item, index) => {
+                          return (
+                            <View key={index} style={Styles.videoModalMapView}>
                               <View
-                                key={index}
-                                style={Styles.videoModalMapView}>
-                                <View
-                                  style={Styles.videoModalPersonalDetailView}
-                                />
-                                <Text
-                                  style={Styles.videoModalPersonalDetailText}>
-                                  {item}
-                                </Text>
-                              </View>
-                            );
-                          })}
-                        </View>
-                        <View style={Styles.videoModalMapMainView}>
-                          {videoModalTalentDetail.map((item, index) => {
-                            console.log('ITEM', item);
-                            return (
-                              <View
-                                key={index}
-                                style={Styles.videoModalTalentView}>
-                                <Text style={Styles.videoModalTalentText} numberOfLines={1}>
-                                  {item}
-                                </Text>
-                              </View>
-                            )
-                          })}
-                        </View>
-                        <View style={{flexWrap:'wrap', flexDirection:'row',marginLeft:-R.fontSize.Size14, marginTop:R.fontSize.Size20}}>
-                          {videoModalAvailableDetail.map((item, index) => {
-                            return (
-                              <View key={index}>
-                                {item?.amount != '' &&
-                                item?.amount != null ? (
-                                  <CustomTimeRow
-                                    leftTitle={item?.type}
-                                    rightText={item?.amount}
-                                    rightDayHours={item?.type == 'Full Time'?'/day':'/hrs'}
-                                  />
-                                ) : null}
-                              </View>
-                            );
-                          })}
-                        </View>
+                                style={Styles.videoModalPersonalDetailView}
+                              />
+                              <Text style={Styles.videoModalPersonalDetailText}>
+                                {item}
+                              </Text>
+                            </View>
+                          );
+                        })}
                       </View>
+                      <View style={Styles.videoModalMapMainView}>
+                        {videoModalTalentDetail.map((item, index) => {
+                          console.log('ITEM', item);
+                          return (
+                            <View
+                              key={index}
+                              style={Styles.videoModalTalentView}>
+                              <Text
+                                style={Styles.videoModalTalentText}
+                                numberOfLines={1}>
+                                {item}
+                              </Text>
+                            </View>
+                          );
+                        })}
+                      </View>
+                      <View
+                        style={{
+                          flexWrap: 'wrap',
+                          flexDirection: 'row',
+                          marginLeft: -R.fontSize.Size14,
+                          marginTop: R.fontSize.Size20,
+                        }}>
+                        {videoModalAvailableDetail.map((item, index) => {
+                          return (
+                            <View key={index}>
+                              {item?.amount != '' && item?.amount != null ? (
+                                <CustomTimeRow
+                                  leftTitle={item?.type}
+                                  rightText={item?.amount}
+                                  rightDayHours={
+                                    item?.type == 'Full Time' ? '/day' : '/hrs'
+                                  }
+                                />
+                              ) : null}
+                            </View>
+                          );
+                        })}
+                      </View>
+                    </View>
                   </View>
                 </TouchableWithoutFeedback>
               </ScrollView>
             </KeyboardAvoidingView>
             <View style={{paddingVertical: R.fontSize.Size10}}>
               <AppButton
-                onPress={() => {onCallConnectNow(videoModalDetail?.profileID);
+                onPress={() => {
+                  onCallConnectNow(videoModalDetail?.profileID);
                 }}
                 title={'Connect'}
                 marginHorizontal={R.fontSize.Size55}
@@ -819,6 +904,113 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
           </View>
         </View>
       </Modal>
+      <ReportModal
+        visible={reportModalPicker}
+        onRequestClose={() => setReportModalPicker(false)}
+        closeModal={() => setReportModalPicker(false)}
+        onPress1={() => onCallReportModalPress1('cutVideo')}
+        onPress2={() => onCallReportModalPress2('dontRecommend')}
+        onPress3={() => onCallReportModalPress3('report')}
+      />
+      <ReportDetailModal
+        visible={reportDetailModalPicker}
+        onRequestClose={() => onCallClosedReportDetailModal()}
+        closeModal={() => onCallClosedReportDetailModal()}
+        onPressCancel={() => onCallClosedReportDetailModal()}
+        onPressReport={() => console.log('Report')}
+        reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
+        ReportContent={
+          <View>
+            {selectTypeReport == 'report' && (
+              <ScrollView
+                contentContainerStyle={{flexGrow: 1}}
+                showsVerticalScrollIndicator={false}>
+                {ReportList.map((item, index) => {
+                  return (
+                    <Pressable
+                      key={index}
+                      onPress={() => OnCallSelectReport(index)}
+                      style={({pressed}) => [
+                        {
+                          marginVertical: R.fontSize.Size4,
+                          borderBottomWidth: 0.5,
+                          borderColor: R.colors.lightWhite,
+                          height: R.fontSize.Size40,
+                          borderRadius: R.fontSize.Size8,
+                          alignItems: 'center',
+                          opacity: pressed ? 0.5 : 1,
+                          flexDirection: 'row',
+                        },
+                      ]}>
+                      <Image
+                        source={
+                          selectReport == index
+                            ? R.images.checkRadioIcon
+                            : R.images.unCheckRadioIcon
+                        }
+                        style={{
+                          height: R.fontSize.Size22,
+                          width: R.fontSize.Size22,
+                          paddingHorizontal: R.fontSize.Size20,
+                        }}
+                        resizeMode={'contain'}
+                      />
+                      <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            color: R.colors.lightBlack,
+                            fontWeight: '700',
+                            fontSize: R.fontSize.Size14,
+                          }}
+                          numberOfLines={2}>
+                          {item.title}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            )}
+            {selectTypeReport == 'cutVideo' && (
+              <View
+                style={{
+                  marginHorizontal: R.fontSize.Size10,
+                  paddingBottom: R.fontSize.Size30,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontWeight: '500',
+                    color: R.colors.lightBlack,
+                    fontSize: R.fontSize.Size16,
+                  }}>
+                  {
+                    'Are you sure to cut this video?\nwe does not show this video to you in future'
+                  }
+                </Text>
+              </View>
+            )}
+            {selectTypeReport == 'dontRecommend' && (
+              <View
+                style={{
+                  marginHorizontal: R.fontSize.Size10,
+                  paddingBottom: R.fontSize.Size30,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontWeight: '500',
+                    color: R.colors.lightBlack,
+                    fontSize: R.fontSize.Size16,
+                  }}>
+                  {`Are you sure don't want to recommend this channel for future purpose?`}
+                </Text>
+              </View>
+            )}
+          </View>
+        }
+      />
     </StoryScreen>
   );
 };

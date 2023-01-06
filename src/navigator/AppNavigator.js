@@ -77,8 +77,7 @@ const AppNavigator = props => {
     return () => {
       clearInterval(interval);
     },
-    setLoading(false);
-    
+    setLoading(false); 
 
   },[]);
 

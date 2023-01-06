@@ -152,7 +152,7 @@ const VideoCard = props => {
                 fontWeight: '400',
                 color: R.colors.lightWhite,
                 marginTop: R.fontSize.Size5,
-                width: screenWidth / 1.2,
+                // width: screenWidth / 1.2,
               }}
               numberOfLines={3}>
               {props.bottomDiscription}

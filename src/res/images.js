@@ -34,6 +34,13 @@ const images = {
   redHeartIcon: require('./images/redHeartIcon.png'),
 
   shareIcon: require('./images/shareIcon.png'),
+  dotsIcon: require('./images/dotsIcon.png'),
+  oragneDotsIcon: require('./images/orangeDots.png'),
+  reportIcon: require('./images/reportIcon.png'),
+  unCheckRadioIcon: require('./images/unCheckRadio.png'),
+  checkRadioIcon: require('./images/checkRadio.png'),
+  blockIcon: require('./images/blockIcon.png'),
+  cutVideoIcon: require('./images/cutVideo.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 
