@@ -33,7 +33,7 @@ import { Video as VideoCompressor, Image as ImageCompressor ,backgroundUpload} f
 import { UploadNewVideoRequest } from '../../actions/uploadNewVideo.action';
 import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
-import { ProcessingManager } from 'react-native-video-processing';
+import { ProcessingManager,Trimmer,VideoPlayer } from 'react-native-video-processing';
 import { ChangeOwnerShipRequest } from '../../actions/ownership.action';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -80,7 +80,7 @@ const UploadVideoScreen = props => {
   const [videoDesc, setVideoDesc] = useState('');
   const [videoPrice, setVideoPrice] = useState('');
   const [videoTypes, setVideoTypes] = useState([])
-  const [videoPath, setVideoPath] = useState([])
+  const [videoPath, setVideoPath] = useState('')
   const [selectNegotiable, setSelectNegotiable] = useState(false)
   const [myLat, setMyLat] = useState('')
   const [myLong, setMyLong] = useState('');
@@ -192,7 +192,10 @@ const onSelectPicker = params => {
       console.log('VIDEODETAILS', video);
       let videoURL = video.path;
       console.log('VIDEOP', videoURL);
-      // setVideoPath(video)
+      props.navigation.navigate('CompressVideoScreen', {
+        videoPath: video.path,
+      });
+      // setVideoPath(videoURL)
       // setVideoPath({
       //   uri:
       //     Platform.OS === 'android'
@@ -418,6 +421,8 @@ const onCallDeviceName = () => {
                 </View>
               ) : (
                 <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
+                  
+
                   <View style={{marginTop: R.fontSize.Size45}}>
                     <Text
                       style={{
@@ -503,27 +508,39 @@ const onCallDeviceName = () => {
                       keyboardType={'number-pad'}
                     />
 
-                    <View
-                    style={{marginVertical:R.fontSize.Size10}}
-                    >
+                    <View style={{marginVertical: R.fontSize.Size10}}>
                       <Pressable
-                      onPress={()=> setSelectNegotiable(!selectNegotiable)}
-                      style={({pressed})=>[
-                        {
-                          flexDirection:'row',
-                          alignItems:'center',
-                          opacity: pressed ?0.5:1
-                        }
-                      ]}
-                      >
+                        onPress={() => setSelectNegotiable(!selectNegotiable)}
+                        style={({pressed}) => [
+                          {
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            opacity: pressed ? 0.5 : 1,
+                          },
+                        ]}>
                         <Image
-                          source={selectNegotiable ? R.images.checkTermsIcon : R.images.unCheckTermsIcon}
-                          style={{height:R.fontSize.Size24, width:R.fontSize.Size24}}
+                          source={
+                            selectNegotiable
+                              ? R.images.checkTermsIcon
+                              : R.images.unCheckTermsIcon
+                          }
+                          style={{
+                            height: R.fontSize.Size24,
+                            width: R.fontSize.Size24,
+                          }}
                           resizeMode={'contain'}
                         />
-                        <Text style={{fontFamily:R.fonts.regular, color:R.colors.primaryTextColor, fontSize:R.fontSize.Size14, fontWeight:'500', marginLeft:R.fontSize.Size10}}>{'Negotiable'}</Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            color: R.colors.primaryTextColor,
+                            fontSize: R.fontSize.Size14,
+                            fontWeight: '500',
+                            marginLeft: R.fontSize.Size10,
+                          }}>
+                          {'Negotiable'}
+                        </Text>
                       </Pressable>
-
                     </View>
 
                     <View style={{marginVertical: R.fontSize.Size8}}>
@@ -734,91 +751,94 @@ const onCallDeviceName = () => {
             : `you will be required to login again to update your profile as a talent. Proceed ?`
         }
         customButton={
-          props.userType == 'Business' ?
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Pressable
-              onPress={() => onCallClosedCustomModal()}
-              style={({pressed}) => [
-                {
-                  flex: 1,
-                  marginVertical: R.fontSize.Size4,
-                  borderWidth: 2,
+          props.userType == 'Business' ? (
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Pressable
+                onPress={() => onCallClosedCustomModal()}
+                style={({pressed}) => [
+                  {
+                    flex: 1,
+                    marginVertical: R.fontSize.Size4,
+                    borderWidth: 2,
 
-                  borderColor: R.colors.appColor,
-                  height: R.fontSize.Size45,
-                  borderRadius: R.fontSize.Size8,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  opacity: pressed ? 0.5 : 1,
-                  marginHorizontal: R.fontSize.Size35,
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  color: R.colors.appColor,
-                  fontWeight: '700',
-                  fontSize: R.fontSize.Size16,
-                }}>
-                {'Ok'}
-              </Text>
-            </Pressable>
+                    borderColor: R.colors.appColor,
+                    height: R.fontSize.Size45,
+                    borderRadius: R.fontSize.Size8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: pressed ? 0.5 : 1,
+                    marginHorizontal: R.fontSize.Size35,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    color: R.colors.appColor,
+                    fontWeight: '700',
+                    fontSize: R.fontSize.Size16,
+                  }}>
+                  {'Ok'}
+                </Text>
+              </Pressable>
             </View>
-          :
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Pressable
-              onPress={() => onCallClosedCustomModal()}
-              style={({pressed}) => [
-                {
-                  flex: 1,
-                  marginVertical: R.fontSize.Size4,
-                  borderWidth: 2,
+          ) : (
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Pressable
+                onPress={() => onCallClosedCustomModal()}
+                style={({pressed}) => [
+                  {
+                    flex: 1,
+                    marginVertical: R.fontSize.Size4,
+                    borderWidth: 2,
 
-                  borderColor: R.colors.appColor,
-                  height: R.fontSize.Size45,
-                  borderRadius: R.fontSize.Size8,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  opacity: pressed ? 0.5 : 1,
-                  marginHorizontal: R.fontSize.Size10,
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  color: R.colors.appColor,
-                  fontWeight: '700',
-                  fontSize: R.fontSize.Size16,
-                }}>
-                {'Cancel'}
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => onCallForTailentType()}
-              style={({pressed}) => [
-                {
-                  flex: 1,
-                  marginVertical: R.fontSize.Size4,
-                  backgroundColor: R.colors.appColor,
-                  height: R.fontSize.Size45,
-                  borderRadius: R.fontSize.Size8,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  opacity: pressed ? 0.5 : 1,
-                  marginHorizontal: R.fontSize.Size10,
-                },
-              ]}>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  color: R.colors.white,
-                  fontWeight: '700',
-                  fontSize: R.fontSize.Size16,
-                }}>
-                {'Proceed'}
-              </Text>
-            </Pressable>
-          </View>
+                    borderColor: R.colors.appColor,
+                    height: R.fontSize.Size45,
+                    borderRadius: R.fontSize.Size8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: pressed ? 0.5 : 1,
+                    marginHorizontal: R.fontSize.Size10,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    color: R.colors.appColor,
+                    fontWeight: '700',
+                    fontSize: R.fontSize.Size16,
+                  }}>
+                  {'Cancel'}
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => onCallForTailentType()}
+                style={({pressed}) => [
+                  {
+                    flex: 1,
+                    marginVertical: R.fontSize.Size4,
+                    backgroundColor: R.colors.appColor,
+                    height: R.fontSize.Size45,
+                    borderRadius: R.fontSize.Size8,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: pressed ? 0.5 : 1,
+                    marginHorizontal: R.fontSize.Size10,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    color: R.colors.white,
+                    fontWeight: '700',
+                    fontSize: R.fontSize.Size16,
+                  }}>
+                  {'Proceed'}
+                </Text>
+              </Pressable>
+            </View>
+          )
         }
       />
     </StoryScreen>

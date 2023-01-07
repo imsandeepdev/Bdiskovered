@@ -43,6 +43,7 @@ import NoResultScreen from '../screens/NoResultScreen';
 import { LoginSessionRequest } from '../actions/loginSession.action';
 import DeviceInfo from 'react-native-device-info';
 import { UserSignOutRequest } from '../actions/signUp.action';
+import CompressVideo from '../screens/CompressVideo';
 
 
 const Stack = createStackNavigator();
@@ -73,10 +74,10 @@ const AppNavigator = props => {
     console.log(props.authToken)
     const initialRouteName = props.authToken  ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
-    const interval = setInterval(() => {onCheckSessionStatus()}, 10000);
-    return () => {
-      clearInterval(interval);
-    },
+    // const interval = setInterval(() => {onCheckSessionStatus()}, 10000);
+    // return () => {
+    //   clearInterval(interval);
+    // },
     setLoading(false); 
 
   },[]);
@@ -184,8 +185,7 @@ const AppNavigator = props => {
     }
 
   return (
-    <NavigationContainer 
-    ref={navigationRef} linking={props.linking}>
+    <NavigationContainer ref={navigationRef} linking={props.linking}>
       <Stack.Navigator
         initialRouteName={initialRoute}
         // initialRouteName={props.authToken ? 'HomeMenu' : 'LoginScreen'}
@@ -333,6 +333,11 @@ const AppNavigator = props => {
         <Stack.Screen
           name="NoResultScreen"
           component={NoResultScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CompressVideoScreen"
+          component={CompressVideo}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
