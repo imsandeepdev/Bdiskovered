@@ -71,15 +71,18 @@ const images = {
   chatIconWhite: require('./images/chat_iconwhite.png'),
   plusIconGrey: require('./images/plus_gray.png'),
   plusIconOrage: require('./images/addIcon.png'),
-
   balaceIcon: require('./images/balance_union.png'),
-
   phoneIcon: require('./images/phone_icon.png'),
   helpIconNew: require('./images/help_icon.png'),
   boostIcon: require('./images/boost_icon.png'),
 
   // Notification
   deleteIcon: require('./images/deleteIcon.png'),
+
+  // Upload Video
+  pauseIcon: require('./images/pauseIcon.png'),
+  playIcon: require('./images/playIcon.png'),
+  nextPaperIcon: require('./images/nextPaper.png'),
 };
 
 export {images};

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect,useRef} from 'react';
 import {
   View,
   TextInput,
@@ -25,6 +25,7 @@ import {
   CustomCardLine,
   CustomLineTextInput,
   AlartModal,
+  VideoCompressModal,
 } from '../../components';
 import { connect, useDispatch} from 'react-redux';
 import R from '../../res/R';
@@ -84,8 +85,6 @@ const UploadVideoScreen = props => {
   const [selectNegotiable, setSelectNegotiable] = useState(false)
   const [myLat, setMyLat] = useState('')
   const [myLong, setMyLong] = useState('');
-
-
   const [videoTypeList, setVideoTypeList] = useState(
     [
   {
@@ -105,7 +104,20 @@ const UploadVideoScreen = props => {
     title: 'Fashion',
   },
 ]
-  )
+)
+
+// Video compress modal
+const videoRef = useRef();
+const [videoCompressModalPicker, setVideoCompressModalPicker] = useState(false)
+const [videoStartTime, setVideoStartTime] = useState();
+const [videoEndTime, setVideoEndTime] = useState();
+const [currentTime, setCurrentTime] = useState(0);
+const [encodedBase64Image, setEncodedBase64Image] = useState('');
+const [videoTime, setVideoTime] = useState(0);
+const [imageUrlList, setImageUrlList] = useState([]);
+const [play, setPlay] = useState(false);
+const [videoSource, setVideoSource] = useState('');
+const [videoUrl, setVideoUrl] = useState('');
 
 
 useEffect(()=>{
@@ -192,9 +204,14 @@ const onSelectPicker = params => {
       console.log('VIDEODETAILS', video);
       let videoURL = video.path;
       console.log('VIDEOP', videoURL);
-      props.navigation.navigate('CompressVideoScreen', {
-        videoPath: video.path,
-      });
+      setVideoSource(videoURL)
+      setVideoUrl(videoURL)
+      OnCallVideoDetails(videoURL)
+      setPickerModal(false);
+
+      // props.navigation.navigate('CompressVideoScreen', {
+      //   videoPath: video.path,
+      // });
       // setVideoPath(videoURL)
       // setVideoPath({
       //   uri:
@@ -206,12 +223,105 @@ const onSelectPicker = params => {
       // });
       // setPickerModal(false);
 
-      onCallVideoCompress(videoURL);
+      // onCallVideoCompress(videoURL);
       // onCallCompressVideo(videoURL)
     });
   }
 };
 
+const OnCallVideoDetails = source => {
+  ProcessingManager.getVideoInfo(source).then(
+    ({duration, size, frameRate, bitrate}) => {
+      console.log(duration, size, frameRate, bitrate);
+      let tempVideoDur = duration.toFixed();
+      console.log(tempVideoDur);
+      setVideoTime(tempVideoDur);
+      setVideoCompressModalPicker(true);
+    },
+  );
+};
+
+
+const onLoadEnd = (data: OnLoadData) => {
+         setCurrentTime(data.currentTime);
+       console.log('OnLoad End video data', data);
+};
+
+const onProgress = (data: OnProgressData) => {
+       setCurrentTime(data.currentTime);
+};
+const onEnd = () => {
+       setPlay(false);
+};
+   
+const handlePlayPause = () => {
+       if (play) {
+         return setPlay(false)
+       }
+       setPlay(true);
+};
+
+const TrimVideo = (startTime, endTime) => {
+      let tempVideoDur = endTime - startTime;
+      setVideoTime(tempVideoDur.toFixed());
+      setCurrentTime(startTime)
+      setVideoStartTime(startTime);
+      setVideoEndTime(endTime);
+      const options = {
+        startTime: startTime,
+        endTime: endTime,
+        quality: VideoPlayer.Constants.quality.QUALITY_1280x720, // iOS only
+        saveToCameraRoll: false, // default is false // iOS only
+        saveWithCurrentDate: true, // default is false // iOS only
+      };
+      console.log(`USEREF`, videoRef);
+
+      console.log(videoRef.current.trim());
+      console.log(options);
+      setPlay(false);
+      videoRef.current
+        .trim(options)
+        .then(newSource => {
+          console.log(newSource);
+          setVideoUrl(newSource);
+        })
+        .catch(console.warn);
+};
+
+const onCheckVideoDurationValidation = () => {
+
+  if(videoTime>60)
+  {
+    Toast.show('video duration more then 60 second please crop the video duration',Toast.LONG)
+  }
+  else
+  {
+    onCallCompressVideo()
+
+  }
+
+}
+
+
+const onCallCompressVideo = () => {
+   const options = {
+     quality: VideoPlayer.Constants.quality.QUALITY_1280x720, // iOS only
+     saveToCameraRoll: false, // default is false // iOS only
+     saveWithCurrentDate: true, // default is false // iOS only
+   };
+  ProcessingManager.compress(videoUrl, options) // like VideoPlayer compress options
+    .then(data => {
+      console.log(data)
+      setVideoPath({
+        uri:
+          Platform.OS === 'android' ? data : data?.replace('file://', ''),
+        type: 'video/mp4',
+        name: 'video.MP4',
+      });
+      setVideoCompressModalPicker(false)
+    
+    });
+}
 
 // const onCallCompressVideo = (source) => {
 //    const options = {
@@ -421,8 +531,6 @@ const onCallDeviceName = () => {
                 </View>
               ) : (
                 <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
-                  
-
                   <View style={{marginTop: R.fontSize.Size45}}>
                     <Text
                       style={{
@@ -840,6 +948,40 @@ const onCallDeviceName = () => {
             </View>
           )
         }
+      />
+      <VideoCompressModal
+        modalVisible={videoCompressModalPicker}
+        onRequestClose={() => setVideoCompressModalPicker(false)}
+        closeOnPress={() => setVideoCompressModalPicker(false)}
+        ref={ref => (videoRef.current = ref)}
+        source={videoSource}
+        startTime={videoStartTime}
+        endTime={videoEndTime}
+        sourceUrl={videoUrl}
+        paused={!play}
+        onLoadEnd={onLoadEnd}
+        onEnd={onEnd}
+        onProgress={onProgress}
+        playPauseBackgroundColor={play ? null : R.colors.modelBackground}
+        handlePlayPauseOnPress={handlePlayPause}
+        playPauseContent={
+          play ? (
+            <Image
+              source={R.images.pauseIcon}
+              style={{height: R.fontSize.Size50, width: R.fontSize.Size50}}
+            />
+          ) : (
+            <Image
+              source={R.images.playIcon}
+              style={{height: R.fontSize.Size50, width: R.fontSize.Size50}}
+            />
+          )
+        }
+        trimmeronTrackerMove={e => console.log(`currentTime${e.currentTime}`)}
+        trimmerCurrentTime={currentTime}
+        trimmerOnChange={e => TrimVideo(e.startTime, e.endTime)}
+        durationText={`Video duration ${videoTime} seconds`}
+        onPressNext={() => onCheckVideoDurationValidation()}
       />
     </StoryScreen>
   );

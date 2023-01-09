@@ -16,6 +16,7 @@ import PaymentScreen from './CreateCard';
 import AlartModal from './AlartModal';
 import ReportModal from './ReportModal';
 import ReportDetailModal from './ReportDetailModal';
+import VideoCompressModal from './VideoCompressModal';
 
 export{
     StoryScreen,
@@ -35,5 +36,6 @@ export{
     PaymentScreen,
     AlartModal,
     ReportModal,
-    ReportDetailModal
+    ReportDetailModal,
+    VideoCompressModal
 }
