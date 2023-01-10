@@ -53,7 +53,6 @@ const ReportModal = props => {
           flex: 1,
           backgroundColor: R.colors.modelBackground,
           justifyContent: 'flex-end',
-
         }}>
         <View
           style={{
@@ -95,19 +94,21 @@ const ReportModal = props => {
             }}>
             <CustomRow
               onPress={props.onPress1}
-              Icon={R.images.cutVideoIcon}
-              title={'Cut this video'}
+              Icon={props.icon1 ?? R.images.cutVideoIcon}
+              title={props.title1 ?? 'Cut this video'}
             />
             <CustomRow
               onPress={props.onPress2}
-              Icon={R.images.blockIcon}
-              title={`Don't recommend this channel`}
+              Icon={props.icon2 ?? R.images.blockIcon}
+              title={props.title2 ?? `Don't recommend this channel`}
             />
-            <CustomRow
-              onPress={props.onPress3}
-              Icon={R.images.reportIcon}
-              title={'Report'}
-            />
+            {props.optionThird ? null : (
+              <CustomRow
+                onPress={props.onPress3}
+                Icon={R.images.reportIcon}
+                title={'Report'}
+              />
+            )}
           </View>
         </View>
       </View>

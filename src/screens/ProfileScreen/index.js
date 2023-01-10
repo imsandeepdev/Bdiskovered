@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {View, TextInput, Pressable, Image, Text, ScrollView, SafeAreaView, Dimensions, StatusBar, Platform,Alert,Modal} from 'react-native';
-import {AppButton, CustomCardLine, CustomCardView, CustomLineTextInput, ShadowHeader, StoryScreen, VideoCard}from '../../components'
+import {AppButton, CustomCardLine, CustomCardView, CustomLineTextInput, ReportModal, ShadowHeader, StoryScreen, VideoCard}from '../../components'
 import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
 import Toast from 'react-native-simple-toast';
@@ -173,6 +173,7 @@ const [comLicenceNo, setComLicenceNo] = useState('');
 const [comOwnerName, setComOwnerName] = useState('');
 
 const [userLocation, setUserLocation] = useState('')
+const [editModalPicker, setEditModalPicker] = useState(false)
 
 
   useEffect(()=>{
@@ -485,7 +486,7 @@ const [userLocation, setUserLocation] = useState('')
     const onDeleteAccountAlart = () => {
       Alert.alert(
         'Delete Account!',
-        'Are you sure want to delete account?',
+        `Are you sure want to delete account? \n\nif you wish to delete your account click the button below.Keep in mind once it’s deleted your account will sadly be gone forever.`,
         [
           {
             text: 'YES',
@@ -493,6 +494,7 @@ const [userLocation, setUserLocation] = useState('')
           },
           {
             text: 'CANCEL',
+            onPress: ()=> setEditModalPicker(false)
           },
         ],
         {
@@ -503,6 +505,7 @@ const [userLocation, setUserLocation] = useState('')
 
     const onCallDeleteAccountAPI = () => {
       setLoading(true)
+      setEditModalPicker(false);
       dispatch(DeactivateAccountRequest(response => {
         console.log("Delete Account Response", response)
         if (response.status == 'success')
@@ -515,10 +518,15 @@ const [userLocation, setUserLocation] = useState('')
         {
           setLoading(false);
           Toast.show(response.message, Toast.SHORT);
+          
         }
       }))
     }
 
+    const onCallBlockUserScreen = () => {
+      setEditModalPicker(false)
+      props.navigation.navigate('BlockUserScreen');
+    }
 
 
     return (
@@ -552,6 +560,26 @@ const [userLocation, setUserLocation] = useState('')
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}>
             <View style={{flex: 1}}>
+              <View style={{alignItems: 'flex-end'}}>
+                <Pressable
+                  onPress={() => setEditModalPicker(true)}
+                  style={({pressed}) => [
+                    {
+                      opacity: pressed ? 0.5 : 1,
+                      padding: R.fontSize.Size4,
+                      paddingHorizontal: R.fontSize.Size10,
+                    },
+                  ]}>
+                  <Image
+                    source={R.images.greyDotsIcon}
+                    style={{
+                      height: R.fontSize.Size30,
+                      width: R.fontSize.Size30,
+                    }}
+                    resizeMode={'contain'}
+                  />
+                </Pressable>
+              </View>
               {props.userType != 'Talent' ? (
                 <View
                   style={{
@@ -560,7 +588,7 @@ const [userLocation, setUserLocation] = useState('')
                   }}>
                   <View
                     style={{
-                      marginTop: R.fontSize.Size30,
+                      marginTop: R.fontSize.Size5,
                       flexDirection: 'row',
                       alignItems: 'center',
                     }}>
@@ -794,7 +822,7 @@ const [userLocation, setUserLocation] = useState('')
                   }}>
                   <View
                     style={{
-                      marginTop: R.fontSize.Size30,
+                      marginTop: R.fontSize.Size5,
                       flexDirection: 'row',
                       paddingVertical: R.fontSize.Size10,
                       paddingHorizontal: R.fontSize.Size20,
@@ -866,6 +894,7 @@ const [userLocation, setUserLocation] = useState('')
                         backgroundColor: R.colors.placeholderTextColor,
                       }}
                     />
+
                     <View
                       style={{
                         flex: 1,
@@ -1169,7 +1198,7 @@ const [userLocation, setUserLocation] = useState('')
                   </View>
                 </View>
               )}
-              <View
+              {/* <View
                 style={{
                   paddingBottom: R.fontSize.Size20,
                   marginHorizontal: R.fontSize.Size20,
@@ -1197,7 +1226,7 @@ const [userLocation, setUserLocation] = useState('')
                   textColor={R.colors.placeHolderColor}
                   buttonHeight={R.fontSize.Size40}
                 />
-              </View>
+              </View> */}
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -1388,6 +1417,18 @@ const [userLocation, setUserLocation] = useState('')
             </View>
           </View>
         </Modal>
+        <ReportModal
+          visible={editModalPicker}
+          onRequestClose={() => setEditModalPicker(false)}
+          closeModal={() => setEditModalPicker(false)}
+          title1={`Blocked Users`}
+          title2={`Delete Account`}
+          icon1={R.images.blockIcon}
+          icon2={R.images.grayDeleteIcon}
+          optionThird={true}
+          onPress1={() => onCallBlockUserScreen()}
+          onPress2={() => onDeleteAccountAlart()}
+        />
       </StoryScreen>
     );
 }

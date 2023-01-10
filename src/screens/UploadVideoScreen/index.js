@@ -118,6 +118,7 @@ const [imageUrlList, setImageUrlList] = useState([]);
 const [play, setPlay] = useState(false);
 const [videoSource, setVideoSource] = useState('');
 const [videoUrl, setVideoUrl] = useState('');
+const [videoLoader, setVideoLoader] = useState(false)
 
 
 useEffect(()=>{
@@ -258,34 +259,49 @@ const handlePlayPause = () => {
        if (play) {
          return setPlay(false)
        }
-       setPlay(true);
+       else{
+        return setPlay(true);
+       }
+};
+
+const onCallTrimVideoDetail = (startTime, endTime) => {
+  console.log('StartTime',startTime,'EndTime',endTime)
+  setPlay(false);
+  let tempVideoDur = endTime - startTime;
+  setVideoTime(tempVideoDur.toFixed());
+  setCurrentTime(startTime);
+  setVideoStartTime(startTime);
+  setVideoEndTime(endTime);
 };
 
 const TrimVideo = (startTime, endTime) => {
-      let tempVideoDur = endTime - startTime;
-      setVideoTime(tempVideoDur.toFixed());
-      setCurrentTime(startTime)
-      setVideoStartTime(startTime);
-      setVideoEndTime(endTime);
-      const options = {
-        startTime: startTime,
-        endTime: endTime,
-        quality: VideoPlayer.Constants.quality.QUALITY_1280x720, // iOS only
-        saveToCameraRoll: false, // default is false // iOS only
-        saveWithCurrentDate: true, // default is false // iOS only
-      };
-      console.log(`USEREF`, videoRef);
+  setVideoLoader(true);
 
-      console.log(videoRef.current.trim());
-      console.log(options);
-      setPlay(false);
-      videoRef.current
-        .trim(options)
-        .then(newSource => {
-          console.log(newSource);
-          setVideoUrl(newSource);
-        })
-        .catch(console.warn);
+  let tempVideoDur = endTime - startTime;
+  setVideoTime(tempVideoDur.toFixed());
+  setCurrentTime(startTime);
+  setVideoStartTime(startTime);
+  setVideoEndTime(endTime);
+  const options = {
+    startTime: startTime,
+    endTime: endTime,
+    quality: VideoPlayer.Constants.quality.QUALITY_960x540, // iOS only
+    saveToCameraRoll: false, // default is false // iOS only
+    saveWithCurrentDate: true, // default is false // iOS only
+  };
+  console.log(`VideoTrimDetails`, options);
+
+  console.log(videoRef.current.trim());
+  console.log(options);
+  setPlay(false);
+  videoRef.current
+    .trim(options)
+    .then(newSource => {
+      console.log('TrimVideoSource', newSource);
+      setVideoUrl(newSource);
+      setVideoLoader(false);
+    })
+    .catch(console.warn, setVideoLoader(false));
 };
 
 const onCheckVideoDurationValidation = () => {
@@ -305,8 +321,9 @@ const onCheckVideoDurationValidation = () => {
 
 const onCallCompressVideo = () => {
    const options = {
-     quality: VideoPlayer.Constants.quality.QUALITY_1280x720, // iOS only
-     saveToCameraRoll: false, // default is false // iOS only
+     
+     quality: VideoPlayer.Constants.quality.QUALITY_1080x608, // iOS only
+     saveToCameraRoll: true, // default is false // iOS only
      saveWithCurrentDate: true, // default is false // iOS only
    };
   ProcessingManager.compress(videoUrl, options) // like VideoPlayer compress options
@@ -315,8 +332,8 @@ const onCallCompressVideo = () => {
       setVideoPath({
         uri:
           Platform.OS === 'android' ? data : data?.replace('file://', ''),
-        type: 'video/mp4',
-        name: 'video.MP4',
+        type: 'mp4',
+        name: 'video.mp4',
       });
       setVideoCompressModalPicker(false)
     
@@ -354,6 +371,7 @@ const onCallVideoCompress = async (videoURL) => {
     name: 'video.MP4',
   });
   console.log("VIDEOPATH", videoPath)
+  setVideoCompressModalPicker(false)
   setPickerModal(false);
 };
 
@@ -400,6 +418,8 @@ const onCallVideoPostAPI = () => {
   let formdata = new FormData();
 
   formdata.append('title', videoTitle);
+  // formdata.append('latitude', '26.8496')
+  // formdata.append('longitude', '81.0072');
   formdata.append('latitude', myLat != ''? myLat : '');
   formdata.append('longitude', myLong != ''? myLong : '');
   formdata.append('caption', videoDesc);
@@ -950,6 +970,7 @@ const onCallDeviceName = () => {
         }
       />
       <VideoCompressModal
+        videoLoader={videoLoader}
         modalVisible={videoCompressModalPicker}
         onRequestClose={() => setVideoCompressModalPicker(false)}
         closeOnPress={() => setVideoCompressModalPicker(false)}

@@ -3,7 +3,7 @@ import {toggleLoader} from '../actions/common.action';
 import {store} from '../store';
 import {Config} from '../config';
 import Toast from 'react-native-simple-toast';
-
+import axios from 'axios';
 
 const RequestPostFetch = ({url, body, datatype}) =>
   new Promise((resolve, reject) => {
@@ -181,10 +181,69 @@ const RequestPostFetch = ({url, body, datatype}) =>
             });
         });
 
+  const VideoPostFetch = ({url, body, datatype}) =>
+    new Promise((resolve, reject) => {
+      const {
+        auth: {authToken},
+      } = store.getState();
+
+      console.log('Authtoken On API', authToken);
+
+      const headerAuth = {
+        Accept: 'application/json',
+        'Content-Type':'multipart/form-data',
+        token: authToken,
+      };
+      const headers = headerAuth;
+
+    
+      const config = {
+        method: 'POST',
+        headers,
+        body: body,
+      };
+      const requestUrl = Config.API_URL + url;
+      console.log(
+        'Request params ==> ',
+        requestUrl,
+        'BODY==>',
+        body,
+        'CONFIG==>',
+        config,
+      );
+
+      // axios.post(requestUrl, body, {
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'multipart/form-data',
+      //     token: authToken,
+      //   },
+      // }).then(response => {
+      //   console.log(response)
+      // })
+      fetch(requestUrl, config)
+        .then(response => response.json())
+        .then(responseJson => {
+          console.log('RESPONSEJSON STATUS', responseJson.status);
+          console.log('RESPONSEJSON', responseJson);
+
+          if (responseJson.status == 'success') {
+            resolve(responseJson);
+          } else {
+            Toast.show(responseJson.message, Toast.SHORT);
+            reject(responseJson);
+          }
+        })
+        .catch(error => {
+          console.log('ERRORONAPI', error);
+          Toast.show('Check Internet Connection', Toast.SHORT);
+        });
+    });
 
   export default {
     RequestPostFetch,
     getRequest,
     MultiPostFetch,
-    MultiGetRequest
+    MultiGetRequest,
+    VideoPostFetch,
   };

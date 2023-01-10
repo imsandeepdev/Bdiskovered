@@ -23,14 +23,14 @@ const AlartModal = (props) => {
                     // borderTopRightRadius:R.fontSize.Size8 ,
                     padding:R.fontSize.Size20, 
                     paddingBottom:R.fontSize.Size20,
-                    marginHorizontal:R.fontSize.Size15,
+                    marginHorizontal:props.marginHorizontalModal ?? R.fontSize.Size15,
                     paddingVertical:R.fontSize.Size20
                 }}
                 >
                     <View
                     style={{alignItems:'center',justifyContent:'center'}}>
                         <Image
-                         source={R.images.appLogoBold}
+                         source={props.icon ?? R.images.appLogoBold}
                          style={{height:R.fontSize.Size50,width:R.fontSize.Size200}}
                          resizeMode={'contain'}
                         />

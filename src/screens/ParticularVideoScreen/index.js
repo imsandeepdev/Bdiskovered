@@ -72,51 +72,6 @@ const ParticularVideoScreen = props => {
 
   const onCallParticularVideoPostAPI = () => {
 
-  //  setLoading(true);
-  //  let headerAuth = {
-  //    Accept: 'application/json',
-  //    'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8',
-  //    token: props.authToken,
-  //  };
-
-  //  let data = {
-  //     post_id: props.route.params?.videoPostId,
-  //   };
-  //   var formBody = [];
-  //   for (var property in data) {
-  //     var encodedKey = encodeURIComponent(property);
-  //     var encodedValue = encodeURIComponent(data[property]);
-  //     formBody.push(encodedKey + '=' + encodedValue);
-  //   }
-  //  const headers = headerAuth;
-  //  const config = {
-  //    method: 'POST',
-  //    headers,
-  //    body: formBody
-  //  };
-
-  //  console.log("FORM CONFIG", config)
-
-  //  fetch(`${Config.API_URL}${Config.showAllPostAPI}`, config)
-  //    .then(res => res.json())
-  //    .then(response => {
-  //      console.log('PLAY PARTICULAR VIDEO RES', response);
-  //          if(response.status == 'success')
-  //          {
-  //          setVideoList(response?.Post);
-  //          setLoading(false);
-  //          }
-  //          else{
-  //          Toast.show(response.message, Toast.SHORT);
-  //          setLoading(false);
-  //          }
-  //    })
-  //    .catch(error => {
-  //      console.log('ERRORONAPI', error);
-  //      setLoading(false);
-  //    });
-
-
     setLoading(true)
     let data = {
       post_id: props.route.params?.videoPostId,

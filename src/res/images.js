@@ -41,6 +41,11 @@ const images = {
   checkRadioIcon: require('./images/checkRadio.png'),
   blockIcon: require('./images/blockIcon.png'),
   cutVideoIcon: require('./images/cutVideo.png'),
+  greySaveIcon: require('./images/greySaveIcon.png'),
+  greySaveIcon1: require('./images/greyShareIcon1.png'),
+  orangeSaveIcon: require('./images/orangeShareIcon.png'),
+  orangeSaveIcon1: require('./images/orangeShareIcon1.png'),
+  removeSavedIcon: require('./images/removeSaved.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 
@@ -75,6 +80,8 @@ const images = {
   phoneIcon: require('./images/phone_icon.png'),
   helpIconNew: require('./images/help_icon.png'),
   boostIcon: require('./images/boost_icon.png'),
+  greyDotsIcon: require('./images/greyDots.png'),
+  grayDeleteIcon: require('./images/greyDelete.png'),
 
   // Notification
   deleteIcon: require('./images/deleteIcon.png'),

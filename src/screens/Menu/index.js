@@ -127,16 +127,22 @@ const Menu = (props) => {
           />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
-          {props.userType == 'Business' &&
+          {props.userType == 'Business' && (
             <CustomMenuButton
-            onPress={() => props.navigation.replace('HomeMenu')}
-            leftSource={R.images.inActiveHomeIcon}
-            title={'Home'}
-          />}
+              onPress={() => props.navigation.replace('HomeMenu')}
+              leftSource={R.images.inActiveHomeIcon}
+              title={'Home'}
+            />
+          )}
           <CustomMenuButton
             onPress={() => props.navigation.navigate('ConnectionScreen')}
             leftSource={R.images.connectionsIcon}
             title={'Connections'}
+          />
+          <CustomMenuButton
+            onPress={() => props.navigation.navigate('SavedPostListScreen')}
+            leftSource={R.images.greySaveIcon}
+            title={'Saved Post'}
           />
           {/* <CustomMenuButton
             onPress={() =>

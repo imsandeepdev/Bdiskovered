@@ -38,6 +38,15 @@ export const Config = {
   loginSessionAPI: 'user/login-session',
   connectRequestAPI: 'profile/connect-request',
   deactivatAccountAPI: 'user/deactive',
+  savedPostAPI: 'post/save-post',
+  savedPostListAPI: 'post/save-post-list',
+  deleteSavedPostAPI: 'post/delete-save-post',
+  
+  blockPostAPI: 'post/block-post',
+  blockUserAPI: 'post/block-user',
+  reportPostAPI: 'post/report-post',
+  blockUserListAPI: 'post/block-user-list',
+  unblockUserAPI: 'post/unblock-user',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

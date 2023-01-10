@@ -161,3 +161,43 @@ export const connect_Request_error = 'connect_Request_error';
 export const deactivate_Account = 'deactivate_Account';
 export const deactivate_Account_success = 'deactivate_Account_success';
 export const deactivate_Account_error = 'deactivate_Account_error';
+
+// savedPost
+export const saved_Post = 'saved_Post';
+export const saved_Post_success = 'saved_Post_success';
+export const saved_Post_error = 'saved_Post_error';
+
+// savedPostList
+export const saved_Post_List = 'saved_Post_List';
+export const saved_Post_List_success = 'saved_Post_List_success';
+export const saved_Post_List_error = 'saved_Post_List_error';
+
+// deleteSavedPost
+export const delete_Saved_Post = 'delete_Saved_Post';
+export const delete_Saved_Post_success = 'delete_Saved_Post_success';
+export const delete_Saved_Post_error = 'delete_Saved_Post_error';
+
+// blockPost
+export const block_Post = 'block_Post';
+export const block_Post_success = 'block_Post_success';
+export const block_Post_error = 'block_Post_error';
+
+// blockUser
+export const block_User = 'block_User';
+export const block_User_success = 'block_User_success';
+export const block_User_error = 'block_User_error';
+
+// reportPost
+export const report_Post = 'report_Post';
+export const report_Post_success = 'report_Post_success';
+export const report_Post_error = 'report_Post_error';
+
+// blockUserList
+export const block_User_List = 'block_User_List';
+export const block_User_List_success = 'block_User_List_success';
+export const block_User_List_error = 'block_User_List_error';
+
+// unblockUser
+export const unblock_User = 'unblock_User';
+export const unblock_User_success = 'unblock_User_success';
+export const unblock_User_error = 'unblock_User_error';

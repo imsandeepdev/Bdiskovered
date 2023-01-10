@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import {
   ProcessingManager,
@@ -63,7 +64,20 @@ const VideoCompressModal = React.forwardRef((props,ref)=> {
               />
             </Pressable>
           </View>
-
+          {
+          props.videoLoader 
+          ?
+          <View
+          style={{flex:1,alignItems:'center',justifyContent:'center'}}
+          >
+              <ActivityIndicator 
+                size={'large'}
+                color={R.colors.appColor}
+              />
+          </View>
+          :
+          <View style={{flex: 1}}>
+          
           <View style={{flex: 1}}>
             <VideoPlayer
               ref={ref}
@@ -196,6 +210,9 @@ const VideoCompressModal = React.forwardRef((props,ref)=> {
               />
             </Pressable>
           </View>
+          </View>
+          
+          }
         </View>
       </View>
     </Modal>

@@ -8,16 +8,10 @@ import {
   ImageBackground,
   SafeAreaView,
   Dimensions,
-  Modal,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-  Keyboard,
-  TouchableWithoutFeedback
+  ScrollView
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
-    AppButton,
   FullViewStoryScreen,
   Header,
   ReportDetailModal,
@@ -32,11 +26,12 @@ import Slider from 'react-native-custom-slider';
 import Share from 'react-native-share';
 import moment from 'moment';
 import axios from 'axios';
-import Toast from 'react-native-simple-toast'
-import Styles from './styles';
-import { DeleteSavedPostRequest, SavedPostRequest } from '../../actions/savedPost.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
+import Toast from 'react-native-simple-toast'
+import { DeleteSavedPostRequest } from '../../actions/savedPost.action';
+
+
 
 const ReportList = [
   {
@@ -160,24 +155,23 @@ const CustomTimeRow = props => {
 };
 
 
-const FilterVideoScreen = props => {
+
+
+
+const SavedVideoScreen = props => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [currIndex, setCurrIndex] = useState(0);
   const [videoPlayPause, setVideoPlayPause] = useState(false);
   const [videoList, setVideoList] = useState([]);
-  const [sliderValue, setSliderValue] = useState(0); 
-  const [modalPicker, setModalPicker] = useState(false);
-  const [videoModalDetail, setVideoModalDetail] = useState();
-  const [videoModalPersonalDetail, setVideoModalPersonalDetail] = useState([]);
-  const [videoModalTalentDetail, setVideoModalTalentDetail] = useState([]);
-  const [videoModalAvailableDetail, setVideoModalAvailableDetail] = useState([]);
-  const [saveVideoList, setSaveVideoList] = useState([])
-
+  const [sliderValue, setSliderValue] = useState(0);
+  
   const [reportModalPicker, setReportModalPicker] = useState(false);
   const [reportDetailModalPicker, setReportDetailModalPicker] = useState(false);
   const [selectReport, setSelectReport] = useState('');
   const [selectTypeReport, setSelectTypeReport] = useState('');
+
+
 
   useEffect(() => {
     const blur = props.navigation.addListener('blur', () => {
@@ -193,22 +187,11 @@ const FilterVideoScreen = props => {
 
   useEffect(() => {
     setLoading(true);
-    console.log('MY PROFILE DETAILS USER ID', props.userProfile?.Profile?.user_id);
-    onCheckFromScreen()
+    console.log('VIDEO LIST', props.route.params?.videoItems);
+    setVideoList(props.route.params?.videoItems);
+    setCurrIndex(props.route.params?.playIndex);
     setLoading(false);
   }, [props.navigation]);
-
-  const onCheckFromScreen = () => {
-    props.route.params?.fromScreen == 'SavedPostListScreen' ?
-    onCallSavePostList()
-    :
-    setVideoList(props.route.params?.videoItems)
-  }
-
-  const onCallSavePostList = () => {
-     setVideoList(props.route.params?.videoItems);
-     setCurrIndex(props.route.params?.playIndex);
-  }
 
   const myCustomShare = async () => {
     const shareOptions = {
@@ -252,10 +235,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
       console.log('LIKE RES', res);
       if (res.data.status == 'success') {
         Toast.show(res.data.message, Toast.SHORT);
-        setVideoList(videoList);
-        setTimeout(() => {
-          setSliderValue(0);
-        }, 2000);
+
         setLoading(false);
       } else {
         setLoading(false);
@@ -264,92 +244,31 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
     });
   };
 
-  const onCallModal = (item) => {
-
-    console.log("MODAL")
-    setModalPicker(true);
-      setVideoModalDetail(item);
-      setVideoModalPersonalDetail([
-        `${moment().diff(item?.birth, 'years')} Year`,
-        item?.gender,
-        'gurugram',
-      ]);
-    //   let tempTalentArray = item?.category;
-    //   let useTalentArray = tempTalentArray?.split(',');
-    //   console.log('useTalentArray', useTalentArray);
-    //   setVideoModalTalentDetail(useTalentArray);
-      setVideoModalAvailableDetail([
-        {type: item?.job_type1, amount: item?.full_time_amount},
-        {type: item?.job_type2, amount: item?.part_time_amount},
-        {type: item?.job_type3, amount: item?.gigs_amount},
-      ]); 
-  };
-
-   const onCallConnectNow = profileID => {
-     setModalPicker(false);
-     props.userProfile?.Profile?.subscription != 0
-       ? props.navigation.navigate('ConnectedProfileScreen', {
-           profileId: profileID,
-           myUserId: props.userProfile?.Profile?.user_id,
-         })
-       : props.navigation.navigate('SubscriptionScreen');
+   const onCallReportModalPress1 = reportType => {
+     setReportModalPicker(false);
+     setSelectTypeReport(reportType);
+     setReportDetailModalPicker(true);
+   };
+   const onCallReportModalPress2 = reportType => {
+     setReportModalPicker(false);
+     setSelectTypeReport(reportType);
+     setReportDetailModalPicker(true);
+   };
+   const onCallReportModalPress3 = reportType => {
+     setReportModalPicker(false);
+     setSelectTypeReport(reportType);
+     setReportDetailModalPicker(true);
    };
 
-
-    const onPressOrangeAppIcon = profileID => {
-      console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
-      props.userProfile?.Profile?.subscription != 0
-        ? props.navigation.navigate('ConnectedProfileScreen', {
-            profileId: profileID,
-            myUserId: props.userProfile?.Profile?.user_id,
-          })
-        : props.navigation.navigate('SubscriptionScreen');
-    };
-
-  const onCallReportModalPress1 = reportType => {
-    setReportModalPicker(false);
-    setSelectTypeReport(reportType);
-    setReportDetailModalPicker(true);
-  };
-  const onCallReportModalPress2 = reportType => {
-    setReportModalPicker(false);
-    setSelectTypeReport(reportType);
-    setReportDetailModalPicker(true);
-  };
-  const onCallReportModalPress3 = reportType => {
-    setReportModalPicker(false);
-    setSelectTypeReport(reportType);
-    setReportDetailModalPicker(true);
-  };
-
-  const OnCallSelectReport = index => {
-    setSelectReport(index);
-  };
-
-  const onCallClosedReportDetailModal = () => {
-    setSelectTypeReport('');
-    setReportDetailModalPicker(false);
-    setSelectReport('');
-  };
-
- const onCallSavePost = postId => {
-   let data = {
-     post_id: postId,
+   const OnCallSelectReport = index => {
+     setSelectReport(index);
    };
-   setLoading(true);
-   dispatch(
-     SavedPostRequest(data, response => {
-       console.log('Saved Post Response', response);
-       if (response.status == 'success') {
-         Toast.show(response?.message, Toast.SHORT);
-         setLoading(false);
-       } else {
-         Toast.show(response?.message, Toast.SHORT);
-         setLoading(false);
-       }
-     }),
-   );
- };
+
+   const onCallClosedReportDetailModal = () => {
+     setSelectTypeReport('');
+     setReportDetailModalPicker(false);
+     setSelectReport('');
+   };
 
    const onCallRemoveSavePost = postId => {
      let data = {
@@ -394,25 +313,26 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       height: screenHeight - R.fontSize.Size100,
                     }}>
                     <VideoCard
-                      fromTop={R.fontSize.Size35}
-                      fromLeft={R.fontSize.Size50}
                       videoUrl={`${Config.API_URL}${item?.post.replace(
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userImage={`${Config.API_URL}${item?.avatar.replace(
+                      userImage={`${Config.API_URL}${item?.post.replace(
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      eyeonPress={() => onCallModal(item)}
+                      fromTop={R.fontSize.Size35}
+                      fromLeft={R.fontSize.Size14}
                       eyeIcon={R.images.eyeIcon}
                       userName={item?.username}
                       videoCat={'Gurugram'}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}
+                      // onProgress={onProgress}
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
+                      // paused={true}
                       shareFiled={
                         <View
                           style={{
@@ -420,12 +340,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                             alignItems: 'center',
                           }}>
                           <Pressable
-                            onPress={() =>
-                              props.route.params?.fromScreen ==
-                              'SavedPostListScreen'
-                                ? onCallRemoveSavePost(item?.postID)
-                                : onCallSavePost(item?.postID)
-                            }
+                            onPress={() => onCallRemoveSavePost(item?.postID)}
                             style={({pressed}) => [
                               {
                                 opacity: pressed ? 0.3 : 0.8,
@@ -453,10 +368,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               fontFamily: R.fonts.regular,
                               fontWeight: '400',
                             }}>
-                            {props.route.params?.fromScreen ==
-                            'SavedPostListScreen'
-                              ? `Remove Save`
-                              : `Save`}
+                            Remove Save
                           </Text>
                           <Pressable
                             onPress={() => myCustomShare()}
@@ -525,74 +437,74 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
-                      {props.route.params?.fromScreen ==
-                      'SavedPostListScreen' ? null : (
-                        <View>
-                          <Slider
-                            disabled={
-                              item.postInfo[0]?.percentage_like != null
-                                ? true
-                                : false
-                            }
-                            value={
-                              item?.postInfo[0]?.percentage_like != null
-                                ? parseInt(item.postInfo[0]?.percentage_like)
-                                : sliderValue[index]
-                            }
-                            minimumValue={0}
-                            maximumValue={100}
-                            customMinimumTrack={
-                              <View
+                      <View>
+                        <Slider
+                          disabled={
+                            item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
+                            item.postInfo[0]?.percentage_like != null
+                              ? true
+                              : false
+                          }
+                          value={
+                            item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
+                            item.postInfo[0]?.percentage_like != null
+                              ? parseInt(item.postInfo[0]?.percentage_like)
+                              : sliderValue[index]
+                          }
+                          minimumValue={0}
+                          maximumValue={100}
+                          customMinimumTrack={
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.appColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
+                          }
+                          customMaximumTrack={
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.placeholderTextColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
+                          }
+                          minimumTrackTintColor={R.colors.white}
+                          maximumTrackTintColor={R.colors.white}
+                          onValueChange={val => setSliderValue(val)}
+                          onSlidingComplete={value => {
+                            console.log('SLIDE COMPLETE', value.toFixed(0));
+                            onCallVideoRatingAPI(
+                              value.toFixed(0),
+                              item?.postID,
+                            );
+                          }}
+                          customThumb={
+                            <View
+                              style={{
+                                overflow: 'hidden',
+                                top: 5,
+                                left: 0,
+                                right: 0,
+                              }}>
+                              <Image
+                                source={R.images.redHeartIcon}
                                 style={{
-                                  height: R.fontSize.Size8,
-                                  backgroundColor: R.colors.appColor,
-                                  borderRadius: R.fontSize.Size5,
+                                  width: R.fontSize.Size35,
+                                  height: R.fontSize.Size35,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                 }}
+                                resizeMode={'contain'}
                               />
-                            }
-                            customMaximumTrack={
-                              <View
-                                style={{
-                                  height: R.fontSize.Size8,
-                                  backgroundColor:
-                                    R.colors.placeholderTextColor,
-                                  borderRadius: R.fontSize.Size5,
-                                }}
-                              />
-                            }
-                            minimumTrackTintColor={R.colors.white}
-                            maximumTrackTintColor={R.colors.white}
-                            onValueChange={val => setSliderValue(val)}
-                            onSlidingComplete={value => {
-                              console.log('SLIDE COMPLETE', value.toFixed(0));
-                              onCallVideoRatingAPI(
-                                value.toFixed(0),
-                                item?.postID,
-                              );
-                            }}
-                            customThumb={
-                              <View
-                                style={{
-                                  overflow: 'hidden',
-                                  top: 5,
-                                  left: 0,
-                                  right: 0,
-                                }}>
-                                <Image
-                                  source={R.images.redHeartIcon}
-                                  style={{
-                                    width: R.fontSize.Size35,
-                                    height: R.fontSize.Size35,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  resizeMode={'contain'}
-                                />
-                              </View>
-                            }
-                          />
-                        </View>
-                      )}
+                            </View>
+                          }
+                        />
+                      </View>
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text
@@ -625,41 +537,17 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
                             {item?.total_rating != ''
-                              ? `${(
-                                  item?.total_rating /
-                                  (item?.total_likes * 20)
-                                ).toFixed(1)}%`
+                              ? `${item?.total_rating}%`
                               : '0%'}
                           </Text>
                         </Text>
                       </View>
                     </View>
-                    {props.route.params?.fromScreen ==
-                    'SavedPostListScreen' ? null : (
-                      <View
-                        style={{
-                          paddingHorizontal: R.fontSize.Size5,
-                          height: R.fontSize.Size26,
-                        }}>
-                        <Text
-                          style={{
-                            color: R.colors.appColor,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                          }}>
-                          {item?.postInfo != 'undefined' &&
-                          item?.postInfo != null &&
-                          item.postInfo[0]?.percentage_like != null
-                            ? `${parseInt(item.postInfo[0]?.percentage_like)}`
-                            : sliderValue.toFixed(0)}
-                        </Text>
-                      </View>
-                    )}
                     <Pressable
                       onPress={() => onPressOrangeAppIcon(item?.profileID)}
                       style={({pressed}) => [
                         {
-                          marginHorizontal: R.fontSize.Size8,
+                          marginHorizontal: R.fontSize.Size15,
                           alignItems: 'center',
                           opacity: pressed ? 0.5 : 1,
                         },
@@ -694,7 +582,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
           style={{
             position: 'absolute',
             top: R.fontSize.Size50,
-            left: R.fontSize.Size10,
+            left: R.fontSize.Size20,
           }}>
           <Pressable
             onPress={() => props.navigation.goBack()}
@@ -717,141 +605,6 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
           </Pressable>
         </View>
       </View>
-      <Modal
-        visible={modalPicker}
-        transparent={true}
-        onRequestClose={() => setModalPicker(false)}>
-        <View style={Styles.modalMainView}>
-          <View style={Styles.modalView}>
-            <View style={Styles.modalViewReverse}>
-              <Pressable
-                onPress={() => setModalPicker(false)}
-                style={({pressed}) => [
-                  {
-                    padding: R.fontSize.Size6,
-                    opacity: pressed ? 0.5 : 1,
-                  },
-                ]}>
-                <Image
-                  source={R.images.cancleIcon}
-                  style={{height: R.fontSize.Size10, width: R.fontSize.Size10}}
-                  resizeMode={'contain'}
-                />
-              </Pressable>
-            </View>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
-              style={{flex: 1}}>
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                showsVerticalScrollIndicator={false}>
-                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginHorizontal: R.fontSize.Size20,
-                    }}>
-                    <View style={{flex: 1}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <View style={Styles.videoModalMainView}>
-                          <Image
-                            source={{
-                              uri: `${
-                                Config.API_URL
-                              }${videoModalDetail?.avatar.replace(
-                                'http://localhost:8080/',
-                                '',
-                              )}`,
-                            }}
-                            style={{
-                              height: R.fontSize.Size60,
-                              width: R.fontSize.Size60,
-                            }}
-                            resizeMode={'cover'}
-                          />
-                        </View>
-                        <Text style={Styles.videoModalTitleText}>
-                          {videoModalDetail?.username}
-                        </Text>
-                      </View>
-                      {videoModalDetail?.bio != '' && (
-                        <View style={{marginTop: R.fontSize.Size20}}>
-                          <Text style={Styles.videoModalDescText}>
-                            {videoModalDetail?.bio}
-                          </Text>
-                        </View>
-                      )}
-                      <View style={Styles.videoModalMapMainView}>
-                        {videoModalPersonalDetail.map((item, index) => {
-                          return (
-                            <View key={index} style={Styles.videoModalMapView}>
-                              <View
-                                style={Styles.videoModalPersonalDetailView}
-                              />
-                              <Text style={Styles.videoModalPersonalDetailText}>
-                                {item}
-                              </Text>
-                            </View>
-                          );
-                        })}
-                      </View>
-                      {/* <View style={Styles.videoModalMapMainView}>
-                        {videoModalTalentDetail.map((item, index) => {
-                          console.log('ITEM', item);
-                          return (
-                            <View
-                              key={index}
-                              style={Styles.videoModalTalentView}>
-                              <Text
-                                style={Styles.videoModalTalentText}
-                                numberOfLines={1}>
-                                {item}
-                              </Text>
-                            </View>
-                          );
-                        })}
-                      </View> */}
-                      <View
-                        style={{
-                          flexWrap: 'wrap',
-                          flexDirection: 'row',
-                          marginLeft: -R.fontSize.Size14,
-                          marginTop: R.fontSize.Size20,
-                        }}>
-                        {videoModalAvailableDetail.map((item, index) => {
-                          return (
-                            <View key={index}>
-                              {item?.amount != '' && item?.amount != null ? (
-                                <CustomTimeRow
-                                  leftTitle={item?.type}
-                                  rightText={item?.amount}
-                                  rightDayHours={
-                                    item?.type == 'Full Time' ? '/day' : '/hrs'
-                                  }
-                                />
-                              ) : null}
-                            </View>
-                          );
-                        })}
-                      </View>
-                    </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              </ScrollView>
-            </KeyboardAvoidingView>
-            <View style={{paddingVertical: R.fontSize.Size10}}>
-              <AppButton
-                onPress={() => {
-                  onCallConnectNow(videoModalDetail?.profileID);
-                }}
-                title={'Connect'}
-                marginHorizontal={R.fontSize.Size55}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
       <ReportModal
         visible={reportModalPicker}
         onRequestClose={() => setReportModalPicker(false)}
@@ -867,11 +620,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
         onPressCancel={() => onCallClosedReportDetailModal()}
         onPressReport={() => console.log('Report')}
         reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
-        title={
-          selectTypeReport == 'report'
-            ? 'Why are you reporting this post? '
-            : null
-        }
+        title={selectTypeReport == 'report' ? 'Why are you reporting this post? ' : null}
         ReportContent={
           <View>
             {selectTypeReport == 'report' && (
@@ -968,10 +717,4 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
   );
 };
 
-const mapStateToProps = (state, props) => ({
-  userProfile: state.getProfileDetailsRoot.getProfileInit,
-  authToken: state.auth.authToken,
-  userType: state.auth.userType,
-});
-
-export default connect(mapStateToProps) (FilterVideoScreen);
+export default SavedVideoScreen;

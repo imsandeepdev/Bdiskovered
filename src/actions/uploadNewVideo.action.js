@@ -47,15 +47,15 @@ export const PostDeleteError = error => {
 };
 
 export const UploadNewVideoRequest = (
-  data,
+  formdata,
   dataType,
   success?: () => void,
   failed?: () => void,
 ) => {
   return dispatch => {
     dispatch(UploadNewVideo());
-    Api.MultiPostFetch({
-      body: data,
+    Api.VideoPostFetch({
+      body: formdata,
       datatype: dataType,
       url: Config.uploadNewVideoAPI,
     })

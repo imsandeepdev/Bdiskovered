@@ -23,9 +23,22 @@ const ReportDetailModal = props => {
           }}>
           <View
             style={{
-              alignItems: 'flex-end',
-              justifyContent: 'flex-end',
+              alignItems:'center',
+              flexDirection:'row',
+              borderBottomWidth:0.5,
+              borderColor:R.colors.placeHolderColor
+
             }}>
+            <View style={{flex:1, marginHorizontal:R.fontSize.Size15}}>
+              <Text
+              style={{
+                fontFamily:R.fonts.regular,
+                color:R.colors.primaryTextColor,
+                fontSize:R.fontSize.Size14,
+                fontWeight:'500'
+              }}
+              > {props.title}</Text>
+            </View>
             <Pressable
               onPress={props.closeModal}
               style={({pressed}) => [

@@ -18,6 +18,7 @@ import notificationRoot from '../reducers/notification.reducer';
 import boostPostRoot from '../reducers/boostPost.reducer';
 import loginSessionRoot from '../reducers/loginSession.reducer';
 import connectRequestRoot from '../reducers/connectRequest.reducer';
+import savedPostRoot from '../reducers/savedPost.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -41,6 +42,7 @@ postFilterRoot,
 notificationRoot,
 boostPostRoot,
 loginSessionRoot,
-connectRequestRoot
+connectRequestRoot,
+savedPostRoot
 
 });
