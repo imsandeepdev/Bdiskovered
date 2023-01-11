@@ -174,7 +174,7 @@ const BlockUserScreen = props => {
                     fontWeight: '700',
                     color: R.colors.placeHolderColor,
                   }}>
-                  {'No have block users'}
+                  {'Not found block users'}
                 </Text>
               </View>
             );

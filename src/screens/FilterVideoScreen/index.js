@@ -13,10 +13,11 @@ import {
   ScrollView,
   Platform,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
+  AlartModal,
     AppButton,
   FullViewStoryScreen,
   Header,
@@ -35,6 +36,8 @@ import axios from 'axios';
 import Toast from 'react-native-simple-toast'
 import Styles from './styles';
 import { DeleteSavedPostRequest, SavedPostRequest } from '../../actions/savedPost.action';
+import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
+import CommonFunctions from '../../utils/CommonFuntions';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -176,8 +179,12 @@ const FilterVideoScreen = props => {
 
   const [reportModalPicker, setReportModalPicker] = useState(false);
   const [reportDetailModalPicker, setReportDetailModalPicker] = useState(false);
-  const [selectReport, setSelectReport] = useState('');
+  const [selectReport, setSelectReport] = useState();
   const [selectTypeReport, setSelectTypeReport] = useState('');
+  const [reportPostId, setReportPostId] = useState('');
+  const [reportUserId, setReportUserId] = useState('');
+  const [reportDesc, setReportDesc] = useState('');
+  const [reportOkModal, setReportOkModal] = useState(false);
 
   useEffect(() => {
     const blur = props.navigation.addListener('blur', () => {
@@ -306,69 +313,138 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
         : props.navigation.navigate('SubscriptionScreen');
     };
 
-  const onCallReportModalPress1 = reportType => {
-    setReportModalPicker(false);
-    setSelectTypeReport(reportType);
-    setReportDetailModalPicker(true);
-  };
-  const onCallReportModalPress2 = reportType => {
-    setReportModalPicker(false);
-    setSelectTypeReport(reportType);
-    setReportDetailModalPicker(true);
-  };
-  const onCallReportModalPress3 = reportType => {
-    setReportModalPicker(false);
-    setSelectTypeReport(reportType);
-    setReportDetailModalPicker(true);
-  };
 
-  const OnCallSelectReport = index => {
-    setSelectReport(index);
+const onCallReportModal = (postId, userId) => {
+  setReportPostId(postId);
+  setReportUserId(userId);
+  setReportModalPicker(true);
+};
+
+const onCallReportModalPress1 = reportType => {
+  setReportModalPicker(false);
+  setSelectTypeReport(reportType);
+  setReportDetailModalPicker(true);
+};
+const onCallReportModalPress2 = reportType => {
+  setReportModalPicker(false);
+  setSelectTypeReport(reportType);
+  setReportDetailModalPicker(true);
+};
+const onCallReportModalPress3 = reportType => {
+  setReportModalPicker(false);
+  setSelectTypeReport(reportType);
+  setReportDetailModalPicker(true);
+};
+
+const OnCallSelectReport = (index, item) => {
+  setSelectReport(index);
+  setReportDesc(item.title);
+  console.log('ReportDetail', item.title);
+  console.log('ReportIndex', index);
+};
+
+const onCallClosedReportDetailModal = () => {
+  setSelectTypeReport('');
+  setReportDetailModalPicker(false);
+  setSelectReport('');
+};
+
+const onCallSavePost = postId => {
+  let data = {
+    post_id: postId,
   };
+  setLoading(true);
+  dispatch(
+    SavedPostRequest(data, response => {
+      console.log('Saved Post Response', response);
+      if (response.status == 'success') {
+        Toast.show(response?.message, Toast.SHORT);
+        setLoading(false);
+      } else {
+        Toast.show(response?.message, Toast.SHORT);
+        setLoading(false);
+      }
+    }),
+  );
+};
 
-  const onCallClosedReportDetailModal = () => {
-    setSelectTypeReport('');
-    setReportDetailModalPicker(false);
-    setSelectReport('');
+const onCallReportPostValidation = () => {
+  return CommonFunctions.isBlank(reportDesc.trim(), 'Select any report reason');
+};
+
+const onCallReportPost = () => {
+  if (onCallReportPostValidation()) {
+    onCallReportPostAPI();
+  }
+};
+
+const onCallReportPostAPI = () => {
+  let data = {
+    user_id: reportUserId,
+    post_id: reportPostId,
+    descritpion: reportDesc,
   };
+  console.log('ReportData', data);
+  dispatch(
+    ReportPostRequest(data, response => {
+      console.log('Report Response', response);
+      if (response.status == 'success') {
+        Toast.show(response.message, Toast.SHORT);
+        onCallClosedReportDetailModal();
+        setReportDesc('');
+        setReportOkModal(true);
+      } else {
+        Toast.show(response.message, Toast.SHORT);
+        setReportDesc('');
+      }
+    }),
+  );
+};
 
- const onCallSavePost = postId => {
-   let data = {
-     post_id: postId,
-   };
-   setLoading(true);
-   dispatch(
-     SavedPostRequest(data, response => {
-       console.log('Saved Post Response', response);
-       if (response.status == 'success') {
-         Toast.show(response?.message, Toast.SHORT);
-         setLoading(false);
-       } else {
-         Toast.show(response?.message, Toast.SHORT);
-         setLoading(false);
-       }
-     }),
-   );
- };
+const onCallBlockUser = () => {
+  let data = {
+    blockId: reportUserId,
+  };
+  setLoading(true);
+  dispatch(
+    BlockUserRequest(data, response => {
+      console.log('BLOCK USER RESPONSE', response);
+      if (response.status == 'success') {
+        Toast.show(response.message, Toast.SHORT);
+        onCallClosedReportDetailModal();
+        props.navigation.replace('HomeMenu');
 
-   const onCallRemoveSavePost = postId => {
-     let data = {
-       post_id: postId,
-     };
-     setLoading(true);
-     dispatch(
-       DeleteSavedPostRequest(data, response => {
-         console.log('Saved Post Response', response);
-         if (response.status == 'success') {
-           Toast.show(response?.message, Toast.SHORT);
-           setLoading(false);
-         } else {
-           Toast.show(response?.message, Toast.SHORT);
-           setLoading(false);
-         }
-       }),
-     );
-   };
+      } else {
+        Toast.show(response.message, Toast.SHORT);
+        onCallClosedReportDetailModal();
+        setLoading(false);
+      }
+    }),
+  );
+};
+
+const onCallBlockPost = () => {
+  let data = {
+    postId: reportPostId,
+  };
+  setLoading(true);
+
+  dispatch(
+    BlockPostRequest(data, response => {
+      console.log('BLOCK POST RESPONSE', response);
+
+      if (response.status == 'success') {
+        Toast.show(response.message, Toast.SHORT);
+        onCallClosedReportDetailModal();
+        props.navigation.replace('HomeMenu')
+      } else {
+        Toast.show(response.message, Toast.SHORT);
+        onCallClosedReportDetailModal();
+        setLoading(false);
+      }
+    }),
+  );
+};
 
   return (
     <View style={{flex: 1}}>
@@ -413,106 +489,24 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       usdPrice={`USD ${item?.amount}`}
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
-                      shareFiled={
-                        <View
-                          style={{
-                            marginRight: R.fontSize.Size10,
-                            alignItems: 'center',
-                          }}>
-                          <Pressable
-                            onPress={() =>
-                              props.route.params?.fromScreen ==
-                              'SavedPostListScreen'
-                                ? onCallRemoveSavePost(item?.postID)
-                                : onCallSavePost(item?.postID)
-                            }
-                            style={({pressed}) => [
-                              {
-                                opacity: pressed ? 0.3 : 0.8,
-                                height: R.fontSize.Size50,
-                                width: R.fontSize.Size50,
-                                borderRadius: R.fontSize.Size8,
-                                backgroundColor: R.colors.lightBlack,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              },
-                            ]}>
-                            <Image
-                              source={R.images.removeSavedIcon}
-                              style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </Pressable>
-                          <Text
-                            style={{
-                              color: R.colors.lightWhite,
-                              fontSize: R.fontSize.Size14,
-                              fontFamily: R.fonts.regular,
-                              fontWeight: '400',
-                            }}>
-                            {props.route.params?.fromScreen ==
-                            'SavedPostListScreen'
-                              ? `Remove Save`
-                              : `Save`}
-                          </Text>
-                          <Pressable
-                            onPress={() => myCustomShare()}
-                            style={({pressed}) => [
-                              {
-                                opacity: pressed ? 0.3 : 0.8,
-                                height: R.fontSize.Size50,
-                                width: R.fontSize.Size50,
-                                borderRadius: R.fontSize.Size8,
-                                backgroundColor: R.colors.lightBlack,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              },
-                            ]}>
-                            <Image
-                              source={R.images.shareIcon}
-                              style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </Pressable>
-                          <Text
-                            style={{
-                              color: R.colors.lightWhite,
-                              fontSize: R.fontSize.Size14,
-                              fontFamily: R.fonts.regular,
-                              fontWeight: '400',
-                            }}>
-                            Share
-                          </Text>
-                          <Pressable
-                            onPress={() => setReportModalPicker(true)}
-                            style={({pressed}) => [
-                              {
-                                opacity: pressed ? 0.3 : 0.8,
-                                height: R.fontSize.Size20,
-                                width: R.fontSize.Size50,
-                                borderRadius: R.fontSize.Size8,
-                                backgroundColor: R.colors.lightBlack,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginVertical: R.fontSize.Size15,
-                              },
-                            ]}>
-                            <Image
-                              source={R.images.oragneDotsIcon}
-                              style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </Pressable>
-                        </View>
+                      onPressSave={() =>
+                        props.route.params?.fromScreen == 'SavedPostListScreen'
+                          ? onCallRemoveSavePost(item?.postID)
+                          : onCallSavePost(item?.postID)
+                      }
+                      saveIcon={
+                        props.route.params?.fromScreen == 'SavedPostListScreen'
+                          ? R.images.removeSavedIcon1
+                          : R.images.orangeSaveIcon
+                      }
+                      saveTitle={
+                        props.route.params?.fromScreen == 'SavedPostListScreen'
+                          ? `Remove Save`
+                          : `Save`
+                      }
+                      onPressShare={() => myCustomShare()}
+                      onPressReport={() =>
+                        onCallReportModal(item?.postID, item?.user_id)
                       }
                     />
                   </View>
@@ -525,74 +519,71 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
-                      {props.route.params?.fromScreen ==
-                      'SavedPostListScreen' ? null : (
-                        <View>
-                          <Slider
-                            disabled={
-                              item.postInfo[0]?.percentage_like != null
-                                ? true
-                                : false
-                            }
-                            value={
-                              item?.postInfo[0]?.percentage_like != null
-                                ? parseInt(item.postInfo[0]?.percentage_like)
-                                : sliderValue[index]
-                            }
-                            minimumValue={0}
-                            maximumValue={100}
-                            customMinimumTrack={
-                              <View
+                      <View>
+                        <Slider
+                          disabled={
+                            item.postInfo[0]?.percentage_like != null
+                              ? true
+                              : false
+                          }
+                          value={
+                            item?.postInfo[0]?.percentage_like != null
+                              ? parseInt(item.postInfo[0]?.percentage_like)
+                              : sliderValue[index]
+                          }
+                          minimumValue={0}
+                          maximumValue={100}
+                          customMinimumTrack={
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.appColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
+                          }
+                          customMaximumTrack={
+                            <View
+                              style={{
+                                height: R.fontSize.Size8,
+                                backgroundColor: R.colors.placeholderTextColor,
+                                borderRadius: R.fontSize.Size5,
+                              }}
+                            />
+                          }
+                          minimumTrackTintColor={R.colors.white}
+                          maximumTrackTintColor={R.colors.white}
+                          onValueChange={val => setSliderValue(val)}
+                          onSlidingComplete={value => {
+                            console.log('SLIDE COMPLETE', value.toFixed(0));
+                            onCallVideoRatingAPI(
+                              value.toFixed(0),
+                              item?.postID,
+                            );
+                          }}
+                          customThumb={
+                            <View
+                              style={{
+                                overflow: 'hidden',
+                                top: 5,
+                                left: 0,
+                                right: 0,
+                              }}>
+                              <Image
+                                source={R.images.redHeartIcon}
                                 style={{
-                                  height: R.fontSize.Size8,
-                                  backgroundColor: R.colors.appColor,
-                                  borderRadius: R.fontSize.Size5,
+                                  width: R.fontSize.Size35,
+                                  height: R.fontSize.Size35,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                 }}
+                                resizeMode={'contain'}
                               />
-                            }
-                            customMaximumTrack={
-                              <View
-                                style={{
-                                  height: R.fontSize.Size8,
-                                  backgroundColor:
-                                    R.colors.placeholderTextColor,
-                                  borderRadius: R.fontSize.Size5,
-                                }}
-                              />
-                            }
-                            minimumTrackTintColor={R.colors.white}
-                            maximumTrackTintColor={R.colors.white}
-                            onValueChange={val => setSliderValue(val)}
-                            onSlidingComplete={value => {
-                              console.log('SLIDE COMPLETE', value.toFixed(0));
-                              onCallVideoRatingAPI(
-                                value.toFixed(0),
-                                item?.postID,
-                              );
-                            }}
-                            customThumb={
-                              <View
-                                style={{
-                                  overflow: 'hidden',
-                                  top: 5,
-                                  left: 0,
-                                  right: 0,
-                                }}>
-                                <Image
-                                  source={R.images.redHeartIcon}
-                                  style={{
-                                    width: R.fontSize.Size35,
-                                    height: R.fontSize.Size35,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                  resizeMode={'contain'}
-                                />
-                              </View>
-                            }
-                          />
-                        </View>
-                      )}
+                            </View>
+                          }
+                        />
+                      </View>
+
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text
@@ -634,27 +625,26 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                         </Text>
                       </View>
                     </View>
-                    {props.route.params?.fromScreen ==
-                    'SavedPostListScreen' ? null : (
-                      <View
+
+                    <View
+                      style={{
+                        paddingHorizontal: R.fontSize.Size5,
+                        height: R.fontSize.Size26,
+                      }}>
+                      <Text
                         style={{
-                          paddingHorizontal: R.fontSize.Size5,
-                          height: R.fontSize.Size26,
+                          color: R.colors.appColor,
+                          fontSize: R.fontSize.Size12,
+                          fontWeight: '700',
                         }}>
-                        <Text
-                          style={{
-                            color: R.colors.appColor,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                          }}>
-                          {item?.postInfo != 'undefined' &&
-                          item?.postInfo != null &&
-                          item.postInfo[0]?.percentage_like != null
-                            ? `${parseInt(item.postInfo[0]?.percentage_like)}`
-                            : sliderValue.toFixed(0)}
-                        </Text>
-                      </View>
-                    )}
+                        {item?.postInfo != 'undefined' &&
+                        item?.postInfo != null &&
+                        item.postInfo[0]?.percentage_like != null
+                          ? `${parseInt(item.postInfo[0]?.percentage_like)}`
+                          : sliderValue.toFixed(0)}
+                      </Text>
+                    </View>
+
                     <Pressable
                       onPress={() => onPressOrangeAppIcon(item?.profileID)}
                       style={({pressed}) => [
@@ -865,12 +855,20 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
         onRequestClose={() => onCallClosedReportDetailModal()}
         closeModal={() => onCallClosedReportDetailModal()}
         onPressCancel={() => onCallClosedReportDetailModal()}
-        onPressReport={() => console.log('Report')}
+        onPressReport={() => {
+          selectTypeReport == 'report'
+            ? onCallReportPost()
+            : selectTypeReport == 'dontRecommend'
+            ? onCallBlockUser()
+            : onCallBlockPost();
+        }}
         reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
         title={
           selectTypeReport == 'report'
             ? 'Why are you reporting this post? '
-            : null
+            : selectTypeReport == 'dontRecommend'
+            ? 'Are you sure you want to block?'
+            : 'Are you sure to cut this video?'
         }
         ReportContent={
           <View>
@@ -882,7 +880,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                   return (
                     <Pressable
                       key={index}
-                      onPress={() => OnCallSelectReport(index)}
+                      onPress={() => OnCallSelectReport(index, item)}
                       style={({pressed}) => [
                         {
                           marginVertical: R.fontSize.Size4,
@@ -930,6 +928,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                 style={{
                   marginHorizontal: R.fontSize.Size10,
                   paddingBottom: R.fontSize.Size30,
+                  marginTop: R.fontSize.Size10,
                 }}>
                 <Text
                   style={{
@@ -937,9 +936,10 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                     fontWeight: '500',
                     color: R.colors.lightBlack,
                     fontSize: R.fontSize.Size16,
+                    textAlign: 'center',
                   }}>
                   {
-                    'Are you sure to cut this video?\nwe does not show this video to you in future'
+                    'This video has been hidden? \nwe will not recommend this types of video again.'
                   }
                 </Text>
               </View>
@@ -949,6 +949,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                 style={{
                   marginHorizontal: R.fontSize.Size10,
                   paddingBottom: R.fontSize.Size30,
+                  marginTop: R.fontSize.Size10,
                 }}>
                 <Text
                   style={{
@@ -956,13 +957,22 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                     fontWeight: '500',
                     color: R.colors.lightBlack,
                     fontSize: R.fontSize.Size16,
+                    textAlign: 'center',
                   }}>
-                  {`Are you sure don't want to recommend this channel for future purpose?`}
+                  {`They won't be able to find your profile, video on BDiskovered. Bdiskovered won't let them know that you've blocked them.  `}
                 </Text>
               </View>
             )}
           </View>
         }
+      />
+      <AlartModal
+        visible={reportOkModal}
+        onRequestClose={() => setReportOkModal(false)}
+        icon={R.images.checkOrangeIcon}
+        marginHorizontalModal={R.fontSize.Size35}
+        title={`Thank you for feedback\nYour request is under review. We will verify it and take further action.`}
+        onPress={() => setReportOkModal(false)}
       />
     </View>
   );

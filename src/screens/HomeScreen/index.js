@@ -182,7 +182,6 @@ const HomeScreen = (props) => {
   const [selectTypeReport, setSelectTypeReport] = useState('');
   const [reportPostId, setReportPostId] = useState('')
   const [reportUserId, setReportUserId] = useState('');
-
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false)
 
@@ -331,8 +330,7 @@ const HomeScreen = (props) => {
 
 const onCallGoogleAPI = profileDetails => {
   setLoading(true);
-  console.log('PROFILE DETAILS ON GAPI', profileDetails);
-
+  // console.log('PROFILE DETAILS ON GAPI', profileDetails);
   fetch(
     `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
   )
@@ -345,9 +343,8 @@ const onCallGoogleAPI = profileDetails => {
       let arrayAdd = temparray[tempLength - 3]?.formatted_address;
       let arrayAddress = arrayAdd.split(',');
       let arrAddLength = arrayAddress.length;
-      console.log('FORMAT ADDRESS LENGTH', arrAddLength);
-
-      console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+      // console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+      // console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
       setVideoModalPersonalDetail([
         profileDetails?.gender,
         `${moment().diff(profileDetails?.birth, 'years')} Year`,
@@ -365,10 +362,10 @@ const onCallGoogleAPI = profileDetails => {
       mobile_type:'ios'
     }
     dispatch(ShowAllPostRequest(data,response => {
-      console.log('SHOW ALL POST RES', response)
+      // console.log('SHOW ALL POST RES', response)
       if(response.status=='success')
       {
-        setAllVideoPostList(response?.Post)
+        setAllVideoPostList([...response?.Post])
         setSliderValue(0);
         setLoading(false);
       }
@@ -529,7 +526,6 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
         Toast.show(response?.message, Toast.SHORT);
         setLoading(false);
       }
-
     }))
   }
 
@@ -674,100 +670,10 @@ const onCallReportPost = () => {
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
                       // paused={true}
-                      shareFiled={
-                        <View
-                          style={{
-                            marginRight: R.fontSize.Size10,
-                            alignItems: 'center',
-                          }}>
-                          <Pressable
-                            onPress={() => onCallSavePost(item?.postID)}
-                            style={({pressed}) => [
-                              {
-                                opacity: pressed ? 0.3 : 0.8,
-                                height: R.fontSize.Size50,
-                                width: R.fontSize.Size50,
-                                borderRadius: R.fontSize.Size8,
-                                backgroundColor: R.colors.lightBlack,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              },
-                            ]}>
-                            <Image
-                              source={R.images.orangeSaveIcon1}
-                              style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </Pressable>
-                          <Text
-                            style={{
-                              color: R.colors.lightWhite,
-                              fontSize: R.fontSize.Size14,
-                              fontFamily: R.fonts.regular,
-                              fontWeight: '400',
-                            }}>
-                            Save
-                          </Text>
-                          <Pressable
-                            onPress={() => myCustomShare()}
-                            style={({pressed}) => [
-                              {
-                                opacity: pressed ? 0.3 : 0.8,
-                                height: R.fontSize.Size50,
-                                width: R.fontSize.Size50,
-                                borderRadius: R.fontSize.Size8,
-                                backgroundColor: R.colors.lightBlack,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              },
-                            ]}>
-                            <Image
-                              source={R.images.shareIcon}
-                              style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </Pressable>
-                          <Text
-                            style={{
-                              color: R.colors.lightWhite,
-                              fontSize: R.fontSize.Size14,
-                              fontFamily: R.fonts.regular,
-                              fontWeight: '400',
-                            }}>
-                            Share
-                          </Text>
-                          <Pressable
-                            onPress={() =>
-                              onCallReportModal(item?.postID, item?.user_id)
-                            }
-                            style={({pressed}) => [
-                              {
-                                opacity: pressed ? 0.3 : 0.8,
-                                height: R.fontSize.Size20,
-                                width: R.fontSize.Size50,
-                                borderRadius: R.fontSize.Size8,
-                                backgroundColor: R.colors.lightBlack,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginVertical: R.fontSize.Size15,
-                              },
-                            ]}>
-                            <Image
-                              source={R.images.oragneDotsIcon}
-                              style={{
-                                height: R.fontSize.Size30,
-                                width: R.fontSize.Size30,
-                              }}
-                              resizeMode={'contain'}
-                            />
-                          </Pressable>
-                        </View>
+                      onPressSave={() => onCallSavePost(item?.postID)}
+                      onPressShare={() => myCustomShare()}
+                      onPressReport={() =>
+                        onCallReportModal(item?.postID, item?.user_id)
                       }
                     />
                   </View>
@@ -879,7 +785,8 @@ const onCallReportPost = () => {
                           }}>
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
-                            {item?.total_rating != ''
+                            {item?.total_rating != '' &&
+                            item?.total_rating != '0'
                               ? `${(
                                   item?.total_rating /
                                   (item?.total_likes * 20)

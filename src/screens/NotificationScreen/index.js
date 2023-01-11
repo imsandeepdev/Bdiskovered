@@ -255,7 +255,7 @@ const onCallNotificationList = () => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {`No notifications yet!`}
+                   {`Not found notifications`}
                  </Text>
                  <Text>{fcmToken}</Text>
                  <Text>{'NEW FCM TOKEN'}</Text>

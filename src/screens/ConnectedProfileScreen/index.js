@@ -520,12 +520,13 @@ const ConnectedProfileScreen = props => {
                           overflow: 'hidden',
                         },
                       ]}>
-                      <VideoCard   
+                      <VideoCard
                         videoUrl={`${Config.API_URL}${item?.post.replace(
                           'http://localhost:8080/',
                           '',
                         )}`}
                         paused={true}
+                        shareFiled={true}
                       />
                     </Pressable>
                   </View>

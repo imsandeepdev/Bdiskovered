@@ -106,7 +106,6 @@ const VideoCard = props => {
               numberOfLines={1}>
               {props.videoCat}
             </Text>
-           
           </View>
           <View>
             <Pressable
@@ -125,8 +124,6 @@ const VideoCard = props => {
           </View>
         </View>
       </View>
-
-     
 
       <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -169,7 +166,105 @@ const VideoCard = props => {
             </Text>
           </View>
           <View style={{marginRight: R.fontSize.Size10, alignItems: 'center'}}>
-            {props.shareFiled}
+            {props.shareFiled ? null : (
+              <View
+                style={{
+                  marginRight: R.fontSize.Size10,
+                  alignItems: 'center',
+                }}>
+                <Pressable
+                  onPress={props.onPressSave}
+                  style={({pressed}) => [
+                    {
+                      opacity: pressed ? 0.3 : 0.8,
+                      height: R.fontSize.Size50,
+                      width: R.fontSize.Size50,
+                      borderRadius: R.fontSize.Size8,
+                      backgroundColor: R.colors.lightBlack,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    },
+                  ]}>
+                  <Image
+                    source={props.saveIcon ?? R.images.orangeSaveIcon}
+                    style={{
+                      height: R.fontSize.Size30,
+                      width: R.fontSize.Size30,
+                    }}
+                    resizeMode={'contain'}
+                  />
+                </Pressable>
+                <Text
+                  style={{
+                    color: R.colors.lightWhite,
+                    fontSize: R.fontSize.Size14,
+                    fontFamily: R.fonts.regular,
+                    fontWeight: '400',
+                  }}>
+                  {props.saveTitle ?? 'Save'}
+                </Text>
+                <Pressable
+                  onPress={props.onPressShare}
+                  style={({pressed}) => [
+                    {
+                      opacity: pressed ? 0.3 : 0.8,
+                      height: R.fontSize.Size50,
+                      width: R.fontSize.Size50,
+                      borderRadius: R.fontSize.Size8,
+                      backgroundColor: R.colors.lightBlack,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: R.fontSize.Size8,
+                    },
+                  ]}>
+                  <Image
+                    source={R.images.shareIcon}
+                    style={{
+                      height: R.fontSize.Size30,
+                      width: R.fontSize.Size30,
+                    }}
+                    resizeMode={'contain'}
+                  />
+                </Pressable>
+                <Text
+                  style={{
+                    color: R.colors.lightWhite,
+                    fontSize: R.fontSize.Size14,
+                    fontFamily: R.fonts.regular,
+                    fontWeight: '400',
+                    marginBottom:R.fontSize.Size8
+                  }}>
+                  {'Share'}
+                </Text>
+                {
+                  props.reportHidden ? 
+                  null
+                  :
+                  <Pressable
+                  onPress={props.onPressReport}
+                  style={({pressed}) => [
+                    {
+                      opacity: pressed ? 0.3 : 0.8,
+                      height: R.fontSize.Size20,
+                      width: R.fontSize.Size50,
+                      borderRadius: R.fontSize.Size8,
+                      backgroundColor: R.colors.lightBlack,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginVertical: R.fontSize.Size15,
+                    },
+                  ]}>
+                  <Image
+                    source={R.images.oragneDotsIcon}
+                    style={{
+                      height: R.fontSize.Size30,
+                      width: R.fontSize.Size30,
+                    }}
+                    resizeMode={'contain'}
+                  />
+                </Pressable>}
+              </View>
+            )}
           </View>
         </View>
       </View>

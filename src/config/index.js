@@ -52,5 +52,7 @@ export const Config = {
   stripePaymentCardListAPI: 'payment/list-card',
   stripePaymentDeleteCardAPI: 'payment/delete-card',
   stripePaymentSaveCardAPI: 'payment/add-card',
+
+  
 };
 

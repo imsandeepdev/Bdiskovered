@@ -48,7 +48,7 @@ const SavedPostList = (props) => {
     const onCallSavedPostAPI = () => {
         setLoading(true)
         dispatch(SavedPostListRequest(response=>{
-            console.log('SAVED POST LIST RESPONSE', response?.Post)
+            // console.log('SAVED POST LIST RESPONSE', response?.Post)
             if(response.status == 'success')
             {
             setSavedVideoList(response?.Post);
@@ -67,7 +67,7 @@ const SavedPostList = (props) => {
             leftSource={R.images.chevronBack}
             title={'Saved Post'}
           />
-          <View style={{flex: 1,paddingHorizontal:R.fontSize.Size10}}>
+          <View style={{flex: 1,paddingHorizontal:R.fontSize.Size10,alignItems:'center',justifyContent:'center'}}>
            
               <FlatList    
                 style={{ flex:1,}}
@@ -75,7 +75,6 @@ const SavedPostList = (props) => {
                 data={savedVideoList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({item, index}) => {
-                  console.log(item);
                   return (
                     <View
                       style={{
@@ -90,7 +89,7 @@ const SavedPostList = (props) => {
                           props.navigation.navigate('FilterVideoScreen', {
                             playIndex: index,
                             videoItems: savedVideoList,
-                            fromScreen: 'SavedPostListScreen' 
+                            fromScreen: 'SavedPostListScreen',
                           })
                         }
                         style={({pressed}) => [
@@ -109,6 +108,7 @@ const SavedPostList = (props) => {
                             '',
                           )}`}
                           paused={true}
+                          shareFiled={true}
                         />
                       </Pressable>
                     </View>
@@ -126,7 +126,7 @@ const SavedPostList = (props) => {
                             textAlign:'center',
                             fontWeight:'500'
                             }}
-                            >{'No have saved post'}</Text>
+                            >{'Not found saved post'}</Text>
                         </View>    
                     )
                 }}

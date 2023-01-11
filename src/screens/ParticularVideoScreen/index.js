@@ -36,6 +36,7 @@ import Toast from 'react-native-simple-toast';
 import Styles from './styles';
 import { PlayParticularVideoRequest } from '../../actions/showAllPost.action';
 import { BoostPostRequest } from '../../actions/boostPost.action';
+import { SavedPostRequest } from '../../actions/savedPost.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -51,6 +52,7 @@ const ParticularVideoScreen = props => {
   const [modalPicker, setModalPicker] = useState(false)
   const [boostMsg, setBoostMsg] = useState('')
   const [boostStatus, setBoostStatus] = useState(false)
+  const [videoPostID, setVideoPostID] = useState()
  
 
   useEffect(() => {
@@ -71,7 +73,7 @@ const ParticularVideoScreen = props => {
   }, [props.navigation]);
 
   const onCallParticularVideoPostAPI = () => {
-
+    console.log('POSTID', props.route.params?.videoPostId);
     setLoading(true)
     let data = {
       post_id: props.route.params?.videoPostId,
@@ -80,7 +82,7 @@ const ParticularVideoScreen = props => {
         console.log("PLAY PARTICULAR VIDEO RES", response)
         if(response.status == 'success')
         {
-        setVideoList(response?.Post);
+        setVideoList([...response?.Post]);
         setLoading(false);
         }
         else{
@@ -132,8 +134,9 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
       console.log('LIKE RES', res);
       if (res.data.status == 'success') {
         Toast.show(res.data.message, Toast.SHORT);
+        onCallParticularVideoPostAPI()
       
-        setLoading(false);
+        // setLoading(false);
       } else {
         setLoading(false);
         Toast.show(res.data.message, Toast.SHORT);
@@ -141,7 +144,24 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
     });
   };
 
-
+const onCallSavePost = postId => {
+  let data = {
+    post_id: postId,
+  };
+  setLoading(true);
+  dispatch(
+    SavedPostRequest(data, response => {
+      console.log('Saved Post Response', response);
+      if (response.status == 'success') {
+        Toast.show(response?.message, Toast.SHORT);
+        setLoading(false);
+      } else {
+        Toast.show(response?.message, Toast.SHORT);
+        setLoading(false);
+      }
+    }),
+  );
+};
  
 
  
@@ -217,45 +237,9 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                           usdPrice={`USD ${item?.amount}`}
                           onLoad={onLoad}
                           paused={currIndex !== index || videoPlayPause}
-                          shareFiled={
-                            <View
-                              style={{
-                                marginRight: R.fontSize.Size10,
-                                alignItems: 'center',
-                              }}>
-                              <Pressable
-                                onPress={() => myCustomShare()}
-                                style={({pressed}) => [
-                                  {
-                                    opacity: pressed ? 0.3 : 0.8,
-                                    height: R.fontSize.Size50,
-                                    width: R.fontSize.Size50,
-                                    borderRadius: R.fontSize.Size8,
-                                    backgroundColor: R.colors.lightBlack,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                  },
-                                ]}>
-                                <Image
-                                  source={R.images.shareIcon}
-                                  style={{
-                                    height: R.fontSize.Size30,
-                                    width: R.fontSize.Size30,
-                                  }}
-                                  resizeMode={'contain'}
-                                />
-                              </Pressable>
-                              <Text
-                                style={{
-                                  color: R.colors.lightWhite,
-                                  fontSize: R.fontSize.Size14,
-                                  fontFamily: R.fonts.regular,
-                                  fontWeight: '400',
-                                }}>
-                                {'Share'}
-                              </Text>
-                            </View>
-                          }
+                          reportHidden={true}
+                          onPressSave={() => onCallSavePost(item?.postID)}
+                          onPressShare={() => myCustomShare()}
                         />
                       </View>
                       <View
@@ -331,7 +315,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                                       alignItems: 'center',
                                     }}
                                     resizeMode={'contain'}
-                                    />          
+                                  />
                                 </View>
                               }
                             />
@@ -372,7 +356,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                               }}>
                               {'Average Like '}
                               <Text style={{color: R.colors.appColor}}>
-                                {item?.total_rating != '' ||
+                                {item?.total_rating != '0' &&
                                 item?.total_rating != null
                                   ? `${(
                                       item?.total_rating /

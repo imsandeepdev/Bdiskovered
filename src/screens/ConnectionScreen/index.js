@@ -167,7 +167,7 @@ const ConnectionScreen = props => {
                     fontWeight: '700',
                     color: R.colors.placeHolderColor,
                   }}>
-                  {'You have No connections'}
+                  {'Not found connections'}
                 </Text>
               </View>
             );

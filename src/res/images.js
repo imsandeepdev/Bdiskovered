@@ -46,6 +46,7 @@ const images = {
   orangeSaveIcon: require('./images/orangeShareIcon.png'),
   orangeSaveIcon1: require('./images/orangeShareIcon1.png'),
   removeSavedIcon: require('./images/removeSaved.png'),
+  removeSavedIcon1: require('./images/removeSave.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 

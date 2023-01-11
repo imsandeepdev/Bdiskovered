@@ -1137,10 +1137,6 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                                     from: 'ProfileScreen',
                                   },
                                 )
-                              // props.navigation.navigate('TailentVideoList', {
-                              //   videoItems: tailentPostVideo,
-                              //   playIndex: index,
-                              // })
                             }
                             style={({pressed}) => [
                               {
@@ -1157,6 +1153,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                                 22,
                               )}`}
                               paused={true}
+                              shareFiled={true}
                             />
                           </Pressable>
                           <Pressable
