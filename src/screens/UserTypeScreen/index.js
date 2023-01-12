@@ -32,6 +32,7 @@ const UserTypeScreen = (props) => {
     
 
     const onCallProcess = () => {
+      //  notificationListner()
       if (userType == '') {
         Toast.show('Please Select Account Type', Toast.SHORT);
       }

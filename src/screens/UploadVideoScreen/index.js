@@ -66,7 +66,7 @@ const VideoType = [
 
 const UploadVideoScreen = props => {
 
-
+let videoRef1;
   const dispatch = useDispatch();
   const [modalPicker, setModalPicker] = useState(false);
   const [customModalPicker, setCustomModalPicker] = useState(false)
@@ -119,6 +119,9 @@ const [play, setPlay] = useState(false);
 const [videoSource, setVideoSource] = useState('');
 const [videoUrl, setVideoUrl] = useState('');
 const [videoLoader, setVideoLoader] = useState(false)
+const [videoPlayerSource, setVideoPlayerSource] = useState('');
+const [videoRefStatus, setVideoRefStatus] = useState(true)
+
 
 
 useEffect(()=>{
@@ -180,16 +183,25 @@ const onSelectPicker = params => {
       height: screenHeight,
       cropping: false,
     }).then(video => {
-      console.log('VIDEODETAILS', video);
-      setVideoPath({
-        uri:
-          Platform.OS === 'android'
-            ? video.path
-            : video.path?.replace('file://', ''),
-        type: video.mime,
-        name: video.filename ?? 'video.MP4',
-      });
-      setPickerModal(false);
+      // console.log('VIDEODETAILS', video);
+      // setVideoPath({
+      //   uri:
+      //     Platform.OS === 'android'
+      //       ? video.path
+      //       : video.path?.replace('file://', ''),
+      //   type: video.mime,
+      //   name: video.filename ?? 'video.MP4',
+      // });
+      // setPickerModal(false);
+       console.log('VIDEODETAILS', video);
+       let tempvideoURL = video.path;
+       console.log('VIDEOP', tempvideoURL);
+       setVideoSource(tempvideoURL);
+       setVideoUrl(tempvideoURL);
+       OnCallVideoDetails(tempvideoURL);
+       setVideoPlayerSource('');
+       setVideoRefStatus(true);
+       setPickerModal(false);
     });
   } else if (params == 'gallery') {
     ImagePicker.openPicker({
@@ -203,11 +215,13 @@ const onSelectPicker = params => {
       allowsEditing: true,
     }).then(video => {
       console.log('VIDEODETAILS', video);
-      let videoURL = video.path;
-      console.log('VIDEOP', videoURL);
-      setVideoSource(videoURL)
-      setVideoUrl(videoURL)
-      OnCallVideoDetails(videoURL)
+      let tempvideoURL = video.path;
+      console.log('VIDEOP', tempvideoURL);
+      setVideoSource(tempvideoURL)
+      setVideoUrl(tempvideoURL)
+      OnCallVideoDetails(tempvideoURL)
+      setVideoPlayerSource('')
+      setVideoRefStatus(true);
       setPickerModal(false);
 
       // props.navigation.navigate('CompressVideoScreen', {
@@ -234,9 +248,12 @@ const OnCallVideoDetails = source => {
   ProcessingManager.getVideoInfo(source).then(
     ({duration, size, frameRate, bitrate}) => {
       console.log(duration, size, frameRate, bitrate);
-      let tempVideoDur = duration.toFixed();
+      let tempVideoDur = parseInt(duration.toFixed());
       console.log(tempVideoDur);
       setVideoTime(tempVideoDur);
+      setVideoEndTime(duration)
+      setVideoStartTime(Number(0))
+      setPlay(false)
       setVideoCompressModalPicker(true);
     },
   );
@@ -244,12 +261,23 @@ const OnCallVideoDetails = source => {
 
 
 const onLoadEnd = (data: OnLoadData) => {
-         setCurrentTime(data.currentTime);
+        //  setCurrentTime(data.currentTime);
        console.log('OnLoad End video data', data);
 };
 
 const onProgress = (data: OnProgressData) => {
+      console.log('OnProgress', data.currentTime.toFixed());
+      console.log('EndTime', videoEndTime.toFixed());
+
+      let tempCurrentTime = data.currentTime;
        setCurrentTime(data.currentTime);
+       if(tempCurrentTime.toFixed() == videoEndTime.toFixed())
+       {
+        onSeek({seekTime: videoStartTime});
+        setCurrentTime(videoStartTime)
+        setVideoStartTime(videoStartTime)
+        
+       }
 };
 const onEnd = () => {
        setPlay(false);
@@ -264,6 +292,16 @@ const handlePlayPause = () => {
        }
 };
 
+const onSeek = (data: OnSeekData) => {
+  console.log(videoRef1)
+  videoRef1?.seek(data.seekTime);
+  setCurrentTime(data.seekTime);
+};
+
+const handleOnSlide = (time) => {
+  onSeek({seekTime: time});
+};
+
 const onCallTrimVideoDetail = (startTime, endTime) => {
   console.log('StartTime',startTime,'EndTime',endTime)
   setPlay(false);
@@ -272,34 +310,63 @@ const onCallTrimVideoDetail = (startTime, endTime) => {
   setCurrentTime(startTime);
   setVideoStartTime(startTime);
   setVideoEndTime(endTime);
+  handleOnSlide(startTime)
 };
 
-const TrimVideo = (startTime, endTime) => {
-  setVideoLoader(true);
 
-  let tempVideoDur = endTime - startTime;
-  setVideoTime(tempVideoDur.toFixed());
-  setCurrentTime(startTime);
-  setVideoStartTime(startTime);
-  setVideoEndTime(endTime);
+ const onCallAlart = userId => {
+   Alert.alert(
+     'Success!',
+     `video file is complete for upload.`,
+     [
+       {
+         text: 'YES',
+         onPress: () => TrimVideo(),
+       },
+       //  {
+       //    text: 'CANCEL',
+       //  },
+     ],
+     {
+       cancelable: true,
+     },
+   );
+ };
+
+const TrimVideo = () => {
+  // Alert.alert('Ok')
+  let tempStartTime = parseInt(videoStartTime.toFixed(4));
+  let tempEndTime = parseInt(videoEndTime.toFixed(4));
+  let tempEndVideoTime = tempEndTime + tempStartTime;
+  let finalEndVideoTime = Number(tempEndVideoTime.toFixed(4));; 
+
+  console.log(tempStartTime);
+  console.log(tempEndTime);
+  console.log(tempEndVideoTime);
+
+
+  
   const options = {
-    startTime: startTime,
-    endTime: endTime,
-    quality: VideoPlayer.Constants.quality.QUALITY_960x540, // iOS only
-    saveToCameraRoll: false, // default is false // iOS only
+    startTime: tempStartTime,
+    endTime: tempEndVideoTime,
+    quality: VideoPlayer.Constants.quality.QUALITY_1280x720, // iOS only
+    saveToCameraRoll: true, // default is false // iOS only
     saveWithCurrentDate: true, // default is false // iOS only
   };
   console.log(`VideoTrimDetails`, options);
-
-  console.log(videoRef.current.trim());
+  // console.log(videoRef.current.trim());
   console.log(options);
-  setPlay(false);
   videoRef.current
     .trim(options)
     .then(newSource => {
       console.log('TrimVideoSource', newSource);
       setVideoUrl(newSource);
-      setVideoLoader(false);
+      setVideoPath({
+        uri: Platform.OS === 'android' ? newSource : newSource?.replace('file://', ''),
+        type: 'mp4',
+        name: 'video.mp4',
+      });
+      setVideoCompressModalPicker(false);
     })
     .catch(console.warn, setVideoLoader(false));
 };
@@ -312,7 +379,10 @@ const onCheckVideoDurationValidation = () => {
   }
   else
   {
-    onCallCompressVideo()
+    setVideoRefStatus(false)
+  //  setVideoPlayerSource(videoUrl)
+  //  setVideoCompressModalPicker(false);
+  onCallAlart()
 
   }
 
@@ -418,10 +488,10 @@ const onCallVideoPostAPI = () => {
   let formdata = new FormData();
 
   formdata.append('title', videoTitle);
-  // formdata.append('latitude', '26.8496')
-  // formdata.append('longitude', '81.0072');
-  formdata.append('latitude', myLat != ''? myLat : '');
-  formdata.append('longitude', myLong != ''? myLong : '');
+  formdata.append('latitude', '26.8496')
+  formdata.append('longitude', '81.0072');
+  // formdata.append('latitude', myLat != ''? myLat : '');
+  // formdata.append('longitude', myLong != ''? myLong : '');
   formdata.append('caption', videoDesc);
   formdata.append('amount', videoPrice);
   formdata.append('category', videoTypes);
@@ -617,6 +687,50 @@ const onCallDeviceName = () => {
                       }}>
                       {videoPath?.uri}
                     </Text>
+                    {/* <View style={{height: R.fontSize.Size80, borderWidth: 1}}>
+                      {videoPlayerSource != '' && (
+                        <View
+                          style={{
+                            alignItems: 'center',
+                          }}>
+                          <VideoPlayer
+                            ref={ref => (videoRef.current = ref)}
+                            play={true}
+                            replay={false}
+                            startTime={videoStartTime}
+                            endTime={videoEndTime}
+                            source={videoPlayerSource}
+                            playerWidth={R.fontSize.Size60}
+                            playerHeight={R.fontSize.Size60}
+                            resizeMode={VideoPlayer.Constants.resizeMode.COVER}
+                          />
+                        </View>
+                      )}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                        }}>
+                        <View
+                          style={{
+                            height: R.fontSize.Size70,
+                            backgroundColor: R.colors.white,
+                          }}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size10,
+                              color: R.colors.placeHolderColor,
+                              fontWeight: '300',
+                            }}>
+                            {videoPath?.uri}
+                          </Text>
+                        </View>
+                      </View>
+                    </View> */}
                   </View>
                   <View style={{marginTop: R.fontSize.Size20, flex: 1}}>
                     <CustomLineTextInput
@@ -732,6 +846,7 @@ const onCallDeviceName = () => {
                   <View style={{paddingVertical: R.fontSize.Size30}}>
                     <AppButton
                       onPress={() => oncheckValidVideo()}
+                      // onPress={() => TrimVideo()}
                       title={'Create Post'}
                     />
                   </View>
@@ -775,8 +890,9 @@ const onCallDeviceName = () => {
                   fontSize: R.fontSize.Size14,
                   color: R.colors.primaryTextColor,
                   fontWeight: '700',
+                  textAlign: 'center',
                 }}>
-                {'Select Profile From Camera / Gallery'}
+                {'Upload Video From Gallery / Camera '}
               </Text>
             </View>
             <View
@@ -974,10 +1090,17 @@ const onCallDeviceName = () => {
         modalVisible={videoCompressModalPicker}
         onRequestClose={() => setVideoCompressModalPicker(false)}
         closeOnPress={() => setVideoCompressModalPicker(false)}
-        ref={ref => (videoRef.current = ref)}
+        ref={
+          videoRefStatus
+            ? ref => (videoRef1 = ref)
+            : ref => (videoRef.current = ref)
+        }
+        refStatus={videoRefStatus}
+        // ref={ref => (videoRef1 = ref)}
+        // VideoSource={videoSource}
         source={videoSource}
         startTime={videoStartTime}
-        endTime={videoEndTime}
+        endTime={videoEndTime }
         sourceUrl={videoUrl}
         paused={!play}
         onLoadEnd={onLoadEnd}
@@ -1000,7 +1123,7 @@ const onCallDeviceName = () => {
         }
         trimmeronTrackerMove={e => console.log(`currentTime${e.currentTime}`)}
         trimmerCurrentTime={currentTime}
-        trimmerOnChange={e => TrimVideo(e.startTime, e.endTime)}
+        trimmerOnChange={e => onCallTrimVideoDetail(e.startTime, e.endTime)}
         durationText={`Video duration ${videoTime} seconds`}
         onPressNext={() => onCheckVideoDurationValidation()}
       />

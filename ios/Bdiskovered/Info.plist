@@ -36,25 +36,25 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need to access photo and video file</string>
+	<string>$(PRODUCT_NAME) want to access photo and video file</string>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) want to capture photo and create video from camera.</string>
+	<string>$(PRODUCT_NAME) want to capture photo and create video for upload post.</string>
 	<key>NSFileProviderDomainUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need to access video file</string>
+	<string>$(PRODUCT_NAME) want to access video file and photo file.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need location show video feeds on their location </string>
+	<string>$(PRODUCT_NAME) want location to show video feeds on their location </string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need location show video feeds on their location </string>
+	<string>$(PRODUCT_NAME) want location to show video feeds on their location </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need location show video feeds on their location </string>
+	<string>$(PRODUCT_NAME) need your location to show video feeds on their location </string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>$(PRODUCT_NAME) want to record audio for camera and share with chat.</string>
+	<string>$(PRODUCT_NAME) want to record audio for camera and upload the post.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) want to upload photo and video from photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) want to access photo library to upload photo and Video.</string>
 	<key>NSVideoSubscriberAccountUsageDescription</key>
-	<string>$(PRODUCT_NAME)We will need to access video file</string>
+	<string>$(PRODUCT_NAME) will need to access video file</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Product Sans Bold.ttf</string>

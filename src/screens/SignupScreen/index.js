@@ -39,6 +39,7 @@ import { SignUpRequest } from '../../actions/signUp.action';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
 import { Config } from '../../config';
 import CommonFunctions from '../../utils/CommonFuntions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let currYear = moment().subtract(16, 'years').calendar();
 let maxDate =  moment(currYear).format('YYYY-MM-DD');
