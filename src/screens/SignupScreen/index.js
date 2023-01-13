@@ -101,19 +101,28 @@ console.log('MAX DATE', maxDate);
 
     },[props.navigation])
 
-    const onCallCreateDeviceToken = async() => {
-      // const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-      // const charLength = characters.length;
-      // let result = ' ';
-      // for (let i = 0; i < 45; i++) {
-      //   result += characters.charAt(Math.floor(Math.random() * charLength));
-      // }
-      // setCreateDeviceToken(result)
+  const onCallCreateDeviceToken = async() => {
       await AsyncStorage.getItem('fcmToken', (err, result) => {
       console.log('FCM TOKEN', result);
-      setCreateDeviceToken(result);
+      if (result != null) {
+        setCreateDeviceToken(result);
+      } else {
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        const charLength = characters.length;
+        let result = ' ';
+        for (let i = 0; i < 45; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charLength));
+        }
+        console.log('CUSTOM FCM TOKEN', result);
+        onCallSetCustomFcmToken(result);
+        setCreateDeviceToken(result);
+      }
     });
     }
+
+    const onCallSetCustomFcmToken = async result => {
+      await AsyncStorage.setItem('fcmToken', result);
+    };
 
     const onDateChange = (date) => {
       // setDOB(date)

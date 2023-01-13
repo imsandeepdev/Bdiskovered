@@ -31,23 +31,34 @@ const LoginScreen = (props) => {
   },[props.navigation])
 
   const onCallCreateDeviceToken = async() => {
-    // const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    // const charLength = characters.length;
-    // let result = ' ';
-    // for (let i = 0; i < 45; i++) {
-    //   result += characters.charAt(Math.floor(Math.random() * charLength));
-      
-    // }
-    // onCallCreateOTP(result);
-    // setCreateDeviceToken(result);
+
     await AsyncStorage.getItem('fcmToken', (err, result) => {
       console.log('FCM TOKEN', result);
+      if(result!= null)
+      {
       setFcmToken(result);
-      // Toast.show(result, Toast.SHORT)
       onCallCreateOTP(result);
       setCreateDeviceToken(result);
+      }
+      else
+      {
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        const charLength = characters.length;
+        let result = ' ';
+        for (let i = 0; i < 45; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charLength));
+        }
+        console.log('CUSTOM FCM TOKEN', result);
+        onCallSetCustomFcmToken(result);
+        onCallCreateOTP(result);
+        setCreateDeviceToken(result);
+      }
     });
   };
+
+  const onCallSetCustomFcmToken = async(result) =>{
+    await AsyncStorage.setItem('fcmToken', result)
+  }
 
 
   const isValid = () => {

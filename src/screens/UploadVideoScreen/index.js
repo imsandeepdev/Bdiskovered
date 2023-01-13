@@ -488,10 +488,10 @@ const onCallVideoPostAPI = () => {
   let formdata = new FormData();
 
   formdata.append('title', videoTitle);
-  formdata.append('latitude', '26.8496')
-  formdata.append('longitude', '81.0072');
-  // formdata.append('latitude', myLat != ''? myLat : '');
-  // formdata.append('longitude', myLong != ''? myLong : '');
+  // formdata.append('latitude', '26.8496');
+  // formdata.append('longitude', '81.0072');
+  formdata.append('latitude', myLat != ''? myLat : '');
+  formdata.append('longitude', myLong != ''? myLong : '');
   formdata.append('caption', videoDesc);
   formdata.append('amount', videoPrice);
   formdata.append('category', videoTypes);

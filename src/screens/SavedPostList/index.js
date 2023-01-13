@@ -115,20 +115,26 @@ const SavedPostList = (props) => {
                   );
                 }}
                 ListEmptyComponent={()=>{
-                    return(
-                        <View
-                        style={{flex:1, alignItems:'center', justifyContent:'center'}}
-                        >
-                            <Text
-                            style={{fontFamily:R.fonts.regular,
-                            fontSize:R.fontSize.Size12,
-                            color:R.colors.placeHolderColor,
-                            textAlign:'center',
-                            fontWeight:'500'
-                            }}
-                            >{'Not found saved post'}</Text>
-                        </View>    
-                    )
+                    return (
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: screenHeight / 1.2,
+                          width: '100%',
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size12,
+                            color: R.colors.placeHolderColor,
+                            textAlign: 'center',
+                            fontWeight: '500',
+                          }}>
+                          {'Not found saved post'}
+                        </Text>
+                      </View>
+                    );
                 }}
               />
           </View>

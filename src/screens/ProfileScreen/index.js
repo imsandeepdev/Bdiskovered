@@ -195,23 +195,23 @@ const [editModalPicker, setEditModalPicker] = useState(false)
     // OnCallLoginSession()
   };
 
-  const OnCallLoginSession = async() => {
-     AsyncStorage.getItem('fcmToken', (err, result) => {
-       console.log('FCM TOKEN SESSION', result);
-       onCallLoginSessionAPI(result)
-     });
-  }
+  // const OnCallLoginSession = async() => {
+  //    AsyncStorage.getItem('fcmToken', (err, result) => {
+  //      console.log('FCM TOKEN SESSION', result);
+  //      onCallLoginSessionAPI(result)
+  //    });
+  // }
 
-  const onCallLoginSessionAPI = (fcmToken) => {
-    let data = {
-      mobile: props.userProfile?.Profile?.mobile,
-      device_token: fcmToken,
-    };
-    console.log('DATA', data);
-     dispatch(LoginSessionRequest(data, response =>{
-      console.log("Response Login Session",response)
-     }))
-  }
+  // const onCallLoginSessionAPI = (fcmToken) => {
+  //   let data = {
+  //     mobile: props.userProfile?.Profile?.mobile,
+  //     device_token: fcmToken,
+  //   };
+  //   console.log('DATA', data);
+  //    dispatch(LoginSessionRequest(data, response =>{
+  //     console.log("Response Login Session",response)
+  //    }))
+  // }
 
    const onCallGoogleAPI = (profileDetails) => {
    setLoading(true)
