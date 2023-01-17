@@ -26,35 +26,12 @@ const WebViewScreen = (props) => {
             width: '100%',
           }}
         />
-        {props.route.params?.from == 'Terms & Conditions' ||
-        props.route.params?.from == 'Privacy Policy' ? (
-          <WebView
-            source={{
-              uri:
-                props.route.params?.for == 'terms'
-                  ? `${Config.TermsNConditions}`
-                  : `${Config.PrivacyPolicy}`,
-            }}
-          />
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text
-              style={{
-                fontFamily: R.fonts.bold,
-                fontSize: R.fontSize.Size14,
-                color: R.colors.primaryTextColor,
-              }}>
-              {props.route.params?.from == 'help'
-                ? `HELP SCREEN`
-                : `FAQ SCREEN`}
-            </Text>
-          </View>
-        )}
+
+        <WebView
+          source={{
+            uri: props.route.params?.url
+          }}
+        />
       </StoryScreen>
     );
 }

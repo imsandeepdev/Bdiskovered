@@ -63,6 +63,9 @@ const fontSize = {
   Size155: normalize(155),
   Size160: normalize(160),
   Size170: normalize(170),
+  Size179: normalize(179),
+  Size178: normalize(178),
+
   Size174: normalize(174),
   Size177: normalize(177),
   Size180: normalize(180),
@@ -90,12 +93,17 @@ const fontSize = {
 
   Size260: normalize(260),
   Size270: normalize(270),
+  Size276: normalize(276),
+  Size277: normalize(277),
+
   Size278: normalize(278),
   Size279: normalize(279),
   Size280: normalize(280),
+  Size281: normalize(281),
   Size282: normalize(282),
   Size284: normalize(284),
   Size285: normalize(285),
+  Size286: normalize(286),
 
   Size290: normalize(290),
   Size300: normalize(300),

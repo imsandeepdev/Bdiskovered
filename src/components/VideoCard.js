@@ -51,6 +51,8 @@ const VideoCard = props => {
           right: 0,
           bottom: 0,
           backgroundColor: R.colors.lightBlack,
+          height:'100%',
+          width:'100%'
         }}
       />
       <View
@@ -125,13 +127,35 @@ const VideoCard = props => {
         </View>
       </View>
 
-      <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      {props.playButtonVisible && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View>
+            <Image
+              source={R.images.playIcon}
+              style={{height: R.fontSize.Size28, width: R.fontSize.Size28}}
+              resizeMode={'contain'}
+            />
+          </View>
+        </View>
+      )}
+
+      <View style={{position: 'absolute', bottom: 10, left: 0, right: 0}}>
+        <View style={{flexDirection: 'row'}}>
           <View
             style={{
               flex: 1,
-              marginVertical: R.fontSize.Size20,
               marginHorizontal: R.fontSize.Size20,
+              alignItems: 'baseline',
+              justifyContent:'flex-end'
             }}>
             <Text
               style={{
@@ -186,7 +210,7 @@ const VideoCard = props => {
                     },
                   ]}>
                   <Image
-                    source={props.saveIcon ?? R.images.orangeSaveIcon}
+                    source={props.saveIcon ?? R.images.bookmarkIcon}
                     style={{
                       height: R.fontSize.Size30,
                       width: R.fontSize.Size30,
@@ -232,37 +256,34 @@ const VideoCard = props => {
                     fontSize: R.fontSize.Size14,
                     fontFamily: R.fonts.regular,
                     fontWeight: '400',
-                    marginBottom:R.fontSize.Size8
                   }}>
                   {'Share'}
                 </Text>
-                {
-                  props.reportHidden ? 
-                  null
-                  :
+                {props.reportHidden ? null : (
                   <Pressable
-                  onPress={props.onPressReport}
-                  style={({pressed}) => [
-                    {
-                      opacity: pressed ? 0.3 : 0.8,
-                      height: R.fontSize.Size20,
-                      width: R.fontSize.Size50,
-                      borderRadius: R.fontSize.Size8,
-                      backgroundColor: R.colors.lightBlack,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginVertical: R.fontSize.Size15,
-                    },
-                  ]}>
-                  <Image
-                    source={R.images.oragneDotsIcon}
-                    style={{
-                      height: R.fontSize.Size30,
-                      width: R.fontSize.Size30,
-                    }}
-                    resizeMode={'contain'}
-                  />
-                </Pressable>}
+                    onPress={props.onPressReport}
+                    style={({pressed}) => [
+                      {
+                        opacity: pressed ? 0.3 : 0.8,
+                        height: R.fontSize.Size50,
+                        width: R.fontSize.Size50,
+                        borderRadius: R.fontSize.Size8,
+                        backgroundColor: R.colors.lightBlack,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginVertical: R.fontSize.Size15,
+                      },
+                    ]}>
+                    <Image
+                      source={R.images.whiteDotIcon}
+                      style={{
+                        height: R.fontSize.Size30,
+                        width: R.fontSize.Size30,
+                      }}
+                      resizeMode={'contain'}
+                    />
+                  </Pressable>
+                )}
               </View>
             )}
           </View>

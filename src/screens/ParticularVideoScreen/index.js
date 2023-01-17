@@ -92,12 +92,12 @@ const ParticularVideoScreen = props => {
     }))
   }
 
-  const myCustomShare = async () => {
+  const myCustomShare = async videoURL => {
     const shareOptions = {
-      title: 'App Link',
+      title: 'BDiskovered',
       message: `Hey, have you tried Bdiskovered? 
-AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
-      url: `https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
+      VideoLink :${videoURL}`,
+      url: `${videoURL}`,
     };
 
     try {
@@ -239,7 +239,14 @@ const onCallSavePost = postId => {
                           paused={currIndex !== index || videoPlayPause}
                           reportHidden={true}
                           onPressSave={() => onCallSavePost(item?.postID)}
-                          onPressShare={() => myCustomShare()}
+                          onPressShare={() =>
+                            myCustomShare(
+                              `${Config.API_URL}${item?.post.replace(
+                                'http://localhost:8080/',
+                                '',
+                              )}`,
+                            )
+                          }
                         />
                       </View>
                       <View
@@ -385,7 +392,7 @@ const onCallSavePost = postId => {
                               : sliderValue.toFixed(0)}
                           </Text>
                         </View>
-                        <Pressable
+                        {/* <Pressable
                           disabled={
                             props.route.params?.from == 'ProfileScreen'
                               ? false
@@ -424,7 +431,7 @@ const onCallSavePost = postId => {
                               {'Boost'}
                             </Text>
                           )}
-                        </Pressable>
+                        </Pressable> */}
                       </View>
                     </View>
                   );

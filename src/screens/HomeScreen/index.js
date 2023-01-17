@@ -30,8 +30,8 @@ import { Config } from '../../config';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
 import axios from 'axios';
 import moment from 'moment';
-const screenHeight = Dimensions.get('screen').height;
-const screenWidth = Dimensions.get('screen').width;
+const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('window').width;
 import DeviceInfo from 'react-native-device-info';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +41,9 @@ import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import { SavedPostRequest } from '../../actions/savedPost.action';
 import CommonFunctions from '../../utils/CommonFuntions';
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
+
+const forWithNotch = screenHeight - R.fontSize.Size276;
+const forWithoutNotch = screenHeight - R.fontSize.Size254;
 
 const ReportList = [
   {
@@ -184,6 +187,7 @@ const HomeScreen = (props) => {
   const [reportUserId, setReportUserId] = useState('');
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false)
+  const [fixedHeight, setFixedHeight] = useState(280)
 
 
   
@@ -218,6 +222,7 @@ const HomeScreen = (props) => {
 
   
     useEffect(() => {
+
       const blur = props.navigation.addListener('blur', () => {
         setVideoPlayPause(true);
       });
@@ -252,8 +257,13 @@ const HomeScreen = (props) => {
 
   const onCallDeviceName = () => {
     setLoading(true)
-     let deviceNotch = DeviceInfo.hasNotch();
-     console.log("DEVICE NOTCH",DeviceInfo.hasNotch())
+     let deviceName = DeviceInfo.getModel();
+     let MaxPosition = deviceName.search('Max');
+     const tempfixedHeight = MaxPosition == -1 ? R.fontSize.Size278 : R.fontSize.Size276
+      setFixedHeight(tempfixedHeight)
+     console.log('Max Modal Avaiale or not', MaxPosition);
+     console.log('TEMP FIXED HEIGHT', tempfixedHeight);
+
      setLoading(false)
   }
 
@@ -290,6 +300,8 @@ const HomeScreen = (props) => {
     Platform.OS === 'android' &&
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
+    console.log("SCREEN HEIGHT", screenHeight)
+    onCallDeviceName()
     onCallShowAllPost();
     onCallProfile();
   };
@@ -418,6 +430,7 @@ const onCallGoogleAPI = profileDetails => {
   const onCallConnectNow = (profileID) => 
   {
     setModalPicker(false)
+    
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
@@ -429,6 +442,7 @@ const onCallGoogleAPI = profileDetails => {
 
   const onPressOrangeAppIcon = (profileID) => {
     console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
+    
     props.userProfile?.Profile?.subscription != 0
       ? props.navigation.navigate('ConnectedProfileScreen', {
           profileId: profileID,
@@ -456,12 +470,12 @@ const onCallGoogleAPI = profileDetails => {
       });
   };
 
-  const myCustomShare = async () => {
+  const myCustomShare = async (videoURL) => {
     const shareOptions = {
-      title: 'App Link',
+      title: 'BDiskovered',
       message: `Hey, have you tried Bdiskovered? 
-AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
-      url: `https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
+VideoLink :${videoURL}`,
+      url: `${videoURL}`,
     };
 
     try {
@@ -647,8 +661,8 @@ const onCallReportPost = () => {
                   <View
                     style={{
                       height: DeviceInfo.hasNotch()
-                        ? screenHeight - R.fontSize.Size279
-                        : screenHeight - R.fontSize.Size254,
+                        ? forWithNotch
+                        : forWithoutNotch,
                     }}>
                     <VideoCard
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
@@ -671,7 +685,14 @@ const onCallReportPost = () => {
                       paused={currIndex !== index || videoPlayPause}
                       // paused={true}
                       onPressSave={() => onCallSavePost(item?.postID)}
-                      onPressShare={() => myCustomShare()}
+                      onPressShare={() =>
+                        myCustomShare(
+                          `${Config.API_URL}${item?.post.replace(
+                            'http://localhost:8080/',
+                            '',
+                          )}`,
+                        )
+                      }
                       onPressReport={() =>
                         onCallReportModal(item?.postID, item?.user_id)
                       }
@@ -1009,7 +1030,7 @@ const onCallReportPost = () => {
             ? 'Why are you reporting this post? '
             : selectTypeReport == 'dontRecommend'
             ? 'Are you sure you want to block?'
-            : 'Are you sure to cut this video?'
+            : 'Are you sure to Hide this video?'
         }
         ReportContent={
           <View>

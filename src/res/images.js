@@ -46,7 +46,11 @@ const images = {
   orangeSaveIcon: require('./images/orangeShareIcon.png'),
   orangeSaveIcon1: require('./images/orangeShareIcon1.png'),
   removeSavedIcon: require('./images/removeSaved.png'),
-  removeSavedIcon1: require('./images/removeSave.png'),
+  whiteDotIcon: require('./images/whitedotsIcon.png'),
+  reportIcon: require('./images/reportIcon.png'),
+  bookmarkIcon: require('./images/bookmarkIcon.png'),
+  removebookmarkIcon: require('./images/removebookmark.png'),
+  disLikeIcon: require('./images/unlikeIcon.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 
@@ -91,6 +95,13 @@ const images = {
   pauseIcon: require('./images/pauseIcon.png'),
   playIcon: require('./images/playIcon.png'),
   nextPaperIcon: require('./images/nextPaper.png'),
+
+  // HelpScreen
+  guideIcon: require('./images/guideIcon.png'),
+  privacyIcon1: require('./images/PrivacyIcon1.png'),
+  privacyIcon: require('./images/privacyIcon.png'),
+  termIcon: require('./images/termIcon.png'),
+  contactIcon: require('./images/contactIcon.png'),
 };
 
 export {images};

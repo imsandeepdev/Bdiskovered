@@ -257,9 +257,9 @@ const onCallNotificationList = () => {
                    }}>
                    {`Not found notifications`}
                  </Text>
-                 <Text>{fcmToken}</Text>
+                 {/* <Text>{fcmToken}</Text>
                  <Text>{'NEW FCM TOKEN'}</Text>
-                 <Text>{newFcmToken}</Text>
+                 <Text>{newFcmToken}</Text> */}
                </View>
              );
           }}

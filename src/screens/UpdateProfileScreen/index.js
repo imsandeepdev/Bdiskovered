@@ -125,7 +125,25 @@ const UpdateProfileScreen = (props) => {
     const [partTimePrice, setPartTimePrice] = useState('');
     const [selectGigs, setSelectGigs] = useState(false);
     const [gigsPrice, setGigsPrice] = useState('');
-
+    const [videoTypes, setVideoTypes] = useState([]);
+    const [videoTypeList, setVideoTypeList] = useState([
+      {
+        id: '1',
+        title: 'Music',
+      },
+      {
+        id: '2',
+        title: 'Art',
+      },
+      {
+        id: '3',
+        title: 'Dance',
+      },
+      {
+        id: '4',
+        title: 'Fashion',
+      },
+    ]);
 
 
 
@@ -155,6 +173,22 @@ const UpdateProfileScreen = (props) => {
               mime: 'profile/jpeg',
               filename: 'profile.jpeg',
             });
+            let resCategory = response.Profile?.category
+            let arr = videoTypeList.map((item, index) => {
+              if(resCategory.includes(item.title))
+              {
+                console.log("TRUE", item?.title)
+                item.selected = true;
+              }
+              else
+              {
+                console.log('FALSE', item?.title);
+                item.selected = false;
+              }
+              return {...item};
+            });
+            console.log('VideoListArray', arr);
+            setVideoTypeList(arr);
 
             setFullTimePrice(response.Profile?.full_time_amount);
             setPartTimePrice(response.Profile?.part_time_amount);
@@ -170,6 +204,27 @@ const UpdateProfileScreen = (props) => {
           }
         }),
       );
+    };
+
+
+    const onCallVideoSelect = (item, ind) => {
+      const dummyData = videoTypeList;
+      let arr = dummyData.map((item, index) => {
+        if (ind == index) {
+          item.selected = !item.selected;
+        }
+        return {...item};
+      });
+      console.log('arr return', arr);
+      let tempArray = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].selected) {
+          tempArray.push(arr[i].title);
+        }
+      }
+      console.log(tempArray);
+      setVideoTypes(tempArray);
+      setVideoTypeList(arr);
     };
 
     const onDateChange = date => {
@@ -539,6 +594,68 @@ const UpdateProfileScreen = (props) => {
                         rightDayHours={'/ hrs'}
                       />
                     </View>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    marginTop: R.fontSize.Size10,
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      fontWeight: '900',
+                      fontSize: R.fontSize.Size15,
+                      color: R.colors.black,
+                    }}>
+                    {'Video Type'}
+                  </Text>
+
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row',
+                      marginLeft: -R.fontSize.Size14,
+                    }}>
+                    {videoTypeList.map((item, index) => {
+                      return (
+                        <Pressable
+                          onPress={() => onCallVideoSelect(item, index)}
+                          key={index}
+                          style={({pressed}) => [
+                            {
+                              opacity: pressed ? 0.5 : 1,
+                              width: screenWidth / 3.8,
+                              marginVertical: R.fontSize.Size8,
+                              marginLeft: R.fontSize.Size14,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: item?.selected
+                                ? R.colors.appColor
+                                : R.colors.white,
+                              borderWidth: 1,
+                              paddingVertical: R.fontSize.Size10,
+                              borderRadius: R.fontSize.Size20,
+                              borderColor: R.colors.placeHolderColor,
+                            },
+                          ]}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size14,
+                              fontWeight: '700',
+                              color: item?.selected
+                                ? R.colors.white
+                                : R.colors.placeHolderColor,
+                            }}
+                            numberOfLines={1}>
+                            {item.title}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
                   </View>
                 </View>
               </View>

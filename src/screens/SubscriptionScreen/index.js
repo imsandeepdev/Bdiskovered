@@ -700,7 +700,7 @@ const SubscriptionScreen = props => {
                                   fontSize: R.fontSize.Size14,
                                   marginLeft: R.fontSize.Size10,
                                 }}
-                                numberOfLines={1}>
+                                numberOfLines={2}>
                                 {item}
                               </Text>
                             </View>

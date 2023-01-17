@@ -41,7 +41,11 @@ const SavedPostList = (props) => {
 
     useEffect(()=>{
 
-        onCallSavedPostAPI()
+       const unsubscribe = props.navigation.addListener('focus', () => {
+         onCallSavedPostAPI();
+       });
+       return unsubscribe;
+       
 
     },[props.navigation])
 
@@ -67,7 +71,7 @@ const SavedPostList = (props) => {
             leftSource={R.images.chevronBack}
             title={'Saved Post'}
           />
-          <View style={{flex: 1,paddingHorizontal:R.fontSize.Size10,alignItems:'center',justifyContent:'center'}}>
+          <View style={{flex: 1,paddingHorizontal:R.fontSize.Size10,alignItems:'flex-start',justifyContent:'center'}}>
            
               <FlatList    
                 style={{ flex:1,}}
@@ -109,6 +113,7 @@ const SavedPostList = (props) => {
                           )}`}
                           paused={true}
                           shareFiled={true}
+                          playButtonVisible={true}
                         />
                       </Pressable>
                     </View>
@@ -118,17 +123,16 @@ const SavedPostList = (props) => {
                     return (
                       <View
                         style={{
-                          alignItems: 'center',
                           justifyContent: 'center',
                           height: screenHeight / 1.2,
-                          width: '100%',
+                          width: screenWidth,
+                          alignItems:'center'
                         }}>
                         <Text
                           style={{
                             fontFamily: R.fonts.regular,
                             fontSize: R.fontSize.Size12,
                             color: R.colors.placeHolderColor,
-                            textAlign: 'center',
                             fontWeight: '500',
                           }}>
                           {'Not found saved post'}

@@ -47,6 +47,8 @@ import CompressVideo from '../screens/CompressVideo';
 import SavedPostList from '../screens/SavedPostList';
 import SavedVideoScreen from '../screens/SavedVideoScreen';
 import BlockUserScreen from '../screens/BlockUserScreen';
+import HelpScreen from '../screens/HelpScreen';
+import FaqScreen from '../screens/FaqScreen';
 
 
 const Stack = createStackNavigator();
@@ -356,6 +358,16 @@ const AppNavigator = props => {
         <Stack.Screen
           name="BlockUserScreen"
           component={BlockUserScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="HelpScreen"
+          component={HelpScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="FaqScreen"
+          component={FaqScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

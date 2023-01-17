@@ -94,14 +94,11 @@ const ReportModal = props => {
             }}>
             <CustomRow
               onPress={props.onPress1}
-              Icon={props.icon1 ?? R.images.cutVideoIcon}
-              title={props.title1 ?? 'Cut this video'}
+              Icon={props.icon1 ?? R.images.disLikeIcon}
+              title={props.title1 ?? 'Not Interested'}
+              // title={props.title1 ?? 'Cut this video'}
             />
-            <CustomRow
-              onPress={props.onPress2}
-              Icon={props.icon2 ?? R.images.blockIcon}
-              title={props.title2 ?? `Don't recommend this channel`}
-            />
+
             {props.optionThird ? null : (
               <CustomRow
                 onPress={props.onPress3}
@@ -109,6 +106,12 @@ const ReportModal = props => {
                 title={'Report'}
               />
             )}
+            <CustomRow
+              onPress={props.onPress2}
+              Icon={props.icon2 ?? R.images.blockIcon}
+              title={props.title2 ?? `Block`}
+              // title={props.title2 ?? `Don't recommend this channel`}
+            />
           </View>
         </View>
       </View>

@@ -7,16 +7,15 @@ const ShadowHeader = props => {
       <View
         style={{
           flexDirection: 'row',
-          height: R.fontSize.Size50,
           alignItems: 'center',
           paddingHorizontal: R.fontSize.Size2,
           backgroundColor: '#fff',
           height: props.headerHeight ?? R.fontSize.Size50,
-          shadowColor: '#000',
-          shadowOffset: {width: 1, height: 1},
-          shadowOpacity: 0.4,
-          shadowRadius: 3,
-          elevation: 5,
+          // shadowColor: '#000',
+          // shadowOffset: {width: 1, height: 1},
+          // shadowOpacity: 0.4,
+          // shadowRadius: 3,
+          // elevation: 5,
           borderBottomWidth: props.headerBottomWidth ?? null,
           borderColor:R.colors.placeholderTextColor
         }}>

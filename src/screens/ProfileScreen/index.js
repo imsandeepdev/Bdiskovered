@@ -1128,15 +1128,14 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                       return (
                         <View key={index}>
                           <Pressable
-                            onPress={
-                              () =>
-                                props.navigation.navigate(
-                                  'ParticularVideoScreen',
-                                  {
-                                    videoPostId: item?._id,
-                                    from: 'ProfileScreen',
-                                  },
-                                )
+                            onPress={() =>
+                              props.navigation.navigate(
+                                'ParticularVideoScreen',
+                                {
+                                  videoPostId: item?._id,
+                                  from: 'ProfileScreen',
+                                },
+                              )
                             }
                             style={({pressed}) => [
                               {
@@ -1154,6 +1153,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                               )}`}
                               paused={true}
                               shareFiled={true}
+                              playButtonVisible={true}
                             />
                           </Pressable>
                           <Pressable
@@ -1195,35 +1195,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                   </View>
                 </View>
               )}
-              {/* <View
-                style={{
-                  paddingBottom: R.fontSize.Size20,
-                  marginHorizontal: R.fontSize.Size20,
-                  borderTopWidth: 1,
-                  paddingTop: R.fontSize.Size10,
-                  borderColor: R.colors.placeholderTextColor,
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
-                    color: R.colors.placeHolderColor,
-                    marginBottom: R.fontSize.Size10,
-                    textAlign: 'center',
-                  }}>
-                  {
-                    'if you wish to delete your account click the button below. \nKeep in mind once it’s deleted your account will sadly be gone forever.'
-                  }
-                </Text>
-                <AppButton
-                  onPress={() => onDeleteAccountAlart()}
-                  title={'Delete Account'}
-                  marginHorizontal={R.fontSize.Size40}
-                  backgroundColor={R.colors.placeholderTextColor}
-                  textColor={R.colors.placeHolderColor}
-                  buttonHeight={R.fontSize.Size40}
-                />
-              </View> */}
+             
             </View>
           </ScrollView>
         </SafeAreaView>

@@ -123,22 +123,21 @@ const SearchScreen = props => {
         (setDropDownTitle(modalType),
         setDropDownList([
           {firstValue: '0.0', secondValue: '1.0'},
-          {firstValue: '1.0', secondValue: '1.5'},
-          {firstValue: '1.5', secondValue: '2.0'},
-          {firstValue: '2.0', secondValue: '2.5'},
-          {firstValue: '2.5', secondValue: '3.0'},
-          {firstValue: '3.0', secondValue: '3.5'},
-          {firstValue: '3.5', secondValue: '4.0'},
-          {firstValue: '4.0', secondValue: '4.5'},
-          {firstValue: '4.5', secondValue: '5.0'},
+          {firstValue: '1.0', secondValue: '2.0'},
+          {firstValue: '2.0', secondValue: '3.0'},
+          {firstValue: '3.0', secondValue: '4.0'},
+          {firstValue: '4.0', secondValue: '5.0'},
         ]));
     }
     {
-      modalType == 'Location' &&
+      modalType == 'Country' &&
         (setDropDownTitle(modalType),
         setLocationList([
-          {firstValue: 'KSA', secondValue: 'Saudi Arabia'},
-          {firstValue: 'UAE', secondValue: 'United Arab Emirates'},
+          {firstValue: 'Saudi Arabia', secondValue: 'Saudi Arabia'},
+          {
+            firstValue: 'United Arab Emirates',
+            secondValue: 'United Arab Emirates',
+          },
           {firstValue: 'Egypt', secondValue: 'Egypt'},
         ]));
     }
@@ -157,7 +156,7 @@ const SearchScreen = props => {
       type == 'Rating' && setFilterRating(item);
     }
     {
-       type == 'Location' && setFilterLocation(item);
+       type == 'Country' && setFilterLocation(item);
     }
     setDropDownTitle('')
     setModalPicker(false)
@@ -193,6 +192,7 @@ const SearchScreen = props => {
   // }
 
   const onCallCheckSub = () => {
+    
      props.userProfile?.Profile?.subscription != 0
        ? onCallfilterApply()
        : props.navigation.navigate('SubscriptionScreen');
@@ -283,18 +283,18 @@ const SearchScreen = props => {
                           : R.images.chevronDown
                       }
                     />
-                    <CustomTitle title={'Location'} />
+                    <CustomTitle title={'Country'} />
                     <CustomCardLine
-                      onPress={() => onCallOpenModal('Location')}
+                      onPress={() => onCallOpenModal('Country')}
                       title={
                         filterLocation?.firstValue != null
                           ? `${filterLocation?.firstValue}`
-                          : 'Select Location'
+                          : 'Select Country'
                       }
                       onPressSecondRight={() => {
                         filterLocation != null
                           ? setFilterLocation()
-                          : onCallOpenModal('Location');
+                          : onCallOpenModal('Country');
                       }}
                       rightIcon={
                         filterLocation != null
@@ -302,12 +302,7 @@ const SearchScreen = props => {
                           : R.images.chevronDown
                       }
                     />
-                    {/* <CustomLineTextInput
-                      placeholder={'Location'}
-                      value={location}
-                      onChangeText={location => setLocation(location)}
-                      maxLength={30}
-                    /> */}
+                    
                     <CustomTitle title={'Age'} />
                     <CustomCardLine
                       onPress={() => onCallOpenModal('Age')}
@@ -447,7 +442,7 @@ const SearchScreen = props => {
                 contentContainerStyle={{flexGrow: 1}}
                 showsVerticalScrollIndicator={false}>
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                  {dropDownTitle != 'Location' ? (
+                  {dropDownTitle != 'Country' ? (
                     <View
                       style={{
                         flex: 1,

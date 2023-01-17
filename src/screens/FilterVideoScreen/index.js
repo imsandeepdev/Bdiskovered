@@ -217,12 +217,12 @@ const FilterVideoScreen = props => {
      setCurrIndex(props.route.params?.playIndex);
   }
 
-  const myCustomShare = async () => {
+  const myCustomShare = async videoURL => {
     const shareOptions = {
-      title: 'App Link',
+      title: 'BDiskovered',
       message: `Hey, have you tried Bdiskovered? 
-AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
-      url: `https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4MzEsNjUwLDQ1LDA.jpg`,
+      VideoLink :${videoURL}`,
+      url: `${videoURL}`,
     };
 
     try {
@@ -294,6 +294,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
 
    const onCallConnectNow = profileID => {
      setModalPicker(false);
+    
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
@@ -305,6 +306,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
 
     const onPressOrangeAppIcon = profileID => {
       console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
+     
       props.userProfile?.Profile?.subscription != 0
         ? props.navigation.navigate('ConnectedProfileScreen', {
             profileId: profileID,
@@ -367,6 +369,25 @@ const onCallSavePost = postId => {
     }),
   );
 };
+
+ const onCallRemoveSavePost = postId => {
+   let data = {
+     post_id: postId,
+   };
+   setLoading(true);
+   dispatch(
+     DeleteSavedPostRequest(data, response => {
+       console.log('Saved Post Response', response);
+       if (response.status == 'success') {
+         Toast.show(response?.message, Toast.SHORT);
+         setLoading(false);
+       } else {
+         Toast.show(response?.message, Toast.SHORT);
+         setLoading(false);
+       }
+     }),
+   );
+ };
 
 const onCallReportPostValidation = () => {
   return CommonFunctions.isBlank(reportDesc.trim(), 'Select any report reason');
@@ -446,6 +467,8 @@ const onCallBlockPost = () => {
   );
 };
 
+
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
@@ -496,15 +519,22 @@ const onCallBlockPost = () => {
                       }
                       saveIcon={
                         props.route.params?.fromScreen == 'SavedPostListScreen'
-                          ? R.images.removeSavedIcon1
+                          ? R.images.removeSavedIcon
                           : R.images.orangeSaveIcon
                       }
                       saveTitle={
                         props.route.params?.fromScreen == 'SavedPostListScreen'
-                          ? `Remove Save`
+                          ? ``
                           : `Save`
                       }
-                      onPressShare={() => myCustomShare()}
+                      onPressShare={() =>
+                        myCustomShare(
+                          `${Config.API_URL}${item?.post.replace(
+                            'http://localhost:8080/',
+                            '',
+                          )}`,
+                        )
+                      }
                       onPressReport={() =>
                         onCallReportModal(item?.postID, item?.user_id)
                       }
@@ -615,7 +645,8 @@ const onCallBlockPost = () => {
                           }}>
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
-                            {item?.total_rating != ''
+                            {item?.total_rating != '' &&
+                            item?.total_rating != '0'
                               ? `${(
                                   item?.total_rating /
                                   (item?.total_likes * 20)
@@ -868,7 +899,7 @@ const onCallBlockPost = () => {
             ? 'Why are you reporting this post? '
             : selectTypeReport == 'dontRecommend'
             ? 'Are you sure you want to block?'
-            : 'Are you sure to cut this video?'
+            : 'Are you sure to Hide this video?'
         }
         ReportContent={
           <View>

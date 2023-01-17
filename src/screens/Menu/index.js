@@ -73,14 +73,14 @@ const Menu = (props) => {
   const onLogout = () => {
     Alert.alert(
       'Logout!',
-      'Are you sure want to logout?',
+      'Are you sure want to Logout?',
       [
         {
-          text: 'LOGOUT',
+          text: 'Logout',
           onPress: () => onCallDeviceName(),
         },
         {
-          text: 'CANCEL',
+          text: 'Cancel',
         },
       ],
       {
@@ -144,24 +144,28 @@ const Menu = (props) => {
             leftSource={R.images.greySaveIcon}
             title={'Saved Post'}
           />
-          {/* <CustomMenuButton
+          <CustomMenuButton
             onPress={() =>
-              props.navigation.navigate('WebViewScreen', {
-                from: 'help',
-              })
+              props.navigation.navigate('HelpScreen')
             }
-            leftSource={props.userType == 'Business'? R.images.phoneIcon:R.images.helpIcon}
+            leftSource={
+              props.userType == 'Business'
+                ? R.images.phoneIcon
+                : R.images.helpIcon
+            }
             title={'Help'}
           />
           <CustomMenuButton
             onPress={() =>
-              props.navigation.navigate('WebViewScreen', {
-                from: 'faq',
-              })
+              props.navigation.navigate('FaqScreen',{from: 'FAQ'})
             }
-            leftSource={props.userType == 'Business'? R.images.helpIconNew : R.images.faqIcon}
+            leftSource={
+              props.userType == 'Business'
+                ? R.images.helpIconNew
+                : R.images.faqIcon
+            }
             title={'FAQ'}
-          /> */}
+          />
           <CustomMenuButton
             onPress={() => onLogout()}
             // onPress = {() => props.navigation.navigate('LoginScreen')}

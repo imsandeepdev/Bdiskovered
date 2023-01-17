@@ -5,6 +5,7 @@ import { StoryScreen, Header, AppButton, CustomCardView } from '../../components
 import R from '../../res/R';
 import Styles from './styles';
 import Toast from 'react-native-simple-toast';
+import { Config } from '../../config';
 
 const AccountType = [
     {id:'1', title:'Business'},
@@ -109,7 +110,8 @@ const UserTypeScreen = (props) => {
                       onPress={() =>
                         props.navigation.navigate('WebViewScreen', {
                           from: 'Terms & Conditions',
-                          for:'terms'
+                          for:'terms',
+                          url: Config.TermsNConditions
                         })
                       }
                       style={{color: R.colors.appColor}}>
@@ -122,7 +124,8 @@ const UserTypeScreen = (props) => {
                       onPress={() =>
                         props.navigation.navigate('WebViewScreen', {
                           from: 'Privacy Policy',
-                          for:'policy'
+                          for:'policy',
+                          url: Config.PrivacyPolicy
                         })
                       }
                       style={{color: R.colors.appColor}}>
