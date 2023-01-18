@@ -38,12 +38,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
 import Share from 'react-native-share';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
-import { SavedPostRequest } from '../../actions/savedPost.action';
+import { DeleteSavedPostRequest, SavedPostRequest } from '../../actions/savedPost.action';
 import CommonFunctions from '../../utils/CommonFuntions';
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
 
-const forWithNotch = screenHeight - R.fontSize.Size276;
-const forWithoutNotch = screenHeight - R.fontSize.Size254;
+const tabBarHeight = screenHeight / 10;
+const headerHeight = screenHeight /15;
+const statusBarHeight = screenHeight / 20;
+const sliderHeight = screenHeight / 10;
+
+const allHeight = tabBarHeight + headerHeight + sliderHeight + headerHeight
+const withoutNotchAllHeight =
+  tabBarHeight + headerHeight + sliderHeight + statusBarHeight;
+
+const forWithNotch = screenHeight - allHeight;
+const forWithoutNotch = screenHeight - withoutNotchAllHeight;
+
+const forNotchflatHeight = tabBarHeight + headerHeight + headerHeight;
+const withoutNotchflatHeight = tabBarHeight + headerHeight + statusBarHeight;
+const flatListHeightWithNotch = screenHeight - forNotchflatHeight;
+const flatListHeightWithOutNotch = screenHeight - withoutNotchflatHeight;
+
+
+
 
 const ReportList = [
   {
@@ -360,7 +377,7 @@ const onCallGoogleAPI = profileDetails => {
       setVideoModalPersonalDetail([
         profileDetails?.gender,
         `${moment().diff(profileDetails?.birth, 'years')} Year`,
-        `${arrayAddress[arrAddLength - 3]}`,
+        `${arrayAddress[arrAddLength - 1]}`,
       ]);
       setLoading(false);
     });
@@ -523,7 +540,6 @@ VideoLink :${videoURL}`,
   }
 
   const onCallSavePost = (postId) => {
-
     let data = {
       post_id: postId
     };
@@ -532,8 +548,9 @@ VideoLink :${videoURL}`,
       console.log('Saved Post Response', response);
       if(response.status == 'success')
       {
+        onCallShowAllPost();
         Toast.show(response?.message,Toast.SHORT)
-         setLoading(false);
+        //  setLoading(false);
       }
       else
       {
@@ -542,6 +559,26 @@ VideoLink :${videoURL}`,
       }
     }))
   }
+
+  const onCallRemoveSavePost = postId => {
+    let data = {
+      post_id: postId,
+    };
+    setLoading(true);
+    dispatch(
+      DeleteSavedPostRequest(data, response => {
+        console.log('UnSaved Post Response', response);
+        if (response.status == 'success') {
+          onCallShowAllPost();
+          Toast.show(response?.message, Toast.SHORT);
+          // setLoading(false);
+        } else {
+          Toast.show(response?.message, Toast.SHORT);
+          setLoading(false);
+        }
+      }),
+    );
+  };
 
   const onCallReportPostValidation = () => {
     return CommonFunctions.isBlank(
@@ -626,11 +663,13 @@ const onCallReportPost = () => {
   }
   
   return (
-    <StoryScreen loading={loading}>
+    <StoryScreen loading={loading} statusBarIosStyle={{
+      height: DeviceInfo.hasNotch() ? headerHeight : statusBarHeight,
+    }}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
-          headerHeight={R.fontSize.Size50}
+          headerHeight={headerHeight}
           leftSource={R.images.menuIcon}
           // rightSource={R.images.filterIcon}
           // rightSourceOnPress={() => onCallModal('filterModal')}
@@ -642,7 +681,7 @@ const onCallReportPost = () => {
         <View style={{flex: 1}}>
           <SwiperFlatList
             vertical={true}
-            style={{flex: 1}}
+            style={{height : DeviceInfo.hasNotch() ? flatListHeightWithNotch : flatListHeightWithOutNotch}}
             nestedScrollEnabled
             data={allVideoPostList}
             keyExtractor={(item, index) => index.toString()}
@@ -656,7 +695,9 @@ const onCallReportPost = () => {
                 <View
                   key={index}
                   style={{
-                    flex: 1,
+                    height: DeviceInfo.hasNotch()
+                      ? flatListHeightWithNotch
+                      : flatListHeightWithOutNotch,
                   }}>
                   <View
                     style={{
@@ -684,7 +725,17 @@ const onCallReportPost = () => {
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
                       // paused={true}
-                      onPressSave={() => onCallSavePost(item?.postID)}
+                      onPressSave={() => {
+                        item?.post_save
+                          ? onCallRemoveSavePost(item?.postID)
+                          : onCallSavePost(item?.postID);
+                      }}
+                      saveIcon={
+                        item?.post_save
+                          ? R.images.removeSavedIcon
+                          : R.images.bookmarkIcon
+                      }
+                      saveTitle={item?.post_save ? '' : 'Save'}
                       onPressShare={() =>
                         myCustomShare(
                           `${Config.API_URL}${item?.post.replace(
@@ -703,7 +754,7 @@ const onCallReportPost = () => {
                       flexDirection: 'row',
                       marginHorizontal: R.fontSize.Size12,
                       alignItems: 'center',
-                      height: R.fontSize.Size100,
+                      height: sliderHeight,
                       justifyContent: 'center',
                     }}>
                     <View style={{flex: 1}}>
@@ -1022,7 +1073,9 @@ const onCallReportPost = () => {
         onPressReport={() => {
           selectTypeReport == 'report'
             ? onCallReportPost()
-            : selectTypeReport == 'dontRecommend' ? onCallBlockUser() : onCallBlockPost();
+            : selectTypeReport == 'dontRecommend'
+            ? onCallBlockUser()
+            : onCallBlockPost();
         }}
         reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
         title={

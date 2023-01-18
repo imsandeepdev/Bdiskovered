@@ -275,6 +275,7 @@ const UpdateProfileScreen = (props) => {
       formData.append('full_time_amount', fullTimePrice);
       formData.append('part_time_amount', partTimePrice);
       formData.append('gigs_amount', gigsPrice);
+      formData.append('type', videoTypes.toString());
 
       formData.append(
         'avatar',
@@ -309,6 +310,21 @@ const UpdateProfileScreen = (props) => {
             mime: 'profile/jpeg',
             filename: 'profile.jpeg',
           });
+
+           let resCategory = response.Profile?.category;
+           let arr = videoTypeList.map((item, index) => {
+             if (resCategory.includes(item.title)) {
+               console.log('TRUE', item?.title);
+               item.selected = true;
+             } else {
+               console.log('FALSE', item?.title);
+               item.selected = false;
+             }
+             return {...item};
+           });
+           console.log('VideoListArray', arr);
+           setVideoTypeList(arr);
+
           setFullTimePrice(response.Profile?.full_time_amount);
           setPartTimePrice(response.Profile?.part_time_amount);
           setGigsPrice(response.Profile?.gigs_amount);

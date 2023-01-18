@@ -332,12 +332,26 @@ const [editModalPicker, setEditModalPicker] = useState(false)
     };
 
     const onCallDeletevideoAPI = postId => {
-      // setLoading(true)
+      setLoading(true)
       let data ={
-        postId: postId
+        id: postId
       }
       console.log('PostId',data)
-      
+      dispatch(PostDeleteRequest(data, response => {
+        console.log('Postdelete Response', response)
+        if(response.status)
+        {
+        onCallProfileAPI();
+        // setLoading(false);
+        Toast.show(response.message, Toast.SHORT)
+        }
+        else
+        {
+        Toast.show(response.message, Toast.SHORT);
+        setLoading(false);
+        }
+      }))
+  
     };
 
    

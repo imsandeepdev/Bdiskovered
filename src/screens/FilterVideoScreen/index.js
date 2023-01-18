@@ -520,7 +520,7 @@ const onCallBlockPost = () => {
                       saveIcon={
                         props.route.params?.fromScreen == 'SavedPostListScreen'
                           ? R.images.removeSavedIcon
-                          : R.images.orangeSaveIcon
+                          : R.images.bookmarkIcon
                       }
                       saveTitle={
                         props.route.params?.fromScreen == 'SavedPostListScreen'

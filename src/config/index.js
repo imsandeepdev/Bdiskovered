@@ -2,7 +2,8 @@ export const Config = {
   TermsNConditions: 'https://bdiskovered.com/Terms/',
   PrivacyPolicy: 'https://bdiskovered.com/privacy/',
   CommunityURL: 'https://bdiskovered.com/community/',
-  API_URL: 'https://bdiskv1.shunyaekai.com/',
+  // API_URL: 'https://bdiskv1.shunyaekai.com/',
+  API_URL: 'https://bdiskv2.bdiskovered.com/',
 
   // API_URL: 'https://bdiskshunya.shunyaekai.com/',
   // API_URL: 'https://disk.shunyaekai.com/',

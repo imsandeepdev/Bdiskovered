@@ -1,10 +1,12 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {TouchableOpacity,Image,View,Text} from 'react-native';
+import {TouchableOpacity,Image,View,Text,Dimensions} from 'react-native';
 import R from '../../res/R';
 import { useDispatch, connect } from 'react-redux';
 import { Config } from '../../config';
+const screenHeight = Dimensions.get('window').height;
 
+const tabBarHeight = screenHeight/10
 const CustomTabBar = props => {
   const [select, setSelect] = useState('HomeScreen');
 
@@ -43,17 +45,17 @@ const CustomTabBar = props => {
           borderTopWidth:0.2,
           borderColor:R.colors.placeholderTextColor,
           justifyContent: 'space-around',
-          height: R.fontSize.Size80,
+          height: tabBarHeight,
           flexDirection: 'row',
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 0,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          backgroundColor: R.colors.white,
-          elevation: 5,
+          // shadowColor: '#000',
+          // shadowOffset: {
+          //   width: 0,
+          //   height: 0,
+          // },
+          // shadowOpacity: 0.25,
+          // shadowRadius: 3.84,
+          // backgroundColor: R.colors.white,
+          // elevation: 5,
         }}>
         <TouchableOpacity
           onPress={navigateToFirstScreen}

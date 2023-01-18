@@ -51,8 +51,6 @@ const VideoCard = props => {
           right: 0,
           bottom: 0,
           backgroundColor: R.colors.lightBlack,
-          height:'100%',
-          width:'100%'
         }}
       />
       <View

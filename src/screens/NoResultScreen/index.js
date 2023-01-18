@@ -71,7 +71,7 @@ const NoResultScreen = props => {
                 fontWeight: '500',
                 textAlign: 'center',
               }}>
-              {`Your Uploaded video is going to under review for publish`}
+              {`Your video is sent for review and will be published once approved`}
             </Text>
           </View>
             }

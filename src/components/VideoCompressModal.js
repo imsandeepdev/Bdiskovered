@@ -181,7 +181,7 @@ const VideoCompressModal = React.forwardRef((props,ref)=> {
                       fontWeight: '400',
                       textAlign: 'center',
                     }}>
-                    {`Note: Can't be upload more then 60 seconds video`}
+                    {`Note: Maximum video duration is 60 seconds`}
                   </Text>
                 </View>
                 <Pressable
