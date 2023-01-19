@@ -39,6 +39,7 @@ import { ChangeOwnerShipRequest } from '../../actions/ownership.action';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserSignOutRequest } from '../../actions/signUp.action';
+import { Config } from '../../config';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -85,6 +86,8 @@ let videoRef1;
   const [selectNegotiable, setSelectNegotiable] = useState(false)
   const [myLat, setMyLat] = useState('')
   const [myLong, setMyLong] = useState('');
+  const [tailentLocation, setTailentLocation] = useState('');
+
   const [videoTypeList, setVideoTypeList] = useState(
     [
   {
@@ -125,15 +128,25 @@ const [videoRefStatus, setVideoRefStatus] = useState(true)
 
 
 useEffect(()=>{
-  onCheckUserType()
-  let arr = videoTypeList.map((item, index) => {
-    item.selected = false;
-    return {...item};
-  });
-  console.log('VideoListArray', arr);
-  setVideoTypeList(arr)
-  onCallLatitudeLongitude()
+  
+ const unsubscribe = props.navigation.addListener('focus', () => {
+   screenFocus();
+ });
+ return unsubscribe;
+
 },[props.navigation])
+
+const screenFocus = () => {
+onCheckUserType();
+let arr = videoTypeList.map((item, index) => {
+  item.selected = false;
+  return {...item};
+});
+console.log('VideoListArray', arr);
+setVideoTypeList(arr);
+onCallLatitudeLongitude();
+}
+
 
 const onCheckUserType = () => {
  props.userType != 'Talent' ?
@@ -150,8 +163,21 @@ const onCheckUserType = () => {
      console.log('Result2', myArray[1]);
      setMyLat(myArray[0])
      setMyLong(myArray[1])
+     onCallUserLocation(myArray[0], myArray[1]);
    });
  };
+
+  const onCallUserLocation = (lat, long) => {
+    fetch(`${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`)
+      .then(res => res.json())
+      .then(response => {
+        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+        let temparray = [];
+        temparray = response?.results;
+        console.log('FORMAT ADDRESS', temparray[0]?.formatted_address);
+        setTailentLocation(temparray[0]?.formatted_address);
+      });
+  };
 
 const onCallVideoSelect = (item,ind) => {
   const dummyData = videoTypeList;
@@ -162,13 +188,13 @@ const onCallVideoSelect = (item,ind) => {
     return {...item};
   });
   console.log('arr return', arr);
-   let tempArray = [];
+   let tempArray=[];
    for (let i = 0; i < arr.length; i++) {
      if (arr[i].selected) {
        tempArray.push(arr[i].title);
      }
    }
-   console.log(tempArray);
+   console.log("TempArray",tempArray);
    setVideoTypes(tempArray);
    setVideoTypeList(arr);
 }
@@ -494,8 +520,10 @@ const onCallVideoPostAPI = () => {
   formdata.append('longitude', myLong != ''? myLong : '');
   formdata.append('caption', videoDesc);
   formdata.append('amount', videoPrice);
-  formdata.append('category', videoTypes);
+  formdata.append('category', videoTypes.toString());
   formdata.append('negotiable', selectNegotiable ? 'Yes' : 'No');
+  formdata.append('address', tailentLocation);
+
   formdata.append(
     'post',
     videoPath.uri == null || videoPath?.uri == null

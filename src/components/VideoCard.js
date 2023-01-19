@@ -225,6 +225,9 @@ const VideoCard = props => {
                   }}>
                   {props.saveTitle ?? 'Save'}
                 </Text>
+              {    
+                props.shareHidden ? null :            
+                <View>
                 <Pressable
                   onPress={props.onPressShare}
                   style={({pressed}) => [
@@ -257,6 +260,7 @@ const VideoCard = props => {
                   }}>
                   {'Share'}
                 </Text>
+                </View>}
                 {props.reportHidden ? null : (
                   <Pressable
                     onPress={props.onPressReport}

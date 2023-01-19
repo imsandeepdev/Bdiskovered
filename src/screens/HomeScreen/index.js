@@ -570,7 +570,7 @@ VideoLink :${videoURL}`,
         console.log('UnSaved Post Response', response);
         if (response.status == 'success') {
           onCallShowAllPost();
-          Toast.show(response?.message, Toast.SHORT);
+          // Toast.show(response?.message, Toast.SHORT);
           // setLoading(false);
         } else {
           Toast.show(response?.message, Toast.SHORT);
@@ -607,6 +607,7 @@ const onCallReportPost = () => {
       {
         Toast.show(response.message, Toast.SHORT)
         onCallClosedReportDetailModal()
+        onCallShowAllPost();
         setReportDesc('')
         setReportOkModal(true)
       }

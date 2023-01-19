@@ -35,7 +35,7 @@ import moment from 'moment';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast'
 import Styles from './styles';
-import { DeleteSavedPostRequest, SavedPostRequest } from '../../actions/savedPost.action';
+import { DeleteSavedPostRequest, SavedPostListRequest, SavedPostRequest } from '../../actions/savedPost.action';
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
 import CommonFunctions from '../../utils/CommonFuntions';
 const screenHeight = Dimensions.get('screen').height;
@@ -370,6 +370,10 @@ const onCallSavePost = postId => {
   );
 };
 
+
+
+
+
  const onCallRemoveSavePost = postId => {
    let data = {
      post_id: postId,
@@ -379,10 +383,24 @@ const onCallSavePost = postId => {
      DeleteSavedPostRequest(data, response => {
        console.log('Saved Post Response', response);
        if (response.status == 'success') {
-         Toast.show(response?.message, Toast.SHORT);
-         setLoading(false);
+        //  Toast.show(response?.message, Toast.SHORT);
+         onCallSavedPostAPI();
+        //  setLoading(false);
        } else {
          Toast.show(response?.message, Toast.SHORT);
+         setLoading(false);
+       }
+     }),
+   );
+ };
+
+ const onCallSavedPostAPI = () => {
+   setLoading(true);
+   dispatch(
+     SavedPostListRequest(response => {
+       // console.log('SAVED POST LIST RESPONSE', response?.Post)
+       if (response.status == 'success') {
+         setVideoList(response?.Post);
          setLoading(false);
        }
      }),
@@ -512,6 +530,16 @@ const onCallBlockPost = () => {
                       usdPrice={`USD ${item?.amount}`}
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
+                      shareHidden={
+                        props.route.params?.fromScreen == 'SavedPostListScreen'
+                          ? true
+                          : false
+                      }
+                      reportHidden={
+                        props.route.params?.fromScreen == 'SavedPostListScreen'
+                          ? true
+                          : false
+                      }
                       onPressSave={() =>
                         props.route.params?.fromScreen == 'SavedPostListScreen'
                           ? onCallRemoveSavePost(item?.postID)

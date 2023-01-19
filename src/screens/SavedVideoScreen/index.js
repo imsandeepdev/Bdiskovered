@@ -279,7 +279,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
        DeleteSavedPostRequest(data, response => {
          console.log('Saved Post Response', response);
          if (response.status == 'success') {
-           Toast.show(response?.message, Toast.SHORT);
+          //  Toast.show(response?.message, Toast.SHORT);
            setLoading(false);
          } else {
            Toast.show(response?.message, Toast.SHORT);

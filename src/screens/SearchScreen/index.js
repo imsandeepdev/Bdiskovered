@@ -192,7 +192,6 @@ const SearchScreen = props => {
   // }
 
   const onCallCheckSub = () => {
-    
      props.userProfile?.Profile?.subscription != 0
        ? onCallfilterApply()
        : props.navigation.navigate('SubscriptionScreen');
@@ -203,17 +202,28 @@ const SearchScreen = props => {
     console.log(filterPrice?.firstValue.trim());
     
     let CategoryValue = videoTypes.toString()
-    let Category = CategoryValue.replaceAll(',', ', ');
+    let Category = CategoryValue.replaceAll(',', ',');
 
     let data = {
-      start_price: filterPrice?.firstValue != undefined ? filterPrice?.firstValue : '0',
-      end_price: filterPrice?.secondValue != undefined ? filterPrice?.secondValue : '0',
-      start_age: filterAge?.firstValue != undefined ?  filterAge?.firstValue : '0',
-      end_age: filterAge?.secondValue != undefined ?  filterAge?.secondValue : '0',
-      start_rating: filterRating?.firstValue != undefined ? filterRating?.firstValue : '0',
-      end_rating: filterRating?.secondValue != undefined ? filterRating?.secondValue : '0',
-      category:  `${Category}`,
-      location: filterLocation?.firstValue != undefined ? filterLocation?.secondValue: '',
+      start_price:
+        filterPrice?.firstValue != undefined ? filterPrice?.firstValue : '0',
+      end_price:
+        filterPrice?.secondValue != undefined ? filterPrice?.secondValue : '0',
+      start_age:
+        filterAge?.firstValue != undefined ? filterAge?.firstValue : '0',
+      end_age:
+        filterAge?.secondValue != undefined ? filterAge?.secondValue : '0',
+      start_rating:
+        filterRating?.firstValue != undefined ? filterRating?.firstValue : '0',
+      end_rating:
+        filterRating?.secondValue != undefined
+          ? filterRating?.secondValue
+          : '0',
+      category: `${Category.toString()}`,
+      location:
+        filterLocation?.firstValue != undefined
+          ? filterLocation?.secondValue
+          : '',
     };
     console.log('Tailent Data List', data);
     dispatch(PostFilterRequest(data, response => {
@@ -226,7 +236,6 @@ const SearchScreen = props => {
       }
       else
       {
-        // Toast.show(response.message, Toast.SHORT)
         props.navigation.navigate('NoResultScreen', {
           from: 'SearchScreen',
         });
