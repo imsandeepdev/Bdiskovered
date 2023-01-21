@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {View,Text} from 'react-native';
-import {CardField, useStripe} from '@stripe/stripe-react-native';
+// import {CardField, useStripe} from '@stripe/stripe-react-native';
 import R from '../res/R';
 
 const PaymentScreen = (props) => {
@@ -15,7 +15,7 @@ const PaymentScreen = (props) => {
         backgroundColor: R.colors.cardColor,
         paddingHorizontal:R.fontSize.Size10
       }}>
-      <CardField
+      {/* <CardField
         postalCodeEnabled={false}
         placeholders={{
           number: '4242 4242 4242 4242',
@@ -35,7 +35,7 @@ const PaymentScreen = (props) => {
         onFocus={focusedField => {
           console.log('focusField', focusedField);
         }}
-      />
+      /> */}
       <View
       style={{flex:1,justifyContent:'flex-end',marginVertical:R.fontSize.Size20}}
       >

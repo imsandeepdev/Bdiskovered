@@ -22,7 +22,6 @@
     "@react-navigation/drawer": "^6.4.4",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/stack": "^6.2.3",
-    "@stripe/stripe-react-native": "0.5.0",
     "axios": "^1.0.0",
     "deprecated-react-native-prop-types": "^2.3.0",
     "moment": "^2.29.4",

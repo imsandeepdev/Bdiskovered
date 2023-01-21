@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import {
   CustomTextInput,
@@ -98,7 +99,10 @@ const SubscriptionScreen = props => {
     initConnection().then(() => {
       purchaseUpdateSubscription = purchaseUpdatedListener(purchase => {
         console.log('purchaseUpdatedListener', purchase);
+        alert(JSON.stringify(purchase))
         const receipt = purchase.transactionReceipt;
+        // console.warn('purchasereceipt', receipt);
+
         if (receipt) {
           const receiptBody = {
             'receipt-data': purchase.transactionReceipt,

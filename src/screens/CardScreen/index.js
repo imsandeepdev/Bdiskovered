@@ -26,12 +26,12 @@ import {
 } from '../../components';
 import CarouselCards from '../../components/CarouselCard';
 import R from '../../res/R';
-import {
-  CardField,
-  useStripe,
-  initStripe,
-  confirmPayment,
-} from '@stripe/stripe-react-native';
+// import {
+//   CardField,
+//   useStripe,
+//   initStripe,
+//   confirmPayment,
+// } from '@stripe/stripe-react-native';
 import {Config} from '../../config';
 import {connect, useDispatch} from 'react-redux';
 import {
@@ -80,7 +80,7 @@ const cardListData = [
 const CardScreen = props => {
   const dispatch = useDispatch();
 
-  const stripe = useStripe();
+  // const stripe = useStripe();
   const name = 'sandeep';
   const [loading, setLoading] = useState(false);
   const [modalPicker, setModalPicker] = useState(false);
