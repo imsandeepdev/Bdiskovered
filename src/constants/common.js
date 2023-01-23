@@ -201,3 +201,8 @@ export const block_User_List_error = 'block_User_List_error';
 export const unblock_User = 'unblock_User';
 export const unblock_User_success = 'unblock_User_success';
 export const unblock_User_error = 'unblock_User_error';
+
+// inAppPayment
+export const inApp_Payment = 'inApp_Payment';
+export const inApp_Payment_success = 'inApp_Payment_success';
+export const inApp_Payment_error = 'inApp_Payment_error';

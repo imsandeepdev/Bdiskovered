@@ -47,6 +47,8 @@ import {
   GetSubscruberGetRequest,
   SubscriberGetPlanRequest,
 } from '../../actions/subGetPlan.action';
+import axios from 'axios';
+import { InAppPaymentRequest } from '../../actions/inAppPayment.action';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
@@ -101,35 +103,38 @@ const SubscriptionScreen = props => {
         console.log('purchaseUpdatedListener', purchase);
         alert(JSON.stringify(purchase))
         const receipt = purchase.transactionReceipt;
+        console.log('purchasereceipt', receipt);
         // console.warn('purchasereceipt', receipt);
 
         if (receipt) {
-          const receiptBody = {
-            'receipt-data': purchase.transactionReceipt,
-            password: '081abc43e0594051bf41bb24f97cbb2c', // app shared secret, can be found in App Store Connect
-          };
 
-          // locally validation through in-app-purchases
+          onCallInAppPurchase(receipt)
+          // const receiptBody = {
+          //   'receipt-data': purchase.transactionReceipt,
+          //   password: '081abc43e0594051bf41bb24f97cbb2c', // app shared secret, can be found in App Store Connect
+          // };
 
-          validateReceiptIos(receiptBody, false)
-            .then(async result => {
-              if (isSuccess(deliveryResult)) {
-                // Tell the store that you have delivered what has been paid for.
-                // Failure to do this will result in the purchase being refunded on Android and
-                // the purchase event will reappear on every relaunch of the app until you succeed
-                // in doing the below. It will also be impossible for the user to purchase consumables
-                // again until you do this.
-                // If consumable (can be purchased again)
-                await finishTransaction({purchase, isConsumable: true});
-                // If not consumable
-                await finishTransaction({purchase, isConsumable: false});
-              } else {
-                // Retry / conclude the purchase is fraudulent, etc...
-              }
-            })
-            .catch(err => {
-              console.log('====> ', err.message);
-            });
+          // // locally validation through in-app-purchases
+
+          // validateReceiptIos(receiptBody, false)
+          //   .then(async result => {
+          //     if (isSuccess(deliveryResult)) {
+          //       // Tell the store that you have delivered what has been paid for.
+          //       // Failure to do this will result in the purchase being refunded on Android and
+          //       // the purchase event will reappear on every relaunch of the app until you succeed
+          //       // in doing the below. It will also be impossible for the user to purchase consumables
+          //       // again until you do this.
+          //       // If consumable (can be purchased again)
+          //       await finishTransaction({purchase, isConsumable: true});
+          //       // If not consumable
+          //       await finishTransaction({purchase, isConsumable: false});
+          //     } else {
+          //       // Retry / conclude the purchase is fraudulent, etc...
+          //     }
+          //   })
+          //   .catch(err => {
+          //     console.log('====> ', err.message);
+          //   });
 
           // for web end through apis
 
@@ -159,18 +164,40 @@ const SubscriptionScreen = props => {
     });
   };
 
+  const onCallInAppPurchase = (receipt) => {
+    let data = {
+      receiptdata: receipt,
+      password: '081abc43e0594051bf41bb24f97cbb2c',
+      excludeoidtrasactions: true,
+    };
+    console.log("Data Log ===>",data)
+    dispatch(InAppPaymentRequest(data, response => {
+      console.log("IN APP PAYMENT RESPONSE",response)
+      setLoading(false)
+    }))
+
+
+  }
+
   const restorePurchase = async () => {
+    // setLoading(true)
     const availablePurchases = await getAvailablePurchases();
+      console.log('AVAILABLE PURCHASE RESPONSE', availablePurchases);
+
     if (availablePurchases.length > 0) {
       const sortedAvailablePurchases = availablePurchases.sort(
         (a, b) => b.transactionDate - a.transactionDate,
       );
       const latestAvailableReceipt =
         sortedAvailablePurchases[0].transactionReceipt;
+      console.log('latestAvailableReceipt_RESPONSE', latestAvailableReceipt);
+
+        // onCallInAppPurchase(latestAvailableReceipt);
     }
   }
 
   const getSubscription = async () => {
+    setLoading(true)
     console.log('SUB IN APP');
     try {
       let sku =
@@ -180,19 +207,29 @@ const SubscriptionScreen = props => {
       const subscription = await getSubscriptions({skus: [sku]});
       console.log(' Subscription Products => ', subscription);
       setSubGetPlan(subscription);
+      setLoading(false);
+
     } catch (err) {
       console.warn('Error in getSubscriptions: ', err.code, err.message);
+      setLoading(false);
     }
   };
 
   const getProduct = async () => {
+    setLoading(true);
+
     let skus =
       props.userType == 'Talent'
         ? ['addon.connections', 'addon.boost']
         : ['addon.connections'];
     const products = await getProducts({skus});
     console.log('Addon Products => ', products);
-    setGetCustomPlan(products);
+    let sortedProduct = products.sort(
+      (a, b) => a.price > b.price
+    );
+    setGetCustomPlan(sortedProduct);
+    setLoading(false);
+
   };
 
   const onCallCheckSubActive = () => {
@@ -664,14 +701,57 @@ const SubscriptionScreen = props => {
                       marginTop={R.fontSize.Size15}
                       price={`${item?.currency} ${item?.price}`}
                       month={item?.description}
-                      onPressAdd={() => {
-                        requestPurchase({
+                      onPressAdd={async() => {
+                        setLoading(true)
+                        await requestPurchase({
                           sku: item.productId,
                         });
+                        setLoading(false)
                       }}
                     />
                   );
                 })}
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  marginBottom: R.fontSize.Size20,
+                }}>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      fontSize: R.fontSize.Size14,
+                      color: R.colors.placeHolderColor,
+                    }}>{`If You have already subscription plan`}</Text>
+                  <Pressable
+                    onPress={() => restorePurchase()}
+                    style={({pressed}) => [
+                      {
+                        marginTop: R.fontSize.Size5,
+                        opacity: pressed ? 0.5 : 1,
+                        height: R.fontSize.Size35,
+                        width: R.fontSize.Size150,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        // borderRadius: R.fontSize.Size8,
+                        // borderWidth: 1,
+                        // borderColor: R.colors.placeholderTextColor,
+                      },
+                    ]}>
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        fontSize: R.fontSize.Size14,
+                        color: R.colors.appColor,
+                        fontWeight: '600',
+                      }}>
+                      {'Restore Purchase'}
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
           </ScrollView>
@@ -794,16 +874,20 @@ const SubscriptionScreen = props => {
                 </View>
                 <View>
                   <AppButton
-                    onPress={() => {
+                    onPress={async() => {
+                      setLoading(true)
                       let skus =
                         props.userType == 'Talent'
                           ? 'talentuser.monthly'
                           : 'viewer.business.monthly';
-                      requestSubscription({
+                      await requestSubscription({
                         sku: skus,
                       });
+                      setLoading(false);
+
                     }}
                     title={'Make Payment'}
+
                   />
                 </View>
               </View>

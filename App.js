@@ -11,7 +11,6 @@ import { requestUserPermission } from './src/helper/notificationServices';
 
 const App = () => {
   useEffect(()=>{
-    
     RequestLocationPermission()
     requestUserPermission()
     notificationListner()

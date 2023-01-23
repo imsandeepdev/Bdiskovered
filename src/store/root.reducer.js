@@ -19,6 +19,7 @@ import boostPostRoot from '../reducers/boostPost.reducer';
 import loginSessionRoot from '../reducers/loginSession.reducer';
 import connectRequestRoot from '../reducers/connectRequest.reducer';
 import savedPostRoot from '../reducers/savedPost.reducer';
+import inAppPaymentRoot from '../reducers/inAppPayment.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -43,6 +44,7 @@ notificationRoot,
 boostPostRoot,
 loginSessionRoot,
 connectRequestRoot,
-savedPostRoot
+savedPostRoot,
+inAppPaymentRoot
 
 });

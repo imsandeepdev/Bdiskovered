@@ -31,6 +31,7 @@
 		061F6C222969E89500435F54 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061F6C212969E89500435F54 /* MobileCoreServices.framework */; };
 		061F6C2D2969E8F700435F54 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061F6C2C2969E8E800435F54 /* GPUImage.framework */; };
 		061F6C2E2969E8F700435F54 /* GPUImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 061F6C2C2969E8E800435F54 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		066D8C50297EDDC8006FB2E7 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066D8C4F297EDDC8006FB2E7 /* Header.swift */; };
 		0678818128CA5B5000E1A6BC /* Product Sans Bold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0678817D28CA5B5000E1A6BC /* Product Sans Bold Italic.ttf */; };
 		0678818228CA5B5000E1A6BC /* Product Sans Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0678817E28CA5B5000E1A6BC /* Product Sans Bold.ttf */; };
 		0678818328CA5B5000E1A6BC /* Product Sans Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0678817F28CA5B5000E1A6BC /* Product Sans Regular.ttf */; };
@@ -120,6 +121,8 @@
 		061F6C1F2969E88800435F54 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		061F6C212969E89500435F54 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		061F6C232969E8E800435F54 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = "../node_modules/react-native-video-processing/ios/GPUImage/framework/GPUImage.xcodeproj"; sourceTree = "<group>"; };
+		066D8C4F297EDDC8006FB2E7 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
+		066D8C51297EDE48006FB2E7 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
 		0678817D28CA5B5000E1A6BC /* Product Sans Bold Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Bold Italic.ttf"; sourceTree = "<group>"; };
 		0678817E28CA5B5000E1A6BC /* Product Sans Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Bold.ttf"; sourceTree = "<group>"; };
 		0678817F28CA5B5000E1A6BC /* Product Sans Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Regular.ttf"; sourceTree = "<group>"; };
@@ -281,6 +284,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				066D8C4F297EDDC8006FB2E7 /* Header.swift */,
+				066D8C51297EDE48006FB2E7 /* Header.h */,
 			);
 			name = Bdiskovered;
 			sourceTree = "<group>";
@@ -638,6 +643,7 @@
 				061F6C0A2969E78500435F54 /* RNTrimmerViewBridge.m in Sources */,
 				061F6BF62969E71B00435F54 /* RNVideoProcessingBridge.m in Sources */,
 				061F6C162969E7E200435F54 /* ICGThumbView.m in Sources */,
+				066D8C50297EDDC8006FB2E7 /* Header.swift in Sources */,
 				061F6BFF2969E75600435F54 /* RNVideoTrimmerBridge.m in Sources */,
 				061F6C152969E7E200435F54 /* ICGVideoTrimmerView.m in Sources */,
 				061F6BF72969E71B00435F54 /* RNVideoProcessingManager.swift in Sources */,
@@ -667,7 +673,6 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = R27938QZDV;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -686,10 +691,9 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.ios.Bdiskovered;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bdiskovered.app/Bdiskovered";
 			};
 			name = Debug;
@@ -701,7 +705,6 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = R27938QZDV;
@@ -717,10 +720,9 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.ios.Bdiskovered;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bdiskovered.app/Bdiskovered";
 			};
 			name = Release;

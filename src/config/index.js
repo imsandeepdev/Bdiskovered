@@ -51,6 +51,8 @@ export const Config = {
   blockUserListAPI: 'post/block-user-list',
   unblockUserAPI: 'post/unblock-user',
 
+  inAppPurchaseAPI: 'payment/apple-pay',
+
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',
   stripePaymentDeleteCardAPI: 'payment/delete-card',

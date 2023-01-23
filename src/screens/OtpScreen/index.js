@@ -110,11 +110,11 @@ const onSaveDeviceToken = async () => {
               tempArray?.length == 0
             ) {
               props.navigation.replace('TalentScreen');
-              Toast.show(response.message, Toast.SHORT);
+              // Toast.show(response.message, Toast.SHORT);
               onSaveDeviceToken();
             } else {
               props.navigation.replace('HomeMenu');
-              Toast.show(response.message, Toast.SHORT);
+              // Toast.show(response.message, Toast.SHORT);
               onSaveDeviceToken();
             }
              
@@ -177,7 +177,7 @@ const onSaveDeviceToken = async () => {
         console.log('ResponseForBusiness', response);
         if (response.status == 'success' && response.token != null) {
           props.navigation.navigate('TalentFinishScreen');
-          Toast.show(response.message, Toast.SHORT);
+          // Toast.show(response.message, Toast.SHORT);
           onSaveDeviceToken();
 
         } else {
@@ -204,7 +204,7 @@ const onSaveDeviceToken = async () => {
       console.log('ResponseOnTailentViewer', response)
        if (response.status == 'success') {
          props.navigation.navigate(props.route.params?.userType == 'Viewer' ? 'TalentFinishScreen' : 'TalentScreen');
-         Toast.show(response.message, Toast.SHORT);
+        //  Toast.show(response.message, Toast.SHORT);
           onSaveDeviceToken();
 
        } else {
@@ -258,7 +258,7 @@ const onSaveDeviceToken = async () => {
         console.log('Logout all devices response', response)
         if(response.status == 'success')
         {
-          Toast.show(response.message, Toast.SHORT)
+          // Toast.show(response.message, Toast.SHORT)
           setPickerModal(false)
           props.navigation.replace('LoginScreen')
         }
