@@ -87,6 +87,8 @@ const SearchScreen = props => {
   const [filterLocation, setFilterLocation] = useState();
   const [filterAge, setFilterAge] = useState();
   const [filterRating, setFilterRating] = useState();
+  const [filterLikes, setFilterLikes] = useState();
+
   const [location, setLocation] = useState('')
 
 
@@ -130,6 +132,17 @@ const SearchScreen = props => {
         ]));
     }
     {
+      modalType == 'Likes' &&
+        (setDropDownTitle(modalType),
+        setDropDownList([
+          {firstValue: '0', secondValue: '20'},
+          {firstValue: '21', secondValue: '40'},
+          {firstValue: '41', secondValue: '60'},
+          {firstValue: '61', secondValue: '80'},
+          {firstValue: '81', secondValue: '100'},
+        ]));
+    }
+    {
       modalType == 'Country' &&
         (setDropDownTitle(modalType),
         setLocationList([
@@ -154,6 +167,9 @@ const SearchScreen = props => {
     }
     {
       type == 'Rating' && setFilterRating(item);
+    }
+    {
+      type == 'Likes' && setFilterLikes(item);
     }
     {
        type == 'Country' && setFilterLocation(item);
@@ -311,7 +327,7 @@ const SearchScreen = props => {
                           : R.images.chevronDown
                       }
                     />
-                    
+
                     <CustomTitle title={'Age'} />
                     <CustomCardLine
                       onPress={() => onCallOpenModal('Age')}
@@ -395,6 +411,28 @@ const SearchScreen = props => {
                       }}
                       rightIcon={
                         filterRating != null
+                          ? R.images.cancleIcon
+                          : R.images.chevronDown
+                      }
+                    />
+
+                    <CustomTitle title={'Likes'} />
+                    <CustomCardLine
+                      onPress={() => onCallOpenModal('Likes')}
+                      title={
+                        filterLikes != null
+                          ? `${filterLikes?.firstValue}${
+                              filterLikes?.secondValue != '' ? ' - ' : '+'
+                            }${filterLikes?.secondValue}`
+                          : 'Select Likes'
+                      }
+                      onPressSecondRight={() => {
+                        filterLikes != null
+                          ? setFilterLikes()
+                          : onCallOpenModal('Likes');
+                      }}
+                      rightIcon={
+                        filterLikes != null
                           ? R.images.cancleIcon
                           : R.images.chevronDown
                       }

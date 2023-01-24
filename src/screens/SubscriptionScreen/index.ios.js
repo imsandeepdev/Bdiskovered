@@ -49,6 +49,7 @@ import {
 } from '../../actions/subGetPlan.action';
 import axios from 'axios';
 import { InAppPaymentRequest } from '../../actions/inAppPayment.action';
+import { Config } from '../../config';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
@@ -108,7 +109,7 @@ const SubscriptionScreen = props => {
 
         if (receipt) {
 
-          onCallInAppPurchase(receipt)
+          // onCallInAppPurchase(receipt)
           // const receiptBody = {
           //   'receipt-data': purchase.transactionReceipt,
           //   password: '081abc43e0594051bf41bb24f97cbb2c', // app shared secret, can be found in App Store Connect
@@ -171,11 +172,15 @@ const SubscriptionScreen = props => {
       excludeoidtrasactions: true,
     };
     console.log("Data Log ===>",data)
-    dispatch(InAppPaymentRequest(data, response => {
-      console.log("IN APP PAYMENT RESPONSE",response)
-      setLoading(false)
-    }))
-
+    axios
+      .post(`${Config.API_URL}${Config.inAppPurchaseAPI}`, {data})
+      .then(response => {
+        console.log("Response Post",response);
+      });
+    // dispatch(InAppPaymentRequest(data, response => {
+    //   console.log("IN APP PAYMENT RESPONSE",response)
+    //   setLoading(false)
+    // }))
 
   }
 
@@ -203,7 +208,9 @@ const SubscriptionScreen = props => {
       let sku =
         props.userType == 'Talent'
           ? 'talentuser.monthly'
-          : 'viewer.business.monthly';
+          : (props.userType == 'Business'
+          ? 'Businessuser.monthly'
+          : 'vieweruser.monthly');
       const subscription = await getSubscriptions({skus: [sku]});
       console.log(' Subscription Products => ', subscription);
       setSubGetPlan(subscription);
@@ -385,7 +392,7 @@ const SubscriptionScreen = props => {
               marginHorizontal: R.fontSize.Size20,
             }}>
             <View style={{flex: 1}}>
-              {/* {props.userProfile?.Profile?.subscription != 0 && (
+            {props.userProfile?.Profile?.subscription != 0 && (
                 <View style={{marginTop: R.fontSize.Size45}}>
                   <Text
                     style={{
@@ -600,7 +607,7 @@ const SubscriptionScreen = props => {
                     </View>
                   </View>
                 </View>
-              )} */}
+              )} 
 
               {/* Subscription Selection */}
 
@@ -879,7 +886,9 @@ const SubscriptionScreen = props => {
                       let skus =
                         props.userType == 'Talent'
                           ? 'talentuser.monthly'
-                          : 'viewer.business.monthly';
+                          : props.userType == 'Business'
+                          ? 'Businessuser.monthly'
+                          : 'vieweruser.monthly';
                       await requestSubscription({
                         sku: skus,
                       });
