@@ -54,7 +54,7 @@ const SubscriptionCard = (props) => {
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size35,
+                  fontSize: R.fontSize.Size32,
                   color: props.priceTextColor ?? R.colors.appColor,
                   fontWeight: '700',
                 }}>
@@ -64,7 +64,7 @@ const SubscriptionCard = (props) => {
                 <Text
                   style={{
                     fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size22,
+                    fontSize: R.fontSize.Size20,
                     color: R.colors.placeholderTextColor,
                     fontWeight: '700',
                   }}>
@@ -82,7 +82,7 @@ const SubscriptionCard = (props) => {
                 style={{
                   marginHorizontal: R.fontSize.Size5,
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size22,
+                  fontSize: R.fontSize.Size20,
                   color: props.slashTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '700',
                 }}>
@@ -91,7 +91,7 @@ const SubscriptionCard = (props) => {
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size22,
+                  fontSize: R.fontSize.Size20,
                   color: props.noTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '700',
                 }}>
@@ -100,7 +100,7 @@ const SubscriptionCard = (props) => {
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size18,
+                  fontSize: R.fontSize.Size14,
                   color: props.monthTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '500',
                 }}>

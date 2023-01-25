@@ -36,6 +36,8 @@ import RNIap, {
   getProducts,
   getSubscriptions,
   initConnection,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
   requestPurchase,
   requestSubscription,
   validateReceiptIos,
@@ -50,16 +52,21 @@ import {
 import axios from 'axios';
 import { InAppPaymentRequest } from '../../actions/inAppPayment.action';
 import { Config } from '../../config';
+import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
-let purchaseUpdateSubscription;
-let purchaseErrorSubscription;
+
 
 const SubscriptionScreen = props => {
+
+  let purchaseUpdateSubscription=null;
+  let purchaseErrorSubscription=null;
+  
   const dispatch = useDispatch();
   const [modalPicker, setModalPicker] = useState(false);
+  const [profileSubStatus, setProfileSubStatus] = useState(0)
   const [customModalPicker, setCustomModalPicker] = useState(false);
 
   const [alartModalPicker, setAlartModalPicker] = useState(false);
@@ -74,10 +81,20 @@ const SubscriptionScreen = props => {
   const [expDate, setExpDate] = useState('');
   const [expMonth, setExpMonth] = useState('');
   const [addOnPlanDetail, setAddOnPlanDetail] = useState({});
+  const [selectForPurchase, setSelectForPurchase] = useState({});
+  const [checkForPurchase, setCheckForPurchase] = useState('');
+  const [subscriptionModal, setSubscriptionModal] = useState(false);
+  const [inAppReceipt, setInAppReceipt] = useState('');
+  const [subMassage, setSubMessage] = useState(
+    'Your Subscription plan activated',
+  );
+
+
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    onCallProfile();
     onCallCheckSubActive();
     onCallSubGetPlan();
     onCallgetSubGetPlan();
@@ -102,14 +119,27 @@ const SubscriptionScreen = props => {
     initConnection().then(() => {
       purchaseUpdateSubscription = purchaseUpdatedListener(purchase => {
         console.log('purchaseUpdatedListener', purchase);
-        alert(JSON.stringify(purchase))
         const receipt = purchase.transactionReceipt;
         console.log('purchasereceipt', receipt);
-        // console.warn('purchasereceipt', receipt);
+        console.log('CheckForPurchase', checkForPurchase);
+        setModalPicker(false);
+       
+        if (receipt && checkForPurchase == 'AddOn') {
+          setInAppReceipt(receipt);
+          setSubMessage('Add on plan added');
+          setSubscriptionModal(true);
+        }
 
-        if (receipt) {
+        if (receipt && props.userProfile?.Profile?.subscription == 0) {
+        
+           setInAppReceipt(receipt);
+           setSubMessage('Your Subscription plan activated');
+           setSubscriptionModal(true);
 
-          // onCallInAppPurchase(receipt)
+            // console.log('CallAPI');
+            // onCallInAppPurchase(receipt);
+          
+
           // const receiptBody = {
           //   'receipt-data': purchase.transactionReceipt,
           //   password: '081abc43e0594051bf41bb24f97cbb2c', // app shared secret, can be found in App Store Connect
@@ -156,7 +186,8 @@ const SubscriptionScreen = props => {
           //       // Retry / conclude the purchase is fraudulent, etc...
           //     }
           //   });
-        }
+        } 
+        
       });
 
       purchaseErrorSubscription = purchaseErrorListener(error => {
@@ -165,17 +196,44 @@ const SubscriptionScreen = props => {
     });
   };
 
-  const onCallInAppPurchase = (receipt) => {
+
+  const onCallInAppPurchase = () => {
+    setLoading(true)
     let data = {
-      receiptdata: receipt,
-      password: '081abc43e0594051bf41bb24f97cbb2c',
-      excludeoidtrasactions: true,
+      receiptdata: inAppReceipt,
+      amount: selectForPurchase.price,
+      plan_type: selectForPurchase.plan == 'SubScription_Plan' ? '' : 'Custom',
+      type:
+        selectForPurchase.plan == 'SubScription_Plan'
+          ? ''
+          : selectForPurchase.plan,
     };
     console.log("Data Log ===>",data)
     axios
-      .post(`${Config.API_URL}${Config.inAppPurchaseAPI}`, {data})
+      .post(
+        `${Config.API_URL}${Config.inAppPurchaseAPI}`,
+        {data},
+        {
+          headers: {
+            token: props.authToken,
+          },
+        },
+      )
       .then(response => {
-        console.log("Response Post",response);
+        console.log('Response Post', response.data.status);
+        console.log('Response Post status', response.status);
+
+        if (response.data.status == 'success') {
+          onCallProfile();
+          onCallCheckSubActive();
+          onCallSubGetPlan();
+          onCallgetSubGetPlan();
+          setSubscriptionModal(false);
+        } else {
+          setLoading(false);
+          setModalPicker(false);
+          setSubscriptionModal(false);
+        }
       });
     // dispatch(InAppPaymentRequest(data, response => {
     //   console.log("IN APP PAYMENT RESPONSE",response)
@@ -184,8 +242,25 @@ const SubscriptionScreen = props => {
 
   }
 
+  const onCallProfile = () => {
+    setLoading(true)
+    dispatch(
+      GetProfileDetailsRequest(response => {
+        console.log(
+          'PROFILE DETAIL ON APP NAVIGATOR',
+          response.Profile?.subscription,
+        );
+          setProfileSubStatus(response.Profile?.subscription),
+            response.Profile?.subscription != 0
+              ? setCheckSubActive(true)
+              : setCheckSubActive(false);
+            setLoading(false);
+      }),
+    );
+  };
+
   const restorePurchase = async () => {
-    // setLoading(true)
+    setLoading(true)
     const availablePurchases = await getAvailablePurchases();
       console.log('AVAILABLE PURCHASE RESPONSE', availablePurchases);
 
@@ -197,7 +272,7 @@ const SubscriptionScreen = props => {
         sortedAvailablePurchases[0].transactionReceipt;
       console.log('latestAvailableReceipt_RESPONSE', latestAvailableReceipt);
 
-        // onCallInAppPurchase(latestAvailableReceipt);
+        onCallInAppPurchase(latestAvailableReceipt);
     }
   }
 
@@ -353,27 +428,47 @@ const SubscriptionScreen = props => {
 
   const onCheckModal = item => {
     console.log('ADD ON PLAN', item);
+    
     setAddOnPlanDetail(item);
-    props.userProfile?.Profile?.subscription != 0
-      ? setCustomModalPicker(true)
-      : setAlartModalPicker(true);
+    if (profileSubStatus != 0) {
+      setCheckForPurchase('AddOn');
+      setSelectForPurchase({
+        ...item,
+        plan: item?.productId == 'addon.boost' ? 'boost' : 'connection',
+      });
+      setCheckForPurchase('AddOn');
+      setCustomModalPicker(true);
+    } else {
+      setAlartModalPicker(true);
+    }
   };
 
   const onOpenPaymentModal = item => {
     console.log('ITEM', item);
     setSubPlanItem(item);
+    setSelectForPurchase({...item, plan:'SubScription_Plan'});
+    setCheckForPurchase('SubScription');
+
     setModalPicker(true);
   };
 
-  const onCallAddOnPackage = () => {
-    console.log('PLANNAME', addOnPlanDetail?.plan_name);
-    props.navigation.navigate('CardScreen', {
-      SubPlanItem: {
-        plan_name: addOnPlanDetail?.plan_name,
-        price: addOnPlanDetail?.price,
-        type: 'AddOn',
-      },
-    });
+  const onCallAddOnPackage = async() => {
+    // console.log('PLANNAME', addOnPlanDetail?.plan_name);
+    // props.navigation.navigate('CardScreen', {
+    //   SubPlanItem: {
+    //     plan_name: addOnPlanDetail?.plan_name,
+    //     price: addOnPlanDetail?.price,
+    //     type: 'AddOn',
+    //   },
+    // });
+   
+      // console.log('ADDOn SELECT', {...item, plan: 'AddOn'});
+      // setSelectForPurchase({...item, plan: 'AddOn_Plan'});
+
+      await requestPurchase({
+        sku: selectForPurchase?.productId,
+      });
+   
     setCustomModalPicker(false);
   };
 
@@ -392,7 +487,7 @@ const SubscriptionScreen = props => {
               marginHorizontal: R.fontSize.Size20,
             }}>
             <View style={{flex: 1}}>
-            {props.userProfile?.Profile?.subscription != 0 && (
+              {profileSubStatus != 0 && (
                 <View style={{marginTop: R.fontSize.Size45}}>
                   <Text
                     style={{
@@ -428,46 +523,44 @@ const SubscriptionScreen = props => {
                         marginTop: R.fontSize.Size10,
                         justifyContent: 'space-between',
                       }}>
-                    
-                        <View
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          flex: 1,
+                        }}>
+                        <Text
                           style={{
-                            alignItems: 'center',
-                            flex: 1,
-                          }}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size15,
-                              color: R.colors.primaryTextColor,
-                              fontWeight: '700',
-                            }}
-                            numberOfLines={1}>
-                            {'Valid Till'}
-                          </Text>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size35,
-                              color: R.colors.appColor,
-                              fontWeight: '700',
-                              textAlign: 'center',
-                            }}
-                            numberOfLines={1}>
-                            {expDate}
-                          </Text>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size15,
-                              color: R.colors.primaryTextColor,
-                              fontWeight: '700',
-                              textAlign: 'center',
-                            }}
-                            numberOfLines={1}>
-                            {expMonth}
-                          </Text>
-                        </View>
-                    
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                          }}
+                          numberOfLines={1}>
+                          {'Valid Till'}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size35,
+                            color: R.colors.appColor,
+                            fontWeight: '700',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {expDate}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.primaryTextColor,
+                            fontWeight: '700',
+                            textAlign: 'center',
+                          }}
+                          numberOfLines={1}>
+                          {expMonth}
+                        </Text>
+                      </View>
 
                       <View
                         style={{
@@ -607,57 +700,78 @@ const SubscriptionScreen = props => {
                     </View>
                   </View>
                 </View>
-              )} 
+              )}
 
               {/* Subscription Selection */}
 
               <View style={{marginTop: R.fontSize.Size45}}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    color: R.colors.primaryTextColor,
-                    fontSize: R.fontSize.Size16,
-                    fontWeight: '400',
-                  }}
-                  numberOfLines={1}>
-                  {'Subscription Selection'}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: R.fontSize.Size10,
-                    fontFamily: R.fonts.regular,
-                    color: R.colors.primaryTextColor,
-                    fontSize: R.fontSize.Size18,
-                    fontWeight: '700',
-                  }}>
-                  {'Choose a subscription plan'}
-                </Text>
+                {profileSubStatus == 0 && (
+                  <View>
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        color: R.colors.primaryTextColor,
+                        fontSize: R.fontSize.Size16,
+                        fontWeight: '400',
+                      }}
+                      numberOfLines={1}>
+                      {'Subscription Selection'}
+                    </Text>
+                    <Text
+                      style={{
+                        marginTop: R.fontSize.Size10,
+                        fontFamily: R.fonts.regular,
+                        color: R.colors.primaryTextColor,
+                        fontSize: R.fontSize.Size18,
+                        fontWeight: '700',
+                      }}>
+                      {'Choose a subscription plan'}
+                    </Text>
 
-                {subGetPlan.map((item, index) => {
-                  return (
-                    <SubscriptionCard
-                      disabledIcon={!checkSubActive ? true : false}
-                      key={index}
-                      marginTop={R.fontSize.Size28}
-                      borderWidth={R.fontSize.Size2}
-                      price={`${item?.currency} ${item?.price}`}
-                      monthTextColor={
-                        !checkSubActive
-                          ? R.colors.primaryTextColor
-                          : R.colors.placeholderTextColor
-                      }
-                      slashText={'/'}
-                      slashTextColor={
-                        !checkSubActive
-                          ? R.colors.primaryTextColor
-                          : R.colors.placeholderTextColor
-                      }
-                      month={'month'}
-                      rightIcon={R.images.balaceIcon}
-                      onPressAdd={() => onOpenPaymentModal(item)}
-                    />
-                  );
-                })}
+                    {subGetPlan.map((item, index) => {
+                      return (
+                        <SubscriptionCard
+                          disabled={checkSubActive}
+                          disabledIcon={!checkSubActive ? true : false}
+                          key={index}
+                          marginTop={R.fontSize.Size28}
+                          borderWidth={R.fontSize.Size2}
+                          borderColor={
+                            !checkSubActive
+                              ? R.colors.appColor
+                              : R.colors.placeholderTextColor
+                          }
+                          priceTextColor={
+                            !checkSubActive
+                              ? R.colors.appColor
+                              : R.colors.placeholderTextColor
+                          }
+                          onPressIcon={() => {
+                            Toast.show(
+                              'Subscription Already Taken',
+                              Toast.SHORT,
+                            );
+                          }}
+                          price={`${item?.currency} ${item?.price}`}
+                          monthTextColor={
+                            !checkSubActive
+                              ? R.colors.primaryTextColor
+                              : R.colors.placeholderTextColor
+                          }
+                          slashText={'/'}
+                          slashTextColor={
+                            !checkSubActive
+                              ? R.colors.primaryTextColor
+                              : R.colors.placeholderTextColor
+                          }
+                          month={'month'}
+                          rightIcon={R.images.balaceIcon}
+                          onPressAdd={() => onOpenPaymentModal(item)}
+                        />
+                      );
+                    })}
+                  </View>
+                )}
 
                 <Text
                   style={{
@@ -708,18 +822,23 @@ const SubscriptionScreen = props => {
                       marginTop={R.fontSize.Size15}
                       price={`${item?.currency} ${item?.price}`}
                       month={item?.description}
-                      onPressAdd={async() => {
-                        setLoading(true)
-                        await requestPurchase({
-                          sku: item.productId,
-                        });
-                        setLoading(false)
-                      }}
+                      onPressAdd={() => onCheckModal(item)}
+
+                      // onPressAdd={async () => {
+                      //   // setLoading(true)
+                      //   console.log('ADDOn SELECT', {...item, plan: 'AddOn'});
+                      //   setSelectForPurchase({...item, plan: 'AddOn_Plan'});
+
+                      //   await requestPurchase({
+                      //     sku: item.productId,
+                      //   });
+                      //   // setLoading(false)
+                      // }}
                     />
                   );
                 })}
               </View>
-              <View
+              {/* <View
                 style={{
                   flex: 1,
                   justifyContent: 'flex-end',
@@ -759,7 +878,7 @@ const SubscriptionScreen = props => {
                     </Text>
                   </Pressable>
                 </View>
-              </View>
+              </View> */}
             </View>
           </ScrollView>
         </View>
@@ -881,8 +1000,7 @@ const SubscriptionScreen = props => {
                 </View>
                 <View>
                   <AppButton
-                    onPress={async() => {
-                      setLoading(true)
+                    onPress={async () => {
                       let skus =
                         props.userType == 'Talent'
                           ? 'talentuser.monthly'
@@ -892,11 +1010,8 @@ const SubscriptionScreen = props => {
                       await requestSubscription({
                         sku: skus,
                       });
-                      setLoading(false);
-
                     }}
                     title={'Make Payment'}
-
                   />
                 </View>
               </View>
@@ -914,7 +1029,7 @@ const SubscriptionScreen = props => {
       <AlartModal
         visible={customModalPicker}
         onRequestClose={() => setCustomModalPicker(false)}
-        title={`Your Add on plan will expire on ${expDate} ${expMonth}`}
+        title={`Your Add-on plan will expire on ${expDate} ${expMonth}`}
         customButton={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable
@@ -969,6 +1084,12 @@ const SubscriptionScreen = props => {
             </Pressable>
           </View>
         }
+      />
+      <AlartModal
+        visible={subscriptionModal}
+        onRequestClose={() => setSubscriptionModal(false)}
+        title={subMassage}
+        onPress={() => onCallInAppPurchase()}
       />
     </StoryScreen>
   );
