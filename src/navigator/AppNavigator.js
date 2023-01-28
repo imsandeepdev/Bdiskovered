@@ -76,7 +76,7 @@ const AppNavigator = props => {
 
       }))
     }
-    console.log(props.authToken)
+    console.log("AuthToken", props.authToken)
     const initialRouteName = props.authToken  ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
     // const interval = setInterval(() => {onCheckSessionStatus()}, 10000);

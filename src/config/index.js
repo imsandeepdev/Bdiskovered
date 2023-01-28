@@ -52,6 +52,7 @@ export const Config = {
   unblockUserAPI: 'post/unblock-user',
 
   inAppPurchaseAPI: 'payment/apple-pay',
+  restorePurchaseAPI: 'payment/restore-id',
 
   stripePaymentAPI: 'payment/pay',
   stripePaymentCardListAPI: 'payment/list-card',

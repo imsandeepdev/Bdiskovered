@@ -83,11 +83,9 @@ const SubscriptionScreen = props => {
   const [addOnPlanDetail, setAddOnPlanDetail] = useState({});
   const [selectForPurchase, setSelectForPurchase] = useState({});
   const [checkForPurchase, setCheckForPurchase] = useState('');
-  const [subscriptionModal, setSubscriptionModal] = useState(false);
+  const [restoreModal, setRestoreModal] = useState(false);
   const [inAppReceipt, setInAppReceipt] = useState('');
-  const [subMassage, setSubMessage] = useState(
-    'Your Subscription plan activated',
-  );
+ 
 
 
 
@@ -98,111 +96,29 @@ const SubscriptionScreen = props => {
     onCallCheckSubActive();
     onCallSubGetPlan();
     onCallgetSubGetPlan();
-    initConnections();
+    initConnection();
     getSubscription();
     getProduct();
     return () => {
-      if (purchaseUpdateSubscription) {
-        purchaseUpdateSubscription.remove();
-        purchaseUpdateSubscription = null;
-      }
-
-      if (purchaseErrorSubscription) {
-        purchaseErrorSubscription.remove();
-        purchaseErrorSubscription = null;
-      }
       endConnection();
     };
+
   }, [props.navigation]);
 
-  const initConnections = () => {
-    initConnection().then(() => {
-      purchaseUpdateSubscription = purchaseUpdatedListener(purchase => {
-        console.log('purchaseUpdatedListener', purchase);
-        const receipt = purchase.transactionReceipt;
-        console.log('purchasereceipt', receipt);
-        console.log('CheckForPurchase', checkForPurchase);
-        setModalPicker(false);
-       
-        if (receipt && checkForPurchase == 'AddOn') {
-          setInAppReceipt(receipt);
-          setSubMessage('Add on plan added');
-          setSubscriptionModal(true);
-        }
-
-        if (receipt && props.userProfile?.Profile?.subscription == 0) {
-        
-           setInAppReceipt(receipt);
-           setSubMessage('Your Subscription plan activated');
-           setSubscriptionModal(true);
-
-            // console.log('CallAPI');
-            // onCallInAppPurchase(receipt);
-          
-
-          // const receiptBody = {
-          //   'receipt-data': purchase.transactionReceipt,
-          //   password: '081abc43e0594051bf41bb24f97cbb2c', // app shared secret, can be found in App Store Connect
-          // };
-
-          // // locally validation through in-app-purchases
-
-          // validateReceiptIos(receiptBody, false)
-          //   .then(async result => {
-          //     if (isSuccess(deliveryResult)) {
-          //       // Tell the store that you have delivered what has been paid for.
-          //       // Failure to do this will result in the purchase being refunded on Android and
-          //       // the purchase event will reappear on every relaunch of the app until you succeed
-          //       // in doing the below. It will also be impossible for the user to purchase consumables
-          //       // again until you do this.
-          //       // If consumable (can be purchased again)
-          //       await finishTransaction({purchase, isConsumable: true});
-          //       // If not consumable
-          //       await finishTransaction({purchase, isConsumable: false});
-          //     } else {
-          //       // Retry / conclude the purchase is fraudulent, etc...
-          //     }
-          //   })
-          //   .catch(err => {
-          //     console.log('====> ', err.message);
-          //   });
-
-          // for web end through apis
-
-          // yourAPI
-          //   .deliverOrDownloadFancyInAppPurchase(purchase.transactionReceipt)
-          //   .then(async deliveryResult => {
-          //     if (isSuccess(deliveryResult)) {
-          //       // Tell the store that you have delivered what has been paid for.
-          //       // Failure to do this will result in the purchase being refunded on Android and
-          //       // the purchase event will reappear on every relaunch of the app until you succeed
-          //       // in doing the below. It will also be impossible for the user to purchase consumables
-          //       // again until you do this.
-          //       // If consumable (can be purchased again)
-          //       await finishTransaction({purchase, isConsumable: true});
-          //       // If not consumable
-          //       await finishTransaction({purchase, isConsumable: false});
-          //     } else {
-          //       // Retry / conclude the purchase is fraudulent, etc...
-          //     }
-          //   });
-        } 
-        
-      });
-
-      purchaseErrorSubscription = purchaseErrorListener(error => {
-        console.warn('purchaseErrorListener', error);
-      });
-    });
-  };
 
 
-  const onCallInAppPurchase = () => {
+
+  const onCallInAppPurchase = (item) => {
     setLoading(true)
+    console.log("ITEM OF SELECT PLAN",item)
     let data = {
-      receiptdata: inAppReceipt,
+      receiptdata: item?.transactionReceipt,
       amount: selectForPurchase.price,
-      plan_type: selectForPurchase.plan == 'SubScription_Plan' ? '' : 'Custom',
+      plan_type:
+        item?.productId == 'addon.connections' ||
+        item?.productId == 'addon.boost'
+          ? 'Custom'
+          : '',
       type:
         selectForPurchase.plan == 'SubScription_Plan'
           ? ''
@@ -220,25 +136,22 @@ const SubscriptionScreen = props => {
         },
       )
       .then(response => {
-        console.log('Response Post', response.data.status);
-        console.log('Response Post status', response.status);
+        console.log('Response Post', response.data);
+        console.log('Response Post status', response);
 
         if (response.data.status == 'success') {
           onCallProfile();
           onCallCheckSubActive();
           onCallSubGetPlan();
           onCallgetSubGetPlan();
-          setSubscriptionModal(false);
         } else {
+          Toast.show(response.data?.message, Toast.SHORT);
           setLoading(false);
           setModalPicker(false);
-          setSubscriptionModal(false);
         }
       });
-    // dispatch(InAppPaymentRequest(data, response => {
-    //   console.log("IN APP PAYMENT RESPONSE",response)
-    //   setLoading(false)
-    // }))
+      
+   
 
   }
 
@@ -261,7 +174,8 @@ const SubscriptionScreen = props => {
 
   const restorePurchase = async () => {
     setLoading(true)
-    const availablePurchases = await getAvailablePurchases();
+    try{
+      const availablePurchases = await getAvailablePurchases();
       console.log('AVAILABLE PURCHASE RESPONSE', availablePurchases);
 
     if (availablePurchases.length > 0) {
@@ -271,15 +185,58 @@ const SubscriptionScreen = props => {
       const latestAvailableReceipt =
         sortedAvailablePurchases[0].transactionReceipt;
       console.log('latestAvailableReceipt_RESPONSE', latestAvailableReceipt);
+      setLoading(false);
 
-        onCallInAppPurchase(latestAvailableReceipt);
+      onCallRestorePuchaseAPI(latestAvailableReceipt);
+    }
+    }
+    catch(err){
+      console.log("Error",err)
+      setLoading(false)
     }
   }
 
+  const onCallRestorePuchaseAPI = transactionReceipt => {
+
+    let data = {
+      "receiptdata": transactionReceipt,
+    };
+    console.log('RestoreData',data)
+     axios
+       .post(
+         `${Config.API_URL}${Config.restorePurchaseAPI}`,
+         {data},
+         {
+           headers: {
+             token: props.authToken,
+           },
+         },
+       )
+       .then(response => {
+         console.log('Restore Response Post', response.data);
+          if(response.data.message == 'true')
+          {
+            console.log("You have no subscription plan Please Purchase our Subscription")
+            setRestoreModal();
+          }
+          else
+          {
+            onCallProfile();
+            onCallCheckSubActive();
+            onCallSubGetPlan();
+            onCallgetSubGetPlan();
+          }
+          setLoading(false);
+        
+       });
+
+  };
+
   const getSubscription = async () => {
-    setLoading(true)
-    console.log('SUB IN APP');
+    
     try {
+    setLoading(true);
+
       let sku =
         props.userType == 'Talent'
           ? 'talentuser.monthly'
@@ -298,19 +255,24 @@ const SubscriptionScreen = props => {
   };
 
   const getProduct = async () => {
+    try{
     setLoading(true);
-
-    let skus =
-      props.userType == 'Talent'
-        ? ['addon.connections', 'addon.boost']
-        : ['addon.connections'];
-    const products = await getProducts({skus});
-    console.log('Addon Products => ', products);
-    let sortedProduct = products.sort(
-      (a, b) => a.price > b.price
-    );
-    setGetCustomPlan(sortedProduct);
-    setLoading(false);
+      let skus =
+        props.userType == 'Talent'
+          ? ['addon.connections', 'addon.boost']
+          : ['addon.connections'];
+      const products = await getProducts({skus});
+      console.log('Addon Products => ', products);
+      let sortedProduct = products.sort(
+        (a, b) => a.price > b.price
+      );
+      setGetCustomPlan(sortedProduct);
+      setLoading(false);
+    } catch(err) {
+       console.warn('Error in add-On: ', err.code, err.message);
+       setLoading(false);
+    }
+    
 
   };
 
@@ -419,12 +381,7 @@ const SubscriptionScreen = props => {
     );
   };
 
-  const onCallPayment = () => {
-    setModalPicker(false);
-    props.navigation.navigate('CardScreen', {
-      SubPlanItem: subPlanItem,
-    });
-  };
+  
 
   const onCheckModal = item => {
     console.log('ADD ON PLAN', item);
@@ -453,23 +410,46 @@ const SubscriptionScreen = props => {
   };
 
   const onCallAddOnPackage = async() => {
-    // console.log('PLANNAME', addOnPlanDetail?.plan_name);
-    // props.navigation.navigate('CardScreen', {
-    //   SubPlanItem: {
-    //     plan_name: addOnPlanDetail?.plan_name,
-    //     price: addOnPlanDetail?.price,
-    //     type: 'AddOn',
-    //   },
-    // });
-   
-      // console.log('ADDOn SELECT', {...item, plan: 'AddOn'});
-      // setSelectForPurchase({...item, plan: 'AddOn_Plan'});
-
-      await requestPurchase({
+      setCustomModalPicker(false);
+      try{
+      setLoading(true)   
+      let addOnData = await requestPurchase({
         sku: selectForPurchase?.productId,
       });
-   
-    setCustomModalPicker(false);
+      console.log("AddOnData",addOnData)
+      if (addOnData?.transactionReceipt != '')
+      {
+      onCallInAppPurchase(addOnData);
+      }
+      setLoading(false);
+      }
+      catch(err){
+        console.log("Error",err)
+        setLoading(false);
+      }  
+  };
+
+  const onCallSubscriptionPackage = async () => {
+      let skus = props.userType == 'Talent'
+        ? 'talentuser.monthly'
+        : props.userType == 'Business'
+        ? 'Businessuser.monthly'
+        : 'vieweruser.monthly';
+      setModalPicker(false);
+      try{
+        setLoading(true);
+        let subData = await requestSubscription({
+          sku: skus,
+        });
+        console.log('SubData', subData);
+        if (subData?.transactionReceipt != '') {
+          onCallInAppPurchase(subData);
+        }
+        setLoading(false);        
+      } catch (err) {
+        console.log('Error',err)
+        setLoading(false)
+      }
   };
 
   return (
@@ -823,22 +803,14 @@ const SubscriptionScreen = props => {
                       price={`${item?.currency} ${item?.price}`}
                       month={item?.description}
                       onPressAdd={() => onCheckModal(item)}
-
-                      // onPressAdd={async () => {
-                      //   // setLoading(true)
-                      //   console.log('ADDOn SELECT', {...item, plan: 'AddOn'});
-                      //   setSelectForPurchase({...item, plan: 'AddOn_Plan'});
-
-                      //   await requestPurchase({
-                      //     sku: item.productId,
-                      //   });
-                      //   // setLoading(false)
-                      // }}
                     />
                   );
                 })}
               </View>
-              {/* <View
+
+              {
+              profileSubStatus == 0 &&
+              <View
                 style={{
                   flex: 1,
                   justifyContent: 'flex-end',
@@ -850,7 +822,7 @@ const SubscriptionScreen = props => {
                     style={{
                       fontFamily: R.fonts.regular,
                       fontSize: R.fontSize.Size14,
-                      color: R.colors.placeHolderColor,
+                      color: R.colors.placeholderTextColor,
                     }}>{`If You have already subscription plan`}</Text>
                   <Pressable
                     onPress={() => restorePurchase()}
@@ -862,23 +834,21 @@ const SubscriptionScreen = props => {
                         width: R.fontSize.Size150,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        // borderRadius: R.fontSize.Size8,
-                        // borderWidth: 1,
-                        // borderColor: R.colors.placeholderTextColor,
                       },
                     ]}>
                     <Text
                       style={{
                         fontFamily: R.fonts.regular,
                         fontSize: R.fontSize.Size14,
-                        color: R.colors.appColor,
-                        fontWeight: '600',
+                        color: R.colors.placeHolderColor,
+                        fontWeight: '500',
                       }}>
                       {'Restore Purchase'}
                     </Text>
                   </Pressable>
                 </View>
-              </View> */}
+              </View>
+              } 
             </View>
           </ScrollView>
         </View>
@@ -1000,17 +970,7 @@ const SubscriptionScreen = props => {
                 </View>
                 <View>
                   <AppButton
-                    onPress={async () => {
-                      let skus =
-                        props.userType == 'Talent'
-                          ? 'talentuser.monthly'
-                          : props.userType == 'Business'
-                          ? 'Businessuser.monthly'
-                          : 'vieweruser.monthly';
-                      await requestSubscription({
-                        sku: skus,
-                      });
-                    }}
+                    onPress={() => onCallSubscriptionPackage()}
                     title={'Make Payment'}
                   />
                 </View>
@@ -1086,10 +1046,10 @@ const SubscriptionScreen = props => {
         }
       />
       <AlartModal
-        visible={subscriptionModal}
-        onRequestClose={() => setSubscriptionModal(false)}
-        title={subMassage}
-        onPress={() => onCallInAppPurchase()}
+        visible={restoreModal}
+        onRequestClose={() => setRestoreModal(false)}
+        title={`There are no subscription plan available \nto restore at this time.`}
+        onPress={() => setRestoreModal(false)}
       />
     </StoryScreen>
   );
