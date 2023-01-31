@@ -391,12 +391,20 @@ const onCallGoogleAPI = profileDetails => {
       mobile_type:'ios'
     }
     dispatch(ShowAllPostRequest(data,response => {
-      // console.log('SHOW ALL POST RES', response)
+      console.log('SHOW ALL POST RES', response)
       if(response.status=='success')
       {
         setAllVideoPostList([...response?.Post])
         setSliderValue(0);
         setLoading(false);
+      }
+      else if (response.status == 'tokenError') {
+        setLoading(false);
+        props.navigation.replace('LoginScreen')
+      }
+      else
+      {
+        setLoading(false)
       }
     }))  
   }

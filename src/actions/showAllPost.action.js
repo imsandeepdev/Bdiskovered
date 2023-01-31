@@ -54,7 +54,7 @@ export const ShowAllPostRequest = (
 ) => {
   return dispatch => {
     dispatch(ShowAllPost());
-    Api.MultiPostFetch({
+    Api.OnlyShowAllPostFetch({
       body:data,
       url: Config.showAllPostAPI,
     })

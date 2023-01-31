@@ -86,7 +86,7 @@ const SignupScreen = (props) => {
     const [alartMessage, setAlartMessage] = useState('')
 
     useEffect(()=>{
-console.log('MAX DATE', maxDate);
+        console.log('MAX DATE', maxDate);
 
         onCallCreateDeviceToken()
         console.log(props.route.params?.from);
@@ -234,6 +234,7 @@ console.log('MAX DATE', maxDate);
 const isTailentViewerDetailsValid = () => {
   return (
     CommonFunctions.isBlank(userName.trim(), 'Please Enter Valid User Name') &&
+    onCheckUserName()&&
     CommonFunctions.isFalse(
       userNameStatue,
       'Please Enter Valid User Name Status',
@@ -253,6 +254,14 @@ const isTailentViewerDetailsValid = () => {
     onCheckDOB() &&
     CommonFunctions.isBlank(onGender.trim(), 'Please Select Your Gender')
   );
+};
+
+const onCheckUserName = () => {
+  if (userName.length <= 5) {
+    Toast.show('Enter more then 5 charter of username', Toast.SHORT);
+    return false;
+  }
+  return true;
 };
 
 const onCheckDOB = () => {
@@ -289,9 +298,12 @@ const isBusinessSignUpDetailsValid = () => {
       ) &&
       CommonFunctions.isBlank(companyMob.trim(), 'Please Enter Mobile No') &&
       CommonFunctions.isBlank(companyOwnerName.trim(), 'Please Enter Company Owner Name') &&
-      onCheckDocument()
+      onCheckDocument() 
+     
     );
 }
+
+
 
 const onCheckDocument = () => {
   if(documentPic.length == 0)
