@@ -16,11 +16,12 @@ export const RequestLocationPermission = async () => {
        authorizationLevel: 'whenInUse',
      });
     let permissionResult = await Geolocation.requestAuthorization('whenInUse');
-    console.log(permissionResult);
+    console.log("LocationPermission",permissionResult);
     if (permissionResult == 'granted') {
       getOneTimeLocation();
     } else {
-      console.log('Location Error Location Denied', error);
+      console.log('Location Error Location Denied', permissionResult);
+        AsyncStorage.setItem('userLatLong', `${28.4595},${77.0266}`);
     }
     return null;
   }
@@ -46,7 +47,7 @@ export const RequestLocationPermission = async () => {
         
       }
     } catch (err) {
-      console.warn(err);
+      console.log('catchError',err);
       
     }
   }
@@ -54,23 +55,15 @@ export const RequestLocationPermission = async () => {
 
   const getOneTimeLocation = async () => {
     console.log("ONE TIME")
-    // let chcekLatitude = AsyncStorage.getItem('userLatitude');
-    // let chcekLongitude = AsyncStorage.getItem('userLongitude');
-    // if(!chcekLatitude && !chcekLongitude)
-    // {
+    
          Geolocation.getCurrentPosition(
            position => {
              console.log('POSITION ON LOCATION', position);
-             const currentLongitude = position.coords.longitude;
-             const currentLatitude = position.coords.latitude;
              AsyncStorage.setItem(
-               'userLongitude',
+               'userLatLong',
                `${position.coords.latitude},${position.coords.longitude}`,
              );
-             AsyncStorage.setItem(
-               'userLatitude',
-               `${position.coords.latitude}`,
-             );
+             
            },
            error => {
              console.log('Location Error', error);

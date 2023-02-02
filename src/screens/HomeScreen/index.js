@@ -285,10 +285,10 @@ const HomeScreen = (props) => {
   }
 
   const onCallLatitudeLongitude = () => { 
-    AsyncStorage.getItem('userLongitude', (err, result) => {
+    AsyncStorage.getItem('userLatLong', (err, result) => {
       console.log('RESULT LONGITUDE', result);
-      const myArray = result.split(",")
-      console.log("Result1",myArray[0])
+      const myArray = result.split(',');
+      console.log('Result1', myArray[0]);
       console.log('Result2', myArray[1]);
       onCallLatLong(myArray[0], myArray[1]);
     });
@@ -343,8 +343,12 @@ const HomeScreen = (props) => {
     if(type == 'videoDetailModal')
     {
       setVideoModalDetail(item)
-     
-      onCallGoogleAPI(item)
+      // onCallGoogleAPI(item)
+      setVideoModalPersonalDetail([
+        item?.gender,
+        `${moment().diff(item?.birth, 'years')} Year`,
+        `${item?.address != '' ? item?.address : ''}`,
+      ]);
       let tempTalentArray = item?.category;
       let useTalentArray = tempTalentArray.split(',');
       console.log('useTalentArray', useTalentArray);
@@ -357,32 +361,28 @@ const HomeScreen = (props) => {
     }
   }
 
-const onCallGoogleAPI = profileDetails => {
-  setLoading(true);
-  // console.log('PROFILE DETAILS ON GAPI', profileDetails);
-  fetch(
-    `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
-  )
-    .then(res => res.json())
-    .then(response => {
-      console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-      let temparray = [];
-      temparray = response?.results;
-      let tempLength = temparray.length;
-      let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-      let arrayAddress = arrayAdd.split(',');
-      let arrAddLength = arrayAddress.length;
-      // console.log('FORMAT ADDRESS LENGTH', arrAddLength);
-      // console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
-      setVideoModalPersonalDetail([
-        profileDetails?.gender,
-        `${moment().diff(profileDetails?.birth, 'years')} Year`,
-        `${arrayAddress[arrAddLength - 1]}`,
-      ]);
-      setLoading(false);
-    });
-};
-
+// const onCallGoogleAPI = profileDetails => {
+//   setLoading(true);
+//   fetch(
+//     `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
+//   )
+//     .then(res => res.json())
+//     .then(response => {
+//       console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+//       let temparray = [];
+//       temparray = response?.results;
+//       let tempLength = temparray.length;
+//       let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+//       let arrayAddress = arrayAdd.split(',');
+//       let arrAddLength = arrayAddress.length;
+//       setVideoModalPersonalDetail([
+//         profileDetails?.gender,
+//         `${moment().diff(profileDetails?.birth, 'years')} Year`,
+//         `${arrayAddress[arrAddLength - 1]}`,
+//       ]);
+//       setLoading(false);
+//     });
+// };
 
 
   const onCallShowAllPost = () => {
@@ -476,24 +476,24 @@ const onCallGoogleAPI = profileDetails => {
       : props.navigation.navigate('SubscriptionScreen');
   }
 
-  const onCallUserLocation = (lat, long) => {
-    fetch(
-      `${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`,
-    )
-      .then(res => res.json())
-      .then(response => {
-        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-        let temparray = [];
-        temparray = response?.results;
-        let tempLength = temparray.length;
-        let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-        let arrayAddress = arrayAdd.split(',');
-        let arrAddLength = arrayAddress.length;
-        console.log('FORMAT ADDRESS LENGTH', arrAddLength);
-        console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
-        setTailentLocation(arrayAddress[arrAddLength - 3]);     
-      });
-  };
+  // const onCallUserLocation = (lat, long) => {
+  //   fetch(
+  //     `${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`,
+  //   )
+  //     .then(res => res.json())
+  //     .then(response => {
+  //       console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+  //       let temparray = [];
+  //       temparray = response?.results;
+  //       let tempLength = temparray.length;
+  //       let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+  //       let arrayAddress = arrayAdd.split(',');
+  //       let arrAddLength = arrayAddress.length;
+  //       console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+  //       console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+  //       setTailentLocation(arrayAddress[arrAddLength - 3]);     
+  //     });
+  // };
 
   const myCustomShare = async (videoURL) => {
     const shareOptions = {
@@ -696,9 +696,9 @@ const onCallReportPost = () => {
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
             renderItem={({item, index}) => {
-              if (currIndex == index) {
-                onCallUserLocation(item?.latitude, item?.longitude);
-              }
+              // if (currIndex == index) {
+              //   onCallUserLocation(item?.latitude, item?.longitude);
+              // }
 
               return (
                 <View
@@ -726,7 +726,7 @@ const onCallReportPost = () => {
                         '',
                       )}`}
                       userName={item?.username}
-                      videoCat={tailentLocation != '' ? tailentLocation : ''}
+                      videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={`USD ${item?.amount}`}

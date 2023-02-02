@@ -84,10 +84,12 @@ const SignupScreen = (props) => {
     const [createDeviceToken, setCreateDeviceToken] = useState('')
     const [alartModalPicker, setAlartModalPicker] = useState(false)
     const [alartMessage, setAlartMessage] = useState('')
+    const [myLat, setMyLat] = useState('');
+    const [myLong, setMyLong] = useState('');
 
     useEffect(()=>{
         console.log('MAX DATE', maxDate);
-
+        onCallLatitudeLongitude()
         onCallCreateDeviceToken()
         console.log(props.route.params?.from);
         setUserType(props.route.params?.from);
@@ -100,6 +102,18 @@ const SignupScreen = (props) => {
         console.log('DEVICE ID',uniqueId?._3);
 
     },[props.navigation])
+
+  const onCallLatitudeLongitude = () => {
+    AsyncStorage.getItem('userLatLong', (err, result) => {
+      console.log('RESULT LONGITUDE', result);
+      const myArray = result.split(',');
+      console.log('Result1', myArray[0]);
+      console.log('Result2', myArray[1]);
+      setMyLat(myArray[0]);
+      setMyLong(myArray[1]);
+      onCallUserLocation(myArray[0], myArray[1]);
+    });
+  };
 
   const onCallCreateDeviceToken = async() => {
       await AsyncStorage.getItem('fcmToken', (err, result) => {
@@ -345,6 +359,8 @@ const onCheckDocument = () => {
         owner_name: companyOwnerName,
         company_address: companyAddress,
         document: documentPic,
+        latitude: myLat != ''? myLat : '0.00',
+        longitude: myLong != ''? myLong : '0.00'
       };
 
       let data = {
@@ -390,6 +406,8 @@ const onCheckDocument = () => {
          device_ip: deviceId,
          user_type: userType,
          device_name: deviceName,
+         latitude: myLat != '' ? myLat : '0.00',
+         longitude: myLong != '' ? myLong : '0.00',
        };
        let data = {
          mobile: `+${countryCode}${mobNo}`,

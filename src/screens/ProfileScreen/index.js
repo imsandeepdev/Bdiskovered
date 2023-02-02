@@ -213,41 +213,46 @@ const [editModalPicker, setEditModalPicker] = useState(false)
   //    }))
   // }
 
-   const onCallGoogleAPI = (profileDetails) => {
-   setLoading(true)
-    console.log("PROFILE DETAILS ON GAPI", profileDetails)
+  //  const onCallGoogleAPI = (profileDetails) => {
+  //  setLoading(true)
+  //   console.log("PROFILE DETAILS ON GAPI", profileDetails)
 
      
-     fetch(
-       `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
-     )
-       .then(res => res.json())
-       .then(response => {
-         console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-         let temparray = [];
-         temparray = response?.results;
-         let tempLength = temparray.length;
-         let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-         let arrayAddress = arrayAdd.split(',');
-         let arrAddLength = arrayAddress.length;
-         console.log('FORMAT ADDRESS LENGTH', arrAddLength);
+  //    fetch(
+  //      `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
+  //    )
+  //      .then(res => res.json())
+  //      .then(response => {
+  //        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
+  //        let temparray = [];
+  //        temparray = response?.results;
+  //        let tempLength = temparray.length;
+  //        let arrayAdd = temparray[tempLength - 3]?.formatted_address;
+  //        let arrayAddress = arrayAdd.split(',');
+  //        let arrAddLength = arrayAddress.length;
+  //        console.log('FORMAT ADDRESS LENGTH', arrAddLength);
 
-         console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
-         setPersonalArray([
-           profileDetails?.gender,
-           `${moment().diff(profileDetails?.birth, 'years')} Year`,
-           `${arrayAddress[arrAddLength - 3]}`,
-         ]);
-         setLoading(false);
-       });
-   };
+  //        console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
+  //        setPersonalArray([
+  //          profileDetails?.gender,
+  //          `${moment().diff(profileDetails?.birth, 'years')} Year`,
+  //          `${arrayAddress[arrAddLength - 3]}`,
+  //        ]);
+  //        setLoading(false);
+  //      });
+  //  };
 
   const onCallProfileAPI = () => {
     setLoading(true)
     dispatch(GetProfileDetailsRequest(response => {
       console.log('Get Profile Res', response)
       if (response.status == 'success' && props.userType == 'Talent') {
-        onCallGoogleAPI(response.Profile);
+        // onCallGoogleAPI(response.Profile);
+          setPersonalArray([
+            response.Profile?.gender,
+            `${moment().diff(response.Profile?.birth, 'years')} Year`,
+            `${response.Profile?.address != '' ? response.Profile?.address : ''}`,
+          ]);
         setProfileDetails(response.Profile);
         let tempTalentArray = response.Profile?.category;
         let tempJson = JSON.stringify(tempTalentArray)
@@ -357,6 +362,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
    
 
     const onSelectPicker = params => {
+      
       if (params == 'camera') {
         ImagePicker.openCamera({
           width: 400,
@@ -366,7 +372,10 @@ const [editModalPicker, setEditModalPicker] = useState(false)
           console.log('IMAGE', image);
           setProfilePic(image);
           setPickerModal(false);
-        });
+        })
+        .catch(err=>{
+          console.log("PermissionError",err)
+        })
       } else if (params == 'gallery') {
         ImagePicker.openPicker({
           width: 400,

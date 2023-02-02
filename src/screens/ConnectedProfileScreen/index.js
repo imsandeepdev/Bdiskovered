@@ -171,7 +171,14 @@ const ConnectedProfileScreen = props => {
          console.log('useTalentArray', useTalentArray);
           setTalentArray(useTalentArray)
           setTailentPostVideo(response.Profile?.post)
-          onCallGoogleAPI(response.Profile);
+          // onCallGoogleAPI(response.Profile);
+          setPersonalArray([
+            response.Profile?.gender,
+            `${moment().diff(response.Profile?.birth, 'years')} Year`,
+            `${
+              response.Profile?.address != '' ? response.Profile?.address : ''
+            }`,
+          ]);
         
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace('http://localhost:8080/','')}`,

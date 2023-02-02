@@ -144,17 +144,20 @@ const onSaveDeviceToken = async () => {
     let signUpData = props.route.params?.signupValue;
     let dataType = 'formdata';
      let formData = new FormData();
-     formData.append('device_token', 'dsghh');
+     formData.append('device_token', signUpData?.device_token);
      formData.append('email', signUpData?.email);
      formData.append('device_ip', signUpData?.device_ip);
      formData.append('user_type', signUpData?.user_type);
      formData.append('company_name', signUpData?.company_name);
      formData.append('company_type', signUpData?.company_type);
      formData.append('license_number', signUpData?.license_number);
-     formData.append(
-       'company_registration_id',
-       signUpData?.company_registration_id,
-     );
+     formData.append('latitude', signUpData?.latitude);
+     formData.append('longitude', signUpData?.longitude);
+     formData.append('device_name', deviceName);
+       formData.append(
+         'company_registration_id',
+         signUpData?.company_registration_id,
+       );
      formData.append('owner_name', signUpData?.owner_name);
      formData.append('company_address', signUpData?.company_address);
      formData.append('otp', otpValue)

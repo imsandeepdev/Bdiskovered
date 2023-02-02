@@ -156,13 +156,13 @@ const onCheckUserType = () => {
 }
 
  const onCallLatitudeLongitude = () => {
-   AsyncStorage.getItem('userLongitude', (err, result) => {
+   AsyncStorage.getItem('userLatLong', (err, result) => {
      console.log('RESULT LONGITUDE', result);
      const myArray = result.split(',');
      console.log('Result1', myArray[0]);
      console.log('Result2', myArray[1]);
-     setMyLat(myArray[0])
-     setMyLong(myArray[1])
+     setMyLat(myArray[0]);
+     setMyLong(myArray[1]);
      onCallUserLocation(myArray[0], myArray[1]);
    });
  };

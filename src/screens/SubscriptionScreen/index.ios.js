@@ -10,10 +10,8 @@ import {
   TextInput,
   Modal,
   ScrollView,
-  TouchableOpacity,
   ActivityIndicator,
-  Platform,
-  Alert,
+  
 } from 'react-native';
 import {
   CustomTextInput,
@@ -85,7 +83,7 @@ const SubscriptionScreen = props => {
   const [checkForPurchase, setCheckForPurchase] = useState('');
   const [restoreModal, setRestoreModal] = useState(false);
   const [inAppReceipt, setInAppReceipt] = useState('');
- 
+  const [inAppLoading, setInAppLoading] = useState(false)
 
 
 
@@ -233,9 +231,9 @@ const SubscriptionScreen = props => {
   };
 
   const getSubscription = async () => {
-    
+    setInAppLoading(true)
     try {
-    setLoading(true);
+    
 
       let sku =
         props.userType == 'Talent'
@@ -246,17 +244,18 @@ const SubscriptionScreen = props => {
       const subscription = await getSubscriptions({skus: [sku]});
       console.log(' Subscription Products => ', subscription);
       setSubGetPlan(subscription);
-      setLoading(false);
+      setInAppLoading(false);
 
     } catch (err) {
       console.warn('Error in getSubscriptions: ', err.code, err.message);
-      setLoading(false);
+     setInAppLoading(false);
     }
   };
 
   const getProduct = async () => {
+    setInAppLoading(true);
     try{
-    setLoading(true);
+    
       let skus =
         props.userType == 'Talent'
           ? ['addon.connections', 'addon.boost']
@@ -267,10 +266,10 @@ const SubscriptionScreen = props => {
         (a, b) => a.price > b.price
       );
       setGetCustomPlan(sortedProduct);
-      setLoading(false);
+      setInAppLoading(false);
     } catch(err) {
        console.warn('Error in add-On: ', err.code, err.message);
-       setLoading(false);
+      setInAppLoading(false);
     }
     
 
@@ -684,6 +683,13 @@ const SubscriptionScreen = props => {
 
               {/* Subscription Selection */}
 
+              {
+                inAppLoading ? 
+                <View style={{position:'absolute', top: screenHeight/2.7, bottom:0, left:0,right:0}}>
+                  <ActivityIndicator size={'large'} color={R.colors.appColor}/>
+                </View> 
+                : 
+              
               <View style={{marginTop: R.fontSize.Size45}}>
                 {profileSubStatus == 0 && (
                   <View>
@@ -801,12 +807,15 @@ const SubscriptionScreen = props => {
                       }
                       marginTop={R.fontSize.Size15}
                       price={`${item?.currency} ${item?.price}`}
-                      month={item?.description}
+                      month={
+                        item?.title
+                      }
                       onPressAdd={() => onCheckModal(item)}
                     />
                   );
                 })}
               </View>
+              }
 
               {
               profileSubStatus == 0 &&
