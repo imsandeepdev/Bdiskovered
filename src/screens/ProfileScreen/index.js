@@ -251,7 +251,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
           setPersonalArray([
             response.Profile?.gender,
             `${moment().diff(response.Profile?.birth, 'years')} Year`,
-            `${response.Profile?.address != '' ? response.Profile?.address : ''}`,
+            `${response.Profile?.address != undefined ? response.Profile?.address : ''}`,
           ]);
         setProfileDetails(response.Profile);
         let tempTalentArray = response.Profile?.category;
@@ -260,8 +260,15 @@ const [editModalPicker, setEditModalPicker] = useState(false)
 
         console.log("ARRAYNEW2",tempTalentArray)
         let useTalentArray = tempTalentArray.split(",");
-        console.log('useTalentArray', useTalentArray);
+        console.log('useTalentArray', useTalentArray.length);
+        if (useTalentArray.length <= 1) {
+           setTalentArray([]);
+        }
+        else
+        {
         setTalentArray(useTalentArray);
+        }
+       
         setTailentPostVideo(response.Profile?.post);
        
         
@@ -394,8 +401,8 @@ const [editModalPicker, setEditModalPicker] = useState(false)
       let formData = new FormData();
       let dataType = 'formdata';
       formData.append('company_type', companyType);
-      formData.append('company_email', companyEmail);
-      formData.append('company_contact', companyContact);
+      // formData.append('company_email', companyEmail);
+      // formData.append('company_contact', companyContact);
       formData.append('company_address', companyAddress);
       formData.append('license_number', comLicenceNo);
       formData.append('owner_name', comOwnerName);
@@ -413,6 +420,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
               name: 'image.jpg',
             },
       );
+      console.log("BUSINESS FORMDATA",formData)
       dispatch(
         ProfileUpdateRequest(formData, dataType, response => {
           console.log('UpDate Profile BUSINESS RES', response);
@@ -1015,6 +1023,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                       paddingHorizontal: R.fontSize.Size20,
                     }}>
                     {personalArray.map((item, index) => {
+                      console.log(item)
                       return (
                         <View
                           key={index}
@@ -1023,7 +1032,9 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                             alignItems: 'center',
                             marginRight: R.fontSize.Size14,
                           }}>
-                          <View
+                         { 
+                         item != '' &&
+                         <View
                             style={{
                               height: R.fontSize.Size10,
                               width: R.fontSize.Size10,
@@ -1031,6 +1042,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                               borderRadius: R.fontSize.Size10,
                             }}
                           />
+                        }
                           <Text
                             style={{
                               fontFamily: R.fonts.regular,
@@ -1041,6 +1053,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                             }}>
                             {item}
                           </Text>
+                          
                         </View>
                       );
                     })}

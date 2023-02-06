@@ -9,7 +9,7 @@ const screenWidth = Dimensions.get('screen').width
 const videoData =
   'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
-const VideoCard = props => {
+const VideoCard = React.forwardRef((props,ref) => {
   const videoRef = useRef(null)
 
   const [play, setPlay] = useState(true);
@@ -33,14 +33,15 @@ const VideoCard = props => {
         source={{
           uri: props.videoUrl,
         }}
-        // ref={ref => {
-        //   this.player = ref;
-        // }}
-        ref={videoRef}
+        
+        ref={ref}
         onBuffer={onBuffer}
         onProgress={props.onProgress}
         paused={props.paused}
         onLoad={props.onLoad}
+        onSeek={props.onSeek}
+        currentTime={props.currentTime}
+        stop
         controls={false}
         resizeMode={'cover'}
         repeat
@@ -293,5 +294,5 @@ const VideoCard = props => {
       </View>
     </View>
   );
-};
+});
 export default VideoCard;

@@ -184,7 +184,8 @@ const CustomTimeRow = props => {
 
 const HomeScreen = (props) => {
 
-
+  const listRef = react.useRef(null);
+  let videoRef;
   const dispatch = useDispatch()
   const [currIndex, setCurrIndex] = useState(0)
   const [videoPlayPause, setVideoPlayPause] = useState(false)
@@ -205,7 +206,7 @@ const HomeScreen = (props) => {
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false)
   const [fixedHeight, setFixedHeight] = useState(280)
-
+const [videoCurrentTime, setVideoCurrentTime] = useState()
 
   
   const [tailentList, setTailentList] = useState([
@@ -409,8 +410,19 @@ const HomeScreen = (props) => {
     }))  
   }
 
-  const onChangeIndex = ({index}) => {
-    setCurrIndex(index)
+  const onChangeIndex = (item) => {
+    console.log("INDEX ITEM",item)
+    // setVideoPlayPause(false);
+    // setCurrIndex(index)
+    let current = listRef.current.getCurrentIndex();
+    let prev = listRef.current.getPrevIndex();
+    if (__DEV__) {
+      console.log('item is : ', item);
+      console.log('current page is : ', current);
+      setVideoPlayPause(false);
+      setCurrIndex(current)
+      console.log('prev page is : ', prev);
+    }
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId) => {
@@ -448,9 +460,7 @@ const HomeScreen = (props) => {
   }
 
  
-  const onLoad = (data) => {
-    // console.log('ONLOAD',data)
-  }
+ 
 
   const onCallConnectNow = (profileID) => 
   {
@@ -670,11 +680,29 @@ const onCallReportPost = () => {
       }
     }))
   }
+
+  const onProgress = (data: OnProgressData) => {
+    console.log('OnProgress', data.currentTime);
+   setVideoCurrentTime(data.currentTime);
+  };
+
+ const onLoad = data => {
+   console.log('ONLOAD START', data);
+ };
+
+  const onSeek = (data: OnSeekData) => {
+    console.log("Seektimem",data.seekTime)
+    videoRef?.seek(data.seekTime);
+    // setCurrentTime(data.seekTime);
+  };
+  
   
   return (
-    <StoryScreen loading={loading} statusBarIosStyle={{
-      height: DeviceInfo.hasNotch() ? headerHeight : statusBarHeight,
-    }}>
+    <StoryScreen
+      loading={loading}
+      statusBarIosStyle={{
+        height: DeviceInfo.hasNotch() ? headerHeight : statusBarHeight,
+      }}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
@@ -689,8 +717,14 @@ const onCallReportPost = () => {
         />
         <View style={{flex: 1}}>
           <SwiperFlatList
+           ref={listRef}
+            renderAll={true}
             vertical={true}
-            style={{height : DeviceInfo.hasNotch() ? flatListHeightWithNotch : flatListHeightWithOutNotch}}
+            style={{
+              height: DeviceInfo.hasNotch()
+                ? flatListHeightWithNotch
+                : flatListHeightWithOutNotch,
+            }}
             nestedScrollEnabled
             data={allVideoPostList}
             keyExtractor={(item, index) => index.toString()}
@@ -699,7 +733,6 @@ const onCallReportPost = () => {
               // if (currIndex == index) {
               //   onCallUserLocation(item?.latitude, item?.longitude);
               // }
-
               return (
                 <View
                   key={index}
@@ -708,13 +741,20 @@ const onCallReportPost = () => {
                       ? flatListHeightWithNotch
                       : flatListHeightWithOutNotch,
                   }}>
-                  <View
-                    style={{
-                      height: DeviceInfo.hasNotch()
-                        ? forWithNotch
-                        : forWithoutNotch,
-                    }}>
+                  <Pressable
+                    onPress={() => setVideoPlayPause(!videoPlayPause)}
+                    style={({pressed}) => [
+                      {
+                        opacity: pressed ? 1 : 1,
+                        height: DeviceInfo.hasNotch()
+                          ? forWithNotch
+                          : forWithoutNotch,
+                      },
+                    ]}>
                     <VideoCard
+                      ref={ref => {
+                        videoRef = ref;
+                      }}
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
                       videoUrl={`${Config.API_URL}${item?.post.replace(
@@ -725,6 +765,10 @@ const onCallReportPost = () => {
                         'http://localhost:8080/',
                         '',
                       )}`}
+                      // onSeek={data => {
+                      //   console.log(data);
+                      //   currIndex!=index && setVideoCurrentTime({currentTime: Number(0)});
+                      // }}
                       userName={item?.username}
                       videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
@@ -757,7 +801,7 @@ const onCallReportPost = () => {
                         onCallReportModal(item?.postID, item?.user_id)
                       }
                     />
-                  </View>
+                  </Pressable>
                   <View
                     style={{
                       flexDirection: 'row',
