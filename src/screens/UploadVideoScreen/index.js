@@ -40,6 +40,7 @@ import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserSignOutRequest } from '../../actions/signUp.action';
 import { Config } from '../../config';
+import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -87,27 +88,7 @@ let videoRef1;
   const [myLat, setMyLat] = useState('')
   const [myLong, setMyLong] = useState('');
   const [tailentLocation, setTailentLocation] = useState('');
-
-  const [videoTypeList, setVideoTypeList] = useState(
-    [
-  {
-    id: '1',
-    title: 'Music',
-  },
-  {
-    id: '2',
-    title: 'Art',
-  },
-  {
-    id: '3',
-    title: 'Dance',
-  },
-  {
-    id: '4',
-    title: 'Fashion',
-  },
-]
-)
+  const [videoTypeList, setVideoTypeList] = useState([])
 
 // Video compress modal
 const videoRef = useRef();
@@ -138,14 +119,44 @@ useEffect(()=>{
 
 const screenFocus = () => {
 onCheckUserType();
-let arr = videoTypeList.map((item, index) => {
-  item.selected = false;
-  return {...item};
-});
-console.log('VideoListArray', arr);
-setVideoTypeList(arr);
+// let arr = videoTypeList.map((item, index) => {
+//   item.selected = false;
+//   return {...item};
+// });
+onCallProfileAPI();
+// console.log('VideoListArray', arr);
+// setVideoTypeList(arr);
 onCallLatitudeLongitude();
 }
+
+const onCallProfileAPI = () => {
+    setLoading(true)
+    dispatch(GetProfileDetailsRequest(response => {
+      console.log('Get Profile Res', response)
+      console.log(response.Profile?.category);
+      if(response.status == 'success')
+      {
+         let tempArray = response.Profile?.category;
+         let useTalentArray = tempArray.split(',');
+         console.log(useTalentArray.length)
+         let tempListArray = []
+         for(let i=0; i<useTalentArray.length; i++)
+         {
+            console.log(useTalentArray[i])
+            tempListArray.push({
+              title: useTalentArray[i],
+              id: i,
+              selected: false,
+            });
+
+         }
+         console.log(tempListArray)
+         setVideoTypeList(tempListArray)
+          setLoading(false);
+
+      }
+
+    }))}
 
 
 const onCheckUserType = () => {

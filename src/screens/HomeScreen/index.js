@@ -410,19 +410,23 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
     }))  
   }
 
-  const onChangeIndex = (item) => {
-    console.log("INDEX ITEM",item)
-    // setVideoPlayPause(false);
-    // setCurrIndex(index)
-    let current = listRef.current.getCurrentIndex();
-    let prev = listRef.current.getPrevIndex();
-    if (__DEV__) {
-      console.log('item is : ', item);
-      console.log('current page is : ', current);
-      setVideoPlayPause(false);
-      setCurrIndex(current)
-      console.log('prev page is : ', prev);
-    }
+  const onChangeIndex = ({index}) => {
+    console.log("INDEX ITEM",index)
+    setVideoPlayPause(false);
+    setCurrIndex(index)
+    // let current = listRef.current.getCurrentIndex();
+    // let prev = listRef.current.getPrevIndex();
+    // if (__DEV__) {
+    //   console.log('item is : ', item);
+    //   console.log('current page is : ', current);
+    //   setVideoPlayPause(false);
+    //   setCurrIndex(current)
+    //   console.log('prev page is : ', prev);
+    // }
+  }
+
+  const getCurrentIndex = ({index}) => {
+    console.log(index)
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId) => {
@@ -696,6 +700,11 @@ const onCallReportPost = () => {
     // setCurrentTime(data.seekTime);
   };
   
+  const updateIndex = ({ viewableItems }) => {
+  // getting the first element visible index
+  console.log("index",viewableItems[0]?.index)
+  setCurrIndex(viewableItems[0]?.index);
+  }
   
   return (
     <StoryScreen
@@ -717,8 +726,7 @@ const onCallReportPost = () => {
         />
         <View style={{flex: 1}}>
           <SwiperFlatList
-           ref={listRef}
-            renderAll={true}
+            ref={listRef}
             vertical={true}
             style={{
               height: DeviceInfo.hasNotch()
@@ -729,6 +737,8 @@ const onCallReportPost = () => {
             data={allVideoPostList}
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
+            // getCurrentIndex={getCurrentIndex}
+            onViewableItemsChanged={updateIndex}
             renderItem={({item, index}) => {
               // if (currIndex == index) {
               //   onCallUserLocation(item?.latitude, item?.longitude);

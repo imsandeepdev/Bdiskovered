@@ -174,7 +174,10 @@ const UpdateProfileScreen = (props) => {
               filename: 'profile.jpeg',
             });
             let resCategory = response.Profile?.category
+            console.log('ResCategory', resCategory);
+
             let arr = videoTypeList.map((item, index) => {
+              console.log(resCategory.includes(item.title));
               if(resCategory.includes(item.title))
               {
                 console.log("TRUE", item?.title)
@@ -189,6 +192,8 @@ const UpdateProfileScreen = (props) => {
             });
             console.log('VideoListArray', arr);
             setVideoTypeList(arr);
+            
+            setVideoTypes(resCategory.split(','));
 
             setFullTimePrice(response.Profile?.full_time_amount);
             setPartTimePrice(response.Profile?.part_time_amount);
@@ -259,7 +264,42 @@ const UpdateProfileScreen = (props) => {
        }
      };
 
+
+     const onCheckValidity = () => {
+      return onCheckFullTime() && onCheckPartTime() && onCheckGigs()
+     }
+
+     const onCheckFullTime = () => {
+      if (selectFullTime && fullTimePrice == '') {
+        Toast.show('Please enter full time price', Toast.SHORT);
+        return false;
+      }
+      else{
+        return true
+      }
+     }
+
+     const onCheckPartTime = () => {
+       if (selectPartTime && partTimePrice == '') {
+         Toast.show('Please enter part time price', Toast.SHORT);
+         return false;
+       } else {
+         return true;
+       }
+     };
+
+      const onCheckGigs = () => {
+        if (selectGigs && gigsPrice == '') {
+          Toast.show('Please enter gigs price', Toast.SHORT);
+          return false;
+        } else {
+          return true;
+        }
+      };
+
      const onCallUpdateProfile = () => {
+      if(onCheckValidity())
+      {
       console.log('PROFILE PATH', profilePic.path);
       setLoading(true)
       let formData = new FormData()
@@ -292,6 +332,7 @@ const UpdateProfileScreen = (props) => {
               // name: profilePic.filename ?? 'image.jpg',
             },
       );
+      console.log("UpdateProfileFormData",formData)
       dispatch(ProfileUpdateRequest(formData,dataType,response=>{
         console.log('UpDate Profile RES',response)
         if(response.status == 'success')
@@ -340,7 +381,8 @@ const UpdateProfileScreen = (props) => {
           setLoading(false);
         }
       }))
-     }
+    }
+    }
 
 
 

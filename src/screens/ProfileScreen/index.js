@@ -401,8 +401,8 @@ const [editModalPicker, setEditModalPicker] = useState(false)
       let formData = new FormData();
       let dataType = 'formdata';
       formData.append('company_type', companyType);
-      // formData.append('company_email', companyEmail);
-      // formData.append('company_contact', companyContact);
+      formData.append('email', companyEmail);
+      formData.append('company_contact', companyContact);
       formData.append('company_address', companyAddress);
       formData.append('license_number', comLicenceNo);
       formData.append('owner_name', comOwnerName);

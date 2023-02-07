@@ -111,7 +111,6 @@ const SignupScreen = (props) => {
       console.log('Result2', myArray[1]);
       setMyLat(myArray[0]);
       setMyLong(myArray[1]);
-      onCallUserLocation(myArray[0], myArray[1]);
     });
   };
 
