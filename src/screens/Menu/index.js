@@ -19,7 +19,6 @@ import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-
 const screenWidth = Dimensions.get('screen').width;
 
 const CustomMenuButton = (props) => {
@@ -103,6 +102,7 @@ const Menu = (props) => {
       {
         Toast.show(response.message,Toast.SHORT);
         props.navigation.navigate('LoginScreen');
+
       }
       else
       {

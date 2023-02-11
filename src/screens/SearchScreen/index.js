@@ -2,7 +2,6 @@ import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {
   View,
-  TextInput,
   Pressable,
   Image,
   Text,
@@ -14,26 +13,19 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
-  PermissionsAndroid,
-  TouchableOpacity
 } from 'react-native';
 import {
   CustomCardView,
   Header,
   StoryScreen,
   AppButton,
-  CustomCardTextInput,
   ShadowHeader,
   CustomCardLine,
-  CustomLineTextInput,
 } from '../../components';
 import {connect,useDispatch} from 'react-redux';
 import R from '../../res/R';
-import Geolocation from 'react-native-geolocation-service';
 import Styles from './style';
-import CommonFunctions from '../../utils/CommonFuntions';
 import { PostFilterRequest } from '../../actions/postFilter.action';
-import Toast from 'react-native-simple-toast';
 
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
@@ -199,15 +191,12 @@ const SearchScreen = props => {
   };
 
 
-  // const checkValid = () => {
-  //   return(
-  //     CommonFunctions.isUndefined(filterPrice?.firstValue.trim(), 'Please Select Price')&&
-  //     CommonFunctions.isUndefined(filterAge?.firstValue.trim(), 'Please Select Age')&&
-  //     CommonFunctions.isBlank(location?.trim(), 'Please Enter Location')
-  //   )
-  // }
 
   const onCallCheckSub = () => {
+    console.log(
+      'PROFILE SUBSCRIPTION',
+      props.userProfile?.Profile?.subscription,
+    );
      props.userProfile?.Profile?.subscription != 0
        ? onCallfilterApply()
        : props.navigation.navigate('SubscriptionScreen');

@@ -325,7 +325,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
                       fromLeft={R.fontSize.Size14}
                       eyeIcon={R.images.eyeIcon}
                       userName={item?.username}
-                      videoCat={'Gurugram'}
+                      videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}

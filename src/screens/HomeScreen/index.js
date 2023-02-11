@@ -7,18 +7,15 @@ import {
   SafeAreaView,
   Dimensions,
   Pressable,
-  TextInput,
   Modal,
   ScrollView,
-  FlatList,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
-  ImageBackground,
   StatusBar,
 } from 'react-native';
-import {CustomTextInput, StoryScreen, AppButton, Header, ShadowHeader, CustomCardView, CustomCardLine, VideoCard, CustomLineTextInput, ReportModal, ReportDetailModal, AlartModal} from '../../components';
+import {StoryScreen, AppButton,ShadowHeader, VideoCard, ReportModal, ReportDetailModal, AlartModal} from '../../components';
 import Toast from 'react-native-simple-toast';
 import Slider from 'react-native-custom-slider';
 import {useDispatch, connect} from 'react-redux';
@@ -27,7 +24,6 @@ import R from '../../res/R';
 import Styles from './styles';
 import { ShowAllPostRequest } from '../../actions/showAllPost.action';
 import { Config } from '../../config';
-import { VideoRatingRequest } from '../../actions/videoRating.action';
 import axios from 'axios';
 import moment from 'moment';
 const screenHeight = Dimensions.get('window').height;
@@ -53,14 +49,10 @@ const withoutNotchAllHeight =
 
 const forWithNotch = screenHeight - allHeight;
 const forWithoutNotch = screenHeight - withoutNotchAllHeight;
-
 const forNotchflatHeight = tabBarHeight + headerHeight + headerHeight;
 const withoutNotchflatHeight = tabBarHeight + headerHeight + statusBarHeight;
 const flatListHeightWithNotch = screenHeight - forNotchflatHeight;
 const flatListHeightWithOutNotch = screenHeight - withoutNotchflatHeight;
-
-
-
 
 const ReportList = [
   {
@@ -156,7 +148,6 @@ const CustomTimeRow = props => {
         </Text>
         <Text
           style={{
-            // height: R.fontSize.Size20,
             marginHorizontal: R.fontSize.Size4,
             textAlign: 'center',
             borderBottomWidth: 1,
@@ -206,7 +197,7 @@ const HomeScreen = (props) => {
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false)
   const [fixedHeight, setFixedHeight] = useState(280)
-const [videoCurrentTime, setVideoCurrentTime] = useState()
+  const [videoCurrentTime, setVideoCurrentTime] = useState()
 
   
   const [tailentList, setTailentList] = useState([
@@ -227,50 +218,36 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
       name: 'Music',
     },
   ]);
-  const [userLat, setUserLat] = useState('');
-  const [userLong, setUserLong] = useState('');
-  const [tailentLocation, setTailentLocation] = useState('');
-  const [deviceName, setDeviceName] = useState('')
-  const [fullScreenDevice, setFullScreenDevice] = useState(false)
-  const [ratingVideoInfo, setRatingVideoInfo] = useState({})
-
-
-
   const [allVideoPostList, setAllVideoPostList] = useState([])
 
   
     useEffect(() => {
-
       const blur = props.navigation.addListener('blur', () => {
         setVideoPlayPause(true);
       });
-
       const focus = props.navigation.addListener('focus', () => {
         setVideoPlayPause(false);
       });
-
       return blur, focus;
     }, [props.navigation]);
   
 
 
   useEffect(()=>{
-    onCallLatitudeLongitude();
-    onCallProfile();
-    onCallDeviceName();
+    // onCallLatitudeLongitude();
+    // onCallProfile();
+    // onCallDeviceName();
       let arr = tailentList.map((item, index) => {
         item.selected = false;
         return {...item};
       });
       console.log('ARRNEWITEM', arr);
       setTailentList(arr);
-
       const unsubscribe = props.navigation.addListener('focus', () => {
         screenFocus();
       });
       return unsubscribe;
 
-  
   },[props.navigation])
 
   const onCallDeviceName = () => {
@@ -278,22 +255,18 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
      let deviceName = DeviceInfo.getModel();
      let MaxPosition = deviceName.search('Max');
      const tempfixedHeight = MaxPosition == -1 ? R.fontSize.Size278 : R.fontSize.Size276
-      setFixedHeight(tempfixedHeight)
-     console.log('Max Modal Avaiale or not', MaxPosition);
-     console.log('TEMP FIXED HEIGHT', tempfixedHeight);
-
+     setFixedHeight(tempfixedHeight)
      setLoading(false)
   }
 
-  const onCallLatitudeLongitude = () => { 
-    AsyncStorage.getItem('userLatLong', (err, result) => {
-      console.log('RESULT LONGITUDE', result);
-      const myArray = result.split(',');
-      console.log('Result1', myArray[0]);
-      console.log('Result2', myArray[1]);
-      onCallLatLong(myArray[0], myArray[1]);
-    });
-  }
+  // const onCallLatitudeLongitude = () => { 
+  //   AsyncStorage.getItem('userLatLong', (err, result) => {
+  //     const myArray = result.split(',');
+  //     console.log('Result1', myArray[0]);
+  //     console.log('Result2', myArray[1]);
+  //     onCallLatLong(myArray[0], myArray[1]);
+  //   });
+  // }
 
   const onCallProfile = () => {
    dispatch(
@@ -303,16 +276,16 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
    );
   }
 
-  const onCallLatLong = (lat,long) => {
-    let data = {
-      latitude: lat,
-      longitude: long,
-    };
-    console.log("DATA",data)
-    dispatch(UserLocationRequest(data,response=>{
-      console.log("UserLOC RES",response)
-    }))
-  }
+  // const onCallLatLong = (lat,long) => {
+  //   let data = {
+  //     latitude: lat,
+  //     longitude: long,
+  //   };
+  //   console.log("DATA",data)
+  //   dispatch(UserLocationRequest(data,response=>{
+  //     console.log("UserLOC RES",response)
+  //   }))
+  // }
 
   const screenFocus = () => {
     Platform.OS === 'android' &&
@@ -324,27 +297,12 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
     onCallProfile();
   };
 
-  
-
-   const onCallSelectedTailent = (item, ind) => {
-     const dummyData = tailentList;
-     let arr = dummyData.map((item, index) => {
-       if (ind == index) {
-         item.selected = !item.selected;
-       }
-       return {...item};
-     });
-     console.log('arr return', arr);
-     setTailentList(arr);
-   };
-
   const onCallModal = (type,item) => {
     setModalType(type)
     setModalPicker(true);
     if(type == 'videoDetailModal')
     {
       setVideoModalDetail(item)
-      // onCallGoogleAPI(item)
       setVideoModalPersonalDetail([
         item?.gender,
         `${moment().diff(item?.birth, 'years')} Year`,
@@ -362,32 +320,11 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
     }
   }
 
-// const onCallGoogleAPI = profileDetails => {
-//   setLoading(true);
-//   fetch(
-//     `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
-//   )
-//     .then(res => res.json())
-//     .then(response => {
-//       console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-//       let temparray = [];
-//       temparray = response?.results;
-//       let tempLength = temparray.length;
-//       let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-//       let arrayAddress = arrayAdd.split(',');
-//       let arrAddLength = arrayAddress.length;
-//       setVideoModalPersonalDetail([
-//         profileDetails?.gender,
-//         `${moment().diff(profileDetails?.birth, 'years')} Year`,
-//         `${arrayAddress[arrAddLength - 1]}`,
-//       ]);
-//       setLoading(false);
-//     });
-// };
+
 
 
   const onCallShowAllPost = () => {
-    setLoading(true)
+    // setLoading(true)
     let data = {
       mobile_type:'ios'
     }
@@ -397,16 +334,16 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
       {
         setAllVideoPostList([...response?.Post])
         setSliderValue(0);
-        setLoading(false);
+        // setLoading(false);
       }
       else if (response.status == 'tokenError') {
-        setLoading(false);
+        // setLoading(false);
         props.navigation.replace('LoginScreen')
       }
-      else
-      {
-        setLoading(false)
-      }
+      // else
+      // {
+      //   setLoading(false)
+      // }
     }))  
   }
 
@@ -414,62 +351,52 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
     console.log("INDEX ITEM",index)
     setVideoPlayPause(false);
     setCurrIndex(index)
-    // let current = listRef.current.getCurrentIndex();
-    // let prev = listRef.current.getPrevIndex();
-    // if (__DEV__) {
-    //   console.log('item is : ', item);
-    //   console.log('current page is : ', current);
-    //   setVideoPlayPause(false);
-    //   setCurrIndex(current)
-    //   console.log('prev page is : ', prev);
-    // }
   }
 
-  const getCurrentIndex = ({index}) => {
-    console.log(index)
-  }
+  
 
-  const onCallVideoRatingAPI = (PercentLike,PostId) => {
+  const onCallVideoRatingAPI = (PercentLike,PostId,index,userId,userType) => {
     setLoading(true)
     let data1 = {
       id: PostId,
       percentage_like: `${PercentLike}`,
+      user_id: userId,
+      user_type: userType
     };
     let headerToken = {
       token: props.authToken,
     };
-     axios({
-        method: 'POST',
-        url: `${Config.API_URL}${Config.videoRatingAPI}`,
-        data: data1,
-        headers: headerToken
-      }).then(res => {
-        console.log("LIKE RES",res)
-        if(res.data.status == 'success')
-        {
-          Toast.show(res.data.message, Toast.SHORT);
-          onCallShowAllPost();
-          // setTimeout(()=>{
-          // setSliderValue(0);
-          // },2000)
-
-          setLoading(false);
-        }
-        else
-        {
-          setLoading(false);
-          Toast.show(res.data.message, Toast.SHORT);
-        }
-      })
+    console.log('LikeData', data1);
+    console.log('ALLPOST', allVideoPostList[index].total_likes);
+    
+    axios({
+      method: 'POST',
+      url: `${Config.API_URL}${Config.videoRatingAPI}`,
+      data: data1,
+      headers: headerToken,
+    }).then(res => {
+      console.log('LIKE RES', res);
+      if (res.data.status == 'success') {
+        Toast.show(res.data.message, Toast.SHORT);
+        // onCallShowAllPost();
+        setAllVideoPostList([
+          ...allVideoPostList,
+          {
+            total_likes: allVideoPostList[index].total_likes++,
+            total_rating: allVideoPostList[index].total_likes + PercentLike,
+          },
+        ]);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        Toast.show(res.data.message, Toast.SHORT);
+      }
+    });
   }
-
- 
- 
 
   const onCallConnectNow = (profileID) => 
   {
-    setModalPicker(false)
-    
+    setModalPicker(false) 
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
            profileId: profileID,
@@ -490,24 +417,6 @@ const [videoCurrentTime, setVideoCurrentTime] = useState()
       : props.navigation.navigate('SubscriptionScreen');
   }
 
-  // const onCallUserLocation = (lat, long) => {
-  //   fetch(
-  //     `${Config.Google_URL}${lat},${long}&key=${Config.GoogleAPIKEY}`,
-  //   )
-  //     .then(res => res.json())
-  //     .then(response => {
-  //       console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-  //       let temparray = [];
-  //       temparray = response?.results;
-  //       let tempLength = temparray.length;
-  //       let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-  //       let arrayAddress = arrayAdd.split(',');
-  //       let arrAddLength = arrayAddress.length;
-  //       console.log('FORMAT ADDRESS LENGTH', arrAddLength);
-  //       console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
-  //       setTailentLocation(arrayAddress[arrAddLength - 3]);     
-  //     });
-  // };
 
   const myCustomShare = async (videoURL) => {
     const shareOptions = {
@@ -592,8 +501,6 @@ VideoLink :${videoURL}`,
         console.log('UnSaved Post Response', response);
         if (response.status == 'success') {
           onCallShowAllPost();
-          // Toast.show(response?.message, Toast.SHORT);
-          // setLoading(false);
         } else {
           Toast.show(response?.message, Toast.SHORT);
           setLoading(false);
@@ -697,18 +604,16 @@ const onCallReportPost = () => {
   const onSeek = (data: OnSeekData) => {
     console.log("Seektimem",data.seekTime)
     videoRef?.seek(data.seekTime);
-    // setCurrentTime(data.seekTime);
   };
   
   const updateIndex = ({ viewableItems }) => {
-  // getting the first element visible index
   console.log("index",viewableItems[0]?.index)
   setCurrIndex(viewableItems[0]?.index);
   }
   
   return (
     <StoryScreen
-      loading={loading}
+      loading={props.loading || loading}
       statusBarIosStyle={{
         height: DeviceInfo.hasNotch() ? headerHeight : statusBarHeight,
       }}>
@@ -717,8 +622,6 @@ const onCallReportPost = () => {
           onPress={() => props.navigation.toggleDrawer()}
           headerHeight={headerHeight}
           leftSource={R.images.menuIcon}
-          // rightSource={R.images.filterIcon}
-          // rightSourceOnPress={() => onCallModal('filterModal')}
           rightSource2={R.images.bellIcon}
           rightSourceOnPress2={() =>
             props.navigation.navigate('NotificationScreen')
@@ -727,6 +630,8 @@ const onCallReportPost = () => {
         <View style={{flex: 1}}>
           <SwiperFlatList
             ref={listRef}
+            // refreshing={loading}
+            // onRefresh={onCallShowAllPost}  
             vertical={true}
             style={{
               height: DeviceInfo.hasNotch()
@@ -737,12 +642,8 @@ const onCallReportPost = () => {
             data={allVideoPostList}
             keyExtractor={(item, index) => index.toString()}
             onChangeIndex={onChangeIndex}
-            // getCurrentIndex={getCurrentIndex}
             onViewableItemsChanged={updateIndex}
             renderItem={({item, index}) => {
-              // if (currIndex == index) {
-              //   onCallUserLocation(item?.latitude, item?.longitude);
-              // }
               return (
                 <View
                   key={index}
@@ -765,29 +666,24 @@ const onCallReportPost = () => {
                       ref={ref => {
                         videoRef = ref;
                       }}
+                      
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
-                      videoUrl={`${Config.API_URL}${item?.post.replace(
+                      videoUrl={`${Config.API_URL}${item?.post?.replace(
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userImage={`${Config.API_URL}${item?.avatar.replace(
+                      userImage={`${Config.API_URL}${item?.avatar?.replace(
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      // onSeek={data => {
-                      //   console.log(data);
-                      //   currIndex!=index && setVideoCurrentTime({currentTime: Number(0)});
-                      // }}
                       userName={item?.username}
                       videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={`USD ${item?.amount}`}
-                      // onProgress={onProgress}
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
-                      // paused={true}
                       onPressSave={() => {
                         item?.post_save
                           ? onCallRemoveSavePost(item?.postID)
@@ -865,6 +761,9 @@ const onCallReportPost = () => {
                             onCallVideoRatingAPI(
                               value.toFixed(0),
                               item?.postID,
+                              index,
+                              item?.user_id,
+                              item?.user_type
                             );
                           }}
                           customThumb={
@@ -1257,6 +1156,7 @@ const onCallReportPost = () => {
 };
 
 const mapStateToProps = (state, props) => ({
+  loading: state.auth.loading || state.getProfileDetailsRoot.loading,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
   userType: state.auth.userType,

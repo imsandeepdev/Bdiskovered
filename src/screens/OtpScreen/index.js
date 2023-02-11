@@ -46,6 +46,9 @@ const OtpScreen = (props) => {
     // props.route.params?.fromScreen == 'LoginScreen' ? setOtpArray(props.route.params?.otpValue) : setOtpArray([])
     console.log('DEVICE TOKEN', props.route.params?.deviceToken);
     console.log('SIGNUPVALUE', props.route.params?.signupValue);
+    console.log('OTP VALUE', props.route.params?.otpValue);
+    setOtpArray(props.route.params?.otpValue);
+    
     onCallDeviceName();
     // setSignUpData(props.route.params?.signupValue);
     // console.log(signUpData)
@@ -294,7 +297,7 @@ const onSaveDeviceToken = async () => {
               console.log('RESPONSE RESND OTP', response);
               if (response.status == 'success') {
                 Toast.show(response.OTP, Toast.LONG);
-                setOtpArray([]);
+                setOtpArray(response.OTP);
               } else {
                 Toast.show(response.message, Toast.SHORT);
               }

@@ -93,8 +93,8 @@ const LoginScreen = (props) => {
               subscription_status: response.subscription_status,
               otpValue:response?.OTP
             });
-            Toast.show(response.OTP, Toast.LONG);
-            Alert.alert(response?.OTP);
+            Toast.show(response.OTP, Toast.SHORT);
+            // Alert.alert(response?.OTP);
 
           } else {
             Toast.show(response.message, Toast.SHORT);

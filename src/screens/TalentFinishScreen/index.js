@@ -99,7 +99,7 @@ const onCallFinish = () => {
       UserSelectionFinishRequest(data, response => {
         console.log('TAILENT FINISH SCREEN CREATE RES', response);
         if (response.status) {
-          props.navigation.navigate('HomeMenu');
+          props.navigation.replace('HomeMenu');
           Toast.show(response.message, Toast.SHORT);
         } else {
           Toast.show(response.message, Toast.SHORT);
@@ -181,7 +181,7 @@ const onCallFinish = () => {
                       marginHorizontal: R.fontSize.Size8,
                     }}>
                     <Pressable
-                    onPress={()=> props.navigation.navigate('HomeMenu')}
+                    onPress={()=> props.navigation.replace('HomeMenu')}
                     style={({pressed})=>[{
                       opacity: pressed?0.5:1
                       ,padding:R.fontSize.Size8,

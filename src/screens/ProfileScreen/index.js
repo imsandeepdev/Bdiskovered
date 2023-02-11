@@ -162,8 +162,6 @@ const [userMail, setUserMail] = useState('');
 const [mobNo, setMobNo] = useState('');
 const [userBio, setUserBio] = useState('');
 const [calPickerModal, setCalPickerModal] = useState(false);
-
-
 const [companyName, setCompanyName] = useState('');
 const [companyType, setCompanyType] = useState('');
 const [companyEmail, setCompanyEmail] = useState('');
@@ -261,7 +259,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
         console.log("ARRAYNEW2",tempTalentArray)
         let useTalentArray = tempTalentArray.split(",");
         console.log('useTalentArray', useTalentArray.length);
-        if (useTalentArray.length <= 1) {
+        if (useTalentArray.length < 1) {
            setTalentArray([]);
         }
         else
@@ -440,6 +438,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
               filename: 'profile.jpeg',
             });
             Toast.show(response.message, Toast.SHORT);
+            onCallProfileAPI()
             setLoading(false);
           } else {
             Toast.show(response.message, Toast.SHORT);
@@ -505,6 +504,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                   });
                  
                   Toast.show(response.message, Toast.SHORT);
+                  onCallProfileAPI()
                   setLoading(false);
                 } else {
                   Toast.show(response.message, Toast.SHORT);
@@ -630,7 +630,11 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                      {profilePic.path != null || profilePic.path != '' ? (
+                      {console.log('PROFILE PATH', profilePic.path)}
+                      {profilePic.path != null &&
+                      profilePic.path !=
+                        'https://bdiskv2.bdiskovered.com/profile/user.png' 
+                      ? (
                         <Image
                           source={{
                             uri: profilePic?.path,
@@ -1023,7 +1027,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                       paddingHorizontal: R.fontSize.Size20,
                     }}>
                     {personalArray.map((item, index) => {
-                      console.log(item)
+                      console.log(item);
                       return (
                         <View
                           key={index}
@@ -1032,17 +1036,16 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                             alignItems: 'center',
                             marginRight: R.fontSize.Size14,
                           }}>
-                         { 
-                         item != '' &&
-                         <View
-                            style={{
-                              height: R.fontSize.Size10,
-                              width: R.fontSize.Size10,
-                              backgroundColor: R.colors.appColor,
-                              borderRadius: R.fontSize.Size10,
-                            }}
-                          />
-                        }
+                          {item != '' && (
+                            <View
+                              style={{
+                                height: R.fontSize.Size10,
+                                width: R.fontSize.Size10,
+                                backgroundColor: R.colors.appColor,
+                                borderRadius: R.fontSize.Size10,
+                              }}
+                            />
+                          )}
                           <Text
                             style={{
                               fontFamily: R.fonts.regular,
@@ -1053,7 +1056,6 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                             }}>
                             {item}
                           </Text>
-                          
                         </View>
                       );
                     })}
@@ -1231,7 +1233,6 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                   </View>
                 </View>
               )}
-             
             </View>
           </ScrollView>
         </SafeAreaView>

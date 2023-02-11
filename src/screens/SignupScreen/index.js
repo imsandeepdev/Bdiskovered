@@ -29,7 +29,6 @@ const screenWidth = Dimensions.get('screen').width;
 import CountryPicker from 'react-native-country-picker-modal';
 import {connect, useDispatch} from 'react-redux';
 import Toast from 'react-native-simple-toast';
-import FilePicker from 'react-native-document-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 
 
@@ -138,7 +137,6 @@ const SignupScreen = (props) => {
     };
 
     const onDateChange = (date) => {
-      // setDOB(date)
       console.log(date)
       let dateFormat = moment(date).format('YYYY-MM-DD')
       console.log("DATE",dateFormat)
@@ -159,20 +157,19 @@ const SignupScreen = (props) => {
       }).then(res => {
         console.log('RESPONSE', res);
         if (res.data.status == 'success') {
-          onFocusName == 'userName' && setUserNameStatus(true);
-          onFocusName == 'userEmail' && setUserMailStatus(true);
-          onFocusName == 'userPhone' && setUserPhoneStatus(true);
-          onFocusName == 'companyMail' && setCompanyMailStatus(true);
-          onFocusName == 'companyPhone' && setCompanyPhoneStatus(true);
+          onFocusName == 'fullName' && setUserNameStatus(true);
+          onFocusName == 'userPhone' && setUserMailStatus(true);
+          onFocusName == 'userDOB' && setUserPhoneStatus(true);
+          onFocusName == 'companyPhone' && setCompanyMailStatus(true);
+          onFocusName == 'companyAddress' && setCompanyPhoneStatus(true);
         } else {
-          // Toast.show(res.data.message, Toast.SHORT);
           setAlartMessage(res.data.message);
           setAlartModalPicker(true)
-          onFocusName == 'userName' && setUserNameStatus(false);
-          onFocusName == 'userEmail' && setUserMailStatus(false);
-          onFocusName == 'userPhone' && setUserPhoneStatus(false);
-          onFocusName == 'companyMail' && setCompanyMailStatus(false);
-          onFocusName == 'companyPhone' && setCompanyPhoneStatus(false);
+          onFocusName == 'fullName' && setUserNameStatus(false);
+          onFocusName == 'userPhone' && setUserMailStatus(false);
+          onFocusName == 'userDOB' && setUserPhoneStatus(false);
+          onFocusName == 'companyPhone' && setCompanyMailStatus(false);
+          onFocusName == 'companyAddress' && setCompanyPhoneStatus(false);
         }
       })
       .catch((err)=>{
@@ -184,65 +181,124 @@ const SignupScreen = (props) => {
     
 //  For Tailent and Viewer
     const onCallSetUserNameValue = (value) => {
-      console.log('On Focus', onFocusName)
-      let userVerifyAPI = Config.verifyUsernameAPI  
-      let data = {
-        username:value
-      }
       setUserName(value);
-      value.length > 2
-        ? onCheckVerifyAPI(data, userVerifyAPI)
-        : setUserNameStatus(false);
+    }
+
+    const onFocusFullName = (fullName) => {
+        setOnFocusName('fullName');
+        let userVerifyAPI = Config.verifyUsernameAPI;
+        let data = {
+          username: userName,
+        };
+        onCheckVerifyAPI(data, userVerifyAPI);
+    }
+
+    const onCallSetFullName = (value) => {
+      if(value.length ==1)
+      {
+        let userVerifyAPI = Config.verifyUsernameAPI;
+        let data = {
+          username: userName,
+        };
+        onCheckVerifyAPI(data, userVerifyAPI);
+      } 
+      setFullName(value);
+
     }
 
     const onCallSetUserEmailValue = value => {
-      console.log('On Focus', onFocusName);
-      let mailVerifyAPI = Config.verifyEmailAPI;
-      let data = {
-        email: value,
-      };
       setEMail(value);
-      (value.length > 5)
-        ? onCheckVerifyAPI(data, mailVerifyAPI)
-        : setUserMailStatus(false);
+    };
+
+    const onFocusPhoneNumber = fullName => {
+      setOnFocusName('userPhone');
+      let userVerifyAPI = Config.verifyEmailAPI;
+      let data = {
+        email: eMail
+      };
+      onCheckVerifyAPI(data, userVerifyAPI);
     };
 
     const onCallSetUserPhoneValue = value => {
-      console.log('On Focus', onFocusName);
-      let phoneVerifyAPI = Config.verifyMobileAPI;
+      console.log("Length",value.length)
+      if(value.length ==1)
+      {
+        let userVerifyAPI = Config.verifyEmailAPI;
+        let data = {
+          email: eMail,
+        };
+        onCheckVerifyAPI(data, userVerifyAPI);
+      }
+      setMobNo(value);
+      if(value.length >8)
+      {
+       setOnFocusName('userDOB');
+       let phoneVerifyAPI = Config.verifyMobileAPI;
        let data = {
          mobile: `+${countryCode}${value}`,
        };
-      setMobNo(value);
-      value.length >= 9
-        ? onCheckVerifyAPI(data, phoneVerifyAPI)
-        : setUserPhoneStatus(false);
+       onCheckVerifyAPI(data, phoneVerifyAPI); 
+      }
     };
+
+    const onCallCalenderPicker = () => {
+      setCalenderPicker(!calenderPicker);
+    }
 
    
     const onCallSetCompanyEmailValue = value => {
-      console.log('On Focus', onFocusName);
-      let mailVerifyAPI = Config.verifyEmailAPI;
-      let data = {
-        email: value,
-      };
+      // console.log('On Focus', onFocusName);
+      // let mailVerifyAPI = Config.verifyEmailAPI;
+      // let data = {
+      //   email: value,
+      // };
       setCompanyMail(value);
-      value.length > 5
-        ? onCheckVerifyAPI(data, mailVerifyAPI)
-        : setCompanyMailStatus(false);
+      // value.length > 5
+      //   ? onCheckVerifyAPI(data, mailVerifyAPI)
+      //   : setCompanyMailStatus(false);
     };
 
+    const onCallSetFocusComPhone = () =>{
+       setOnFocusName('companyPhone');
+      let mailVerifyAPI = Config.verifyEmailAPI;
+       let data = {
+         email: companyMail,
+       };
+       onCheckVerifyAPI(data, mailVerifyAPI);
+    }
+
     const onCallSetCompanyPhoneValue = value => {
-      console.log('On Focus', onFocusName);
+      setCompanyMob(value);
+      let mailVerifyAPI = Config.verifyEmailAPI;
+      let data = {
+        email: companyMail,
+      };
+      if(value.length == 1)
+      {
+       onCheckVerifyAPI(data, mailVerifyAPI);
+      }
+    };
+
+    const onCallSetFocusComAdd = () => {
+      setOnFocusName('companyAddress')
       let phoneVerifyAPI = Config.verifyMobileAPI;
       let data = {
-        mobile: `+${countryCode}${value}`,
+        mobile: `+${countryCode}${companyMob}`,
       };
-      setCompanyMob(value);
-      value.length >= 9
-        ? onCheckVerifyAPI(data, phoneVerifyAPI)
-        : setCompanyPhoneStatus(false);
-    };
+       onCheckVerifyAPI(data, phoneVerifyAPI);
+    }
+
+    const onCallSetComAddress = (value) => {
+      setCompanyAddress(value);
+      let phoneVerifyAPI = Config.verifyMobileAPI;
+      let data = {
+        mobile: `+${countryCode}${companyMob}`,
+      };
+      if (value.length == 1) 
+      {
+        onCheckVerifyAPI(data, phoneVerifyAPI);
+      }
+    }
 
 const isTailentViewerDetailsValid = () => {
   return (
@@ -380,9 +436,9 @@ const onCheckDocument = () => {
                 userTypeVerify: 'Company',
                 userType: props.route.params?.from,
                 deviceToken: createDeviceToken,
+                otpValue: response?.OTP,
               });
-            Toast.show(response?.OTP, Toast.LONG);
-            Alert.alert(response?.OTP);
+            Toast.show(response?.OTP, Toast.SHORT);
               
            }
            else
@@ -426,9 +482,9 @@ const onCheckDocument = () => {
               userTypeVerify: 'tailentViewer',
               userType: props.route.params?.from,
               deviceToken: createDeviceToken,
+              otpValue: response?.OTP,
             });
-            Toast.show(response?.OTP, Toast.LONG);
-            Alert.alert(response?.OTP);
+            Toast.show(response?.OTP, Toast.SHORT);
            }
            else
            {
@@ -517,8 +573,9 @@ const onCheckDocument = () => {
                             />
                             <CustomCardTextInput
                               value={fullName}
-                              onChangeText={fname => setFullName(fname)}
+                              onChangeText={fname => onCallSetFullName(fname)}
                               placeholder={'Full Name'}
+                              onFocus={fullName => onFocusFullName(fullName)}
                             />
                             <CustomCardTextInput
                               value={eMail}
@@ -531,7 +588,7 @@ const onCheckDocument = () => {
                                   ? R.images.checkOrangeIcon
                                   : R.images.checkGreyIcon
                               }
-                              onFocus={() => setOnFocusName('userEmail')}
+                              // onFocus={() => setOnFocusName('userEmail')}
                             />
                             <CustomTextInput
                               onChangeCounty={() => setCountyModalPicker(true)}
@@ -551,11 +608,13 @@ const onCheckDocument = () => {
                                   ? R.images.checkOrangeIcon
                                   : R.images.checkGreyIcon
                               }
-                              onFocus={() => setOnFocusName('userPhone')}
+                              onFocus={userPhone =>
+                                onFocusPhoneNumber(userPhone)
+                              }
                             />
 
                             <CustomCardView
-                              onPress={() => setCalenderPicker(!calenderPicker)}
+                              onPress={() => onCallCalenderPicker()}
                               title={dob}
                               TextColor={
                                 dob == 'Date of Birth'
@@ -619,7 +678,7 @@ const onCheckDocument = () => {
                                 onCallSetCompanyEmailValue(email)
                               }
                               placeholder={'Company Email Address'}
-                              onFocus={() => setOnFocusName('companyMail')}
+                              // onFocus={() => setOnFocusName('companyMail')}
                               rightIcon={
                                 companyMailStatue
                                   ? R.images.checkOrangeIcon
@@ -646,15 +705,16 @@ const onCheckDocument = () => {
                                   ? R.images.checkOrangeIcon
                                   : R.images.checkGreyIcon
                               }
-                              onFocus={() => setOnFocusName('companyPhone')}
+                              onFocus={() => onCallSetFocusComPhone()}
                             />
 
                             <CustomCardTextInput
                               value={companyAddress}
                               onChangeText={comAddress =>
-                                setCompanyAddress(comAddress)
+                                onCallSetComAddress(comAddress)
                               }
                               placeholder={'Company Address'}
+                              onFocus={() => onCallSetFocusComAdd()}
                             />
 
                             <CustomCardTextInput

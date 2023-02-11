@@ -10,7 +10,6 @@ const RequestPostFetch = ({url, body, datatype}) =>
     const headerAuth = {
       Accept: 'application/json',
       'Content-Type': datatype=='formdata' ? 'multipart/form-data' : 'application/x-www-form-urlencoded;charset=UTF-8',
-      // 'Content-Type':  datatype=='formdata' && 'multipart/form-data',
     };
     const headers = headerAuth;
 
@@ -38,6 +37,21 @@ const RequestPostFetch = ({url, body, datatype}) =>
       config,
     );
 
+    
+  // const axiosbody = datatype == 'formdata' ? body : formBody;
+  // console.log('Request params ==> ', requestUrl, 'BODY==>', axiosbody);
+  // axios
+  //   .post(requestUrl, axiosbody,{headers})
+  //   .then(response => {
+  //     console.log('RESPONSE ON API===>', response);
+  //     let status = response.status == '200' ? 'success' : 'failed';
+  //     if (status) {
+  //       resolve(response.data);
+  //     } else {
+  //       Toast.show(response.message, Toast.SHORT);
+  //       reject(response.data);
+  //     }
+  //   })
     fetch(requestUrl, config)
       .then(response => response.json())
       .then(responseJson => {
@@ -51,11 +65,10 @@ const RequestPostFetch = ({url, body, datatype}) =>
           reject(responseJson);
         }
       })
-      .catch(error => {
-        // reject(error);
-        console.log('ERRORONAPI', error);
-        Toast.show('Check Internet Connection', Toast.SHORT);
-      });
+    .catch(error => {
+      console.log('ERRORONAPI', error);
+      Toast.show('Check Internet Connection', Toast.SHORT);
+    });
   });
 
 

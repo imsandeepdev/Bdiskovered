@@ -5,8 +5,6 @@ import {
   Image,
   Pressable,
   Text,
-  ImageBackground,
-  SafeAreaView,
   Dimensions,
   Modal,
   KeyboardAvoidingView,
@@ -18,9 +16,7 @@ import {
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
   AlartModal,
-    AppButton,
-  FullViewStoryScreen,
-  Header,
+  AppButton,
   ReportDetailModal,
   ReportModal,
   StoryScreen,
@@ -272,19 +268,13 @@ const FilterVideoScreen = props => {
   };
 
   const onCallModal = (item) => {
-
-    console.log("MODAL")
     setModalPicker(true);
       setVideoModalDetail(item);
       setVideoModalPersonalDetail([
         `${moment().diff(item?.birth, 'years')} Year`,
         item?.gender,
-        'gurugram',
+        `${item?.address != '' ? item?.address : ''}`,
       ]);
-    //   let tempTalentArray = item?.category;
-    //   let useTalentArray = tempTalentArray?.split(',');
-    //   console.log('useTalentArray', useTalentArray);
-    //   setVideoModalTalentDetail(useTalentArray);
       setVideoModalAvailableDetail([
         {type: item?.job_type1, amount: item?.full_time_amount},
         {type: item?.job_type2, amount: item?.part_time_amount},
@@ -293,6 +283,10 @@ const FilterVideoScreen = props => {
   };
 
    const onCallConnectNow = profileID => {
+    console.log(
+      'PROFILE SUBSCRIPTION',
+      props.userProfile?.Profile?.subscription,
+    );
      setModalPicker(false);
     
      props.userProfile?.Profile?.subscription != 0
@@ -524,7 +518,7 @@ const onCallBlockPost = () => {
                       eyeonPress={() => onCallModal(item)}
                       eyeIcon={R.images.eyeIcon}
                       userName={item?.username}
-                      videoCat={'Gurugram'}
+                      videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}

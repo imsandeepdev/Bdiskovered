@@ -84,10 +84,9 @@ const onChangeIndex = ({index}) => {
                   style={{
                     flex: 1,
                   }}>
-                  
                   <View
                     style={{
-                      height: screenHeight-R.fontSize.Size100,
+                      height: screenHeight - R.fontSize.Size100,
                     }}>
                     <VideoCard
                       videoUrl={`${Config.API_URL}${item?.post.replace(
@@ -99,7 +98,7 @@ const onChangeIndex = ({index}) => {
                         '',
                       )}`}
                       userName={item?.username}
-                      videoCat={'Gurugram'}
+                      videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}
@@ -301,7 +300,6 @@ const onChangeIndex = ({index}) => {
                       </Text>
                     </Pressable>
                   </View>
-
                 </View>
               );
             }}

@@ -20,6 +20,7 @@ const screenWidth = Dimensions.get('screen').width;
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebase } from '@react-native-firebase/messaging';
+import moment from 'moment/moment';
 
 const notificationList = [
   {
@@ -146,21 +147,39 @@ const onCallNotificationList = () => {
                 }}>
                 <View
                   style={{
-                    height: R.fontSize.Size55,
-                    width: R.fontSize.Size55,
+                    height: R.fontSize.Size40,
+                    width: R.fontSize.Size40,
                     borderRadius: R.fontSize.Size30,
                     borderWidth: 1,
                     borderColor: R.colors.placeholderTextColor,
                     overflow: 'hidden',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  <Image
-                    source={{uri: item?.avatar}}
-                    style={{
-                      height: R.fontSize.Size50,
-                      width: R.fontSize.Size50,
-                    }}
-                    resizeMode={'cover'}
-                  />
+                  {item?.avatar != 'http://localhost:8080/profile/user.png' ? (
+                    <Image
+                      source={{
+                        uri: `${Config.API_URL}${item?.avatar?.replace(
+                          'http://localhost:8080/',
+                          '',
+                        )}`,
+                      }}
+                      style={{
+                        height: R.fontSize.Size40,
+                        width: R.fontSize.Size40,
+                      }}
+                      resizeMode={'cover'}
+                    />
+                  ) : (
+                    <Image
+                      source={R.images.inActiveProfileIcon}
+                      style={{
+                        height: R.fontSize.Size40,
+                        width: R.fontSize.Size40,
+                      }}
+                      resizeMode={'cover'}
+                    />
+                  )}
                 </View>
                 <View
                   style={{
@@ -170,14 +189,14 @@ const onCallNotificationList = () => {
                   <Text
                     style={{
                       fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size15,
-                      fontWeight: '700',
+                      fontSize: R.fontSize.Size12,
+                      fontWeight: '400',
                       color: R.colors.primaryTextColor,
                     }}
                     numberOfLines={1}>
-                    {item?.title}
+                    {item?.message}
                   </Text>
-                  <Text
+                  {/* <Text
                     style={{
                       fontFamily: R.fonts.regular,
                       fontSize: R.fontSize.Size12,
@@ -186,7 +205,7 @@ const onCallNotificationList = () => {
                     }}
                     numberOfLines={2}>
                     {item?.desc}
-                  </Text>
+                  </Text> */}
                 </View>
                 <View style={{paddingLeft: R.fontSize.Size10}}>
                   <Text
@@ -196,49 +215,53 @@ const onCallNotificationList = () => {
                       color: R.colors.placeHolderColor,
                       fontWeight: '400',
                       textAlign: 'center',
-                    }}>{`${item?.date}\n${item?.year}`}</Text>
+                    }}>
+                    {`${moment(item?.createdAt).format('Do MMM')}\n${moment(
+                      item?.createdAt,
+                    ).format('hh:mm:A')}`}
+                  </Text>
                 </View>
               </View>
             );
           }}
-          renderHiddenItem={({item, index}) => (
-            <Pressable
-              onPress={() => console.log('delete')}
-              style={({pressed}) => [
-                {
-                  width: R.fontSize.Size50,
-                  position: 'absolute',
-                  right: 2,
-                  top: 2,
-                  bottom: 2,
-                  alignItems: 'center',
-                  opacity: pressed ? 0.5 : 1,
-                  justifyContent: 'center',
-                },
-              ]}>
-              <View
-                style={{
-                  marginVertical: R.fontSize.Size5,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: R.fontSize.Size4,
-                  height: R.fontSize.Size50,
-                  width: R.fontSize.Size50,
-                  backgroundColor: R.colors.appColor,
-                }}>
-                <Image
-                  source={R.images.deleteIcon}
-                  style={{
-                    height: R.fontSize.Size40,
-                    width: R.fontSize.Size35,
-                  }}
-                  resizeMode={'contain'}
-                />
-              </View>
-            </Pressable>
-          )}
-          leftOpenValue={0}
-          rightOpenValue={-55}
+          // renderHiddenItem={({item, index}) => (
+          //   <Pressable
+          //     onPress={() => console.log('delete')}
+          //     style={({pressed}) => [
+          //       {
+          //         width: R.fontSize.Size50,
+          //         position: 'absolute',
+          //         right: 2,
+          //         top: 2,
+          //         bottom: 2,
+          //         alignItems: 'center',
+          //         opacity: pressed ? 0.5 : 1,
+          //         justifyContent: 'center',
+          //       },
+          //     ]}>
+          //     <View
+          //       style={{
+          //         marginVertical: R.fontSize.Size5,
+          //         alignItems: 'center',
+          //         justifyContent: 'center',
+          //         borderRadius: R.fontSize.Size4,
+          //         height: R.fontSize.Size50,
+          //         width: R.fontSize.Size50,
+          //         backgroundColor: R.colors.appColor,
+          //       }}>
+          //       <Image
+          //         source={R.images.deleteIcon}
+          //         style={{
+          //           height: R.fontSize.Size40,
+          //           width: R.fontSize.Size35,
+          //         }}
+          //         resizeMode={'contain'}
+          //       />
+          //     </View>
+          //   </Pressable>
+          // )}
+          // leftOpenValue={0}
+          // rightOpenValue={-55}
           ListEmptyComponent={()=>{
              return (
                <View
@@ -255,11 +278,8 @@ const onCallNotificationList = () => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {`Not found notifications`}
+                   {`no notifications`}
                  </Text>
-                 {/* <Text>{fcmToken}</Text>
-                 <Text>{'NEW FCM TOKEN'}</Text>
-                 <Text>{newFcmToken}</Text> */}
                </View>
              );
           }}
