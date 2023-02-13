@@ -26,12 +26,7 @@ import {
 } from '../../components';
 import CarouselCards from '../../components/CarouselCard';
 import R from '../../res/R';
-// import {
-//   CardField,
-//   useStripe,
-//   initStripe,
-//   confirmPayment,
-// } from '@stripe/stripe-react-native';
+
 import {Config} from '../../config';
 import {connect, useDispatch} from 'react-redux';
 import {
@@ -143,8 +138,6 @@ const CardScreen = props => {
           shadowOpacity: 0.29,
           shadowRadius: 4.65,
           elevation: 7,
-          // borderWidth:R.fontSize.Size2,
-          // borderColor:R.colors.whatsAppColor,
           backgroundColor: index % 2 ? R.colors.cardColor1 : R.colors.cardColor,
         }}
         key={index}>

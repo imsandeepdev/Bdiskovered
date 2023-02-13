@@ -97,6 +97,8 @@ const ConnectionScreen = props => {
                     tailentUserId: item?.user_id,
                     MyUserId: myUserId,
                     userName: item?.name,
+                    userItem: item,
+                    fireID :(item?.user_id > myUserId)? myUserId + '+' + item?.user_id : item?.user_id +'+' + myUserId
                   })
                 }
                 style={({pressed}) => [
@@ -126,8 +128,8 @@ const ConnectionScreen = props => {
                       )}`,
                     }}
                     style={{
-                      height: R.fontSize.Size50,
-                      width: R.fontSize.Size50,
+                      height: R.fontSize.Size55,
+                      width: R.fontSize.Size55,
                     }}
                     resizeMode={'cover'}
                   />
@@ -167,7 +169,7 @@ const ConnectionScreen = props => {
                     fontWeight: '700',
                     color: R.colors.placeHolderColor,
                   }}>
-                  {'Not found connections'}
+                  {'You have no connections'}
                 </Text>
               </View>
             );

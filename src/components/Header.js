@@ -25,8 +25,9 @@ const Header = (props) => {
                 />
             </Pressable>
             <View
-            style={{flex:1, marginHorizontal:R.fontSize.Size20,justifyContent:'center'}}
-            >
+            style={{flex:1, marginHorizontal:R.fontSize.Size20,alignItems:'center',flexDirection:'row'}}
+            >   
+                {props.headIcon}
                 <Text 
                 style={{fontFamily:R.fonts.regular,
                 color:R.colors.primaryTextColor,

@@ -1452,6 +1452,11 @@
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
+"@react-native-firebase/database@^17.1.0":
+  version "17.1.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-17.1.0.tgz#133651e17c4140c7354dce109b32682febf39f0f"
+  integrity sha512-eiMX+IWFs/pT14mnGOCp1AFSqCcyghboNsli/Z+JXayx5IfiLCcB9yI6y2v5dvwGMtKLUIVfei78h2o8fitoUA==
+
 "@react-native-firebase/firestore@^16.4.3":
   version "16.4.3"
   resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-16.4.3.tgz"
@@ -6883,6 +6888,11 @@ react-is@^16.13.0, react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-native-aes-crypto@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-aes-crypto/-/react-native-aes-crypto-2.1.1.tgz#371100ad322195f2792e2b365923620599d8abc2"
+  integrity sha512-huAt7k43myFiY0bPnvoaCP0oBjTMw4VsL2mjkmCPzzDA56Sm3ps5xXIejPo5Z9qfnei9iijHzATV8eRNMEPtbQ==
 
 react-native-calendar-picker@^7.1.2:
   version "7.1.2"

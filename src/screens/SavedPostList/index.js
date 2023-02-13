@@ -135,7 +135,7 @@ const SavedPostList = (props) => {
                             color: R.colors.placeHolderColor,
                             fontWeight: '500',
                           }}>
-                          {'Not found saved post'}
+                          {'You have no saved post'}
                         </Text>
                       </View>
                     );

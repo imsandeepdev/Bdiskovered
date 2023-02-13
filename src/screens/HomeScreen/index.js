@@ -199,7 +199,7 @@ const HomeScreen = (props) => {
   const [fixedHeight, setFixedHeight] = useState(280)
   const [videoCurrentTime, setVideoCurrentTime] = useState()
 
-  
+  const [pullLoading, setPullLoading] = useState(false)
   const [tailentList, setTailentList] = useState([
     {
       id: '1',
@@ -347,6 +347,29 @@ const HomeScreen = (props) => {
     }))  
   }
 
+    const onCallShowAllPostPullLoading = () => {
+      setPullLoading(true)
+      let data = {
+        mobile_type: 'ios',
+      };
+      dispatch(
+        ShowAllPostRequest(data, response => {
+          console.log('SHOW ALL POST RES', response);
+          if (response.status == 'success') {
+            setAllVideoPostList([...response?.Post]);
+            setPullLoading(false)
+          } else if (response.status == 'tokenError') {
+            setPullLoading(false);
+            props.navigation.replace('LoginScreen');
+          }
+          else
+          {
+          setPullLoading(false);
+          }
+        }),
+      );
+    };
+
   const onChangeIndex = ({index}) => {
     console.log("INDEX ITEM",index)
     setVideoPlayPause(false);
@@ -384,6 +407,7 @@ const HomeScreen = (props) => {
           {
             total_likes: allVideoPostList[index].total_likes++,
             total_rating: allVideoPostList[index].total_likes + PercentLike,
+            postInfo: allVideoPostList[index].postInfo[0]?.percentage_like,
           },
         ]);
         setLoading(false);
@@ -630,8 +654,9 @@ const onCallReportPost = () => {
         <View style={{flex: 1}}>
           <SwiperFlatList
             ref={listRef}
-            // refreshing={loading}
-            // onRefresh={onCallShowAllPost}  
+            // index={currIndex}
+            refreshing={pullLoading}
+            onRefresh={onCallShowAllPostPullLoading}
             vertical={true}
             style={{
               height: DeviceInfo.hasNotch()
@@ -666,7 +691,6 @@ const onCallReportPost = () => {
                       ref={ref => {
                         videoRef = ref;
                       }}
-                      
                       eyeonPress={() => onCallModal('videoDetailModal', item)}
                       eyeIcon={R.images.eyeIcon}
                       videoUrl={`${Config.API_URL}${item?.post?.replace(
@@ -763,7 +787,7 @@ const onCallReportPost = () => {
                               item?.postID,
                               index,
                               item?.user_id,
-                              item?.user_type
+                              item?.user_type,
                             );
                           }}
                           customThumb={

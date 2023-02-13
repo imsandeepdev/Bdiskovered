@@ -278,7 +278,7 @@ const onCallNotificationList = () => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {`no notifications`}
+                   {`No notifications`}
                  </Text>
                </View>
              );
