@@ -6962,6 +6962,11 @@ react-native-country-picker-modal@^2.0.0:
     prop-types "15.7.2"
     react-async-hook "3.6.1"
 
+react-native-crypto-js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-crypto-js/-/react-native-crypto-js-1.0.0.tgz#e677e022e147f41b35614416c92d655f87e2450a"
+  integrity sha512-FNbLuG/HAdapQoybeZSoes1PWdOj0w242gb+e1R0hicf3Gyj/Mf8M9NaED2AnXVOX01b2FXomwUiw1xP1K+8sA==
+
 react-native-custom-slider@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-custom-slider/-/react-native-custom-slider-1.0.2.tgz#0e22fdc7a4b4199915503cbad8650f99b96ade64"

@@ -438,7 +438,7 @@ const onCheckDocument = () => {
                 deviceToken: createDeviceToken,
                 otpValue: response?.OTP,
               });
-            Toast.show(response?.OTP, Toast.SHORT);
+            // Toast.show(response?.OTP, Toast.SHORT);
               
            }
            else
@@ -484,7 +484,7 @@ const onCheckDocument = () => {
               deviceToken: createDeviceToken,
               otpValue: response?.OTP,
             });
-            Toast.show(response?.OTP, Toast.SHORT);
+            // Toast.show(response?.OTP, Toast.SHORT);
            }
            else
            {

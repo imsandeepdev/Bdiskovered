@@ -292,8 +292,9 @@ const HomeScreen = (props) => {
       StatusBar.setBackgroundColor(R.colors.appColor, true);
     StatusBar.setBarStyle('dark-content', true);
     console.log("SCREEN HEIGHT", screenHeight)
+    setAllVideoPostList([]);
     onCallDeviceName()
-    onCallShowAllPost();
+    onCallShowPostRefresh();
     onCallProfile();
   };
 
@@ -320,7 +321,30 @@ const HomeScreen = (props) => {
     }
   }
 
-
+const onCallShowPostRefresh = () => {
+  setLoading(true)
+  let data = {
+    mobile_type: 'ios',
+  };
+  dispatch(
+    ShowAllPostRequest(data, response => {
+      console.log('SHOW ALL POST RES', response);
+      if (response.status == 'success') {
+        setCurrIndex(0);
+        setAllVideoPostList(response?.Post);
+        setSliderValue(0);
+        setLoading(false);
+      } else if (response.status == 'tokenError') {
+        setLoading(false);
+        props.navigation.replace('LoginScreen');
+      }
+      else
+      {
+        setLoading(false)
+      }
+    }),
+  );
+};
 
 
   const onCallShowAllPost = () => {
@@ -330,20 +354,12 @@ const HomeScreen = (props) => {
     }
     dispatch(ShowAllPostRequest(data,response => {
       console.log('SHOW ALL POST RES', response)
-      if(response.status=='success')
-      {
-        setAllVideoPostList([...response?.Post])
+      if (response.status == 'success') {
+        setAllVideoPostList([...response?.Post]);
         setSliderValue(0);
         // setLoading(false);
-      }
-      else if (response.status == 'tokenError') {
-        // setLoading(false);
-        props.navigation.replace('LoginScreen')
-      }
-      // else
-      // {
-      //   setLoading(false)
-      // }
+      } 
+      
     }))  
   }
 
@@ -356,7 +372,7 @@ const HomeScreen = (props) => {
         ShowAllPostRequest(data, response => {
           console.log('SHOW ALL POST RES', response);
           if (response.status == 'success') {
-            setAllVideoPostList([...response?.Post]);
+            setAllVideoPostList(response?.Post);
             setPullLoading(false)
           } else if (response.status == 'tokenError') {
             setPullLoading(false);
@@ -374,6 +390,7 @@ const HomeScreen = (props) => {
     console.log("INDEX ITEM",index)
     setVideoPlayPause(false);
     setCurrIndex(index)
+    setSliderValue(0);
   }
 
   
@@ -410,6 +427,7 @@ const HomeScreen = (props) => {
             postInfo: allVideoPostList[index].postInfo[0]?.percentage_like,
           },
         ]);
+        
         setLoading(false);
       } else {
         setLoading(false);
@@ -654,7 +672,7 @@ const onCallReportPost = () => {
         <View style={{flex: 1}}>
           <SwiperFlatList
             ref={listRef}
-            // index={currIndex}
+            index={currIndex}
             refreshing={pullLoading}
             onRefresh={onCallShowAllPostPullLoading}
             vertical={true}
@@ -867,7 +885,7 @@ const onCallReportPost = () => {
                         }}>
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
-                        item.postInfo[0]?.percentage_like != null
+                        item?.postInfo[0]?.percentage_like != null 
                           ? `${parseInt(item.postInfo[0]?.percentage_like)}`
                           : sliderValue.toFixed(0)}
                       </Text>

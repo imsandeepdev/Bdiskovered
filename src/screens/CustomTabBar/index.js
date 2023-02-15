@@ -13,6 +13,7 @@ const CustomTabBar = props => {
   const navigateToFirstScreen = () => {
     props.navigation.navigate('HomeScreen');
     setSelect('HomeScreen');
+   
   };
 
   const navigateToSecondScreen = () => {

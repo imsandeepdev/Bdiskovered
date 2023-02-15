@@ -95,8 +95,7 @@ const onCallNotificationList = () => {
     console.log("NOTIFICATION LIST RES", response)
     if(response.status == 'success')
     {
-    Toast.show(response.message, Toast.SHORT);
-
+    // Toast.show(response.message, Toast.SHORT);
     setNotiList(response.dataList)
     setLoading(false);
 
@@ -131,6 +130,7 @@ const onCallNotificationList = () => {
           paddingHorizontal: R.fontSize.Size20,
         }}>
         <SwipeListView
+          showsVerticalScrollIndicator={false}
           data={notiList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {

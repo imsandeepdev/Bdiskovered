@@ -145,6 +145,8 @@ const ConnectedProfileScreen = props => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [profileDetails, setProfileDetails] = useState({});
+  const [profileDetailsChat, setProfileDetailsChat] = useState({});
+
   const [tailentPostVideo, setTailentPostVideo] = useState([]);
   const [taletArray, setTalentArray] = useState([]);
   const [personalArray, setPersonalArray] = useState([]);
@@ -166,6 +168,7 @@ const ConnectedProfileScreen = props => {
       console.log('Get Profile Res', response)
       if (response.status == 'success') {
         setProfileDetails(response.Profile);
+        setProfileDetailsChat(response);
         let tempTalentArray = response.Profile?.category;
          let useTalentArray = tempTalentArray.split(',');
          console.log('useTalentArray', useTalentArray);
@@ -225,6 +228,11 @@ const ConnectedProfileScreen = props => {
          tailentUserId: profileDetails?.user_id,
          MyUserId: result,
          userName: profileDetails?.name,
+         userItem: profileDetails,
+         fireID:
+           profileDetails?.user_id > result
+             ? result + '+' + profileDetails?.user_id
+             : profileDetails?.user_id + '+' + result,
        });
     })
   }
