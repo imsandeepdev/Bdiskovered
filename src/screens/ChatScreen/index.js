@@ -3,13 +3,6 @@ import {useState, useEffect} from 'react';
 import {View, Text, Image, SafeAreaView,ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, ActivityIndicator ,FlatList, TextInput } from 'react-native';
 import {AlartModal, Header, StoryScreen} from '../../components';
 import R from '../../res/R';
-import {GiftedChat,Bubble,InputToolbar,Send} from 'react-native-gifted-chat';
-import firestore from '@react-native-firebase/firestore'
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-// import {useSafeAreaInsets} from 'react-native-safe-area-context';
-// const insets = useSafeAreaInsets();
-import {isIphoneX,getBottomSpace} from 'react-native-iphone-x-helper';
-import DeviceInfo from 'react-native-device-info';
 import { connect, useDispatch } from 'react-redux';
 import { ConnectRequestRequest } from '../../actions/connectRequest.action';
 import database from '@react-native-firebase/database';
@@ -18,7 +11,6 @@ import moment from 'moment';
 import Toast from 'react-native-simple-toast';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import { Config } from '../../config';
-// import Aes from 'react-native-aes-crypto';
 import {AES,enc} from 'react-native-crypto-js'
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
@@ -42,14 +34,6 @@ const ChatScreen = props => {
     setConReqStatus(false);
     console.log('MY USER ID', props.route.params?.MyUserId);
     console.log('TAILENT USER ID', props.route.params?.tailentUserId);
-    // getAllMessages()
-    // getOnSnapMessage()
-    // onReadOneTime()
-    // const reference = database().ref(
-    //   `one_to_one/${props.route.params?.fireID}`,
-    // );
-    // reference.set(true).then(() => console.log('Online presence set'));
-    // console.log("REF",reference)
     onCallProfileAPI();
 
   }, [props.navigation]);
@@ -69,23 +53,23 @@ const ChatScreen = props => {
       .ref(`/one_to_one/${props.route.params?.fireID}`)
       .on('child_added', snapshot => {
         console.log('User data: ', snapshot.val());
-        let bytes = snapshot.val().chat_message;
-        let decryptMsg =  AES.decrypt(bytes, key);
-        const msg = decryptMsg.toString(enc.Utf8);
+        // let bytes = snapshot.val().chat_message;
+        // let decryptMsg =  AES.decrypt(bytes, key);
+        // const msg = decryptMsg.toString(enc.Utf8);
        
-        let msgData = {
-          chat_message: msg,
-          chatSenderId: snapshot.val().chatSenderId,
-          chatReceiverId: snapshot.val().chatReceiverId,
-          chat_receiver: snapshot.val().chat_receiver,
-          chat_receiver_img: snapshot.val().chat_receiver_img,
-          chat_sender: snapshot.val().chat_sender,
-          chat_sender_img: snapshot.val().chat_sender_img,
-          type: 'text',
-          chat_time: snapshot.val().chat_time,
-        };
-        console.log("MESSAGEDATA",msgData)
-        setAllChat(state => [msgData, ...state]);
+        // let msgData = {
+        //   chat_message: msg,
+        //   chatSenderId: snapshot.val().chatSenderId,
+        //   chatReceiverId: snapshot.val().chatReceiverId,
+        //   chat_receiver: snapshot.val().chat_receiver,
+        //   chat_receiver_img: snapshot.val().chat_receiver_img,
+        //   chat_sender: snapshot.val().chat_sender,
+        //   chat_sender_img: snapshot.val().chat_sender_img,
+        //   type: 'text',
+        //   chat_time: snapshot.val().chat_time,
+        // };
+        // console.log("MESSAGEDATA",msgData)
+        setAllChat(state => [snapshot.val(), ...state]);
       });
     return () => database().ref(`/one_to_one/${props.route.params?.fireID}`).off('child_added', onValueChange);
   }, [props.route.params?.fireID]);
@@ -164,15 +148,6 @@ useEffect(() => {
 
         console.log('ERRORONAPI', error);
       });
-
-
-    // dispatch(
-    //   ConnectRequestRequest(data, response => {
-    //     if (response.status == 'success') {
-    //       console.log('Connect Req Response', response);
-    //     }
-    //   }),
-    // );
   }
 
 
@@ -185,11 +160,11 @@ useEffect(() => {
       Toast.show('Enter Something....')
     }
    
-     const ciphertext = AES.encrypt(msg, key).toString();
-     console.log('Encrypted text:', ciphertext);
+    //  const ciphertext = AES.encrypt(msg, key).toString();
+    //  console.log('Encrypted text:', ciphertext);
 
     const mymsg = {
-      chat_message: ciphertext,
+      chat_message: msg,
       chatSenderId: props.route.params?.MyUserId,
       chatReceiverId: props.route.params?.tailentUserId,
       chat_receiver: props.route.params?.userItem?.username,
@@ -219,26 +194,6 @@ useEffect(() => {
         .catch(err => {
           console.log('Error on Snap', err);
         });
-
-      // firestore().collection('chatrooms')
-      // .doc(docid)
-      // .collection('message')
-      // .add({...mymsg, createdAt:firestore.FieldValue.serverTimestamp()})
-      // if(connReqStatus)
-      // {
-      //   let data ={
-      //     id: props.route.params?.tailentUserId,
-      //     chat_id: docid
-      //   }
-      //   console.log("DATA",data)
-      //   dispatch(ConnectRequestRequest(data, response => {
-      //     if(response.status == 'success')
-      //     {
-      //       console.log('Connect Req Response', response);
-      //       setConReqStatus(false)
-      //     }
-      //   }))
-      // }
   };
 
   const onCallSubscription = () => {
@@ -417,7 +372,7 @@ useEffect(() => {
         <AlartModal
           visible={customModalPicker}
           onRequestClose={() => setCustomModalPicker(false)}
-          title={`Your connection's limit has been exhausted, Please purchase add on plan`}
+          title={`You have reached your connections limit. Purchase Add-on plan?`}
           customButton={
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>

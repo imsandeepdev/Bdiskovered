@@ -517,7 +517,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
     const onDeleteAccountAlart = () => {
       Alert.alert(
         'Delete Account!',
-        `Are you sure want to delete account? \n\nif you wish to delete your account click the button below.Keep in mind once it’s deleted your account will sadly be gone forever.`,
+        `\nAre you sure you want to delete your account? \n`,
         [
           {
             text: 'YES',

@@ -71,7 +71,7 @@ const Menu = (props) => {
 
   const onLogout = () => {
     Alert.alert(
-      'Logout!',
+      '\n',
       'Are you sure want to Logout?',
       [
         {
@@ -127,13 +127,13 @@ const Menu = (props) => {
           />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
-          {props.userType == 'Business' && (
+          {/* {props.userType == 'Business' && (
             <CustomMenuButton
               onPress={() => props.navigation.replace('HomeMenu')}
               leftSource={R.images.inActiveHomeIcon}
               title={'Home'}
             />
-          )}
+          )} */}
           <CustomMenuButton
             onPress={() => props.navigation.navigate('ConnectionScreen')}
             leftSource={R.images.connectionsIcon}

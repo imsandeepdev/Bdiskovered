@@ -49,7 +49,7 @@ const SubscriptionCard = (props) => {
               style={{
                 flex: 1,
                 flexDirection: 'row',
-                alignItems: 'baseline',
+                alignItems: 'center',
               }}>
               <Text
                 style={{
@@ -103,6 +103,7 @@ const SubscriptionCard = (props) => {
                   fontSize: R.fontSize.Size14,
                   color: props.monthTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '500',
+                  flex: 1
                 }}>
                 {props.month}
               </Text>

@@ -193,7 +193,7 @@ const onCallNotificationList = () => {
                       fontWeight: '400',
                       color: R.colors.primaryTextColor,
                     }}
-                    numberOfLines={1}>
+                    numberOfLines={2}>
                     {item?.message}
                   </Text>
                   {/* <Text
@@ -278,7 +278,7 @@ const onCallNotificationList = () => {
                      fontWeight: '700',
                      color: R.colors.placeHolderColor,
                    }}>
-                   {`No notifications`}
+                   {`Notifications not found`}
                  </Text>
                </View>
              );

@@ -391,11 +391,12 @@ const onCallShowPostRefresh = () => {
     setVideoPlayPause(false);
     setCurrIndex(index)
     setSliderValue(0);
+    console.log("AllPostInfo",allVideoPostList)
   }
 
   
 
-  const onCallVideoRatingAPI = (PercentLike,PostId,index,userId,userType) => {
+  const onCallVideoRatingAPI = (PercentLike,PostId,index1,userId,userType) => {
     setLoading(true)
     let data1 = {
       id: PostId,
@@ -407,7 +408,10 @@ const onCallShowPostRefresh = () => {
       token: props.authToken,
     };
     console.log('LikeData', data1);
-    console.log('ALLPOST', allVideoPostList[index].total_likes);
+    console.log(
+      'PERCENT LIKE',
+      PercentLike,
+    );
     
     axios({
       method: 'POST',
@@ -422,11 +426,23 @@ const onCallShowPostRefresh = () => {
         setAllVideoPostList([
           ...allVideoPostList,
           {
-            total_likes: allVideoPostList[index].total_likes++,
-            total_rating: allVideoPostList[index].total_likes + PercentLike,
-            postInfo: allVideoPostList[index].postInfo[0]?.percentage_like,
+            total_likes: allVideoPostList[index1].total_likes++,
+            total_rating: allVideoPostList[index1].total_likes + PercentLike,
           },
         ]);
+        const dummyData = allVideoPostList;
+        let arr = dummyData.map((item, index) => {
+          if (index1 == index) {
+            // item.total_likes = item.total_likes++;
+            // item.total_rating =  item.total_likes + PercentLike,
+            item.postInfo = [...item.postInfo,{percentage_like:PercentLike}]
+          }
+          return {...item};
+        });
+        console.log('saved post return', arr);
+        setAllVideoPostList(arr);
+
+        
         
         setLoading(false);
       } else {
@@ -512,18 +528,28 @@ VideoLink :${videoURL}`,
     setSelectReport('')
   }
 
-  const onCallSavePost = (postId) => {
+  const onCallSavePost = (postId,ind) => {
     let data = {
       post_id: postId
     };
     setLoading(true)
+   
     dispatch(SavedPostRequest(data, response =>{
       console.log('Saved Post Response', response);
       if(response.status == 'success')
       {
-        onCallShowAllPost();
+        const dummyData = allVideoPostList;
+         let arr = dummyData.map((item, index) => {
+           if (ind == index) {
+             item.post_save = !item.post_save;
+           }
+           return {...item};
+         });
+        console.log('saved post return', arr);
+        setAllVideoPostList(arr);
+        
         Toast.show(response?.message,Toast.SHORT)
-        //  setLoading(false);
+         setLoading(false);
       }
       else
       {
@@ -533,7 +559,7 @@ VideoLink :${videoURL}`,
     }))
   }
 
-  const onCallRemoveSavePost = postId => {
+  const onCallRemoveSavePost = (postId,ind) => {
     let data = {
       post_id: postId,
     };
@@ -542,7 +568,17 @@ VideoLink :${videoURL}`,
       DeleteSavedPostRequest(data, response => {
         console.log('UnSaved Post Response', response);
         if (response.status == 'success') {
-          onCallShowAllPost();
+          const dummyData = allVideoPostList;
+          let arr = dummyData.map((item, index) => {
+            if (ind == index) {
+              item.post_save = !item.post_save;
+            }
+            return {...item};
+          });
+          console.log('saved post return', arr);
+          setAllVideoPostList(arr);
+          setLoading(false);
+
         } else {
           Toast.show(response?.message, Toast.SHORT);
           setLoading(false);
@@ -728,8 +764,8 @@ const onCallReportPost = () => {
                       paused={currIndex !== index || videoPlayPause}
                       onPressSave={() => {
                         item?.post_save
-                          ? onCallRemoveSavePost(item?.postID)
-                          : onCallSavePost(item?.postID);
+                          ? onCallRemoveSavePost(item?.postID,index)
+                          : onCallSavePost(item?.postID,index);
                       }}
                       saveIcon={
                         item?.post_save
@@ -885,7 +921,7 @@ const onCallReportPost = () => {
                         }}>
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
-                        item?.postInfo[0]?.percentage_like != null 
+                        item?.postInfo[0]?.percentage_like != null
                           ? `${parseInt(item.postInfo[0]?.percentage_like)}`
                           : sliderValue.toFixed(0)}
                       </Text>
@@ -1190,7 +1226,7 @@ const onCallReportPost = () => {
         onRequestClose={() => setReportOkModal(false)}
         icon={R.images.checkOrangeIcon}
         marginHorizontalModal={R.fontSize.Size35}
-        title={`Thank you for feedback\nYour request is under review. We will verify it and take further action.`}
+        title={`Your feedback is important to us.\nWe'll review your request and take appropriate action, if required.`}
         onPress={() => setReportOkModal(false)}
       />
     </StoryScreen>
@@ -1198,7 +1234,10 @@ const onCallReportPost = () => {
 };
 
 const mapStateToProps = (state, props) => ({
-  loading: state.auth.loading || state.getProfileDetailsRoot.loading,
+  loading:
+    state.auth.loading ||
+    state.getProfileDetailsRoot.loading ||
+    state.savedPostRoot.loading,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
   userType: state.auth.userType,

@@ -195,6 +195,9 @@ const VideoCard = React.forwardRef((props,ref) => {
                   marginRight: R.fontSize.Size10,
                   alignItems: 'center',
                 }}>
+                {
+                  props.saveHidden ? null : 
+                <View>
                 <Pressable
                   onPress={props.onPressSave}
                   style={({pressed}) => [
@@ -223,9 +226,12 @@ const VideoCard = React.forwardRef((props,ref) => {
                     fontSize: R.fontSize.Size14,
                     fontFamily: R.fonts.regular,
                     fontWeight: '400',
+                    textAlign:'center'
                   }}>
                   {props.saveTitle ?? 'Save'}
                 </Text>
+                </View>
+                }
               {    
                 props.shareHidden ? null :            
                 <View>
@@ -258,6 +264,7 @@ const VideoCard = React.forwardRef((props,ref) => {
                     fontSize: R.fontSize.Size14,
                     fontFamily: R.fonts.regular,
                     fontWeight: '400',
+                    textAlign:'center'
                   }}>
                   {'Share'}
                 </Text>

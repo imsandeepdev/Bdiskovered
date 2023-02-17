@@ -275,6 +275,10 @@ const FilterVideoScreen = props => {
         item?.gender,
         `${item?.address != '' ? item?.address : ''}`,
       ]);
+       let tempTalentArray = item?.category;
+       let useTalentArray = tempTalentArray.split(',');
+       console.log('useTalentArray', useTalentArray);
+       setVideoModalTalentDetail(useTalentArray);
       setVideoModalAvailableDetail([
         {type: item?.job_type1, amount: item?.full_time_amount},
         {type: item?.job_type2, amount: item?.part_time_amount},
@@ -529,10 +533,11 @@ const onCallBlockPost = () => {
                           ? true
                           : false
                       }
-                      reportHidden={
+                      reportHidden={true}
+                      saveHidden={
                         props.route.params?.fromScreen == 'SavedPostListScreen'
-                          ? true
-                          : false
+                          ? false
+                          : true
                       }
                       onPressSave={() =>
                         props.route.params?.fromScreen == 'SavedPostListScreen'
@@ -547,7 +552,7 @@ const onCallBlockPost = () => {
                       saveTitle={
                         props.route.params?.fromScreen == 'SavedPostListScreen'
                           ? ``
-                          : `Save`
+                          : ``
                       }
                       onPressShare={() =>
                         myCustomShare(
@@ -839,7 +844,7 @@ const onCallBlockPost = () => {
                           );
                         })}
                       </View>
-                      {/* <View style={Styles.videoModalMapMainView}>
+                      <View style={Styles.videoModalMapMainView}>
                         {videoModalTalentDetail.map((item, index) => {
                           console.log('ITEM', item);
                           return (
@@ -854,7 +859,8 @@ const onCallBlockPost = () => {
                             </View>
                           );
                         })}
-                      </View> */}
+                      </View>
+                     
                       <View
                         style={{
                           flexWrap: 'wrap',
@@ -1024,7 +1030,7 @@ const onCallBlockPost = () => {
         onRequestClose={() => setReportOkModal(false)}
         icon={R.images.checkOrangeIcon}
         marginHorizontalModal={R.fontSize.Size35}
-        title={`Thank you for feedback\nYour request is under review. We will verify it and take further action.`}
+        title={`Your feedback is important to us.\nWe'll review your request and take appropriate action, if required`}
         onPress={() => setReportOkModal(false)}
       />
     </View>

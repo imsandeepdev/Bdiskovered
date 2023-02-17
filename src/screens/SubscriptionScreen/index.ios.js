@@ -329,10 +329,12 @@ const SubscriptionScreen = props => {
             response?.description?.feature_2,
             response?.description?.feature_3,
             response?.description?.feature_4,
-            props.userType == '!Talent'
-              ? response?.description?.feature_5
-              : response?.description?.feature_6,
-            props.userType == '!Talent' && response?.description?.feature_6,
+            response?.description?.feature_5,
+            // props.userType == '!Talent'
+            //   ? response?.description?.feature_5
+            //   : response?.description?.feature_6,
+            // props.userType == '!Talent' && response?.description?.feature_6,
+            response?.description?.feature_6,
             response?.description?.feature_7,
             response?.description?.feature_8,
             response?.description?.feature_9,
@@ -359,11 +361,12 @@ const SubscriptionScreen = props => {
             response.data[0]?.description[0]?.feature_2,
             response.data[0]?.description[0]?.feature_3,
             response.data[0]?.description[0]?.feature_4,
-            props.userType == '!Talent'
-              ? response.data[0]?.description[0]?.feature_5
-              : response.data[0]?.description[0]?.feature_6,
-            props.userType == '!Talent' &&
-              response.data[0]?.description[0]?.feature_6,
+            response.data[0]?.description[0]?.feature_5,
+            // props.userType == '!Talent'
+            //   ? response.data[0]?.description[0]?.feature_5
+            //   : response.data[0]?.description[0]?.feature_6,
+            // props.userType == '!Talent' && response.data[0]?.description[0]?.feature_6,
+            response.data[0]?.description[0]?.feature_6,
             response.data[0]?.description[0]?.feature_7,
             response.data[0]?.description[0]?.feature_8,
             response.data[0]?.description[0]?.feature_9,
@@ -637,8 +640,8 @@ const SubscriptionScreen = props => {
                                       fontSize: R.fontSize.Size12,
                                       marginLeft: R.fontSize.Size10,
                                     }}
-                                    numberOfLines={1}>
-                                    {item}
+                                    numberOfLines={3}>
+                                    {`${item}`}
                                   </Text>
                                 </View>
                               )}
@@ -667,8 +670,8 @@ const SubscriptionScreen = props => {
                         <Image
                           source={R.images.chevronDown}
                           style={{
-                            height: R.fontSize.Size5,
-                            width: R.fontSize.Size8,
+                            height: R.fontSize.Size14,
+                            width: R.fontSize.Size14,
                             transform: [
                               {rotate: getSubDescActive ? '180deg' : '0deg'},
                             ],
@@ -808,7 +811,7 @@ const SubscriptionScreen = props => {
                       marginTop={R.fontSize.Size15}
                       price={`${item?.currency} ${item?.price}`}
                       month={
-                        item?.title
+                       `${item?.title}`
                       }
                       onPressAdd={() => onCheckModal(item)}
                     />
@@ -991,7 +994,7 @@ const SubscriptionScreen = props => {
       <AlartModal
         visible={alartModalPicker}
         onRequestClose={() => setAlartModalPicker(false)}
-        title={`First buy the subscription plan after that you can buy add-on services.`}
+        title={`Add-on services can only be purchased by customers who have an active subscription plan.`}
         onPress={() => setAlartModalPicker(false)}
       />
 

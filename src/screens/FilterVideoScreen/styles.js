@@ -81,7 +81,7 @@ const Styles = StyleSheet.create({
     paddingVertical: R.fontSize.Size6,
     backgroundColor: R.colors.appColor,
     borderRadius: R.fontSize.Size8,
-    marginBottom: R.fontSize.Size14,
+    marginBottom: R.fontSize.Size10,
     width: screenWidth / 3.8,
   },
   videoModalTalentText: {
@@ -89,7 +89,6 @@ const Styles = StyleSheet.create({
     fontSize: R.fontSize.Size14,
     fontWeight: '700',
     color: R.colors.white,
-    marginLeft: R.fontSize.Size8,
     textAlign: 'center',
   },
   videoModalAvailableText: {

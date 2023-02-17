@@ -101,7 +101,7 @@ BDISKOVERED is here to change that.
                 textAlign: 'center',
                 marginTop: R.fontSize.Size8,
               }}>
-              {'nizar@bdiskovered.com'}
+              {'feedback@bdiskovered.com'}
             </Text>
             <Text
               style={{

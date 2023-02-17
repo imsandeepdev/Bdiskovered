@@ -1031,7 +1031,7 @@ const onCallDeviceName = () => {
         title={
           props.userType == 'Business'
             ? `Please create a talent profile to upload videos.`
-            : `you will be required to login again to update your profile as a talent. Proceed ?`
+            : `you will be required to login again to update your profile as a talent.?`
         }
         customButton={
           props.userType == 'Business' ? (
