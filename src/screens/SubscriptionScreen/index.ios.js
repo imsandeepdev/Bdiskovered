@@ -670,8 +670,8 @@ const SubscriptionScreen = props => {
                         <Image
                           source={R.images.chevronDown}
                           style={{
-                            height: R.fontSize.Size14,
-                            width: R.fontSize.Size14,
+                            height: R.fontSize.Size18,
+                            width: R.fontSize.Size18,
                             transform: [
                               {rotate: getSubDescActive ? '180deg' : '0deg'},
                             ],

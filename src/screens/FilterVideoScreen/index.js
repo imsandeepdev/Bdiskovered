@@ -254,7 +254,7 @@ const FilterVideoScreen = props => {
     }).then(res => {
       console.log('LIKE RES', res);
       if (res.data.status == 'success') {
-        Toast.show(res.data.message, Toast.SHORT);
+        // Toast.show(res.data.message, Toast.SHORT);
         setVideoList(videoList);
         setTimeout(() => {
           setSliderValue(0);
@@ -286,7 +286,7 @@ const FilterVideoScreen = props => {
       ]); 
   };
 
-   const onCallConnectNow = profileID => {
+   const onCallConnectNow = (item) => {
     console.log(
       'PROFILE SUBSCRIPTION',
       props.userProfile?.Profile?.subscription,
@@ -295,20 +295,22 @@ const FilterVideoScreen = props => {
     
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
-           profileId: profileID,
+           profileId: item.profileID,
            myUserId: props.userProfile?.Profile?.user_id,
+           tailentPost: item,
          })
        : props.navigation.navigate('SubscriptionScreen');
    };
 
 
-    const onPressOrangeAppIcon = profileID => {
+    const onPressOrangeAppIcon = (item) => {
       console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
      
       props.userProfile?.Profile?.subscription != 0
         ? props.navigation.navigate('ConnectedProfileScreen', {
-            profileId: profileID,
+            profileId: item.profileID,
             myUserId: props.userProfile?.Profile?.user_id,
+            tailentPost: item,
           })
         : props.navigation.navigate('SubscriptionScreen');
     };
@@ -358,7 +360,7 @@ const onCallSavePost = postId => {
     SavedPostRequest(data, response => {
       console.log('Saved Post Response', response);
       if (response.status == 'success') {
-        Toast.show(response?.message, Toast.SHORT);
+        // Toast.show(response?.message, Toast.SHORT);
         setLoading(false);
       } else {
         Toast.show(response?.message, Toast.SHORT);
@@ -519,12 +521,12 @@ const onCallBlockPost = () => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      eyeonPress={() => onCallModal(item)}
-                      eyeIcon={R.images.eyeIcon}
+                      eyeonPress={() => {props.route.params?.fromScreen != 'SavedPostListScreen' && onCallModal(item)}}
+                      eyeIcon={props.route.params?.fromScreen != 'SavedPostListScreen' && R.images.eyeIcon}
                       userName={item?.username}
                       videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
-                      bottomDiscription={item?.bio}
+                      bottomDiscription={item?.description}
                       usdPrice={`USD ${item?.amount}`}
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
@@ -698,13 +700,13 @@ const onCallBlockPost = () => {
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
                         item.postInfo[0]?.percentage_like != null
-                          ? `${parseInt(item.postInfo[0]?.percentage_like)}`
-                          : sliderValue.toFixed(0)}
+                          ? `${parseInt(item.postInfo[0]?.percentage_like)}%`
+                          : `${sliderValue.toFixed(0)}%`}
                       </Text>
                     </View>
 
                     <Pressable
-                      onPress={() => onPressOrangeAppIcon(item?.profileID)}
+                      onPress={() => onPressOrangeAppIcon(item)}
                       style={({pressed}) => [
                         {
                           marginHorizontal: R.fontSize.Size8,
@@ -834,9 +836,11 @@ const onCallBlockPost = () => {
                         {videoModalPersonalDetail.map((item, index) => {
                           return (
                             <View key={index} style={Styles.videoModalMapView}>
-                              <View
-                                style={Styles.videoModalPersonalDetailView}
-                              />
+                              {item != '' && (
+                                <View
+                                  style={Styles.videoModalPersonalDetailView}
+                                />
+                              )}
                               <Text style={Styles.videoModalPersonalDetailText}>
                                 {item}
                               </Text>
@@ -892,7 +896,7 @@ const onCallBlockPost = () => {
             <View style={{paddingVertical: R.fontSize.Size10}}>
               <AppButton
                 onPress={() => {
-                  onCallConnectNow(videoModalDetail?.profileID);
+                  onCallConnectNow(videoModalDetail);
                 }}
                 title={'Connect'}
                 marginHorizontal={R.fontSize.Size55}
@@ -921,7 +925,7 @@ const onCallBlockPost = () => {
             ? onCallBlockUser()
             : onCallBlockPost();
         }}
-        reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
+        reportTitle={selectTypeReport == 'report' ? 'Proceed' : 'Proceed'}
         title={
           selectTypeReport == 'report'
             ? 'Why are you reporting this post? '
@@ -998,7 +1002,7 @@ const onCallBlockPost = () => {
                     textAlign: 'center',
                   }}>
                   {
-                    'This video has been hidden? \nwe will not recommend this types of video again.'
+                    'We have hidden this video and will not recommend similar content in the future.'
                   }
                 </Text>
               </View>
@@ -1018,7 +1022,7 @@ const onCallBlockPost = () => {
                     fontSize: R.fontSize.Size16,
                     textAlign: 'center',
                   }}>
-                  {`They won't be able to find your profile, video on BDiskovered. Bdiskovered won't let them know that you've blocked them.  `}
+                  {`Blocking someone on BDiskovered hides your profile and videos without notification.`}
                 </Text>
               </View>
             )}

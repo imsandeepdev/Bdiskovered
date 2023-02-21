@@ -97,6 +97,10 @@ const ReportDetailModal = props => {
                         </View>
                     </Pressable> */}
             </View>
+            {
+              props.buttonHidden ? null
+              :
+            
             <View
               style={{
                 flexDirection: 'row',
@@ -155,6 +159,7 @@ const ReportDetailModal = props => {
                 </Text>
               </Pressable>
             </View>
+          }
           </View>
         </View>
       </View>

@@ -328,7 +328,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
         'Are you sure want to delete this video?',
         [
           {
-            text: 'Yes',
+            text: 'Proceed',
             onPress: () => onCallDeletevideoAPI(postId),
           },
           {
@@ -520,7 +520,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
         `\nAre you sure you want to delete your account? \n`,
         [
           {
-            text: 'YES',
+            text: 'Proceed',
             onPress: () => onCallDeleteAccountAPI(),
           },
           {
@@ -965,9 +965,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                     }}>
                     <Pressable
                       onPress={() =>
-                        props.navigation.navigate('UpdateProfileScreen', {
-                          profileDetail: profileDetails,
-                        })
+                        props.navigation.navigate('UpdateProfileScreen')
                       }
                       style={({pressed}) => [
                         {
@@ -1194,7 +1192,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                               playButtonVisible={true}
                             />
                           </Pressable>
-                          <Pressable
+                          {/* <Pressable
                             onPress={() => onDeleteVideoAlart(item?._id)}
                             style={({pressed}) => [
                               {
@@ -1226,7 +1224,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                                 resizeMode={'contain'}
                               />
                             </View>
-                          </Pressable>
+                          </Pressable> */}
                         </View>
                       );
                     })}

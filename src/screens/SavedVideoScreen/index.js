@@ -619,7 +619,7 @@ AppLink :https://mir-s3-cdn-cf.behance.net/projects/404/fe8316130815503.Y3JvcCw4
         closeModal={() => onCallClosedReportDetailModal()}
         onPressCancel={() => onCallClosedReportDetailModal()}
         onPressReport={() => console.log('Report')}
-        reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
+        reportTitle={selectTypeReport == 'report' ? 'Proceed' : 'Proceed'}
         title={selectTypeReport == 'report' ? 'Why are you reporting this post? ' : null}
         ReportContent={
           <View>

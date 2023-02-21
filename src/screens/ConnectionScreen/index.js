@@ -96,9 +96,12 @@ const ConnectionScreen = props => {
                   props.navigation.navigate('ChatScreen', {
                     tailentUserId: item?.user_id,
                     MyUserId: myUserId,
-                    userName: item?.name,
+                    userName: item?.username,
                     userItem: item,
-                    fireID :(item?.user_id > myUserId)? myUserId + '+' + item?.user_id : item?.user_id +'+' + myUserId
+                    fireID:
+                      item?.user_id > myUserId
+                        ? myUserId + '+' + item?.user_id
+                        : item?.user_id + '+' + myUserId,
                   })
                 }
                 style={({pressed}) => [
@@ -147,7 +150,7 @@ const ConnectionScreen = props => {
                       fontWeight: '700',
                       color: R.colors.primaryTextColor,
                     }}>
-                    {item?.name}
+                    {item?.username}
                   </Text>
                 </View>
               </Pressable>

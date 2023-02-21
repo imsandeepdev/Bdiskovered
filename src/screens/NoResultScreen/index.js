@@ -33,10 +33,10 @@ const NoResultScreen = props => {
   return (
     <StoryScreen>
       <SafeAreaView style={{flex: 1}}>
-        <Header
+        {/* <Header
           onPress={() => props.navigation.goBack()}
           leftSource={R.images.chevronBack}
-        />
+        /> */}
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           {
             props.route.params?.from == 'SearchScreen' ?

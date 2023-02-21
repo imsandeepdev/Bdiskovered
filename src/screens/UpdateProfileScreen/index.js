@@ -82,7 +82,7 @@ const CustomTimeRow = props => {
                 color: R.colors.primaryTextColor,
                 fontWeight: '400',
               }}
-              maxLength={6}
+              maxLength={5}
               placeholder={'00'}
               placeholderTextColor={R.colors.placeholderTextColor}
               value={props.rightValue}
@@ -266,20 +266,33 @@ const UpdateProfileScreen = (props) => {
      const onCheckValidity = () => {
       return onCheckFullTime() && onCheckPartTime() && onCheckGigs()
      }
+    
+    const spaceValid = txt => txt && txt.replace(/\s/g, '').length;
+    const zeroValid = txt => txt && txt.replace(/0/g, '').length;
+
 
      const onCheckFullTime = () => {
-      if (selectFullTime && fullTimePrice == '') {
-        Toast.show('Please enter full time price', Toast.SHORT);
+      if (
+        selectFullTime &&
+        (fullTimePrice == '' ||
+          spaceValid(fullTimePrice) == 0 ||
+          zeroValid(fullTimePrice) == 0)
+      ) {
+        Toast.show('Please enter valid full time price', Toast.SHORT);
         return false;
-      }
-      else{
-        return true
+      } else {
+        return true;
       }
      }
 
      const onCheckPartTime = () => {
-       if (selectPartTime && partTimePrice == '') {
-         Toast.show('Please enter part time price', Toast.SHORT);
+       if (
+         selectPartTime &&
+         (partTimePrice == '' ||
+           spaceValid(partTimePrice) == 0 ||
+           zeroValid(partTimePrice) == 0)
+       ) {
+         Toast.show('Please enter valid part time price', Toast.SHORT);
          return false;
        } else {
          return true;
@@ -287,8 +300,13 @@ const UpdateProfileScreen = (props) => {
      };
 
       const onCheckGigs = () => {
-        if (selectGigs && gigsPrice == '') {
-          Toast.show('Please enter gigs price', Toast.SHORT);
+        if (
+          selectGigs &&
+          (gigsPrice == '' ||
+            spaceValid(gigsPrice) == 0 ||
+            zeroValid(gigsPrice) == 0)
+        ) {
+          Toast.show('Please enter valid gigs price', Toast.SHORT);
           return false;
         } else {
           return true;

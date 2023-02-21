@@ -45,7 +45,7 @@ const BlockUserScreen = props => {
        `Are you sure want to unblock this user ?`,
        [
          {
-           text: 'YES',
+           text: 'Proceed',
            onPress: () => onCallUnblockUserAPI(userId),
          },
          {
@@ -118,8 +118,8 @@ const BlockUserScreen = props => {
                 ]}>
                 <View
                   style={{
-                    height: R.fontSize.Size55,
-                    width: R.fontSize.Size55,
+                    height: R.fontSize.Size50,
+                    width: R.fontSize.Size50,
                     borderRadius: R.fontSize.Size30,
                     borderWidth: 1,
                     borderColor: R.colors.placeholderTextColor,

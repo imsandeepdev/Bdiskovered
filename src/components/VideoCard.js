@@ -114,6 +114,7 @@ const VideoCard = React.forwardRef((props,ref) => {
               style={({pressed}) => [
                 {
                   opacity: pressed ? 0.5 : 1,
+                  marginTop: props.eyeMarginTop
                 },
               ]}>
               <Image

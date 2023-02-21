@@ -206,3 +206,8 @@ export const unblock_User_error = 'unblock_User_error';
 export const inApp_Payment = 'inApp_Payment';
 export const inApp_Payment_success = 'inApp_Payment_success';
 export const inApp_Payment_error = 'inApp_Payment_error';
+
+// editPost
+export const edit_Post = 'edit_Post';
+export const edit_Post_success = 'edit_Post_success';
+export const edit_Post_error = 'edit_Post_error';

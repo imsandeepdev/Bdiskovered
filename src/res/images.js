@@ -102,6 +102,10 @@ const images = {
   privacyIcon: require('./images/privacyIcon.png'),
   termIcon: require('./images/termIcon.png'),
   contactIcon: require('./images/contactIcon.png'),
+
+  sentIcon: require('./images/sentIcon.png'),
+  greySentIcon: require('./images/greySentIcon.png'),
+  lightSentIcon: require('./images/lightSentIcon.png'),
 };
 
 export {images};

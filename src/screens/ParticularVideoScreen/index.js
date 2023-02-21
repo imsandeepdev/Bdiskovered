@@ -15,6 +15,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Alert
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
@@ -22,8 +23,11 @@ import {
   AppButton,
   FullViewStoryScreen,
   Header,
+  ReportModal,
   StoryScreen,
   VideoCard,
+  ReportDetailModal,
+  CustomLineTextInput
 } from '../../components';
 import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
@@ -37,6 +41,8 @@ import Styles from './styles';
 import { PlayParticularVideoRequest } from '../../actions/showAllPost.action';
 import { BoostPostRequest } from '../../actions/boostPost.action';
 import { SavedPostRequest } from '../../actions/savedPost.action';
+import { EditPostRequest, PostDeleteRequest } from '../../actions/uploadNewVideo.action';
+import CommonFunctions from '../../utils/CommonFuntions';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -53,6 +59,38 @@ const ParticularVideoScreen = props => {
   const [boostMsg, setBoostMsg] = useState('')
   const [boostStatus, setBoostStatus] = useState(false)
   const [videoPostID, setVideoPostID] = useState()
+  const [editModalPicker, setEditModalPicker] = useState(false);
+  const [editVideoPicker, setEditVideoPicker] = useState(false);
+  const [playVideo, setPlayVideo] = useState(false)
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoDesc, setVideoDesc] = useState('');
+  const [videoPrice, setVideoPrice] = useState('');
+  const [videoTypes, setVideoTypes] = useState([]);
+  
+  const [postId, setPostId] = useState('')
+  const [videoTypeList, setVideoTypeList] = useState([
+    {
+      id: '1',
+      title: 'Music',
+    },
+    {
+      id: '2',
+      title: 'Art',
+    },
+    {
+      id: '3',
+      title: 'Dance',
+    },
+    {
+      id: '4',
+      title: 'Fashion',
+    },
+  ]);
+  const [selectNegotiable, setSelectNegotiable] = useState(false);
+
+
+    
+
  
 
   useEffect(() => {
@@ -83,6 +121,29 @@ const ParticularVideoScreen = props => {
         if(response.status == 'success')
         {
         setVideoList([...response?.Post]);
+        setVideoTitle(response.Post[0]?.title);
+        setVideoDesc(response.Post[0]?.description);
+        setVideoPrice(response.Post[0]?.amount);
+
+        let resCategory = response.Post[0]?.category;
+        console.log('ResCategory', resCategory);
+
+        let arr = videoTypeList.map((item, index) => {
+          console.log(resCategory.includes(item.title));
+          if (resCategory.includes(item.title)) {
+            console.log('TRUE', item?.title);
+            item.selected = true;
+          } else {
+            console.log('FALSE', item?.title);
+            item.selected = false;
+          }
+          return {...item};
+        });
+        console.log('VideoListArray', arr);
+        setVideoTypeList(arr);
+        setVideoTypes(resCategory.split(','));
+
+
         setLoading(false);
         }
         else{
@@ -202,6 +263,145 @@ const onCallSavePost = postId => {
     
   }
 
+      const onDeleteVideoAlart = () => {
+        Alert.alert(
+          'Delete Video!',
+          'Are you sure want to delete this video?',
+          [
+            {
+              text: 'Proceed',
+              onPress: () => onCallDeletevideoAPI(),
+            },
+            {
+              text: 'No',
+            },
+          ],
+          {
+            cancelable: true,
+          },
+        );
+      };
+
+      const onCallDeletevideoAPI = () => {
+        setLoading(true);
+        let data = {
+          id: postId,
+        };
+        console.log('PostId', data);
+        dispatch(
+          PostDeleteRequest(data, response => {
+            console.log('Postdelete Response', response);
+            if (response.status) {
+              setLoading(false);
+              setEditModalPicker(false)
+              Toast.show(response.message, Toast.SHORT);
+              props.navigation.goBack()
+            } else {
+              Toast.show(response.message, Toast.SHORT);
+              setEditModalPicker(false);
+              setLoading(false);
+            }
+          }),
+        );
+      };
+
+  const onCallEditVideoModal = () => {
+    setEditModalPicker(false)
+
+    setPlayVideo(true)
+    setEditVideoPicker(true)
+  }
+
+  const onCallRequestClose = () => {
+    setPlayVideo(false)
+    setEditVideoPicker(false);
+  }
+
+  const onCallVideoSelect = (item, ind) => {
+    const dummyData = videoTypeList;
+    let arr = dummyData.map((item, index) => {
+      if (ind == index) {
+        item.selected = !item.selected;
+      }
+      return {...item};
+    });
+    console.log('arr return', arr);
+    let tempArray = [];
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].selected) {
+        tempArray.push(arr[i].title);
+      }
+    }
+    console.log('TempArray', tempArray);
+    setVideoTypes(tempArray);
+    setVideoTypeList(arr);
+  };
+
+  const checkValid = () => {
+    return (
+     
+      CommonFunctions.isBlank(videoTitle.trim(), 'Please Enter Video Title') &&
+      CommonFunctions.isBlank(
+        videoDesc.trim(),
+        'Please Enter Video Description',
+      ) &&
+      onCheckVideoType()
+    );
+  };
+
+ 
+  const onCheckVideoType = () => {
+    if (videoTypes.length == 0) {
+      Toast.show('Please Select Video Type', Toast.SHORT);
+      return false;
+    }
+    return true;
+  };
+
+  const oncheckValidVideo = () => {
+    if (checkValid()) {
+      onCallPostUpdateAPI();
+    }
+  };
+
+  const onCallPostUpdateAPI = () => {
+
+    let data = {
+      post_id:postId,
+      title:videoTitle,
+      caption:videoDesc,
+      amount:videoPrice,
+      category:videoTypes.toString(),
+      negotiable:selectNegotiable
+    }
+    setLoading(true)
+    console.log("EDIT VIDEO DATA",data)
+    dispatch(EditPostRequest(data, response=>{
+
+      console.log("Edit Video Response",response)
+      if(response.status)
+      {
+        Toast.show(response.message, Toast.SHORT);
+
+        setLoading(false)
+        onCallRequestClose()
+        props.navigation.goBack()
+      }
+      else
+      {
+        setLoading(false);
+        onCallRequestClose();
+        Toast.show(response.message, Toast.SHORT);
+      }
+    }))
+
+  }
+
+  const onCallOpenEditVideoModal = (postId) => {
+    setEditModalPicker(true)
+    setPostId(postId)
+  }
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
@@ -236,7 +436,16 @@ const onCallSavePost = postId => {
                           bottomDiscription={item?.description}
                           usdPrice={`USD ${item?.amount}`}
                           onLoad={onLoad}
-                          paused={currIndex !== index || videoPlayPause}
+                          eyeMarginTop={R.fontSize.Size40}
+                          eyeonPress={() => {
+                            props.route.params?.from == 'ProfileScreen' &&
+                              onCallOpenEditVideoModal(item.postID);
+                          }}
+                          eyeIcon={
+                            props.route.params?.from == 'ProfileScreen' &&
+                            R.images.greyDotsIcon
+                          }
+                          paused={playVideo}
                           reportHidden={true}
                           onPressSave={() => onCallSavePost(item?.postID)}
                           onPressShare={() =>
@@ -388,11 +597,16 @@ const onCallSavePost = postId => {
                             {item?.postInfo != 'undefined' &&
                             item?.postInfo != null &&
                             item.postInfo[0]?.percentage_like != null
-                              ? `${parseInt(item.postInfo[0]?.percentage_like)}`
-                              : sliderValue.toFixed(0)}
+                              ? `${parseInt(
+                                  item.postInfo[0]?.percentage_like,
+                                )}%`
+                              : `${sliderValue.toFixed(0)}%`}
                           </Text>
                         </View>
-                        {/* <Pressable
+                        {props.route.params?.from == 'ProfileScreen'
+                        &&
+                        
+                        <Pressable
                           disabled={
                             props.route.params?.from == 'ProfileScreen'
                               ? false
@@ -407,11 +621,7 @@ const onCallSavePost = postId => {
                             },
                           ]}>
                           <Image
-                            source={
-                              props.route.params?.from == 'ProfileScreen'
-                                ? R.images.boostIcon
-                                : R.images.orangeAppIcon
-                            }
+                            source={R.images.boostIcon}
                             style={{
                               height: R.fontSize.Size40,
                               width: R.fontSize.Size30,
@@ -419,7 +629,7 @@ const onCallSavePost = postId => {
                             }}
                             resizeMode={'contain'}
                           />
-                          {props.route.params?.from == 'ProfileScreen' && (
+                         
                             <Text
                               style={{
                                 fontFamily: R.fonts.regular,
@@ -430,8 +640,9 @@ const onCallSavePost = postId => {
                               numberOfLines={1}>
                               {'Boost'}
                             </Text>
-                          )}
-                        </Pressable> */}
+                          
+                        </Pressable>
+                        }
                       </View>
                     </View>
                   );
@@ -528,6 +739,152 @@ const onCallSavePost = postId => {
                 {'Proceed'}
               </Text>
             </Pressable>
+          </View>
+        }
+      />
+      <ReportModal
+        visible={editModalPicker}
+        onRequestClose={() => setEditModalPicker(false)}
+        closeModal={() => setEditModalPicker(false)}
+        title1={`Delete`}
+        title2={`Edit Video`}
+        icon1={R.images.grayDeleteIcon}
+        icon2={R.images.profileEditIcon}
+        optionThird={true}
+        onPress1={() => onDeleteVideoAlart()}
+        onPress2={() => onCallEditVideoModal()}
+      />
+      <ReportDetailModal
+        visible={editVideoPicker}
+        onRequestClose={() => onCallRequestClose()}
+        closeModal={() => onCallRequestClose()}
+        title={'Edit Video'}
+        buttonHidden={true}
+        ReportContent={
+          <View>
+            <View
+              style={{
+                marginTop: R.fontSize.Size2,
+                backgroundColor: R.colors.white,
+              }}>
+              <CustomLineTextInput
+                value={videoTitle}
+                onChangeText={title => setVideoTitle(title)}
+                placeholder={'Title'}
+              />
+              <CustomLineTextInput
+                value={videoDesc}
+                onChangeText={desc => setVideoDesc(desc)}
+                placeholder={'Description'}
+              />
+              <CustomLineTextInput
+                value={videoPrice}
+                onChangeText={price => setVideoPrice(price)}
+                placeholder={'Price in USD'}
+                keyboardType={'number-pad'}
+              />
+
+              <View style={{marginVertical: R.fontSize.Size10}}>
+                <Pressable
+                  onPress={() => setSelectNegotiable(!selectNegotiable)}
+                  style={({pressed}) => [
+                    {
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      opacity: pressed ? 0.5 : 1,
+                    },
+                  ]}>
+                  <Image
+                    source={
+                      selectNegotiable
+                        ? R.images.checkTermsIcon
+                        : R.images.unCheckTermsIcon
+                    }
+                    style={{
+                      height: R.fontSize.Size20,
+                      width: R.fontSize.Size20,
+                    }}
+                    resizeMode={'contain'}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      color: R.colors.primaryTextColor,
+                      fontSize: R.fontSize.Size12,
+                      fontWeight: '500',
+                      marginLeft: R.fontSize.Size10,
+                    }}>
+                    {'Negotiable'}
+                  </Text>
+                </Pressable>
+              </View>
+
+              <View style={{marginVertical: R.fontSize.Size8}}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size14,
+                    fontWeight: '700',
+                    color: R.colors.primaryTextColor,
+                  }}>
+                  {'Video Type'}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flexDirection: 'row',
+                  marginLeft: -R.fontSize.Size14,
+                }}>
+                {videoTypeList.map((item, index) => {
+                  return (
+                    <Pressable
+                      onPress={() => onCallVideoSelect(item, index)}
+                      key={index}
+                      style={({pressed}) => [
+                        {
+                          opacity: pressed ? 0.5 : 1,
+                          width: screenWidth / 4,
+                          marginVertical: R.fontSize.Size4,
+                          marginLeft: R.fontSize.Size14,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: item?.selected
+                            ? R.colors.appColor
+                            : R.colors.white,
+                          borderWidth: 1,
+                          paddingVertical: R.fontSize.Size8,
+                          borderRadius: R.fontSize.Size20,
+                          borderColor: R.colors.placeHolderColor,
+                        },
+                      ]}>
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontSize: R.fontSize.Size14,
+                          fontWeight: '700',
+                          color: item?.selected
+                            ? R.colors.white
+                            : R.colors.placeHolderColor,
+                        }}
+                        numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={{paddingTop: R.fontSize.Size10}}>
+              <AppButton
+                onPress={() => oncheckValidVideo()}
+                buttonHeight={R.fontSize.Size40}
+                title={'Update Post'}
+                marginHorizontal={R.fontSize.Size50}
+              />
+            </View>
           </View>
         }
       />

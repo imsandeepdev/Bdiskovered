@@ -29,10 +29,11 @@ const ChatScreen = props => {
   const [profileDetail, setProfileDetail] = useState({})
   const [loading, setLoading] = useState(false);
   const [connReqStatus, setConReqStatus] = useState(false);
+  const [diableSendIcon, setDiableSendIcon] = useState(true)
 
   useEffect(() => {
     setConReqStatus(false);
-    console.log('MY USER ID', props.route.params?.MyUserId);
+    console.log('FIREBASE CHAT ID', props.route.params?.fireID);
     console.log('TAILENT USER ID', props.route.params?.tailentUserId);
     onCallProfileAPI();
 
@@ -153,12 +154,12 @@ useEffect(() => {
 
 
 
-  const msgValid = txt => txt && txt.replace(/\s/g, '').length;
+  // const msgValid = txt => txt && txt.replace(/\s/g, '').length;
   const onSend = () => {
-    if(msg == "" || msgValid(msg)==0)
-    {
-      Toast.show('Enter Something....')
-    }
+    // if(msg == "" || msgValid(msg)==0)
+    // {
+    //   Toast.show('Enter Something....')
+    // }
    
     //  const ciphertext = AES.encrypt(msg, key).toString();
     //  console.log('Encrypted text:', ciphertext);
@@ -175,15 +176,17 @@ useEffect(() => {
       chat_time: moment().format(),
     };
      
-      const docid =
-        props.route.params?.tailentUserId > props.route.params?.MyUserId
-          ? props.route.params?.MyUserId + "+" + props.route.params?.tailentUserId
-          : props.route.params?.tailentUserId + "+" + props.route.params?.MyUserId 
+      // const docid =
+      //   props.route.params?.tailentUserId > props.route.params?.MyUserId
+      //     ? props.route.params?.MyUserId + "+" + props.route.params?.tailentUserId
+      //     : props.route.params?.tailentUserId + "+" + props.route.params?.MyUserId 
 
-      console.log("DOC ID", docid)
+      console.log('FIRE ID', props.route.params?.fireID);
      
   
-      const newRef = database().ref(`/one_to_one/${docid}`).push()
+      const newRef = database()
+        .ref(`/one_to_one/${props.route.params?.fireID}`)
+        .push();
         mymsg.id = newRef.key
         console.log('RefKey', newRef.key);
         newRef.set(mymsg)
@@ -199,6 +202,22 @@ useEffect(() => {
   const onCallSubscription = () => {
     setCustomModalPicker(false)
     props.navigation.navigate('SubscriptionScreen');
+  }
+
+  const msgValid = txt => txt && txt.replace(/\s/g, '').length;
+  const onCallMsg = (val) => {
+    
+    if (val == '' || msgValid(val) == 0) 
+    {
+      setDiableSendIcon(true);
+      setMsg('')
+    }
+    else
+    {
+      setDiableSendIcon(false)
+      setMsg(val);
+    }
+    console.log("MSG",val)
   }
 
 
@@ -253,118 +272,131 @@ useEffect(() => {
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
               style={{flex: 1}}>
-              <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              {/* <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: R.colors.lightWhite,
+                }}>
+                <FlatList
+                  style={{flex: 1}}
+                  data={allChat}
+                  // showsVerticalScrollIndicator={false}
+                  keyExtractor={(item, index) => index}
+                  inverted
+                  renderItem={({item}) => {
+                    return (
+                      <View
+                        style={{
+                          alignSelf:
+                            item?.chatSenderId == props.route.params?.MyUserId
+                              ? 'flex-end'
+                              : 'flex-start',
+                          marginHorizontal: 10,
+                          minWidth: 80,
+                          maxWidth: '80%',
+                          paddingHorizontal: 10,
+                          marginVertical: 5,
+                          paddingTop: 5,
+                          borderRadius: 8,
+                          backgroundColor:
+                            item?.chatSenderId == props.route.params?.MyUserId
+                              ? R.colors.appColor
+                              : R.colors.placeHolderColor,
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size15,
+                            color: R.colors.lightWhite,
+                            fontWeight: '400',
+                          }}>
+                          {item?.chat_message}
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size10,
+                            color: R.colors.lightWhite,
+                          }}>
+                          {moment(item?.chat_time).format('hh:mm A')}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                />
+
                 <View
                   style={{
-                    flex: 1,
-                    backgroundColor: R.colors.lightWhite,
-                  }}>
-                  <FlatList
-                    style={{flex: 1}}
-                    data={allChat}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item, index) => index}
-                    inverted
-                    renderItem={({item}) => {
-                      return (
-                        <View
-                          style={{
-                            alignSelf:
-                              item?.chatSenderId == props.route.params?.MyUserId
-                                ? 'flex-end'
-                                : 'flex-start',
-                            marginHorizontal: 10,
-                            minWidth: 80,
-                            maxWidth: '80%',
-                            paddingHorizontal: 10,
-                            marginVertical: 5,
-                            paddingTop: 5,
-                            borderRadius: 8,
-                            backgroundColor:
-                              item?.chatSenderId == props.route.params?.MyUserId
-                                ? R.colors.appColor
-                                : R.colors.placeHolderColor,
-                          }}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size15,
-                              color: R.colors.lightWhite,
-                              fontWeight: '400',
-                            }}>
-                            {item?.chat_message}
-                          </Text>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size10,
-                              color: R.colors.lightWhite,
-                            }}>
-                            {moment(item?.chat_time).format('hh:mm A')}
-                          </Text>
-                        </View>
-                      );
-                    }}
-                  />
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: R.fontSize.Size10,
+                    paddingVertical: R.fontSize.Size5,
+                    shadowColor: '#000',
 
+                    shadowOffset: {width: 0, height: -2},
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                    backgroundColor: R.colors.white,
+                  }}>
                   <View
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      paddingHorizontal: R.fontSize.Size10,
-                      paddingVertical: R.fontSize.Size5,
-                      shadowColor: '#000',
-
-                      shadowOffset: {width: 0, height: -2},
-                      shadowOpacity: 0.25,
-                      shadowRadius: 3.84,
-                      elevation: 5,
-                      backgroundColor: R.colors.white,
+                      height: R.fontSize.Size50,
+                      flex: 1,
+                      borderColor: R.colors.appColor,
+                      borderWidth: 1,
+                      borderRadius: R.fontSize.Size30,
+                      paddingHorizontal: 15,
+                      justifyContent: 'center',
                     }}>
-                    <View
+                    <TextInput
                       style={{
+                        color: R.colors.black,
+                        fontFamily: R.fonts.regular,
+                        fontSize: R.fontSize.Size14,
                         height: R.fontSize.Size50,
-                        flex: 1,
-                        borderColor: R.colors.appColor,
+                        paddingTop: R.fontSize.Size14,
+                      }}
+                      placeholder={'Type a message'}
+                      placeholderTextColor={R.colors.black}
+                      multiline={true}
+                      value={msg}
+                      onChangeText={val => onCallMsg(val)}
+                    />
+                  </View>
+                  <Pressable
+                    disabled={(diableSendIcon || msg=='') ? true : false}
+                    onPress={onSend}
+                    style={({pressed}) => [
+                      {
+                        opacity: pressed ? 0.5 : 1,
+                        width: R.fontSize.Size45,
+                        height: R.fontSize.Size45,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginHorizontal: R.fontSize.Size10,
                         borderWidth: 1,
                         borderRadius: R.fontSize.Size30,
-                        paddingHorizontal: 15,
-                        justifyContent: 'center',
-                      }}>
-                      <TextInput
-                        style={{
-                          color: R.colors.black,
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          height: R.fontSize.Size50,
-                          paddingTop:R.fontSize.Size14
-                        }}
-                        placeholder={'Type a message'}
-                        placeholderTextColor={R.colors.black}
-                        multiline={true}
-                        value={msg}
-                        onChangeText={val => setMsg(val)}
-                      />
-                    </View>
-                    <Pressable
-                      onPress={onSend}
-                      style={({pressed}) => [
-                        {
-                          opacity: pressed ? 0.5 : 1,
-                          width: 60,
-                          height: R.fontSize.Size50,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        },
-                      ]}>
-                      <Image
-                        source={R.images.shareIcon}
-                        resizeMode={'contain'}
-                      />
-                    </Pressable>
-                  </View>
+                        borderColor: (diableSendIcon || msg=='') ? R.colors.lightWhite : R.colors.appColor,
+                      },
+                    ]}>
+                    <Image
+                      source={
+                        (diableSendIcon || msg=='')
+                          ? R.images.lightSentIcon
+                          : R.images.sentIcon
+                      }
+                      resizeMode={'contain'}
+                      style={{
+                        height: R.fontSize.Size35,
+                        width: R.fontSize.Size35,
+                      }}
+                    />
+                  </Pressable>
                 </View>
-              </TouchableWithoutFeedback>
+              </View>
+              {/* </TouchableWithoutFeedback> */}
             </KeyboardAvoidingView>
           </View>
         )}

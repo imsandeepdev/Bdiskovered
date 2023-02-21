@@ -279,7 +279,7 @@ const CardScreen = props => {
       'Are you sure want to delete this card?',
       [
         {
-          text: 'Yes',
+          text: 'Proceed',
           onPress: () => onCallCardDeleteAPI(card_Id),
         },
         {

@@ -354,10 +354,10 @@ const onCallTrimVideoDetail = (startTime, endTime) => {
  const onCallAlart = userId => {
    Alert.alert(
      'Success!',
-     `video file is complete for upload.`,
+     `video file is uploading.`,
      [
        {
-         text: 'YES',
+         text: 'Proceed',
          onPress: () => TrimVideo(),
        },
        //  {
@@ -491,7 +491,6 @@ const checkValid = () => {
       videoDesc.trim(),
       'Please Enter Video Description',
     ) &&
-    CommonFunctions.isBlank(videoPrice.trim(), 'Please Enter Price') &&
     onCheckVideoType()
   );
 }
@@ -1031,7 +1030,7 @@ const onCallDeviceName = () => {
         title={
           props.userType == 'Business'
             ? `Please create a talent profile to upload videos.`
-            : `you will be required to login again to update your profile as a talent.?`
+            : `You will be required to login again to update your profile as a talent.`
         }
         customButton={
           props.userType == 'Business' ? (

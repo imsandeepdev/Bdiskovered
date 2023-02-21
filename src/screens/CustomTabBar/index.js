@@ -5,14 +5,27 @@ import R from '../../res/R';
 import { useDispatch, connect } from 'react-redux';
 import { Config } from '../../config';
 const screenHeight = Dimensions.get('window').height;
-
+import {NativeEventEmitter} from 'react-native';
 const tabBarHeight = screenHeight/10
+
+const eventEmitter = new NativeEventEmitter('');
+import {EventEmitter} from 'events';
+
 const CustomTabBar = props => {
   const [select, setSelect] = useState('HomeScreen');
 
-  const navigateToFirstScreen = () => {
+  const navigateToFirstScreen = async() => {
     props.navigation.navigate('HomeScreen');
+    console.log("NAVIGATE",props.navigation)
+    eventEmitter.emit('custom-event', {data: 'test'});
+
     setSelect('HomeScreen');
+     const didFocus = props.navigation.addListener('didFocus', () => {
+       console.log('Focus on home Didfocus');
+
+       setVideoPlayPause(false);
+     });
+     return didFocus
    
   };
 

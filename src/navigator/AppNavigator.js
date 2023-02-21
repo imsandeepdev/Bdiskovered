@@ -401,6 +401,7 @@ const OnCustomTabs = props => {
         name="HomeScreen"
         component={HomeScreen}
         options={{headerShown: false}}
+        
       />
       <Tab.Screen
         name="SearchScreen"

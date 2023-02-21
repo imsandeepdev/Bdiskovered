@@ -135,7 +135,7 @@ const LoginScreen = (props) => {
                       resizeMode={'contain'}
                     />
                     <Text style={Styles.titleText}>
-                      {'Making Dreams Come True'}
+                      {'Believe. The world is waiting'}
                     </Text>
                   </View>
                   <View>

@@ -183,26 +183,44 @@ const TalentScreen = (props) => {
     );
     }
 
+
+    const spaceValid = txt => txt && txt.replace(/\s/g, '').length;
+    const zeroValid = txt => txt && txt.replace(/0/g, '').length;
+
     const oncheckFullTime = () => {
-      if(selectFullTime && fullTimePrice == '')
-      {
-        Toast.show('Please Enter Full Time Price');
+      if (
+        selectFullTime &&
+        (fullTimePrice == '' ||
+          spaceValid(fullTimePrice) == 0 ||
+          zeroValid(fullTimePrice) == 0)
+      ) {
+        Toast.show('Please enter valid full time price');
         return false;
       }
       return true;
     }
 
      const oncheckPartTime = () => {
-       if (selectPartTime && partTimePrice == '') {
-         Toast.show('Please Enter Part Time Price');
+       if (
+         selectPartTime &&
+         (partTimePrice == '' ||
+           spaceValid(partTimePrice) == 0 ||
+           zeroValid(partTimePrice) == 0)
+       ) {
+         Toast.show('Please enter valid part time price');
          return false;
        }
        return true;
      };
 
       const oncheckGigs = () => {
-        if (selectGigs && gigsPrice == '') {
-          Toast.show('Please Enter Gigs Price');
+        if (
+          selectGigs &&
+          (gigsPrice == '' ||
+            spaceValid(gigsPrice) == 0 ||
+            zeroValid(gigsPrice) == 0)
+        ) {
+          Toast.show('Please enter valid gigs price');
           return false;
         }
         return true;

@@ -92,12 +92,14 @@ const ReportModal = props => {
               marginVertical: R.fontSize.Size5,
               marginHorizontal: R.fontSize.Size10,
             }}>
-            <CustomRow
-              onPress={props.onPress1}
-              Icon={props.icon1 ?? R.images.disLikeIcon}
-              title={props.title1 ?? 'Not Interested'}
-              // title={props.title1 ?? 'Cut this video'}
-            />
+            {props.optionFirst ? null : (
+              <CustomRow
+                onPress={props.onPress1}
+                Icon={props.icon1 ?? R.images.disLikeIcon}
+                title={props.title1 ?? 'Not Interested'}
+                // title={props.title1 ?? 'Cut this video'}
+              />
+            )}
 
             {props.optionThird ? null : (
               <CustomRow

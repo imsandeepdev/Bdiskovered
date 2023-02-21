@@ -29,6 +29,7 @@ import moment from 'moment';
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 import DeviceInfo from 'react-native-device-info';
+import {useScrollToTop, useFocusEffect,useIsFocused} from '@react-navigation/native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserLocationRequest } from '../../actions/userLocation.action';
@@ -37,6 +38,10 @@ import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import { DeleteSavedPostRequest, SavedPostRequest } from '../../actions/savedPost.action';
 import CommonFunctions from '../../utils/CommonFuntions';
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
+import {NativeRouter, Route, Link} from 'react-router-native';
+import { Routes } from 'react-router-dom';
+import {NativeEventEmitter} from 'react-native';
+const eventEmitter = new NativeEventEmitter('');
 
 const tabBarHeight = screenHeight / 10;
 const headerHeight = screenHeight /15;
@@ -176,6 +181,9 @@ const CustomTimeRow = props => {
 const HomeScreen = (props) => {
 
   const listRef = react.useRef(null);
+  const isFocused = useIsFocused();
+
+   useScrollToTop(listRef);
   let videoRef;
   const dispatch = useDispatch()
   const [currIndex, setCurrIndex] = useState(0)
@@ -220,16 +228,36 @@ const HomeScreen = (props) => {
   ]);
   const [allVideoPostList, setAllVideoPostList] = useState([])
 
-  
-    useEffect(() => {
-      const blur = props.navigation.addListener('blur', () => {
-        setVideoPlayPause(true);
-      });
-      const focus = props.navigation.addListener('focus', () => {
-        setVideoPlayPause(false);
-      });
-      return blur, focus;
-    }, [props.navigation]);
+
+
+  eventEmitter.addListener('custom-event', event => {
+    // console.log(event); // { data: 'test' }
+      // setAllVideoPostList([]);
+      // onCallShowPostRefresh();
+      goToFirstIndex();
+  });
+
+const goToFirstIndex = () =>{
+  listRef.current.goToFirstIndex()
+}
+  useEffect(() => {
+    const blur = props.navigation.addListener('blur', () => {
+      console.log('Focus on home');
+
+      setVideoPlayPause(true);
+    });
+    const focus = props.navigation.addListener('focus', () => {
+      console.log('Focus on home1');
+
+      setVideoPlayPause(false);
+    });
+    const didFocus = props.navigation.addListener('didFocus', () => {
+      console.log('Focus on home Didfocus');
+
+      setVideoPlayPause(false);
+    });
+    return blur, focus, didFocus;
+  }, [props.navigation]);
   
 
 
@@ -250,6 +278,7 @@ const HomeScreen = (props) => {
 
   },[props.navigation])
 
+
   const onCallDeviceName = () => {
     setLoading(true)
      let deviceName = DeviceInfo.getModel();
@@ -269,6 +298,7 @@ const HomeScreen = (props) => {
   // }
 
   const onCallProfile = () => {
+
    dispatch(
      GetProfileDetailsRequest(response => {
        console.log('PROFILE DETAIL ON APP NAVIGATOR', response);
@@ -421,7 +451,7 @@ const onCallShowPostRefresh = () => {
     }).then(res => {
       console.log('LIKE RES', res);
       if (res.data.status == 'success') {
-        Toast.show(res.data.message, Toast.SHORT);
+        // Toast.show(res.data.message, Toast.SHORT);
         // onCallShowAllPost();
         setAllVideoPostList([
           ...allVideoPostList,
@@ -452,25 +482,27 @@ const onCallShowPostRefresh = () => {
     });
   }
 
-  const onCallConnectNow = (profileID) => 
+  const onCallConnectNow = (item) => 
   {
     setModalPicker(false) 
      props.userProfile?.Profile?.subscription != 0
        ? props.navigation.navigate('ConnectedProfileScreen', {
-           profileId: profileID,
+           profileId: item?.profileID,
            myUserId: props.userProfile?.Profile?.user_id,
+           tailentPost: item
          })
        : props.navigation.navigate('SubscriptionScreen');
   }
 
 
-  const onPressOrangeAppIcon = (profileID) => {
+  const onPressOrangeAppIcon = (item) => {
     console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
     
     props.userProfile?.Profile?.subscription != 0
       ? props.navigation.navigate('ConnectedProfileScreen', {
-          profileId: profileID,
+          profileId: item?.profileID,
           myUserId: props.userProfile?.Profile?.user_id,
+          tailentPost: item,
         })
       : props.navigation.navigate('SubscriptionScreen');
   }
@@ -547,8 +579,6 @@ VideoLink :${videoURL}`,
          });
         console.log('saved post return', arr);
         setAllVideoPostList(arr);
-        
-        Toast.show(response?.message,Toast.SHORT)
          setLoading(false);
       }
       else
@@ -612,7 +642,7 @@ const onCallReportPost = () => {
       console.log("Report Response",response)
       if(response.status == 'success')
       {
-        Toast.show(response.message, Toast.SHORT)
+        // Toast.show(response.message, Toast.SHORT)
         onCallClosedReportDetailModal()
         onCallShowAllPost();
         setReportDesc('')
@@ -636,9 +666,11 @@ const onCallReportPost = () => {
       console.log("BLOCK USER RESPONSE",response)
       if(response.status == 'success')
       {
-        Toast.show(response.message, Toast.SHORT);
+        // Toast.show(response.message, Toast.SHORT);
         onCallClosedReportDetailModal();
         onCallShowAllPost()
+        setLoading(false);
+
       }
       else
       {
@@ -659,9 +691,11 @@ const onCallReportPost = () => {
       console.log('BLOCK POST RESPONSE', response);
 
       if (response.status == 'success') {
-        Toast.show(response.message, Toast.SHORT);
+        // Toast.show(response.message, Toast.SHORT);
         onCallClosedReportDetailModal();
         onCallShowAllPost();
+        setLoading(false);
+
       } else {
         Toast.show(response.message, Toast.SHORT);
         onCallClosedReportDetailModal();
@@ -705,6 +739,7 @@ const onCallReportPost = () => {
             props.navigation.navigate('NotificationScreen')
           }
         />
+
         <View style={{flex: 1}}>
           <SwiperFlatList
             ref={listRef}
@@ -723,6 +758,7 @@ const onCallReportPost = () => {
             onChangeIndex={onChangeIndex}
             onViewableItemsChanged={updateIndex}
             renderItem={({item, index}) => {
+              // console.log('USER PROFILE', props.userProfile?.Profile?.user_id);
               return (
                 <View
                   key={index}
@@ -764,8 +800,8 @@ const onCallReportPost = () => {
                       paused={currIndex !== index || videoPlayPause}
                       onPressSave={() => {
                         item?.post_save
-                          ? onCallRemoveSavePost(item?.postID,index)
-                          : onCallSavePost(item?.postID,index);
+                          ? onCallRemoveSavePost(item?.postID, index)
+                          : onCallSavePost(item?.postID, index);
                       }}
                       saveIcon={
                         item?.post_save
@@ -780,6 +816,10 @@ const onCallReportPost = () => {
                             '',
                           )}`,
                         )
+                      }
+                      reportHidden={
+                        item?.user_id == props.userProfile?.Profile?.user_id &&
+                        true
                       }
                       onPressReport={() =>
                         onCallReportModal(item?.postID, item?.user_id)
@@ -922,12 +962,12 @@ const onCallReportPost = () => {
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
                         item?.postInfo[0]?.percentage_like != null
-                          ? `${parseInt(item.postInfo[0]?.percentage_like)}`
-                          : sliderValue.toFixed(0)}
+                          ? `${parseInt(item.postInfo[0]?.percentage_like)}%`
+                          : `${sliderValue.toFixed(0)}%`}
                       </Text>
                     </View>
                     <Pressable
-                      onPress={() => onPressOrangeAppIcon(item?.profileID)}
+                      onPress={() => onPressOrangeAppIcon(item)}
                       style={({pressed}) => [
                         {
                           // marginHorizontal: R.fontSize.Size8,
@@ -1031,9 +1071,11 @@ const onCallReportPost = () => {
                         {videoModalPersonalDetail.map((item, index) => {
                           return (
                             <View key={index} style={Styles.videoModalMapView}>
-                              <View
-                                style={Styles.videoModalPersonalDetailView}
-                              />
+                              {item != '' && (
+                                <View
+                                  style={Styles.videoModalPersonalDetailView}
+                                />
+                              )}
                               <Text style={Styles.videoModalPersonalDetailText}>
                                 {item}
                               </Text>
@@ -1088,7 +1130,7 @@ const onCallReportPost = () => {
             <View style={{paddingVertical: R.fontSize.Size10}}>
               <AppButton
                 onPress={() => {
-                  onCallConnectNow(videoModalDetail?.profileID);
+                  onCallConnectNow(videoModalDetail);
                 }}
                 title={'Connect'}
                 marginHorizontal={R.fontSize.Size55}
@@ -1117,7 +1159,7 @@ const onCallReportPost = () => {
             ? onCallBlockUser()
             : onCallBlockPost();
         }}
-        reportTitle={selectTypeReport == 'report' ? 'Report' : 'Yes'}
+        reportTitle={selectTypeReport == 'report' ? 'Proceed' : 'Proceed'}
         title={
           selectTypeReport == 'report'
             ? 'Why are you reporting this post? '
@@ -1194,7 +1236,7 @@ const onCallReportPost = () => {
                     textAlign: 'center',
                   }}>
                   {
-                    'This video has been hidden? \nwe will not recommend this types of video again.'
+                    'We have hidden this video and will not recommend similar content in the future.'
                   }
                 </Text>
               </View>
@@ -1214,7 +1256,7 @@ const onCallReportPost = () => {
                     fontSize: R.fontSize.Size16,
                     textAlign: 'center',
                   }}>
-                  {`They won't be able to find your profile, video on BDiskovered. Bdiskovered won't let them know that you've blocked them.  `}
+                  {`Blocking someone on BDiskovered hides your profile and videos without notification.`}
                 </Text>
               </View>
             )}

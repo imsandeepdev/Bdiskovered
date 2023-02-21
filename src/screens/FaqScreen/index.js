@@ -101,9 +101,9 @@ BDISKOVERED is here to change that.
                 textAlign: 'center',
                 marginTop: R.fontSize.Size8,
               }}>
-              {'feedback@bdiskovered.com'}
+              {'info@bdiskovered.com'}
             </Text>
-            <Text
+            {/* <Text
               style={{
                 fontFamily: R.fonts.regular,
                 fontWeight: '700',
@@ -113,7 +113,7 @@ BDISKOVERED is here to change that.
                 marginTop: R.fontSize.Size8,
               }}>
               {'+971 50 659 0336'}
-            </Text>
+            </Text> */}
             <Text
               style={{
                 fontFamily: R.fonts.regular,

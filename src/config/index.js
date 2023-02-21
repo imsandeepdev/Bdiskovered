@@ -44,6 +44,7 @@ export const Config = {
   savedPostAPI: 'post/save-post',
   savedPostListAPI: 'post/save-post-list',
   deleteSavedPostAPI: 'post/delete-save-post',
+  editPostAPI: 'post/update',
 
   blockPostAPI: 'post/block-post',
   blockUserAPI: 'post/block-user',

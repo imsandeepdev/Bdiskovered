@@ -5,7 +5,10 @@ import {
     upload_NewVideo_error,
     post_Delete,
     post_Delete_success,
-    post_Delete_error
+    post_Delete_error,
+    edit_Post,
+    edit_Post_success,
+    edit_Post_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -42,6 +45,24 @@ export const PostDeleteSuccess = payload => {
 export const PostDeleteError = error => {
   return {
     type: post_Delete_error,
+    payload: error,
+  };
+};
+
+export const EditPost = () => {
+  return {
+    type: edit_Post,
+  };
+};
+export const EditPostSuccess = payload => {
+  return {
+    type: edit_Post_success,
+    payload,
+  };
+};
+export const EditPostError = error => {
+  return {
+    type: edit_Post_error,
     payload: error,
   };
 };
@@ -88,6 +109,29 @@ export const PostDeleteRequest = (
       })
       .catch(error => {
         dispatch(PostDeleteError(error));
+        failed?.(error);
+      });
+  };
+};
+
+
+export const EditPostRequest = (
+  data,
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(EditPost());
+    Api.MultiPostFetch({
+      body: data,
+      url: Config.editPostAPI,
+    })
+      .then(response => {
+        dispatch(EditPostSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(EditPostError(error));
         failed?.(error);
       });
   };

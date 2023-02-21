@@ -11,14 +11,15 @@ import {
   Dimensions,
 } from 'react-native';
 import { ConnectTailentProfileRequest, GetProfileDetailsRequest } from '../../actions/getProfile.action';
-import {CustomCardView, ShadowHeader, StoryScreen, VideoCard} from '../../components';
+import {CustomCardView, ReportModal, ShadowHeader, StoryScreen, VideoCard} from '../../components';
 import R from '../../res/R';
 import { connect, Connect,useDispatch } from 'react-redux';
 import { Config } from '../../config';
-
+import Toast from 'react-native-simple-toast';
 const screenWidth = Dimensions.get('screen').width;
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BlockUserRequest } from '../../actions/block.action';
 
 
 const persnalDetails = [
@@ -151,10 +152,17 @@ const ConnectedProfileScreen = props => {
   const [taletArray, setTalentArray] = useState([]);
   const [personalArray, setPersonalArray] = useState([]);
   const [profilePic, setProfilePic] = useState([]);
+  const [editModalPicker, setEditModalPicker] = useState(false);
+  const [userProfileId, setUserProfileId] = useState('')
+  const [talentUserId, setTalentUserId] = useState('');
+
+
 
   useEffect(()=>{
-    console.log('USER ID', props.route.params?.myUserId);
-
+    console.log('Tailent Post D', props.route.params?.tailentPost?.user_id);
+    console.log('PROFILE ID', props.userProfile?.Profile?.user_id);
+    setUserProfileId(props.userProfile?.Profile?.user_id);
+    setTalentUserId(props.route.params?.tailentPost?.user_id);
     onCallConnectTailentProfileAPI(props.route.params?.profileId);
 
   },[props.navigation])
@@ -237,6 +245,29 @@ const ConnectedProfileScreen = props => {
     })
   }
 
+  const onCallBlockUser = () => {
+    let data = {
+      blockId: profileDetails?.user_id,
+    };
+    setLoading(true);
+    dispatch(
+      BlockUserRequest(data, response => {
+        console.log('BLOCK USER RESPONSE', response);
+        if (response.status == 'success') {
+          setLoading(false);
+
+          Toast.show(response.message, Toast.SHORT);
+          setEditModalPicker(false)
+          props.navigation.replace('HomeMenu')
+
+        } else {
+          Toast.show(response.message, Toast.SHORT);
+          setEditModalPicker(false);
+          setLoading(false);
+        }
+      }),
+    );
+  };
 
   return (
     <StoryScreen loading={loading}>
@@ -268,9 +299,29 @@ const ConnectedProfileScreen = props => {
           contentContainerStyle={{flexGrow: 1}}
           showsVerticalScrollIndicator={false}>
           <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
+            <View style={{alignItems: 'flex-end'}}>
+              <Pressable
+                onPress={() => setEditModalPicker(true)}
+                style={({pressed}) => [
+                  {
+                    opacity: pressed ? 0.5 : 1,
+                    padding: R.fontSize.Size4,
+                    paddingHorizontal: R.fontSize.Size2,
+                  },
+                ]}>
+                <Image
+                  source={R.images.greyDotsIcon}
+                  style={{
+                    height: R.fontSize.Size24,
+                    width: R.fontSize.Size24,
+                  }}
+                  resizeMode={'contain'}
+                />
+              </Pressable>
+            </View>
             <View
               style={{
-                marginTop: R.fontSize.Size30,
+                marginTop: R.fontSize.Size4,
                 flexDirection: 'row',
                 paddingVertical: R.fontSize.Size10,
               }}>
@@ -347,41 +398,82 @@ const ConnectedProfileScreen = props => {
               </View>
             </View>
             <View style={{marginTop: R.fontSize.Size10}}>
-              <Pressable
-                onPress={
-                  () => onCallMyUserId()}
-                style={({pressed}) => [
-                  {
-                    backgroundColor: R.colors.appColor,
-                    paddingVertical: R.fontSize.Size8,
-                    borderRadius: R.fontSize.Size8,
-                    opacity: pressed ? 0.5 : 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  },
-                ]}>
-                <View style={{justifyContent: 'center'}}>
-                  <Image
-                    source={R.images.chatIconWhite}
-                    style={{
-                      height: R.fontSize.Size20,
-                      width: R.fontSize.Size20,
-                    }}
-                    resizeMode={'contain'}
-                  />
-                </View>
-                <Text
+              {userProfileId == talentUserId ? (
+                <View
                   style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
-                    color: R.colors.white,
-                    fontWeight: '700',
-                    marginHorizontal: R.fontSize.Size5,
+                    marginTop: R.fontSize.Size10,
                   }}>
-                  {'Send Message'}
-                </Text>
-              </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      props.navigation.navigate('UpdateProfileScreen')
+                    }
+                    style={({pressed}) => [
+                      {
+                        paddingVertical: R.fontSize.Size8,
+                        borderRadius: R.fontSize.Size8,
+                        backgroundColor: R.colors.placeholderTextColor,
+                        opacity: pressed ? 0.5 : 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      },
+                    ]}>
+                    <View
+                      style={{
+                        height: R.fontSize.Size10,
+                        width: R.fontSize.Size10,
+                        borderRadius: R.fontSize.Size10,
+                        backgroundColor: R.colors.placeHolderColor,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        fontSize: R.fontSize.Size15,
+                        color: R.colors.primaryTextColor,
+                        fontWeight: '600',
+                        marginHorizontal: R.fontSize.Size8,
+                      }}>
+                      {'Edit Profile'}
+                    </Text>
+                  </Pressable>
+                </View>
+              ) : (
+                <Pressable
+                  onPress={() => onCallMyUserId()}
+                  style={({pressed}) => [
+                    {
+                      backgroundColor: R.colors.appColor,
+                      paddingVertical: R.fontSize.Size8,
+                      borderRadius: R.fontSize.Size8,
+                      opacity: pressed ? 0.5 : 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    },
+                  ]}>
+                  <View style={{justifyContent: 'center'}}>
+                    <Image
+                      source={R.images.chatIconWhite}
+                      style={{
+                        height: R.fontSize.Size20,
+                        width: R.fontSize.Size20,
+                      }}
+                      resizeMode={'contain'}
+                    />
+                  </View>
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      fontSize: R.fontSize.Size14,
+                      color: R.colors.white,
+                      fontWeight: '700',
+                      marginHorizontal: R.fontSize.Size5,
+                    }}>
+                    {'Send Message'}
+                  </Text>
+                </Pressable>
+              )}
             </View>
             {profileDetails?.bio != '' && (
               <View style={{marginTop: R.fontSize.Size20}}>
@@ -413,14 +505,16 @@ const ConnectedProfileScreen = props => {
                       alignItems: 'center',
                       marginRight: R.fontSize.Size14,
                     }}>
-                    <View
-                      style={{
-                        height: R.fontSize.Size10,
-                        width: R.fontSize.Size10,
-                        backgroundColor: R.colors.appColor,
-                        borderRadius: R.fontSize.Size10,
-                      }}
-                    />
+                    {item != '' && (
+                      <View
+                        style={{
+                          height: R.fontSize.Size10,
+                          width: R.fontSize.Size10,
+                          backgroundColor: R.colors.appColor,
+                          borderRadius: R.fontSize.Size10,
+                        }}
+                      />
+                    )}
                     <Text
                       style={{
                         fontFamily: R.fonts.regular,
@@ -551,6 +645,16 @@ const ConnectedProfileScreen = props => {
           </View>
         </ScrollView>
       </SafeAreaView>
+      <ReportModal
+        visible={editModalPicker}
+        onRequestClose={() => setEditModalPicker(false)}
+        closeModal={() => setEditModalPicker(false)}
+        title2={`Block`}
+        icon2={R.images.blockIcon}
+        optionFirst={true}
+        optionThird={true}
+        onPress2={() => onCallBlockUser()}
+      />
     </StoryScreen>
   );
 };
