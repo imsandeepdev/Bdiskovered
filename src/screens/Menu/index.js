@@ -72,14 +72,14 @@ const Menu = (props) => {
   const onLogout = () => {
     Alert.alert(
       '\n',
-      'Are you sure want to Logout?',
+      'Do you really want to sign out?',
       [
         {
-          text: 'Logout',
+          text: 'Yes',
           onPress: () => onCallDeviceName(),
         },
         {
-          text: 'Cancel',
+          text: 'No',
         },
       ],
       {

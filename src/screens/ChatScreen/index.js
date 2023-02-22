@@ -78,20 +78,41 @@ const ChatScreen = props => {
 
   
 
-useEffect(() => {
-    const usersRef = firebase.database().ref('/one_to_one/');
-    const adaRef = usersRef.child(`${props.route.params?.fireID}`); 
+// useEffect(() => {
+    // const usersRef = firebase.database().ref('/one_to_one/');
+    // const adaRef = usersRef.child(`${props.route.params?.fireID}`); 
 
-    console.log("AVAILABLE",adaRef)
+    // console.log("AVAILABLE",adaRef)
     
-    const onValueChange = database()
-      .ref(`/one_to_one/${props.route.params?.fireID}`)
+    // const onValueChange = database()
+    //   .ref(`/one_to_one/${props.route.params?.fireID}`)
+    //   .on('value', snapshot => {
+    //     console.log('User data realtime Length : ', snapshot.val());
+    //     if (snapshot.val() != null)
+    //     {
+    //       let MsgLength = Object.keys(snapshot.val()).length
+    //     console.log('User data realtime Length : ', MsgLength);
+    //       if(MsgLength == 1)
+    //       {
+    //         console.log("LENGTH",MsgLength)
+    //         onCallFirstTimeAPI()
+    //       }
+    //     }
+    //   });
+
+    // return () => database().ref(`/one_to_one/${props.route.params?.fireID}`).off('value', onValueChange);
+  // }, [props.route.params?.fireID]);
+
+
+  const onCallAfterChat = () => {
+
+  database().ref(`/one_to_one/${props.route.params?.fireID}`)
       .on('value', snapshot => {
-        console.log('User data realtime Length : ', snapshot.val());
+        console.log('Chat Data after Message ', snapshot.val());
         if (snapshot.val() != null)
         {
           let MsgLength = Object.keys(snapshot.val()).length
-        console.log('User data realtime Length : ', MsgLength);
+        console.log('Chat Length Length : ', MsgLength);
           if(MsgLength == 1)
           {
             console.log("LENGTH",MsgLength)
@@ -100,14 +121,13 @@ useEffect(() => {
         }
       });
 
-    // Stop listening for updates when no longer required
-    return () => database().ref(`/one_to_one/${props.route.params?.fireID}`).off('value', onValueChange);
-  }, [props.route.params?.fireID]);
+  }
 
   const onCallFirstTimeAPI = () => {
     let data = {
       id: props.route.params?.tailentUserId,
       chat_id: props.route.params?.fireID,
+      communication_id: props.route.params?.fireID
     };
     console.log('DATA', data);
     const headerAuth = {
@@ -154,15 +174,8 @@ useEffect(() => {
 
 
 
-  // const msgValid = txt => txt && txt.replace(/\s/g, '').length;
   const onSend = () => {
-    // if(msg == "" || msgValid(msg)==0)
-    // {
-    //   Toast.show('Enter Something....')
-    // }
    
-    //  const ciphertext = AES.encrypt(msg, key).toString();
-    //  console.log('Encrypted text:', ciphertext);
 
     const mymsg = {
       chat_message: msg,
@@ -192,6 +205,7 @@ useEffect(() => {
         newRef.set(mymsg)
         .then(snapshot => {
           console.log('USER SNAPSHOT', snapshot);
+          onCallAfterChat()
           setMsg('')
         })
         .catch(err => {
