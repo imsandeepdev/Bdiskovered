@@ -14,6 +14,7 @@ import {
   Keyboard,
   Platform,
   StatusBar,
+  Linking
 } from 'react-native';
 import {StoryScreen, AppButton,ShadowHeader, VideoCard, ReportModal, ReportDetailModal, AlartModal} from '../../components';
 import Toast from 'react-native-simple-toast';
@@ -758,7 +759,7 @@ const onCallReportPost = () => {
             onChangeIndex={onChangeIndex}
             onViewableItemsChanged={updateIndex}
             renderItem={({item, index}) => {
-              // console.log('USER PROFILE', props.userProfile?.Profile?.user_id);
+              console.log('TYPE', item?.type);
               return (
                 <View
                   key={index}
@@ -781,8 +782,16 @@ const onCallReportPost = () => {
                       ref={ref => {
                         videoRef = ref;
                       }}
-                      eyeonPress={() => onCallModal('videoDetailModal', item)}
-                      eyeIcon={R.images.eyeIcon}
+                      eyeonPress={() => {
+                        item?.type == 'post_add'
+                          ? console.log('Addon')
+                          : onCallModal('videoDetailModal', item);
+                      }}
+                      eyeIcon={
+                        item?.type == 'post_add'
+                          ? R.images.whiteDotIcon
+                          : R.images.eyeIcon
+                      }
                       videoUrl={`${Config.API_URL}${item?.post?.replace(
                         'http://localhost:8080/',
                         '',
@@ -791,11 +800,15 @@ const onCallReportPost = () => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userName={item?.username}
+                      userName={
+                        item?.type == 'post_add' ? item?.title : item?.username
+                      }
                       videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
-                      usdPrice={`USD ${item?.amount}`}
+                      usdPrice={
+                        item?.type == 'post_add' ? null : `USD ${item?.amount}`
+                      }
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
                       onPressSave={() => {
@@ -817,6 +830,7 @@ const onCallReportPost = () => {
                           )}`,
                         )
                       }
+                      shareFiled={item?.type == 'post_add' && true}
                       reportHidden={
                         item?.user_id == props.userProfile?.Profile?.user_id &&
                         true
@@ -826,176 +840,212 @@ const onCallReportPost = () => {
                       }
                     />
                   </Pressable>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginHorizontal: R.fontSize.Size12,
-                      alignItems: 'center',
-                      height: sliderHeight,
-                      justifyContent: 'center',
-                    }}>
-                    <View style={{flex: 1}}>
-                      <View>
-                        <Slider
-                          disabled={
-                            item?.postInfo != 'undefined' &&
-                            item?.postInfo != null &&
-                            item.postInfo[0]?.percentage_like != null
-                              ? true
-                              : false
-                          }
-                          value={
-                            item?.postInfo != 'undefined' &&
-                            item?.postInfo != null &&
-                            item.postInfo[0]?.percentage_like != null
-                              ? parseInt(item.postInfo[0]?.percentage_like)
-                              : sliderValue[index]
-                          }
-                          minimumValue={0}
-                          maximumValue={100}
-                          customMinimumTrack={
-                            <View
-                              style={{
-                                height: R.fontSize.Size8,
-                                backgroundColor: R.colors.appColor,
-                                borderRadius: R.fontSize.Size5,
-                              }}
-                            />
-                          }
-                          customMaximumTrack={
-                            <View
-                              style={{
-                                height: R.fontSize.Size8,
-                                backgroundColor: R.colors.placeholderTextColor,
-                                borderRadius: R.fontSize.Size5,
-                              }}
-                            />
-                          }
-                          minimumTrackTintColor={R.colors.white}
-                          maximumTrackTintColor={R.colors.white}
-                          onValueChange={val => setSliderValue(val)}
-                          onSlidingComplete={value => {
-                            console.log('SLIDE COMPLETE', value.toFixed(0));
-                            onCallVideoRatingAPI(
-                              value.toFixed(0),
-                              item?.postID,
-                              index,
-                              item?.user_id,
-                              item?.user_type,
-                            );
-                          }}
-                          customThumb={
-                            <View
-                              style={{
-                                overflow: 'hidden',
-                                top: 5,
-                                left: 0,
-                                right: 0,
-                              }}>
-                              <Image
-                                source={R.images.redHeartIcon}
-                                style={{
-                                  width: R.fontSize.Size35,
-                                  height: R.fontSize.Size35,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                                resizeMode={'contain'}
-                              />
-                            </View>
-                          }
-                        />
-                      </View>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                            color: R.colors.placeHolderColor,
-                          }}>
-                          {'Liked By '}
-                          <Text style={{color: R.colors.appColor}}>
-                            {item?.total_likes != '' ? item?.total_likes : '0'}
-                          </Text>
-                        </Text>
-                        <View
-                          style={{
-                            width: 1,
-                            height: R.fontSize.Size14,
-                            backgroundColor: R.colors.placeHolderColor,
-                            marginHorizontal: R.fontSize.Size10,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                            color: R.colors.placeHolderColor,
-                          }}>
-                          {'Average Like '}
-                          <Text style={{color: R.colors.appColor}}>
-                            {item?.total_rating != '' &&
-                            item?.total_rating != '0'
-                              ? `${(
-                                  item?.total_rating /
-                                  (item?.total_likes * 20)
-                                ).toFixed(1)}%`
-                              : '0%'}
-                          </Text>
-                        </Text>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        paddingHorizontal: R.fontSize.Size5,
-                        height: R.fontSize.Size26,
-                      }}>
-                      <Text
-                        style={{
-                          color: R.colors.appColor,
-                          fontSize: R.fontSize.Size12,
-                          fontWeight: '700',
-                        }}>
-                        {item?.postInfo != 'undefined' &&
-                        item?.postInfo != null &&
-                        item?.postInfo[0]?.percentage_like != null
-                          ? `${parseInt(item.postInfo[0]?.percentage_like)}%`
-                          : `${sliderValue.toFixed(0)}%`}
-                      </Text>
-                    </View>
+                  {item?.type == 'post_add' ? (
                     <Pressable
-                      onPress={() => onPressOrangeAppIcon(item)}
+                      onPress={() => Linking.openURL(item?.url_link)}
                       style={({pressed}) => [
                         {
-                          // marginHorizontal: R.fontSize.Size8,
-                          alignItems: 'center',
                           opacity: pressed ? 0.5 : 1,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          height: sliderHeight,
+                          backgroundColor: R.colors.appColor,
+                          paddingHorizontal: R.fontSize.Size12,
                         },
                       ]}>
-                      <Image
-                        source={R.images.orangeAppIcon}
-                        style={{
-                          height: R.fontSize.Size30,
-                          width: R.fontSize.Size30,
-                          marginBottom: R.fontSize.Size6,
-                        }}
-                        resizeMode={'contain'}
-                      />
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          fontWeight: '500',
-                          color: R.colors.placeHolderColor,
-                        }}
-                        numberOfLines={1}>
-                        {'Connect'}
-                      </Text>
+                      <View style={{flex: 1}}>
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size16,
+                            color: R.colors.white,
+                            fontWeight: '500',
+                          }}>
+                          {'Visit Now'}
+                        </Text>
+                      </View>
+                      <View>
+                        <Image
+                          source={R.images.whiteChevronIcon}
+                          resizeMode={'contain'}
+                        />
+                      </View>
                     </Pressable>
-                  </View>
+                  ) : (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginHorizontal: R.fontSize.Size12,
+                        alignItems: 'center',
+                        height: sliderHeight,
+                        justifyContent: 'center',
+                      }}>
+                      <View style={{flex: 1}}>
+                        <View>
+                          <Slider
+                            disabled={
+                              item?.postInfo != 'undefined' &&
+                              item?.postInfo != null &&
+                              item.postInfo[0]?.percentage_like != null
+                                ? true
+                                : false
+                            }
+                            value={
+                              item?.postInfo != 'undefined' &&
+                              item?.postInfo != null &&
+                              item.postInfo[0]?.percentage_like != null
+                                ? parseInt(item.postInfo[0]?.percentage_like)
+                                : sliderValue[index]
+                            }
+                            minimumValue={0}
+                            maximumValue={100}
+                            customMinimumTrack={
+                              <View
+                                style={{
+                                  height: R.fontSize.Size8,
+                                  backgroundColor: R.colors.appColor,
+                                  borderRadius: R.fontSize.Size5,
+                                }}
+                              />
+                            }
+                            customMaximumTrack={
+                              <View
+                                style={{
+                                  height: R.fontSize.Size8,
+                                  backgroundColor:
+                                    R.colors.placeholderTextColor,
+                                  borderRadius: R.fontSize.Size5,
+                                }}
+                              />
+                            }
+                            minimumTrackTintColor={R.colors.white}
+                            maximumTrackTintColor={R.colors.white}
+                            onValueChange={val => setSliderValue(val)}
+                            onSlidingComplete={value => {
+                              console.log('SLIDE COMPLETE', value.toFixed(0));
+                              onCallVideoRatingAPI(
+                                value.toFixed(0),
+                                item?.postID,
+                                index,
+                                item?.user_id,
+                                item?.user_type,
+                              );
+                            }}
+                            customThumb={
+                              <View
+                                style={{
+                                  overflow: 'hidden',
+                                  top: 5,
+                                  left: 0,
+                                  right: 0,
+                                }}>
+                                <Image
+                                  source={R.images.redHeartIcon}
+                                  style={{
+                                    width: R.fontSize.Size35,
+                                    height: R.fontSize.Size35,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                  }}
+                                  resizeMode={'contain'}
+                                />
+                              </View>
+                            }
+                          />
+                        </View>
+                        <View
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size12,
+                              fontWeight: '700',
+                              color: R.colors.placeHolderColor,
+                            }}>
+                            {'Liked By '}
+                            <Text style={{color: R.colors.appColor}}>
+                              {item?.total_likes != ''
+                                ? item?.total_likes
+                                : '0'}
+                            </Text>
+                          </Text>
+                          <View
+                            style={{
+                              width: 1,
+                              height: R.fontSize.Size14,
+                              backgroundColor: R.colors.placeHolderColor,
+                              marginHorizontal: R.fontSize.Size10,
+                            }}
+                          />
+                          <Text
+                            style={{
+                              fontFamily: R.fonts.regular,
+                              fontSize: R.fontSize.Size12,
+                              fontWeight: '700',
+                              color: R.colors.placeHolderColor,
+                            }}>
+                            {'Average Like '}
+                            <Text style={{color: R.colors.appColor}}>
+                              {item?.total_rating != '' &&
+                              item?.total_rating != '0'
+                                ? `${(
+                                    item?.total_rating /
+                                    (item?.total_likes * 20)
+                                  ).toFixed(1)}%`
+                                : '0%'}
+                            </Text>
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          paddingHorizontal: R.fontSize.Size5,
+                          height: R.fontSize.Size26,
+                        }}>
+                        <Text
+                          style={{
+                            color: R.colors.appColor,
+                            fontSize: R.fontSize.Size12,
+                            fontWeight: '700',
+                          }}>
+                          {item?.postInfo != 'undefined' &&
+                          item?.postInfo != null &&
+                          item?.postInfo[0]?.percentage_like != null
+                            ? `${parseInt(item.postInfo[0]?.percentage_like)}%`
+                            : `${sliderValue.toFixed(0)}%`}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={() => onPressOrangeAppIcon(item)}
+                        style={({pressed}) => [
+                          {
+                            // marginHorizontal: R.fontSize.Size8,
+                            alignItems: 'center',
+                            opacity: pressed ? 0.5 : 1,
+                          },
+                        ]}>
+                        <Image
+                          source={R.images.orangeAppIcon}
+                          style={{
+                            height: R.fontSize.Size30,
+                            width: R.fontSize.Size30,
+                            marginBottom: R.fontSize.Size6,
+                          }}
+                          resizeMode={'contain'}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontSize: R.fontSize.Size14,
+                            fontWeight: '500',
+                            color: R.colors.placeHolderColor,
+                          }}
+                          numberOfLines={1}>
+                          {'Connect'}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  )}
                 </View>
               );
             }}

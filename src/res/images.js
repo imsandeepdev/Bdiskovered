@@ -51,6 +51,7 @@ const images = {
   bookmarkIcon: require('./images/bookmarkIcon.png'),
   removebookmarkIcon: require('./images/removebookmark.png'),
   disLikeIcon: require('./images/unlikeIcon.png'),
+  whiteChevronIcon: require('./images/whiteChevron.png'),
 
   makePaymentIcon: require('./images/makePaymentIcon.png'),
 

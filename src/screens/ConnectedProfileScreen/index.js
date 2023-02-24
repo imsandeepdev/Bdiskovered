@@ -230,19 +230,25 @@ const ConnectedProfileScreen = props => {
   };
 
   const onCallMyUserId = () => {
-    AsyncStorage.getItem('MyUserId', (err, result) => {
-      console.log("MY USER ID",result)
+      console.log('MY USER ID', userProfileId);
+      console.log('TAILENT USER ID', profileDetails?.user_id);
+      console.log(
+        'FIREID',
+        profileDetails?.user_id > userProfileId
+          ? userProfileId + '+' + profileDetails?.user_id
+          : profileDetails?.user_id + '+' + userProfileId,
+      );
        props.navigation.navigate('ChatScreen', {
          tailentUserId: profileDetails?.user_id,
-         MyUserId: result,
+         MyUserId: userProfileId,
          userName: profileDetails?.name,
          userItem: profileDetails,
          fireID:
-           profileDetails?.user_id > result
-             ? result + '+' + profileDetails?.user_id
-             : profileDetails?.user_id + '+' + result,
+           profileDetails?.user_id > userProfileId
+             ? userProfileId + '+' + profileDetails?.user_id
+             : profileDetails?.user_id + '+' + userProfileId,
        });
-    })
+   
   }
 
   const onCallBlockUser = () => {

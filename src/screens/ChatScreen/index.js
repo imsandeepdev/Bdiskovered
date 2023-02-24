@@ -35,6 +35,7 @@ const ChatScreen = props => {
     setConReqStatus(false);
     console.log('FIREBASE CHAT ID', props.route.params?.fireID);
     console.log('TAILENT USER ID', props.route.params?.tailentUserId);
+    console.log('USER TYPE', props.userProfile?.Profile?.role);
     onCallProfileAPI();
 
   }, [props.navigation]);
@@ -127,7 +128,9 @@ const ChatScreen = props => {
     let data = {
       id: props.route.params?.tailentUserId,
       chat_id: props.route.params?.fireID,
-      communication_id: props.route.params?.fireID
+      communication_id: props.route.params?.fireID,
+      mobile_type: 'ios',
+      user_type: props.userProfile?.Profile?.role,
     };
     console.log('DATA', data);
     const headerAuth = {
