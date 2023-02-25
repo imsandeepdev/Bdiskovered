@@ -1,36 +1,43 @@
 import * as React from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet,Dimensions} from 'react-native';
 import R from '../../res/R';
 const screenHeight = Dimensions.get('screen').height;
 
 const styles = StyleSheet.create({
-  topLineView: {
+  mainView: {
     height: R.fontSize.Size2,
     backgroundColor: R.colors.placeholderTextColor,
     width: '100%',
   },
-  flatView: {
+  flatStyle: {
     flex: 1,
     paddingHorizontal: R.fontSize.Size20,
   },
-  IconView: {
-    height: R.fontSize.Size55,
-    width: R.fontSize.Size55,
+  pressView: {
+    paddingVertical: R.fontSize.Size6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: R.colors.placeholderTextColor,
+  },
+  imageView: {
+    height: R.fontSize.Size50,
+    width: R.fontSize.Size50,
     borderRadius: R.fontSize.Size30,
     borderWidth: 1,
     borderColor: R.colors.placeholderTextColor,
     overflow: 'hidden',
   },
-  iconImage: {
-    height: R.fontSize.Size55,
-    width: R.fontSize.Size55,
+  image: {
+    height: R.fontSize.Size50,
+    width: R.fontSize.Size50,
   },
   textView: {
     flex: 1,
     justifyContent: 'center',
     marginLeft: R.fontSize.Size15,
   },
-  userNameText: {
+  text: {
     fontFamily: R.fonts.regular,
     fontSize: R.fontSize.Size15,
     fontWeight: '700',
@@ -49,4 +56,4 @@ const styles = StyleSheet.create({
     color: R.colors.placeHolderColor,
   },
 });
-export default styles;
+export default styles

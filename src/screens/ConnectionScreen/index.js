@@ -3,20 +3,15 @@ import {useState, useEffect} from 'react';
 import {
   View,
   Image,
-  SafeAreaView,
   Text,
   Pressable,
-  FlatList,
-  Dimensions,
+  FlatList
 } from 'react-native';
 import {Header, StoryScreen} from '../../components';
 import R from '../../res/R';
-import {connect, Connect, useDispatch} from 'react-redux';
-import {ConnectedUsersRequest} from '../../actions/connectedUser.action';
+import {connect,useDispatch} from 'react-redux';
 import {Config} from '../../config';
-import axios from 'axios';
-const screenHeight = Dimensions.get('screen').height;
-const screenWidth = Dimensions.get('screen').width;
+import styles from './styles';
 
 const ConnectionScreen = props => {
   const dispatch = useDispatch();
@@ -59,11 +54,7 @@ const ConnectionScreen = props => {
      .catch(error => {
        console.log('ERRORONAPI', error);
       setLoading(false);
-
-     });
-    
- 
- 
+     })
   };
 
   return (
@@ -73,19 +64,10 @@ const ConnectionScreen = props => {
         leftSource={R.images.chevronBack}
         title={'User Connections'}
       />
-      <View
-        style={{
-          height: R.fontSize.Size2,
-          backgroundColor: R.colors.placeholderTextColor,
-          width: '100%',
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-        }}>
+      <View style={styles.topLineView}/>
+      <View style={{flex:1}}>
         <FlatList
-          style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}
+          style={styles.flatView}
           data={connectedUserList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {
@@ -114,15 +96,7 @@ const ConnectionScreen = props => {
                     opacity: pressed ? 0.5 : 1,
                   },
                 ]}>
-                <View
-                  style={{
-                    height: R.fontSize.Size55,
-                    width: R.fontSize.Size55,
-                    borderRadius: R.fontSize.Size30,
-                    borderWidth: 1,
-                    borderColor: R.colors.placeholderTextColor,
-                    overflow: 'hidden',
-                  }}>
+                <View style={styles.IconView}>
                   <Image
                     source={{
                       uri: `${Config.API_URL}${item?.avatar.replace(
@@ -130,26 +104,12 @@ const ConnectionScreen = props => {
                         '',
                       )}`,
                     }}
-                    style={{
-                      height: R.fontSize.Size55,
-                      width: R.fontSize.Size55,
-                    }}
+                    style={styles.iconImage}
                     resizeMode={'cover'}
                   />
                 </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    marginLeft: R.fontSize.Size15,
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size15,
-                      fontWeight: '700',
-                      color: R.colors.primaryTextColor,
-                    }}>
+                <View style={styles.textView}>
+                  <Text style={styles.userNameText}>
                     {item?.username}
                   </Text>
                 </View>
@@ -158,24 +118,12 @@ const ConnectionScreen = props => {
           }}
           ListEmptyComponent={() => {
             return (
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: screenHeight / 1.2,
-                  width: '100%',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
-                    fontWeight: '700',
-                    color: R.colors.placeHolderColor,
-                  }}>
+              <View style={styles.emptyView}>
+                <Text style={styles.emptyText}>
                   {'You have no connections'}
                 </Text>
               </View>
-            );
+            )
           }}
         />
       </View>

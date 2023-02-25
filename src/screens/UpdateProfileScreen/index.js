@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import {View, TextInput, Pressable, Image, Text, ScrollView, SafeAreaView, Dimensions,Modal, Platform} from 'react-native';
-import {AppButton, CustomCardLine, CustomCardView, CustomLineTextInput, Header, StoryScreen}from '../../components'
+import {AppButton, CustomCardLine, CustomCardView, CustomLineTextInput, CustomOpenForRow, Header, StoryScreen}from '../../components'
 import R from '../../res/R';
 import CalendarPicker from 'react-native-calendar-picker';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -13,97 +13,7 @@ import { Config } from '../../config';
 const screenWidth = Dimensions.get('screen').width
 const screenHeight = Dimensions.get('screen').height;
 
-const CustomTimeRow = props => {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: R.fontSize.Size10,
-      }}>
-      <Pressable
-        onPress={props.leftOnPress}
-        style={({pressed}) => [
-          {
-            opacity: pressed ? 0.5 : 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            width: screenWidth / 2.5,
-          },
-        ]}>
-        <Image
-          source={props.leftImageSource}
-          style={{
-            height: R.fontSize.Size30,
-            width: R.fontSize.Size30,
-          }}
-          resizeMode={'contain'}
-        />
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-            color: props.leftTextColor,
-            marginHorizontal: R.fontSize.Size12,
-          }}>
-          {props.leftTitle}
-        </Text>
-      </Pressable>
 
-      {props.rightStatus && (
-        <View
-          style={{
-            flexDirection: 'row',
-            flex: 1,
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              fontFamily: R.fonts.regular,
-              color: R.colors.primaryTextColor,
-              fontSize: R.fontSize.Size14,
-              fontWeight: '400',
-            }}>
-            {'USD'}
-          </Text>
-          <View style={{width: R.fontSize.Size70, alignItems: 'center'}}>
-            <TextInput
-              style={{
-                width: R.fontSize.Size60,
-                height: R.fontSize.Size40,
-                paddingVertical: R.fontSize.Size6,
-                marginHorizontal: R.fontSize.Size6,
-                textAlign: 'center',
-                borderBottomWidth: 1,
-                borderColor: R.colors.appColor,
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size12,
-                color: R.colors.primaryTextColor,
-                fontWeight: '400',
-              }}
-              maxLength={5}
-              placeholder={'00'}
-              placeholderTextColor={R.colors.placeholderTextColor}
-              value={props.rightValue}
-              onChangeText={props.rightOnChangeText}
-              keyboardType={'number-pad'}
-            />
-          </View>
-          <Text
-            style={{
-              fontFamily: R.fonts.regular,
-              color: R.colors.primaryTextColor,
-              fontSize: R.fontSize.Size14,
-              fontWeight: '400',
-            }}>
-            {props.rightDayHours}
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-};
 
 
 const UpdateProfileScreen = (props) => {
@@ -614,7 +524,7 @@ const UpdateProfileScreen = (props) => {
                       {'Open For'}
                     </Text>
                     <View style={{marginTop: R.fontSize.Size10}}>
-                      <CustomTimeRow
+                      <CustomOpenForRow
                         leftOnPress={() => onCallFullTimeRow()}
                         leftImageSource={
                           selectFullTime
@@ -632,7 +542,7 @@ const UpdateProfileScreen = (props) => {
                         rightOnChangeText={price => setFullTimePrice(price)}
                         rightDayHours={'/ day'}
                       />
-                      <CustomTimeRow
+                      <CustomOpenForRow
                         leftOnPress={() => onCallPartTimeRow()}
                         leftImageSource={
                           selectPartTime
@@ -650,7 +560,7 @@ const UpdateProfileScreen = (props) => {
                         rightOnChangeText={price => setPartTimePrice(price)}
                         rightDayHours={'/ hrs'}
                       />
-                      <CustomTimeRow
+                      <CustomOpenForRow
                         leftOnPress={() => onCallGigsRow()}
                         leftImageSource={
                           selectGigs

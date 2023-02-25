@@ -2,28 +2,14 @@ import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {
   View,
-  Image,
-  SafeAreaView,
   Text,
-  Pressable,
-  FlatList,
   Dimensions,
-  Alert,
   ScrollView
 } from 'react-native';
 import {Header, StoryScreen} from '../../components';
 import R from '../../res/R';
-import {connect, Connect, useDispatch} from 'react-redux';
-import {ConnectedUsersRequest} from '../../actions/connectedUser.action';
-import {Config} from '../../config';
-import axios from 'axios';
-import {
-  BlockUserListRequest,
-  UnblockUserRequest,
-} from '../../actions/block.action';
-const screenHeight = Dimensions.get('screen').height;
-const screenWidth = Dimensions.get('screen').width;
-import Toast from 'react-native-simple-toast';
+import {connect, useDispatch} from 'react-redux';
+import styles from './styles';
 
 const faqList = [
   {
@@ -85,13 +71,6 @@ Once an interest is in place and a connection is needed then a subscription is p
 const FaqScreen = props => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [blockUserList, setBlockUserList] = useState([]);
-
-  useEffect(() => {
-  }, [props.navigation]);
-
-
- 
 
   return (
     <StoryScreen loading={loading}>
@@ -100,20 +79,9 @@ const FaqScreen = props => {
         leftSource={R.images.chevronBack}
         title={props.route.params?.from}
       />
-      <View
-        style={{
-          height: R.fontSize.Size2,
-          backgroundColor: R.colors.placeholderTextColor,
-          width: '100%',
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: R.fontSize.Size18,
-        }}>
-        {props.route.params?.from == 'FAQ' ? (
-          
+      <View style={styles.topLineView}/>
+      <View style={styles.mainView}>
+        {props.route.params?.from == 'FAQ' ? (   
           <ScrollView 
           contentContainerStyle={{flexWrap:1}}
           showsVerticalScrollIndicator={false}
@@ -122,75 +90,26 @@ const FaqScreen = props => {
               faqList.map((item,index)=>{
                 return (
                   <View key={index}>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        color: R.colors.primaryTextColor,
-                        fontSize: R.fontSize.Size16,
-                        fontWeight: '700',
-                        marginTop: R.fontSize.Size10,
-                      }}>
+                    <Text style={styles.quesText}>
                       {`${item.id}. ${item.ques}`}
                     </Text>
-
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        color: R.colors.primaryTextColor,
-                        fontSize: R.fontSize.Size16,
-                        marginTop: R.fontSize.Size8,
-                      }}>
+                    <Text style={styles.ansText}>
                       {`${item.ans}`}
                     </Text>
                   </View>
-                );
+                )
               })
             }
-            
           </ScrollView>
         ) : (
-          <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontWeight: '700',
-                fontSize: R.fontSize.Size18,
-                color: R.colors.primaryTextColor,
-                textAlign: 'center',
-              }}>
+          <View style={styles.mainView1}>
+            <Text style={styles.contactText}>
               {'Contact us via'}
             </Text>
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size14,
-                color: R.colors.placeHolderColor,
-                textAlign: 'center',
-                marginTop: R.fontSize.Size8,
-              }}>
+            <Text style={styles.infoText}>
               {'info@bdiskovered.com'}
             </Text>
-            {/* <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontWeight: '700',
-                fontSize: R.fontSize.Size16,
-                color: R.colors.primaryTextColor,
-                textAlign: 'center',
-                marginTop: R.fontSize.Size8,
-              }}>
-              {'+971 50 659 0336'}
-            </Text> */}
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontWeight: '700',
-                fontSize: R.fontSize.Size16,
-                color: R.colors.primaryTextColor,
-                textAlign: 'center',
-                marginTop: R.fontSize.Size8,
-              }}>
+            <Text style={styles.addressText}>
               {'Lavel 1, Gate Avenue, South Zone, DIFC, Dubai, UAE'}
             </Text>
           </View>

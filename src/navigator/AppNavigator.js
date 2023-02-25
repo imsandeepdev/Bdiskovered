@@ -43,9 +43,7 @@ import NoResultScreen from '../screens/NoResultScreen';
 import { LoginSessionRequest } from '../actions/loginSession.action';
 import DeviceInfo from 'react-native-device-info';
 import { UserSignOutRequest } from '../actions/signUp.action';
-import CompressVideo from '../screens/CompressVideo';
 import SavedPostList from '../screens/SavedPostList';
-import SavedVideoScreen from '../screens/SavedVideoScreen';
 import BlockUserScreen from '../screens/BlockUserScreen';
 import HelpScreen from '../screens/HelpScreen';
 import FaqScreen from '../screens/FaqScreen';
@@ -341,20 +339,11 @@ const AppNavigator = props => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="CompressVideoScreen"
-          component={CompressVideo}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
           name="SavedPostListScreen"
           component={SavedPostList}
           options={{headerShown: false}}
         />
-        <Stack.Screen
-          name="SavedVideoScreen"
-          component={SavedVideoScreen}
-          options={{headerShown: false}}
-        />
+       
         <Stack.Screen
           name="BlockUserScreen"
           component={BlockUserScreen}

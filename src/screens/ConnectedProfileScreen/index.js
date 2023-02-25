@@ -9,154 +9,36 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
+  Alert
 } from 'react-native';
-import { ConnectTailentProfileRequest, GetProfileDetailsRequest } from '../../actions/getProfile.action';
-import {CustomCardView, ReportModal, ShadowHeader, StoryScreen, VideoCard} from '../../components';
+import { ConnectTailentProfileRequest} from '../../actions/getProfile.action';
+import { CustomTimeRow, ReportModal, ShadowHeader, StoryScreen, VideoCard} from '../../components';
 import R from '../../res/R';
-import { connect, Connect,useDispatch } from 'react-redux';
+import { connect,useDispatch } from 'react-redux';
 import { Config } from '../../config';
 import Toast from 'react-native-simple-toast';
 const screenWidth = Dimensions.get('screen').width;
 import moment from 'moment';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BlockUserRequest } from '../../actions/block.action';
+import styles from './styles';
+import { DeactivateAccountRequest } from '../../actions/signUp.action';
 
 
-const persnalDetails = [
-  {
-    id: '1',
-    title: 'Age 24',
-  },
-  {
-    id: '2',
-    title: 'Female',
-  },
-  {
-    id: '3',
-    title: 'Gurugram',
-  },
-];
-
-const tailentDetails = [
-  {
-    id: '1',
-    title: 'Music',
-  },
-  {
-    id: '2',
-    title: 'Dance',
-  },
-  {
-    id: '3',
-    title: 'Fashion',
-  },
-];
-
-const timeDetails = [
-  {
-    id: '1',
-    title: 'Gigs',
-  },
-  {
-    id: '2',
-    title: 'Full Time',
-  },
-  {
-    id: '3',
-    title: 'Internship',
-  },
-];
-
-
-const CustomTimeRow = props => {
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        marginBottom: R.fontSize.Size10,
-        marginLeft: R.fontSize.Size14,
-      }}>
-      <View
-        style={{
-          alignItems: 'center',
-          width: screenWidth / 3.8,
-          height: R.fontSize.Size35,
-          backgroundColor: R.colors.appColor,
-          justifyContent: 'center',
-          borderRadius: R.fontSize.Size8,
-        }}>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-            color: R.colors.lightWhite,
-            marginHorizontal: R.fontSize.Size12,
-          }}>
-          {props.leftTitle}
-        </Text>
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: R.fontSize.Size5,
-        }}>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            color: R.colors.primaryTextColor,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-          }}>
-          {'USD'}
-        </Text>
-        <Text
-          style={{
-            // height: R.fontSize.Size20,
-            marginHorizontal: R.fontSize.Size4,
-            textAlign: 'center',
-            borderBottomWidth: 1,
-            borderColor: R.colors.appColor,
-            fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-            color: R.colors.primaryTextColor,
-          }}>
-          {props.rightText}
-        </Text>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            color: R.colors.primaryTextColor,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-          }}>
-          {props.rightDayHours}
-        </Text>
-      </View>
-    </View>
-  );
-};
 
 const ConnectedProfileScreen = props => {
 
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [profileDetails, setProfileDetails] = useState({});
-  const [profileDetailsChat, setProfileDetailsChat] = useState({});
-
   const [tailentPostVideo, setTailentPostVideo] = useState([]);
   const [taletArray, setTalentArray] = useState([]);
   const [personalArray, setPersonalArray] = useState([]);
   const [profilePic, setProfilePic] = useState([]);
   const [editModalPicker, setEditModalPicker] = useState(false);
+  const [blockModalPicker, setblockModalPicker] = useState(false);
+
   const [userProfileId, setUserProfileId] = useState('')
   const [talentUserId, setTalentUserId] = useState('');
-
-
 
   useEffect(()=>{
     console.log('Tailent Post D', props.route.params?.tailentPost?.user_id);
@@ -164,10 +46,9 @@ const ConnectedProfileScreen = props => {
     setUserProfileId(props.userProfile?.Profile?.user_id);
     setTalentUserId(props.route.params?.tailentPost?.user_id);
     onCallConnectTailentProfileAPI(props.route.params?.profileId);
-
   },[props.navigation])
 
-    const onCallConnectTailentProfileAPI = (profileId) => {
+  const onCallConnectTailentProfileAPI = (profileId) => {
     setLoading(true)
     let data = {
       id: profileId
@@ -176,13 +57,11 @@ const ConnectedProfileScreen = props => {
       console.log('Get Profile Res', response)
       if (response.status == 'success') {
         setProfileDetails(response.Profile);
-        setProfileDetailsChat(response);
         let tempTalentArray = response.Profile?.category;
          let useTalentArray = tempTalentArray.split(',');
          console.log('useTalentArray', useTalentArray);
           setTalentArray(useTalentArray)
           setTailentPostVideo(response.Profile?.post)
-          // onCallGoogleAPI(response.Profile);
           setPersonalArray([
             response.Profile?.gender,
             `${moment().diff(response.Profile?.birth, 'years')} Year`,
@@ -201,35 +80,7 @@ const ConnectedProfileScreen = props => {
     }))
   }
 
-  const onCallGoogleAPI = profileDetails => {
-    setLoading(true);
-    console.log('PROFILE DETAILS ON GAPI', profileDetails);
-
-    fetch(
-      `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
-    )
-      .then(res => res.json())
-      .then(response => {
-        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-        let temparray = [];
-        temparray = response?.results;
-        let tempLength = temparray.length;
-        let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-        let arrayAddress = arrayAdd.split(',');
-        let arrAddLength = arrayAddress.length;
-        console.log('FORMAT ADDRESS LENGTH', arrAddLength);
-
-        console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
-       setPersonalArray([
-         profileDetails?.gender,
-         `${moment().diff(profileDetails?.birth, 'years')} Year`,
-         `${arrayAddress[arrAddLength - 3]}`,
-       ]);
-        setLoading(false);
-      });
-  };
-
-  const onCallMyUserId = () => {
+const onCallMyUserId = () => {
       console.log('MY USER ID', userProfileId);
       console.log('TAILENT USER ID', profileDetails?.user_id);
       console.log(
@@ -248,7 +99,6 @@ const ConnectedProfileScreen = props => {
              ? userProfileId + '+' + profileDetails?.user_id
              : profileDetails?.user_id + '+' + userProfileId,
        });
-   
   }
 
   const onCallBlockUser = () => {
@@ -261,19 +111,58 @@ const ConnectedProfileScreen = props => {
         console.log('BLOCK USER RESPONSE', response);
         if (response.status == 'success') {
           setLoading(false);
-
-          Toast.show(response.message, Toast.SHORT);
-          setEditModalPicker(false)
+          setblockModalPicker(false);          
           props.navigation.replace('HomeMenu')
-
         } else {
           Toast.show(response.message, Toast.SHORT);
-          setEditModalPicker(false);
+          setblockModalPicker(false)
           setLoading(false);
         }
       }),
     );
   };
+
+  const onCallBlockUserScreen = () => {
+   setblockModalPicker(false)
+    props.navigation.navigate('BlockUserScreen');
+  };
+
+      const onDeleteAccountAlart = () => {
+        Alert.alert(
+          'Delete Account!',
+          `\nAre you sure you want to delete your account? \n`,
+          [
+            {
+              text: 'Proceed',
+              onPress: () => onCallDeleteAccountAPI(),
+            },
+            {
+              text: 'CANCEL',
+              onPress: () => setEditModalPicker(false),
+            },
+          ],
+          {
+            cancelable: true,
+          },
+        );
+      };
+
+      const onCallDeleteAccountAPI = () => {
+        setLoading(true);
+        setEditModalPicker(false);
+        dispatch(
+          DeactivateAccountRequest(response => {
+            console.log('Delete Account Response', response);
+            if (response.status == 'success') {
+              setLoading(false);
+              props.navigation.replace('LoginScreen');
+            } else {
+              setLoading(false);
+              Toast.show(response.message, Toast.SHORT);
+            }
+          }),
+        );
+      };
 
   return (
     <StoryScreen loading={loading}>
@@ -281,33 +170,14 @@ const ConnectedProfileScreen = props => {
         <ShadowHeader
           onPress={() => props.navigation.goBack()}
           leftSource={R.images.chevronBack}
-          // rightSource={R.images.chatIcon}
-          // rightSourceOnPress={() => console.log('chat')}
-          // marginRightSource={R.fontSize.Size6}
-          // rightTitle={
-          //   <Text
-          //     style={{
-          //       marginRight: R.fontSize.Size10,
-          //       color: R.colors.primaryTextColor,
-          //       fontFamily: R.fonts.regular,
-          //       fontSize: R.fontSize.Size14,
-          //       fontWeight: '700',
-          //     }}>
-          //     {'Send Message'}
-          //   </Text>
-          // }
-          // rightSource2={R.images.bellIcon}
-          // rightSourceOnPress2={() =>
-          //   props.navigation.navigate('NotificationScreen')
-          // }
         />
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
           showsVerticalScrollIndicator={false}>
-          <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
+          <View style={styles.mainView}>
             <View style={{alignItems: 'flex-end'}}>
               <Pressable
-                onPress={() => setEditModalPicker(true)}
+                onPress={() => {userProfileId == talentUserId ? setblockModalPicker(true) : setEditModalPicker(true)}}
                 style={({pressed}) => [
                   {
                     opacity: pressed ? 0.5 : 1,
@@ -317,88 +187,32 @@ const ConnectedProfileScreen = props => {
                 ]}>
                 <Image
                   source={R.images.greyDotsIcon}
-                  style={{
-                    height: R.fontSize.Size24,
-                    width: R.fontSize.Size24,
-                  }}
+                  style={styles.dotIconImage}
                   resizeMode={'contain'}
                 />
               </Pressable>
             </View>
-            <View
-              style={{
-                marginTop: R.fontSize.Size4,
-                flexDirection: 'row',
-                paddingVertical: R.fontSize.Size10,
-              }}>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'space-around',
-                  alignItems: 'center',
-                }}>
-                <View
-                  style={{
-                    height: R.fontSize.Size60,
-                    width: R.fontSize.Size60,
-                    borderRadius: R.fontSize.Size35,
-                    overflow: 'hidden',
-                    borderWidth: 1,
-                    borderColor: R.colors.placeholderTextColor,
-                  }}>
+            <View style={styles.topMainView}>
+              <View style={styles.topView}>
+                <View style={styles.topProfileView}>
                   <Image
                     source={{
                       uri: profilePic?.path,
                     }}
-                    style={{
-                      height: R.fontSize.Size60,
-                      width: R.fontSize.Size60,
-                    }}
+                    style={styles.topProfileImage}
                     resizeMode={'cover'}
                   />
                 </View>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size15,
-                    fontWeight: '700',
-                    color: R.colors.primaryTextColor,
-                  }}
-                  numberOfLines={1}>
+                <Text style={styles.topUserText} numberOfLines={1}>
                   {profileDetails?.username}
                 </Text>
               </View>
-              <View
-                style={{
-                  height: R.fontSize.Size80,
-                  width: 1,
-                  backgroundColor: R.colors.placeholderTextColor,
-                }}
-              />
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'space-around',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size24,
-                    fontWeight: '700',
-                    color: R.colors.primaryTextColor,
-                  }}
-                  numberOfLines={1}>
+              <View style={styles.topViewLine} />
+              <View style={styles.topRightView}>
+                <Text style={styles.topRightText} numberOfLines={1}>
                   {tailentPostVideo.length}
                 </Text>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size15,
-                    fontWeight: '700',
-                    color: R.colors.primaryTextColor,
-                  }}
-                  numberOfLines={1}>
+                <Text style={styles.topRightPostText} numberOfLines={1}>
                   {'Posts'}
                 </Text>
               </View>
@@ -414,68 +228,32 @@ const ConnectedProfileScreen = props => {
                       props.navigation.navigate('UpdateProfileScreen')
                     }
                     style={({pressed}) => [
-                      {
-                        paddingVertical: R.fontSize.Size8,
-                        borderRadius: R.fontSize.Size8,
-                        backgroundColor: R.colors.placeholderTextColor,
-                        opacity: pressed ? 0.5 : 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      },
+                      styles.editPressButton,
+                      {opacity: pressed ? 0.5 : 1},
                     ]}>
-                    <View
-                      style={{
-                        height: R.fontSize.Size10,
-                        width: R.fontSize.Size10,
-                        borderRadius: R.fontSize.Size10,
-                        backgroundColor: R.colors.placeHolderColor,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size15,
-                        color: R.colors.primaryTextColor,
-                        fontWeight: '600',
-                        marginHorizontal: R.fontSize.Size8,
-                      }}>
-                      {'Edit Profile'}
-                    </Text>
+                    <View style={styles.editViewButton} />
+                    <Text style={styles.editTextButton}>{'Edit Profile'}</Text>
                   </Pressable>
                 </View>
               ) : (
                 <Pressable
                   onPress={() => onCallMyUserId()}
                   style={({pressed}) => [
+                    styles.editPressButton,
                     {
-                      backgroundColor: R.colors.appColor,
-                      paddingVertical: R.fontSize.Size8,
-                      borderRadius: R.fontSize.Size8,
                       opacity: pressed ? 0.5 : 1,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      backgroundColor: R.colors.appColor,
                     },
                   ]}>
                   <View style={{justifyContent: 'center'}}>
                     <Image
                       source={R.images.chatIconWhite}
-                      style={{
-                        height: R.fontSize.Size20,
-                        width: R.fontSize.Size20,
-                      }}
+                      style={styles.dotIconImage}
                       resizeMode={'contain'}
                     />
                   </View>
                   <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size14,
-                      color: R.colors.white,
-                      fontWeight: '700',
-                      marginHorizontal: R.fontSize.Size5,
-                    }}>
+                    style={[styles.editTextButton, {color: R.colors.white}]}>
                     {'Send Message'}
                   </Text>
                 </Pressable>
@@ -483,106 +261,32 @@ const ConnectedProfileScreen = props => {
             </View>
             {profileDetails?.bio != '' && (
               <View style={{marginTop: R.fontSize.Size20}}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size12,
-                    fontWeight: '400',
-                    color: R.colors.primaryTextColor,
-                  }}>
-                  {`${profileDetails?.bio}`}
-                </Text>
+                <Text style={styles.bioText}>{`${profileDetails?.bio}`}</Text>
               </View>
             )}
 
-            <View
-              style={{
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: R.fontSize.Size20,
-              }}>
+            <View style={styles.personalView}>
               {personalArray.map((item, index) => {
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginRight: R.fontSize.Size14,
-                    }}>
-                    {item != '' && (
-                      <View
-                        style={{
-                          height: R.fontSize.Size10,
-                          width: R.fontSize.Size10,
-                          backgroundColor: R.colors.appColor,
-                          borderRadius: R.fontSize.Size10,
-                        }}
-                      />
-                    )}
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size14,
-                        fontWeight: '700',
-                        color: R.colors.primaryTextColor,
-                        marginLeft: R.fontSize.Size8,
-                      }}>
-                      {item}
-                    </Text>
+                  <View key={index} style={styles.personalUnderView}>
+                    {item != '' && <View style={styles.personalDotView} />}
+                    <Text style={styles.personalText}>{item}</Text>
                   </View>
                 );
               })}
             </View>
 
-            <View
-              style={{
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: R.fontSize.Size20,
-              }}>
+            <View style={styles.personalView}>
               {taletArray.map((item, index) => {
-                console.log('ITEM', item);
                 return (
-                  <View
-                    key={index}
-                    style={{
-                      alignItems: 'center',
-                      marginRight: R.fontSize.Size14,
-                      justifyContent: 'center',
-                      paddingHorizontal: R.fontSize.Size20,
-                      paddingVertical: R.fontSize.Size6,
-                      backgroundColor: R.colors.appColor,
-                      borderRadius: R.fontSize.Size8,
-                      marginBottom: R.fontSize.Size10,
-                      width: screenWidth / 3.8,
-                      height: R.fontSize.Size35,
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size14,
-                        fontWeight: '700',
-                        color: R.colors.white,
-                        marginLeft: R.fontSize.Size8,
-                      }}>
-                      {item}
-                    </Text>
+                  <View key={index} style={styles.talentView}>
+                    <Text style={styles.talentText}>{item}</Text>
                   </View>
                 );
               })}
             </View>
 
-            <View
-              style={{
-                marginTop: R.fontSize.Size20,
-                alignItems: 'flex-start',
-                flexDirection: 'row',
-                paddingHorizontal: R.fontSize.Size10,
-                marginLeft: -R.fontSize.Size22,
-              }}>
+            <View style={styles.timeMainView}>
               {profileDetails?.full_time_amount != '' &&
                 profileDetails?.full_time_amount != null && (
                   <CustomTimeRow
@@ -608,13 +312,7 @@ const ConnectedProfileScreen = props => {
                 />
               ) : null}
             </View>
-
-            <View
-              style={{
-                marginTop: R.fontSize.Size10,
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-              }}>
+            <View style={styles.talentVideoView}>
               {tailentPostVideo.map((item, index) => {
                 return (
                   <View key={index}>
@@ -626,14 +324,8 @@ const ConnectedProfileScreen = props => {
                         })
                       }
                       style={({pressed}) => [
-                        {
-                          opacity: pressed ? 0.5 : 1,
-                          width: screenWidth / 3.7,
-                          height: screenWidth / 3,
-                          borderRadius: R.fontSize.Size8,
-                          margin: R.fontSize.Size5,
-                          overflow: 'hidden',
-                        },
+                        styles.talentVideoPress,
+                        {opacity: pressed ? 0.5 : 1},
                       ]}>
                       <VideoCard
                         videoUrl={`${Config.API_URL}${item?.post.replace(
@@ -660,6 +352,18 @@ const ConnectedProfileScreen = props => {
         optionFirst={true}
         optionThird={true}
         onPress2={() => onCallBlockUser()}
+      />
+      <ReportModal
+        visible={blockModalPicker}
+        onRequestClose={() => setblockModalPicker(false)}
+        closeModal={() => setblockModalPicker(false)}
+        title1={`Blocked Users`}
+        title2={`Delete Account`}
+        icon1={R.images.blockIcon}
+        icon2={R.images.grayDeleteIcon}
+        optionThird={true}
+        onPress1={() => onCallBlockUserScreen()}
+        onPress2={() => onDeleteAccountAlart()}
       />
     </StoryScreen>
   );

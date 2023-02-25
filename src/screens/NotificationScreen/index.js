@@ -22,36 +22,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebase } from '@react-native-firebase/messaging';
 import moment from 'moment/moment';
 
-const notificationList = [
-  {
-    id: '1',
-    title:
-      'First NitificationFun for my own blog, on this occasion I will explain to you in connection with no profile picture icon',
-    desc: 'Description of notificationFun for my own blog, on this occasion I will explain to you in connection with no profile picture icon',
-    date: '23 May',
-    year: '2022',
-    avatar:
-      'https://cdn2.vectorstock.com/i/1000x1000/26/01/young-executive-woman-profile-icon-vector-9692601.jpg',
-  },
-  {
-    id: '2',
-    title: 'First Nitification',
-    desc: 'Description of notification',
-    date: '23 May',
-    year: '2022',
-    avatar:
-      'https://cdn2.vectorstock.com/i/1000x1000/26/01/young-executive-woman-profile-icon-vector-9692601.jpg',
-  },
-  {
-    id: '2',
-    title: 'First Nitification',
-    desc: 'Description of notification',
-    date: '23 May',
-    year: '2022',
-    avatar:
-      'https://cdn2.vectorstock.com/i/1000x1000/26/01/young-executive-woman-profile-icon-vector-9692601.jpg',
-  },
-];
 
 const NotificationScreen = props => {
   const dispatch = useDispatch();
@@ -72,12 +42,6 @@ const onCallFCMToken = async () => {
   let checkToken = await AsyncStorage.getItem('fcmToken');
   console.log('TOKEN', checkToken);
   setFcmToken(checkToken)
-  // await AsyncStorage.getItem('fcmToken', (err, result) => {
-  //   console.log('FCM TOKEN', result);
-  //   setFcmToken(result);
-  // setLoading(false);
-
-  // });
   setLoading(false);
 };
 
@@ -95,7 +59,6 @@ const onCallNotificationList = () => {
     console.log("NOTIFICATION LIST RES", response)
     if(response.status == 'success')
     {
-    // Toast.show(response.message, Toast.SHORT);
     setNotiList(response.dataList)
     setLoading(false);
 

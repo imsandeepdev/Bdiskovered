@@ -20,12 +20,6 @@ const CustomTabBar = props => {
     eventEmitter.emit('custom-event', {data: 'test'});
 
     setSelect('HomeScreen');
-     const didFocus = props.navigation.addListener('didFocus', () => {
-       console.log('Focus on home Didfocus');
-
-       setVideoPlayPause(false);
-     });
-     return didFocus
    
   };
 

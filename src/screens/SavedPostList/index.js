@@ -2,34 +2,21 @@ import * as React from 'react';
 import {useState, useEffect} from 'react';
 import {
   View,
-  Image,
   Pressable,
   Text,
-  ImageBackground,
   SafeAreaView,
   Dimensions,
-  Modal,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
   FlatList
 } from 'react-native';
 import {
-  AlartModal,
-  AppButton,
-  FullViewStoryScreen,
   Header,
   StoryScreen,
   VideoCard,
 } from '../../components';
 import R from '../../res/R';
-import {connect, Connect, useDispatch} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import { SavedPostListRequest } from '../../actions/savedPost.action';
 import { Config } from '../../config';
-import axios from 'axios';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 

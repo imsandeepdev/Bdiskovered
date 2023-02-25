@@ -6,17 +6,14 @@ import {
   Pressable,
   Text,
   Dimensions,
-  Modal,
-  KeyboardAvoidingView,
   ScrollView,
-  Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
   AlartModal,
   AppButton,
+  CustomTimeRow,
+  EyeViewModal,
   ReportDetailModal,
   ReportModal,
   StoryScreen,
@@ -34,129 +31,10 @@ import Styles from './styles';
 import { DeleteSavedPostRequest, SavedPostListRequest, SavedPostRequest } from '../../actions/savedPost.action';
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
 import CommonFunctions from '../../utils/CommonFuntions';
+import AppContent from '../../utils/Content';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
-const ReportList = [
-  {
-    id: '1',
-    title: 'Violence',
-  },
-  {
-    id: '2',
-    title: 'Misinformation',
-  },
-  {
-    id: '3',
-    title: 'Sexually explicit',
-  },
-  {
-    id: '4',
-    title: 'Spam',
-  },
-  {
-    id: '5',
-    title: 'Illegal activities ',
-  },
-  {
-    id: '6',
-    title: 'Sucide/Dangerous acts',
-  },
-  {
-    id: '7',
-    title: 'Promotions of drugs or weapons',
-  },
-  {
-    id: '8',
-    title: 'Pornography',
-  },
-  {
-    id: '9',
-    title: 'Copyright Infringement',
-  },
-  {
-    id: '10',
-    title: 'Personal/Private content',
-  },
-  {
-    id: '11',
-    title: 'Other',
-  },
-];
-
-
-const CustomTimeRow = props => {
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        marginBottom: R.fontSize.Size10,
-        marginLeft: R.fontSize.Size14,
-      }}>
-      <View
-        style={{
-          alignItems: 'center',
-          width: screenWidth / 3.8,
-          height: R.fontSize.Size30,
-          backgroundColor: R.colors.appColor,
-          justifyContent: 'center',
-          borderRadius: R.fontSize.Size8,
-        }}>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-            color: R.colors.lightWhite,
-            marginHorizontal: R.fontSize.Size12,
-          }}>
-          {props.leftTitle}
-        </Text>
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: R.fontSize.Size5,
-        }}>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            color: R.colors.primaryTextColor,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-          }}>
-          {'USD'}
-        </Text>
-        <Text
-          style={{
-            // height: R.fontSize.Size20,
-            marginHorizontal: R.fontSize.Size4,
-            textAlign: 'center',
-            borderBottomWidth: 1,
-            borderColor: R.colors.appColor,
-            fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-            color: R.colors.black,
-          }}>
-          {props.rightText}
-        </Text>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            color: R.colors.primaryTextColor,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-          }}>
-          {props.rightDayHours}
-        </Text>
-      </View>
-    </View>
-  );
-};
 
 
 const FilterVideoScreen = props => {
@@ -171,8 +49,6 @@ const FilterVideoScreen = props => {
   const [videoModalPersonalDetail, setVideoModalPersonalDetail] = useState([]);
   const [videoModalTalentDetail, setVideoModalTalentDetail] = useState([]);
   const [videoModalAvailableDetail, setVideoModalAvailableDetail] = useState([]);
-  const [saveVideoList, setSaveVideoList] = useState([])
-
   const [reportModalPicker, setReportModalPicker] = useState(false);
   const [reportDetailModalPicker, setReportDetailModalPicker] = useState(false);
   const [selectReport, setSelectReport] = useState();
@@ -254,7 +130,6 @@ const FilterVideoScreen = props => {
     }).then(res => {
       console.log('LIKE RES', res);
       if (res.data.status == 'success') {
-        // Toast.show(res.data.message, Toast.SHORT);
         setVideoList(videoList);
         setTimeout(() => {
           setSliderValue(0);
@@ -316,40 +191,40 @@ const FilterVideoScreen = props => {
     };
 
 
-const onCallReportModal = (postId, userId) => {
-  setReportPostId(postId);
-  setReportUserId(userId);
-  setReportModalPicker(true);
-};
+// const onCallReportModal = (postId, userId) => {
+//   setReportPostId(postId);
+//   setReportUserId(userId);
+//   setReportModalPicker(true);
+// };
 
-const onCallReportModalPress1 = reportType => {
-  setReportModalPicker(false);
-  setSelectTypeReport(reportType);
-  setReportDetailModalPicker(true);
-};
-const onCallReportModalPress2 = reportType => {
-  setReportModalPicker(false);
-  setSelectTypeReport(reportType);
-  setReportDetailModalPicker(true);
-};
-const onCallReportModalPress3 = reportType => {
-  setReportModalPicker(false);
-  setSelectTypeReport(reportType);
-  setReportDetailModalPicker(true);
-};
+// const onCallReportModalPress1 = reportType => {
+//   setReportModalPicker(false);
+//   setSelectTypeReport(reportType);
+//   setReportDetailModalPicker(true);
+// };
+// const onCallReportModalPress2 = reportType => {
+//   setReportModalPicker(false);
+//   setSelectTypeReport(reportType);
+//   setReportDetailModalPicker(true);
+// };
+// const onCallReportModalPress3 = reportType => {
+//   setReportModalPicker(false);
+//   setSelectTypeReport(reportType);
+//   setReportDetailModalPicker(true);
+// };
 
-const OnCallSelectReport = (index, item) => {
-  setSelectReport(index);
-  setReportDesc(item.title);
-  console.log('ReportDetail', item.title);
-  console.log('ReportIndex', index);
-};
+// const OnCallSelectReport = (index, item) => {
+//   setSelectReport(index);
+//   setReportDesc(item.title);
+//   console.log('ReportDetail', item.title);
+//   console.log('ReportIndex', index);
+// };
 
-const onCallClosedReportDetailModal = () => {
-  setSelectTypeReport('');
-  setReportDetailModalPicker(false);
-  setSelectReport('');
-};
+// const onCallClosedReportDetailModal = () => {
+//   setSelectTypeReport('');
+//   setReportDetailModalPicker(false);
+//   setSelectReport('');
+// };
 
 const onCallSavePost = postId => {
   let data = {
@@ -360,7 +235,6 @@ const onCallSavePost = postId => {
     SavedPostRequest(data, response => {
       console.log('Saved Post Response', response);
       if (response.status == 'success') {
-        // Toast.show(response?.message, Toast.SHORT);
         setLoading(false);
       } else {
         Toast.show(response?.message, Toast.SHORT);
@@ -383,9 +257,7 @@ const onCallSavePost = postId => {
      DeleteSavedPostRequest(data, response => {
        console.log('Saved Post Response', response);
        if (response.status == 'success') {
-        //  Toast.show(response?.message, Toast.SHORT);
          onCallSavedPostAPI();
-        //  setLoading(false);
        } else {
          Toast.show(response?.message, Toast.SHORT);
          setLoading(false);
@@ -398,7 +270,6 @@ const onCallSavePost = postId => {
    setLoading(true);
    dispatch(
      SavedPostListRequest(response => {
-       // console.log('SAVED POST LIST RESPONSE', response?.Post)
        if (response.status == 'success') {
          setVideoList(response?.Post);
          setLoading(false);
@@ -407,83 +278,83 @@ const onCallSavePost = postId => {
    );
  };
 
-const onCallReportPostValidation = () => {
-  return CommonFunctions.isBlank(reportDesc.trim(), 'Select any report reason');
-};
+// const onCallReportPostValidation = () => {
+//   return CommonFunctions.isBlank(reportDesc.trim(), 'Select any report reason');
+// };
 
-const onCallReportPost = () => {
-  if (onCallReportPostValidation()) {
-    onCallReportPostAPI();
-  }
-};
+// const onCallReportPost = () => {
+//   if (onCallReportPostValidation()) {
+//     onCallReportPostAPI();
+//   }
+// };
 
-const onCallReportPostAPI = () => {
-  let data = {
-    user_id: reportUserId,
-    post_id: reportPostId,
-    descritpion: reportDesc,
-  };
-  console.log('ReportData', data);
-  dispatch(
-    ReportPostRequest(data, response => {
-      console.log('Report Response', response);
-      if (response.status == 'success') {
-        Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
-        setReportDesc('');
-        setReportOkModal(true);
-      } else {
-        Toast.show(response.message, Toast.SHORT);
-        setReportDesc('');
-      }
-    }),
-  );
-};
+// const onCallReportPostAPI = () => {
+//   let data = {
+//     user_id: reportUserId,
+//     post_id: reportPostId,
+//     descritpion: reportDesc,
+//   };
+//   console.log('ReportData', data);
+//   dispatch(
+//     ReportPostRequest(data, response => {
+//       console.log('Report Response', response);
+//       if (response.status == 'success') {
+//         Toast.show(response.message, Toast.SHORT);
+//         onCallClosedReportDetailModal();
+//         setReportDesc('');
+//         setReportOkModal(true);
+//       } else {
+//         Toast.show(response.message, Toast.SHORT);
+//         setReportDesc('');
+//       }
+//     }),
+//   );
+// };
 
-const onCallBlockUser = () => {
-  let data = {
-    blockId: reportUserId,
-  };
-  setLoading(true);
-  dispatch(
-    BlockUserRequest(data, response => {
-      console.log('BLOCK USER RESPONSE', response);
-      if (response.status == 'success') {
-        Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
-        props.navigation.replace('HomeMenu');
+// const onCallBlockUser = () => {
+//   let data = {
+//     blockId: reportUserId,
+//   };
+//   setLoading(true);
+//   dispatch(
+//     BlockUserRequest(data, response => {
+//       console.log('BLOCK USER RESPONSE', response);
+//       if (response.status == 'success') {
+//         Toast.show(response.message, Toast.SHORT);
+//         onCallClosedReportDetailModal();
+//         props.navigation.replace('HomeMenu');
 
-      } else {
-        Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
-        setLoading(false);
-      }
-    }),
-  );
-};
+//       } else {
+//         Toast.show(response.message, Toast.SHORT);
+//         onCallClosedReportDetailModal();
+//         setLoading(false);
+//       }
+//     }),
+//   );
+// };
 
-const onCallBlockPost = () => {
-  let data = {
-    postId: reportPostId,
-  };
-  setLoading(true);
+// const onCallBlockPost = () => {
+//   let data = {
+//     postId: reportPostId,
+//   };
+//   setLoading(true);
 
-  dispatch(
-    BlockPostRequest(data, response => {
-      console.log('BLOCK POST RESPONSE', response);
+//   dispatch(
+//     BlockPostRequest(data, response => {
+//       console.log('BLOCK POST RESPONSE', response);
 
-      if (response.status == 'success') {
-        Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
-        props.navigation.replace('HomeMenu')
-      } else {
-        Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
-        setLoading(false);
-      }
-    }),
-  );
-};
+//       if (response.status == 'success') {
+//         Toast.show(response.message, Toast.SHORT);
+//         onCallClosedReportDetailModal();
+//         props.navigation.replace('HomeMenu')
+//       } else {
+//         Toast.show(response.message, Toast.SHORT);
+//         onCallClosedReportDetailModal();
+//         setLoading(false);
+//       }
+//     }),
+//   );
+// };
 
 
 
@@ -521,8 +392,14 @@ const onCallBlockPost = () => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      eyeonPress={() => {props.route.params?.fromScreen != 'SavedPostListScreen' && onCallModal(item)}}
-                      eyeIcon={props.route.params?.fromScreen != 'SavedPostListScreen' && R.images.eyeIcon}
+                      eyeonPress={() => {
+                        props.route.params?.fromScreen !=
+                          'SavedPostListScreen' && onCallModal(item);
+                      }}
+                      eyeIcon={
+                        props.route.params?.fromScreen !=
+                          'SavedPostListScreen' && R.images.eyeIcon
+                      }
                       userName={item?.username}
                       videoCat={item?.address != '' ? item?.address : ''}
                       bottomTitle={item?.title}
@@ -564,19 +441,12 @@ const onCallBlockPost = () => {
                           )}`,
                         )
                       }
-                      onPressReport={() =>
-                        onCallReportModal(item?.postID, item?.user_id)
-                      }
+                      // onPressReport={() =>
+                      //   onCallReportModal(item?.postID, item?.user_id)
+                      // }
                     />
                   </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginHorizontal: R.fontSize.Size12,
-                      alignItems: 'center',
-                      height: R.fontSize.Size100,
-                      justifyContent: 'center',
-                    }}>
+                  <View style={Styles.sliderView}>
                     <View style={{flex: 1}}>
                       <View>
                         <Slider
@@ -593,22 +463,10 @@ const onCallBlockPost = () => {
                           minimumValue={0}
                           maximumValue={100}
                           customMinimumTrack={
-                            <View
-                              style={{
-                                height: R.fontSize.Size8,
-                                backgroundColor: R.colors.appColor,
-                                borderRadius: R.fontSize.Size5,
-                              }}
-                            />
+                            <View style={Styles.sliderMinTrack} />
                           }
                           customMaximumTrack={
-                            <View
-                              style={{
-                                height: R.fontSize.Size8,
-                                backgroundColor: R.colors.placeholderTextColor,
-                                borderRadius: R.fontSize.Size5,
-                              }}
-                            />
+                            <View style={Styles.sliderMaxTrack} />
                           }
                           minimumTrackTintColor={R.colors.white}
                           maximumTrackTintColor={R.colors.white}
@@ -621,57 +479,25 @@ const onCallBlockPost = () => {
                             );
                           }}
                           customThumb={
-                            <View
-                              style={{
-                                overflow: 'hidden',
-                                top: 5,
-                                left: 0,
-                                right: 0,
-                              }}>
+                            <View style={Styles.customThumView}>
                               <Image
                                 source={R.images.redHeartIcon}
-                                style={{
-                                  width: R.fontSize.Size35,
-                                  height: R.fontSize.Size35,
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
+                                style={Styles.customThumImage}
                                 resizeMode={'contain'}
                               />
                             </View>
                           }
                         />
                       </View>
-
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                            color: R.colors.placeHolderColor,
-                          }}>
+                      <View style={Styles.likedView}>
+                        <Text style={Styles.likedByText}>
                           {'Liked By '}
                           <Text style={{color: R.colors.appColor}}>
                             {item?.total_likes != '' ? item?.total_likes : '0'}
                           </Text>
                         </Text>
-                        <View
-                          style={{
-                            width: 1,
-                            height: R.fontSize.Size14,
-                            backgroundColor: R.colors.placeHolderColor,
-                            marginHorizontal: R.fontSize.Size10,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            fontWeight: '700',
-                            color: R.colors.placeHolderColor,
-                          }}>
+                        <View style={Styles.avgLikeView} />
+                        <Text style={Styles.avgLikeText}>
                           {'Average Like '}
                           <Text style={{color: R.colors.appColor}}>
                             {item?.total_rating != '' &&
@@ -685,18 +511,8 @@ const onCallBlockPost = () => {
                         </Text>
                       </View>
                     </View>
-
-                    <View
-                      style={{
-                        paddingHorizontal: R.fontSize.Size5,
-                        height: R.fontSize.Size26,
-                      }}>
-                      <Text
-                        style={{
-                          color: R.colors.appColor,
-                          fontSize: R.fontSize.Size12,
-                          fontWeight: '700',
-                        }}>
+                    <View style={Styles.sliderValueView}>
+                      <Text style={Styles.sliderValueText}>
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
                         item.postInfo[0]?.percentage_like != null
@@ -716,21 +532,10 @@ const onCallBlockPost = () => {
                       ]}>
                       <Image
                         source={R.images.orangeAppIcon}
-                        style={{
-                          height: R.fontSize.Size30,
-                          width: R.fontSize.Size30,
-                          marginBottom: R.fontSize.Size6,
-                        }}
+                        style={Styles.orangeAppIcon}
                         resizeMode={'contain'}
                       />
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontSize: R.fontSize.Size14,
-                          fontWeight: '500',
-                          color: R.colors.placeHolderColor,
-                        }}
-                        numberOfLines={1}>
+                      <Text style={Styles.connectText} numberOfLines={1}>
                         {'Connect'}
                       </Text>
                     </Pressable>
@@ -740,24 +545,12 @@ const onCallBlockPost = () => {
             }}
           />
         </View>
-        <View
-          style={{
-            position: 'absolute',
-            top: R.fontSize.Size50,
-            left: R.fontSize.Size10,
-          }}>
+        <View style={Styles.backButtonView}>
           <Pressable
             onPress={() => props.navigation.goBack()}
             style={({pressed}) => [
-              {
-                height: R.fontSize.Size50,
-                width: R.fontSize.Size50,
-                borderRadius: R.fontSize.Size4,
-                backgroundColor: R.colors.modelBackground,
-                alignItems: 'center',
-                justifyContent: 'center',
-                opacity: pressed ? 0.5 : 1,
-              },
+              Styles.backButtonPress,
+              {opacity: pressed ? 0.5 : 1},
             ]}>
             <Image
               source={R.images.chevronBack}
@@ -767,145 +560,56 @@ const onCallBlockPost = () => {
           </Pressable>
         </View>
       </View>
-      <Modal
+      <EyeViewModal
         visible={modalPicker}
-        transparent={true}
-        onRequestClose={() => setModalPicker(false)}>
-        <View style={Styles.modalMainView}>
-          <View style={Styles.modalView}>
-            <View style={Styles.modalViewReverse}>
-              <Pressable
-                onPress={() => setModalPicker(false)}
-                style={({pressed}) => [
-                  {
-                    padding: R.fontSize.Size6,
-                    opacity: pressed ? 0.5 : 1,
-                  },
-                ]}>
-                <Image
-                  source={R.images.cancleIcon}
-                  style={{height: R.fontSize.Size10, width: R.fontSize.Size10}}
-                  resizeMode={'contain'}
+        onRequestClose={() => setModalPicker(false)}
+        cancelOnPress={() => setModalPicker(false)}
+        userProfile={{
+          uri: `${Config.API_URL}${videoModalDetail?.avatar.replace(
+            'http://localhost:8080/',
+            '',
+          )}`,
+        }}
+        userName={videoModalDetail?.username}
+        bio={videoModalDetail?.bio}
+        personalList={videoModalPersonalDetail.map((item, index) => {
+          return (
+            <View key={index} style={Styles.videoModalMapView}>
+              {item != '' && (
+                <View style={Styles.videoModalPersonalDetailView} />
+              )}
+              <Text style={Styles.videoModalPersonalDetailText}>{item}</Text>
+            </View>
+          );
+        })}
+        talentList={videoModalTalentDetail.map((item, index) => {
+          return (
+            <View key={index} style={Styles.videoModalTalentView}>
+              <Text style={Styles.videoModalTalentText} numberOfLines={1}>
+                {item}
+              </Text>
+            </View>
+          );
+        })}
+        availableList={videoModalAvailableDetail.map((item, index) => {
+          return (
+            <View key={index}>
+              {item?.amount != '' && item?.amount != null ? (
+                <CustomTimeRow
+                  leftTitle={item?.type}
+                  rightText={item?.amount}
+                  rightDayHours={item?.type == 'Full Time' ? '/day' : '/hrs'}
                 />
-              </Pressable>
+              ) : null}
             </View>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
-              style={{flex: 1}}>
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                showsVerticalScrollIndicator={false}>
-                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginHorizontal: R.fontSize.Size20,
-                    }}>
-                    <View style={{flex: 1}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <View style={Styles.videoModalMainView}>
-                          <Image
-                            source={{
-                              uri: `${
-                                Config.API_URL
-                              }${videoModalDetail?.avatar.replace(
-                                'http://localhost:8080/',
-                                '',
-                              )}`,
-                            }}
-                            style={{
-                              height: R.fontSize.Size60,
-                              width: R.fontSize.Size60,
-                            }}
-                            resizeMode={'cover'}
-                          />
-                        </View>
-                        <Text style={Styles.videoModalTitleText}>
-                          {videoModalDetail?.username}
-                        </Text>
-                      </View>
-                      {videoModalDetail?.bio != '' && (
-                        <View style={{marginTop: R.fontSize.Size20}}>
-                          <Text style={Styles.videoModalDescText}>
-                            {videoModalDetail?.bio}
-                          </Text>
-                        </View>
-                      )}
-                      <View style={Styles.videoModalMapMainView}>
-                        {videoModalPersonalDetail.map((item, index) => {
-                          return (
-                            <View key={index} style={Styles.videoModalMapView}>
-                              {item != '' && (
-                                <View
-                                  style={Styles.videoModalPersonalDetailView}
-                                />
-                              )}
-                              <Text style={Styles.videoModalPersonalDetailText}>
-                                {item}
-                              </Text>
-                            </View>
-                          );
-                        })}
-                      </View>
-                      <View style={Styles.videoModalMapMainView}>
-                        {videoModalTalentDetail.map((item, index) => {
-                          console.log('ITEM', item);
-                          return (
-                            <View
-                              key={index}
-                              style={Styles.videoModalTalentView}>
-                              <Text
-                                style={Styles.videoModalTalentText}
-                                numberOfLines={1}>
-                                {item}
-                              </Text>
-                            </View>
-                          );
-                        })}
-                      </View>
-                     
-                      <View
-                        style={{
-                          flexWrap: 'wrap',
-                          flexDirection: 'row',
-                          marginLeft: -R.fontSize.Size14,
-                          marginTop: R.fontSize.Size20,
-                        }}>
-                        {videoModalAvailableDetail.map((item, index) => {
-                          return (
-                            <View key={index}>
-                              {item?.amount != '' && item?.amount != null ? (
-                                <CustomTimeRow
-                                  leftTitle={item?.type}
-                                  rightText={item?.amount}
-                                  rightDayHours={
-                                    item?.type == 'Full Time' ? '/day' : '/hrs'
-                                  }
-                                />
-                              ) : null}
-                            </View>
-                          );
-                        })}
-                      </View>
-                    </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              </ScrollView>
-            </KeyboardAvoidingView>
-            <View style={{paddingVertical: R.fontSize.Size10}}>
-              <AppButton
-                onPress={() => {
-                  onCallConnectNow(videoModalDetail);
-                }}
-                title={'Connect'}
-                marginHorizontal={R.fontSize.Size55}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <ReportModal
+          );
+        })}
+        connectOnPress={() => {
+          onCallConnectNow(videoModalDetail);
+        }}
+      />
+
+      {/* <ReportModal
         visible={reportModalPicker}
         onRequestClose={() => setReportModalPicker(false)}
         closeModal={() => setReportModalPicker(false)}
@@ -939,22 +643,14 @@ const onCallBlockPost = () => {
               <ScrollView
                 contentContainerStyle={{flexGrow: 1}}
                 showsVerticalScrollIndicator={false}>
-                {ReportList.map((item, index) => {
+                {AppContent.ReportList.map((item, index) => {
                   return (
                     <Pressable
                       key={index}
                       onPress={() => OnCallSelectReport(index, item)}
                       style={({pressed}) => [
-                        {
-                          marginVertical: R.fontSize.Size4,
-                          borderBottomWidth: 0.5,
-                          borderColor: R.colors.lightWhite,
-                          height: R.fontSize.Size40,
-                          borderRadius: R.fontSize.Size8,
-                          alignItems: 'center',
-                          opacity: pressed ? 0.5 : 1,
-                          flexDirection: 'row',
-                        },
+                        Styles.reportContentView,
+                        {opacity: pressed ? 0.5 : 1},
                       ]}>
                       <Image
                         source={
@@ -962,21 +658,12 @@ const onCallBlockPost = () => {
                             ? R.images.checkRadioIcon
                             : R.images.unCheckRadioIcon
                         }
-                        style={{
-                          height: R.fontSize.Size22,
-                          width: R.fontSize.Size22,
-                          paddingHorizontal: R.fontSize.Size20,
-                        }}
+                        style={Styles.reportContentCheckIcon}
                         resizeMode={'contain'}
                       />
                       <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
                         <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            color: R.colors.lightBlack,
-                            fontWeight: '700',
-                            fontSize: R.fontSize.Size14,
-                          }}
+                          style={Styles.reportContentTitle}
                           numberOfLines={2}>
                           {item.title}
                         </Text>
@@ -987,42 +674,16 @@ const onCallBlockPost = () => {
               </ScrollView>
             )}
             {selectTypeReport == 'cutVideo' && (
-              <View
-                style={{
-                  marginHorizontal: R.fontSize.Size10,
-                  paddingBottom: R.fontSize.Size30,
-                  marginTop: R.fontSize.Size10,
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontWeight: '500',
-                    color: R.colors.lightBlack,
-                    fontSize: R.fontSize.Size16,
-                    textAlign: 'center',
-                  }}>
-                  {
-                    'We have hidden this video and will not recommend similar content in the future.'
-                  }
+              <View style={Styles.cutVideoView}>
+                <Text style={Styles.cutVideoText}>
+                  {AppContent.cutVideoContent}
                 </Text>
               </View>
             )}
             {selectTypeReport == 'dontRecommend' && (
-              <View
-                style={{
-                  marginHorizontal: R.fontSize.Size10,
-                  paddingBottom: R.fontSize.Size30,
-                  marginTop: R.fontSize.Size10,
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontWeight: '500',
-                    color: R.colors.lightBlack,
-                    fontSize: R.fontSize.Size16,
-                    textAlign: 'center',
-                  }}>
-                  {`Blocking someone on BDiskovered hides your profile and videos without notification.`}
+              <View style={Styles.dontRecView}>
+                <Text style={Styles.dontRecText}>
+                  {AppContent.dontRecContent}
                 </Text>
               </View>
             )}
@@ -1034,9 +695,9 @@ const onCallBlockPost = () => {
         onRequestClose={() => setReportOkModal(false)}
         icon={R.images.checkOrangeIcon}
         marginHorizontalModal={R.fontSize.Size35}
-        title={`Your feedback is important to us.\nWe'll review your request and take appropriate action, if required`}
+        title={AppContent.reportOkContent}
         onPress={() => setReportOkModal(false)}
-      />
+      /> */}
     </View>
   );
 };

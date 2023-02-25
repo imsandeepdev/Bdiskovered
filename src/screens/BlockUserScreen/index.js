@@ -3,23 +3,18 @@ import {useState, useEffect} from 'react';
 import {
   View,
   Image,
-  SafeAreaView,
   Text,
   Pressable,
   FlatList,
-  Dimensions,
   Alert
 } from 'react-native';
 import {Header, StoryScreen} from '../../components';
 import R from '../../res/R';
-import {connect, Connect, useDispatch} from 'react-redux';
-import {ConnectedUsersRequest} from '../../actions/connectedUser.action';
+import {connect, useDispatch} from 'react-redux';
 import {Config} from '../../config';
-import axios from 'axios';
 import { BlockUserListRequest, UnblockUserRequest } from '../../actions/block.action';
-const screenHeight = Dimensions.get('screen').height;
-const screenWidth = Dimensions.get('screen').width;
 import Toast from 'react-native-simple-toast';
+import styles from './styles';
 
 const BlockUserScreen = props => {
   const dispatch = useDispatch();
@@ -33,7 +28,6 @@ const BlockUserScreen = props => {
   const onBlockUserAPI = () =>{
     setLoading(true)
     dispatch(BlockUserListRequest(response => {
-        console.log("Block user list response", response)
         setBlockUserList(response.data?.block_list);
         setLoading(false)
     }))
@@ -51,7 +45,7 @@ const BlockUserScreen = props => {
          {
            text: 'CANCEL',
          },
-       ],
+       ], 
        {
          cancelable: true,
        },
@@ -63,12 +57,10 @@ const BlockUserScreen = props => {
       blockId: userId
     };
     setLoading(true);
-
     dispatch(UnblockUserRequest(data, response => {
         console.log("Unblock Response", response)
         if(response.status == 'success')
         {
-            Toast.show(response.message, Toast.SHORT)
             onBlockUserAPI()
         }
         else
@@ -81,24 +73,16 @@ const BlockUserScreen = props => {
 
   return (
     <StoryScreen loading={loading}>
+      
       <Header
         onPress={() => props.navigation.goBack()}
         leftSource={R.images.chevronBack}
-        title={'Blocked Users'}
+        title={'Blocked Users'} 
       />
-      <View
-        style={{
-          height: R.fontSize.Size2,
-          backgroundColor: R.colors.placeholderTextColor,
-          width: '100%',
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-        }}>
+      <View style={styles.mainView}/>
+      <View style={{flex: 1}}>
         <FlatList
-          style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}
+          style={styles.flatStyle}
           data={blockUserList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {
@@ -107,24 +91,10 @@ const BlockUserScreen = props => {
                 key={index}
                 onPress={() => onUnblockAlart(item?._id)}
                 style={({pressed}) => [
-                  {
-                    paddingVertical: R.fontSize.Size6,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderBottomWidth: 1,
-                    borderColor: R.colors.placeholderTextColor,
-                    opacity: pressed ? 0.5 : 1,
-                  },
+                  styles.pressView,
+                  {opacity: pressed ? 0.5 : 1}
                 ]}>
-                <View
-                  style={{
-                    height: R.fontSize.Size50,
-                    width: R.fontSize.Size50,
-                    borderRadius: R.fontSize.Size30,
-                    borderWidth: 1,
-                    borderColor: R.colors.placeholderTextColor,
-                    overflow: 'hidden',
-                  }}>
+                <View style={styles.imageView}>
                   <Image
                     source={{
                       uri: `${Config.API_URL}${item?.avatar.replace(
@@ -132,26 +102,12 @@ const BlockUserScreen = props => {
                         '',
                       )}`,
                     }}
-                    style={{
-                      height: R.fontSize.Size50,
-                      width: R.fontSize.Size50,
-                    }}
+                    style={styles.image}
                     resizeMode={'cover'}
                   />
                 </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    marginLeft: R.fontSize.Size15,
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      fontSize: R.fontSize.Size15,
-                      fontWeight: '700',
-                      color: R.colors.primaryTextColor,
-                    }}>
+                <View style={styles.textView}>
+                  <Text style={styles.text}>
                     {item?.name}
                   </Text>
                 </View>
@@ -160,24 +116,12 @@ const BlockUserScreen = props => {
           }}
           ListEmptyComponent={() => {
             return (
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: screenHeight / 1.2,
-                  width: '100%',
-                }}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    fontSize: R.fontSize.Size14,
-                    fontWeight: '700',
-                    color: R.colors.placeHolderColor,
-                  }}>
+              <View style={styles.emptyView}>
+                <Text style={styles.emptyText}>
                   {'No blocked users'}
                 </Text>
               </View>
-            );
+            )
           }}
         />
       </View>

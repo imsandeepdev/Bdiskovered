@@ -87,10 +87,6 @@ const HelpScreen = (props) => {
                         height: R.fontSize.Size45,
                         width: R.fontSize.Size45,
                         borderRadius: R.fontSize.Size30,
-                        // borderWidth: 1,
-                        // borderColor: R.colors.placeholderTextColor,
-                        // overflow: 'hidden',
-                        // backgroundColor:R.colors.lightWhite,
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>

@@ -1,7 +1,7 @@
 import * as react from 'react';
 import {useState, useEffect} from 'react';
 import {Text, View, Pressable, Image, SafeAreaView,TextInput, FlatList,ScrollView, Modal,Dimensions,TouchableWithoutFeedback,KeyboardAvoidingView ,Keyboard,Platform} from 'react-native';
-import { StoryScreen, Header, AppButton, CustomCardView, CustomTimeCard } from '../../components';
+import { StoryScreen, Header, AppButton, CustomCardView, CustomTimeCard, CustomOpenForRow } from '../../components';
 import R from '../../res/R';
 import Styles from './styles';
 const screenHeight = Dimensions.get('screen').height;
@@ -12,119 +12,6 @@ import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
 import { TailentProfileCreateRequest } from '../../actions/tailentProfileCreate.action';
 
-
-const PriceList = [
-  {
-    id: '1',
-    Price: '80 - 100$',
-  },
-  {
-    id: '2',
-    Price: '180 - 200$',
-  },
-  {
-    id: '3',
-    Price: '280 - 300$',
-  },
-  {
-    id: '4',
-    Price: '300 - 400$',
-  },
-  {
-    id: '5',
-    Price: '400 - 500$',
-  },
-];
-
-const CustomTimeRow = (props) => {
-  return (
-    <View style={{flexDirection: 'row',alignItems:'center', marginBottom:R.fontSize.Size10}}>
-      <Pressable
-        onPress={props.leftOnPress}
-        style={({pressed}) => [
-          {
-            opacity: pressed ? 0.5 : 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            width: screenWidth / 2.5,
-          },
-        ]}>
-        <Image
-          source={props.leftImageSource}
-          style={{
-            height: R.fontSize.Size30,
-            width: R.fontSize.Size30,
-          }}
-          resizeMode={'contain'}
-        />
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '700',
-            color: props.leftTextColor,
-            marginHorizontal: R.fontSize.Size12,
-          }}>
-          {props.leftTitle}
-        </Text>
-      </Pressable>
-
-      { 
-      props.rightStatus &&     
-      <View
-        style={{
-          flexDirection: 'row',
-          flex: 1,
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            color: R.colors.primaryTextColor,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '400',
-          }}>
-          {'USD'}
-        </Text>
-        <View
-        style={{width:R.fontSize.Size70, alignItems:'center'}}
-        >
-        <TextInput
-          style={{
-            width: R.fontSize.Size60,
-            height: R.fontSize.Size40,
-            paddingVertical:R.fontSize.Size6,
-            marginHorizontal: R.fontSize.Size6,
-            textAlign: 'center',
-            borderBottomWidth: 1,
-            borderColor: R.colors.appColor,
-            fontFamily:R.fonts.regular,
-            fontSize:R.fontSize.Size12,
-            color:R.colors.primaryTextColor,
-            fontWeight:'400'
-          }}
-          maxLength={6}
-          placeholder={'00'}
-          placeholderTextColor={R.colors.placeholderTextColor}
-          value={props.rightValue}
-          onChangeText={props.rightOnChangeText}
-          keyboardType={'number-pad'}
-        />
-        </View>
-        <Text
-          style={{
-            fontFamily: R.fonts.regular,
-            color: R.colors.primaryTextColor,
-            fontSize: R.fontSize.Size14,
-            fontWeight: '400',
-          }}>
-          {props.rightDayHours}
-        </Text>
-      </View>
-      }
-    </View>
-  );
-}
 
 
 const TalentScreen = (props) => {
@@ -380,7 +267,7 @@ const TalentScreen = (props) => {
                             {'Open For'}
                           </Text>
                           <View style={{marginTop: R.fontSize.Size10}}>
-                            <CustomTimeRow
+                            <CustomOpenForRow
                               leftOnPress={() => onCallFullTimeRow()}
                               leftImageSource={
                                 selectFullTime
@@ -400,7 +287,7 @@ const TalentScreen = (props) => {
                               }
                               rightDayHours={'/ Day'}
                             />
-                            <CustomTimeRow
+                            <CustomOpenForRow
                               leftOnPress={() => onCallPartTimeRow()}
                               leftImageSource={
                                 selectPartTime
@@ -420,7 +307,7 @@ const TalentScreen = (props) => {
                               }
                               rightDayHours={'/ Hours'}
                             />
-                            <CustomTimeRow
+                            <CustomOpenForRow
                               leftOnPress={() => onCallGigsRow()}
                               leftImageSource={
                                 selectGigs

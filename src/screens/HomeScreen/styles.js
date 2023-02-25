@@ -99,8 +99,8 @@ const Styles = StyleSheet.create({
     width: R.fontSize.Size60,
     overflow: 'hidden',
     borderRadius: R.fontSize.Size30,
-    borderWidth:1,
-    borderColor:R.colors.placeholderTextColor
+    borderWidth: 1,
+    borderColor: R.colors.placeholderTextColor,
   },
   videoModalMapMainView: {
     flexWrap: 'wrap',
@@ -134,7 +134,7 @@ const Styles = StyleSheet.create({
     backgroundColor: R.colors.appColor,
     borderRadius: R.fontSize.Size8,
     marginBottom: R.fontSize.Size14,
-    width: screenWidth/3.8
+    width: screenWidth / 3.8,
   },
   videoModalTalentText: {
     fontFamily: R.fonts.regular,
@@ -142,7 +142,7 @@ const Styles = StyleSheet.create({
     fontWeight: '700',
     color: R.colors.white,
     marginLeft: R.fontSize.Size8,
-    textAlign:'center'
+    textAlign: 'center',
   },
   videoModalAvailableText: {
     fontFamily: R.fonts.regular,
@@ -165,6 +165,51 @@ const Styles = StyleSheet.create({
     fontWeight: '700',
     color: R.colors.white,
     marginLeft: R.fontSize.Size8,
+  },
+
+  reportContentView: {
+    marginVertical: R.fontSize.Size4,
+    borderBottomWidth: 0.5,
+    borderColor: R.colors.lightWhite,
+    height: R.fontSize.Size40,
+    borderRadius: R.fontSize.Size8,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  reportContentCheckIcon: {
+    height: R.fontSize.Size22,
+    width: R.fontSize.Size22,
+    paddingHorizontal: R.fontSize.Size20,
+  },
+  reportContentTitle: {
+    fontFamily: R.fonts.regular,
+    color: R.colors.lightBlack,
+    fontWeight: '700',
+    fontSize: R.fontSize.Size14,
+  },
+  cutVideoView: {
+    marginHorizontal: R.fontSize.Size10,
+    paddingBottom: R.fontSize.Size30,
+    marginTop: R.fontSize.Size10,
+  },
+  cutVideoText: {
+    fontFamily: R.fonts.regular,
+    fontWeight: '500',
+    color: R.colors.lightBlack,
+    fontSize: R.fontSize.Size16,
+    textAlign: 'center',
+  },
+  dontRecView: {
+    marginHorizontal: R.fontSize.Size10,
+    paddingBottom: R.fontSize.Size30,
+    marginTop: R.fontSize.Size10,
+  },
+  dontRecText: {
+    fontFamily: R.fonts.regular,
+    fontWeight: '500',
+    color: R.colors.lightBlack,
+    fontSize: R.fontSize.Size16,
+    textAlign: 'center',
   },
 });
 

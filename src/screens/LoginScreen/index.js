@@ -4,7 +4,6 @@ import {View, Text, Image, SafeAreaView,Dimensions, Pressable, TextInput,ScrollV
 import { CustomTextInput, StoryScreen, AppButton } from '../../components';
 import {connect, useDispatch} from 'react-redux';
 import CountryPicker from 'react-native-country-picker-modal';
-// import CountryPicker from 'react-native-country-codes-picker';
 import R from '../../res/R';
 import Styles from './styles';
 import { CreateOTPRequest } from '../../actions/createOTP.action';
@@ -12,7 +11,6 @@ const screenHeight = Dimensions.get('screen').height;
 import Toast from 'react-native-simple-toast';
 import CommonFunctions from '../../utils/CommonFuntions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import messaging from '@react-native-firebase/messaging';
 
 
 const LoginScreen = (props) => {
@@ -93,8 +91,6 @@ const LoginScreen = (props) => {
               subscription_status: response.subscription_status,
               otpValue:response?.OTP
             });
-            // Toast.show(response.OTP, Toast.SHORT);
-            // Alert.alert(response?.OTP);
 
           } else {
             Toast.show(response.message, Toast.SHORT);
@@ -104,13 +100,6 @@ const LoginScreen = (props) => {
     }
   }
 
-  // const checkToken = async () => {
-  //   const token = await messaging().getToken();
-  //   if (token) {
-  //     console.debug('FCM Token', token);
-  //     setFcmToken(token);
-  //   }
-  // };
 
     return (
       <StoryScreen>
@@ -123,12 +112,7 @@ const LoginScreen = (props) => {
               showsVerticalScrollIndicator={false}>
               <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={{flex: 1, marginHorizontal: R.fontSize.Size20}}>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      paddingTop: R.fontSize.Size30,
-                      height: screenHeight / 4,
-                    }}>
+                  <View style={Styles.beleaveMainView}>
                     <Image
                       source={R.images.appLogoBold}
                       style={{height: R.fontSize.Size50}}
@@ -154,13 +138,7 @@ const LoginScreen = (props) => {
                         onChangeText={no => setMobNo(no)}
                       />
                     </View>
-                    <View
-                      style={{
-                        marginTop: R.fontSize.Size45,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
+                    <View style={Styles.accountView}>
                       <Text
                         style={[
                           Styles.welcomeText,
@@ -179,13 +157,7 @@ const LoginScreen = (props) => {
                             opacity: pressed ? 0.5 : 1,
                           },
                         ]}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            color: R.colors.appColor,
-                            fontWeight: '700',
-                          }}>
+                        <Text style={Styles.signUpText}>
                           {'SignUp'}
                         </Text>
                       </Pressable>
@@ -198,30 +170,12 @@ const LoginScreen = (props) => {
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
               onPress={() => onCallCreateDeviceToken()}
-              // onPress={() => props.navigation.navigate('OtpScreen')}
               marginHorizontal={R.fontSize.Size35}
               title={'Sign In'}
             />
           </View>
         </SafeAreaView>
-        {/* <Modal
-          visible={countyModalPicker}
-          transparent={true}
-          onRequestClose={() => setCountyModalPicker(false)}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: R.colors.modelBackground,
-              justifyContent: 'center',
-            }}>
-            <SafeAreaView
-              style={{
-                flex: 1,
-                paddingHorizontal: R.fontSize.Size20,
-                paddingVertical: R.fontSize.Size50,
-                borderWidth: 1,
-              }}> */}
-
+        
         {countyModalPicker && (
           <View
             style={{
@@ -251,22 +205,6 @@ const LoginScreen = (props) => {
             />
           </View>
         )}
-        {/* <CountryPicker
-              
-                show={countyModalPicker}
-                pickerButtonOnPress={country => {
-                  console.log(country);
-                  setCountyModalPicker(false);
-                  setCountryCode(country?.dial_code);
-                  // let flagName = (country?.flag).slice(5);
-                  setCountyFlag(country?.code);
-                  // console.log('FlagName', flagName);
-                }}
-              /> */}
-
-        {/* </SafeAreaView>
-          </View>
-        </Modal> */}
       </StoryScreen>
     );
 }

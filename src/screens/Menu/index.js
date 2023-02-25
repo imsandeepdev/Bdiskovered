@@ -17,40 +17,25 @@ import { UserSignOutRequest } from '../../actions/signUp.action';
 import Toast from 'react-native-simple-toast';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Styles from './styles';
 
 
 const screenWidth = Dimensions.get('screen').width;
 
 const CustomMenuButton = (props) => {
-
     return (
       <Pressable
         onPress={props.onPress}
         style={({pressed}) => [
-          {
-            paddingVertical: R.fontSize.Size5,
-            flexDirection: 'row',
-            alignItems: 'center',
-            opacity: pressed ? 0.5 : 1,
-            marginBottom:R.fontSize.Size25
-          },
+          Styles.customMenuButtonPress,
+          {opacity: pressed ? 0.5 : 1}
         ]}>
         <Image
           source={props.leftSource}
-          style={{height: R.fontSize.Size20, width: R.fontSize.Size20}}
+          style={Styles.iconStyle}
           resizeMode={'contain'}
         />
-        <Text
-          style={{
-            flex: 1,
-            marginLeft: R.fontSize.Size30,
-            fontFamily: R.fonts.regular,
-            fontWeight: '700',
-            fontSize: R.fontSize.Size18,
-            color: R.colors.primaryTextColor,
-          }}>
-          {props.title}
-        </Text>
+        <Text style={Styles.customMenuButtonText}>{props.title}</Text>
       </Pressable>
     );
 }
@@ -59,7 +44,6 @@ const Menu = (props) => {
   
   const dispatch = useDispatch()
   const [deviceName, setDeviceName] = useState('');
-
 
   const onCallDeviceName = () => {
      DeviceInfo.getDeviceName().then(deviceName => {
@@ -100,9 +84,7 @@ const Menu = (props) => {
       console.log('LOGOUT RES', response);
       if(response.status == 'success')
       {
-        Toast.show(response.message,Toast.SHORT);
         props.navigation.navigate('LoginScreen');
-
       }
       else
       {
@@ -113,12 +95,7 @@ const Menu = (props) => {
 
   return (
     <StoryScreen>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: R.colors.white,
-          paddingHorizontal: R.fontSize.Size30,
-        }}>
+      <View style={Styles.mainView}>
         <View style={{alignItems: 'center'}}>
           <Image
             source={R.images.appLogoBold}
@@ -168,7 +145,6 @@ const Menu = (props) => {
           />
           <CustomMenuButton
             onPress={() => onLogout()}
-            // onPress = {() => props.navigation.navigate('LoginScreen')}
             leftSource={R.images.signoutIcon}
             title={'Sign Out'}
           />
@@ -185,22 +161,15 @@ const Menu = (props) => {
             ]}>
             <Image
               source={R.images.premiumIcon}
-              style={{height: R.fontSize.Size22, width: R.fontSize.Size22}}
+              style={Styles.iconStyle}
               resizeMode={'contain'}
             />
-            <Text
-              style={{
-                fontFamily: R.fonts.regular,
-                fontSize: R.fontSize.Size24,
-                fontWeight: '700',
-                color: R.colors.appColor,
-                marginHorizontal: R.fontSize.Size15,
-              }}>
+            <Text style={Styles.goPremiumText}>
               {'Go Premium'}
             </Text>
             <Image
               source={R.images.premiumIcon}
-              style={{height: R.fontSize.Size22, width: R.fontSize.Size22}}
+              style={Styles.iconStyle}
               resizeMode={'contain'}
             />
           </Pressable>

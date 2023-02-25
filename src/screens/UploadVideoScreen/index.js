@@ -260,23 +260,6 @@ const onSelectPicker = params => {
       setVideoPlayerSource('')
       setVideoRefStatus(true);
       setPickerModal(false);
-
-      // props.navigation.navigate('CompressVideoScreen', {
-      //   videoPath: video.path,
-      // });
-      // setVideoPath(videoURL)
-      // setVideoPath({
-      //   uri:
-      //     Platform.OS === 'android'
-      //       ? video.path
-      //       : video.path?.replace('file://', ''),
-      //   type: video.mime,
-      //   name: video.filename ?? 'video.MP4',
-      // });
-      // setPickerModal(false);
-
-      // onCallVideoCompress(videoURL);
-      // onCallCompressVideo(videoURL)
     });
   }
 };
@@ -417,70 +400,9 @@ const onCheckVideoDurationValidation = () => {
   else
   {
     setVideoRefStatus(false)
-  //  setVideoPlayerSource(videoUrl)
-  //  setVideoCompressModalPicker(false);
   onCallAlart()
-
   }
-
 }
-
-
-const onCallCompressVideo = () => {
-   const options = {
-     
-     quality: VideoPlayer.Constants.quality.QUALITY_1080x608, // iOS only
-     saveToCameraRoll: true, // default is false // iOS only
-     saveWithCurrentDate: true, // default is false // iOS only
-   };
-  ProcessingManager.compress(videoUrl, options) // like VideoPlayer compress options
-    .then(data => {
-      console.log(data)
-      setVideoPath({
-        uri:
-          Platform.OS === 'android' ? data : data?.replace('file://', ''),
-        type: 'mp4',
-        name: 'video.mp4',
-      });
-      setVideoCompressModalPicker(false)
-    
-    });
-}
-
-// const onCallCompressVideo = (source) => {
-//    const options = {
-//      startTime: 0,
-//      endTime: 10, // iOS only
-//      saveToCameraRoll: true, // default is false // iOS only
-//      saveWithCurrentDate: true, // default is false // iOS only
-//    };
-//    ProcessingManager.trim(source, options) // like VideoPlayer trim options
-//      .then(data => console.log('Compress video data',data));
-// }
-
-const onCallVideoCompress = async (videoURL) => {
-  console.log('URL', videoURL);
-  const result = await VideoCompressor.compress(
-    videoURL,
-    {
-      compressionMethod: 'auto',
-    },
-  
-  );
-  console.log('RESULT', result);
- 
-  setVideoPath({
-    uri:
-      Platform.OS === 'android'
-        ? result
-        : result?.replace('file://', ''),
-    type: 'video/mp4',
-    name: 'video.MP4',
-  });
-  console.log("VIDEOPATH", videoPath)
-  setVideoCompressModalPicker(false)
-  setPickerModal(false);
-};
 
 const checkValid = () => {
   console.log('VIDEOPA',videoPath)
@@ -517,12 +439,10 @@ const oncheckValidVideo = () => {
     onCallVideoPostAPI()
   }
 }
-
 const onCallVideoPostAPI = () => {
   
   setLoading(true)
   let formdata = new FormData();
-
   formdata.append('title', videoTitle);
   // formdata.append('latitude', '26.8496');
   // formdata.append('longitude', '81.0072');
@@ -621,7 +541,7 @@ const onCallDeviceName = () => {
  const onCallClosedCustomModal = () => {
 
   setCustomModalPicker(false)
-  props.navigation.replace("HomeMenu")
+  props.navigation.push("HomeMenu")
  }
 
 
@@ -1074,7 +994,6 @@ const onCallDeviceName = () => {
                     flex: 1,
                     marginVertical: R.fontSize.Size4,
                     borderWidth: 2,
-
                     borderColor: R.colors.appColor,
                     height: R.fontSize.Size45,
                     borderRadius: R.fontSize.Size8,

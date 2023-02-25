@@ -1,26 +1,20 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {View, Text, Image, SafeAreaView,ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, ActivityIndicator ,FlatList, TextInput } from 'react-native';
+import {View, Text, Image, SafeAreaView,KeyboardAvoidingView, Platform, ActivityIndicator ,FlatList, TextInput } from 'react-native';
 import {AlartModal, Header, StoryScreen} from '../../components';
 import R from '../../res/R';
 import { connect, useDispatch } from 'react-redux';
-import { ConnectRequestRequest } from '../../actions/connectRequest.action';
 import database from '@react-native-firebase/database';
-import { firebase } from '@react-native-firebase/database';
 import moment from 'moment';
-import Toast from 'react-native-simple-toast';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import { Config } from '../../config';
 import {AES,enc} from 'react-native-crypto-js'
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
-
+import styles from './styles';
 const algorithm = 'aes-256-cbc';
 const key = 'bdiskovered@_2023_secretkeysecretkey';
 
-
-
 const ChatScreen = props => {
-
   const dispatch = useDispatch()
   const [msg, setMsg] = useState('');
   const [messages, setMessages] = useState([]);
@@ -78,42 +72,14 @@ const ChatScreen = props => {
 
 
   
-
-// useEffect(() => {
-    // const usersRef = firebase.database().ref('/one_to_one/');
-    // const adaRef = usersRef.child(`${props.route.params?.fireID}`); 
-
-    // console.log("AVAILABLE",adaRef)
-    
-    // const onValueChange = database()
-    //   .ref(`/one_to_one/${props.route.params?.fireID}`)
-    //   .on('value', snapshot => {
-    //     console.log('User data realtime Length : ', snapshot.val());
-    //     if (snapshot.val() != null)
-    //     {
-    //       let MsgLength = Object.keys(snapshot.val()).length
-    //     console.log('User data realtime Length : ', MsgLength);
-    //       if(MsgLength == 1)
-    //       {
-    //         console.log("LENGTH",MsgLength)
-    //         onCallFirstTimeAPI()
-    //       }
-    //     }
-    //   });
-
-    // return () => database().ref(`/one_to_one/${props.route.params?.fireID}`).off('value', onValueChange);
-  // }, [props.route.params?.fireID]);
-
-
   const onCallAfterChat = () => {
-
   database().ref(`/one_to_one/${props.route.params?.fireID}`)
       .on('value', snapshot => {
         console.log('Chat Data after Message ', snapshot.val());
         if (snapshot.val() != null)
         {
           let MsgLength = Object.keys(snapshot.val()).length
-        console.log('Chat Length Length : ', MsgLength);
+          console.log('Chat Length Length : ', MsgLength);
           if(MsgLength == 1)
           {
             console.log("LENGTH",MsgLength)
@@ -164,7 +130,6 @@ const ChatScreen = props => {
         }
         else{
           setCustomModalPicker(true);
-
         }
       })
       .catch(error => {
@@ -174,12 +139,7 @@ const ChatScreen = props => {
       });
   }
 
-
-
-
   const onSend = () => {
-   
-
     const mymsg = {
       chat_message: msg,
       chatSenderId: props.route.params?.MyUserId,
@@ -191,15 +151,12 @@ const ChatScreen = props => {
       type: 'text',
       chat_time: moment().format(),
     };
-     
       // const docid =
       //   props.route.params?.tailentUserId > props.route.params?.MyUserId
       //     ? props.route.params?.MyUserId + "+" + props.route.params?.tailentUserId
       //     : props.route.params?.tailentUserId + "+" + props.route.params?.MyUserId 
 
       console.log('FIRE ID', props.route.params?.fireID);
-     
-  
       const newRef = database()
         .ref(`/one_to_one/${props.route.params?.fireID}`)
         .push();
@@ -220,10 +177,8 @@ const ChatScreen = props => {
     setCustomModalPicker(false)
     props.navigation.navigate('SubscriptionScreen');
   }
-
   const msgValid = txt => txt && txt.replace(/\s/g, '').length;
   const onCallMsg = (val) => {
-    
     if (val == '' || msgValid(val) == 0) 
     {
       setDiableSendIcon(true);
@@ -237,7 +192,6 @@ const ChatScreen = props => {
     console.log("MSG",val)
   }
 
-
   return (
     <StoryScreen>
       <SafeAreaView style={{flex: 1}}>
@@ -246,16 +200,7 @@ const ChatScreen = props => {
           leftSource={R.images.chevronBack}
           title={props.route.params?.userName}
           headIcon={
-            <View
-              style={{
-                height: R.fontSize.Size40,
-                width: R.fontSize.Size40,
-                borderRadius: R.fontSize.Size30,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: -R.fontSize.Size20,
-                marginRight: R.fontSize.Size10,
-              }}>
+            <View style={styles.headerView}>
               <Image
                 source={{
                   uri: `${
@@ -266,76 +211,46 @@ const ChatScreen = props => {
                   )}`,
                 }}
                 resizeMode={'cover'}
-                style={{
-                  height: R.fontSize.Size40,
-                  width: R.fontSize.Size40,
-                  borderRadius: R.fontSize.Size30,
-                }}
+                style={styles.headerViewImage}
               />
             </View>
           }
         />
         {props.loading || loading ? (
-          <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <View style={styles.loadView}>
             <ActivityIndicator size={'large'} color={R.colors.appColor} />
           </View>
         ) : (
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: R.colors.lightWhite,
-            }}>
+          <View style={styles.mainView}>
             <KeyboardAvoidingView
               behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
               style={{flex: 1}}>
-              {/* <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> */}
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: R.colors.lightWhite,
-                }}>
+              <View style={styles.mainView}>
                 <FlatList
                   style={{flex: 1}}
                   data={allChat}
-                  // showsVerticalScrollIndicator={false}
                   keyExtractor={(item, index) => index}
                   inverted
                   renderItem={({item}) => {
                     return (
                       <View
-                        style={{
-                          alignSelf:
-                            item?.chatSenderId == props.route.params?.MyUserId
-                              ? 'flex-end'
-                              : 'flex-start',
-                          marginHorizontal: 10,
-                          minWidth: 80,
-                          maxWidth: '80%',
-                          paddingHorizontal: 10,
-                          marginVertical: 5,
-                          paddingTop: 5,
-                          borderRadius: 8,
-                          backgroundColor:
-                            item?.chatSenderId == props.route.params?.MyUserId
-                              ? R.colors.appColor
-                              : R.colors.placeHolderColor,
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size15,
-                            color: R.colors.lightWhite,
-                            fontWeight: '400',
-                          }}>
+                        style={[
+                          styles.chatView,
+                          {
+                            alignSelf:
+                              item?.chatSenderId == props.route.params?.MyUserId
+                                ? 'flex-end'
+                                : 'flex-start',
+                            backgroundColor:
+                              item?.chatSenderId == props.route.params?.MyUserId
+                                ? R.colors.appColor
+                                : R.colors.placeHolderColor,
+                          },
+                        ]}>
+                        <Text style={styles.chatText}>
                           {item?.chat_message}
                         </Text>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size10,
-                            color: R.colors.lightWhite,
-                          }}>
+                        <Text style={styles.chatDate}>
                           {moment(item?.chat_time).format('hh:mm A')}
                         </Text>
                       </View>
@@ -343,38 +258,10 @@ const ChatScreen = props => {
                   }}
                 />
 
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingHorizontal: R.fontSize.Size10,
-                    paddingVertical: R.fontSize.Size5,
-                    shadowColor: '#000',
-
-                    shadowOffset: {width: 0, height: -2},
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-                    elevation: 5,
-                    backgroundColor: R.colors.white,
-                  }}>
-                  <View
-                    style={{
-                      height: R.fontSize.Size50,
-                      flex: 1,
-                      borderColor: R.colors.appColor,
-                      borderWidth: 1,
-                      borderRadius: R.fontSize.Size30,
-                      paddingHorizontal: 15,
-                      justifyContent: 'center',
-                    }}>
+                <View style={styles.textInputMainView}>
+                  <View style={styles.textInputView}>
                     <TextInput
-                      style={{
-                        color: R.colors.black,
-                        fontFamily: R.fonts.regular,
-                        fontSize: R.fontSize.Size14,
-                        height: R.fontSize.Size50,
-                        paddingTop: R.fontSize.Size14,
-                      }}
+                      style={styles.textInput}
                       placeholder={'Type a message'}
                       placeholderTextColor={R.colors.black}
                       multiline={true}
@@ -383,24 +270,21 @@ const ChatScreen = props => {
                     />
                   </View>
                   <Pressable
-                    disabled={(diableSendIcon || msg=='') ? true : false}
+                    disabled={diableSendIcon || msg == '' ? true : false}
                     onPress={onSend}
                     style={({pressed}) => [
+                      styles.pressSendButton,
                       {
                         opacity: pressed ? 0.5 : 1,
-                        width: R.fontSize.Size45,
-                        height: R.fontSize.Size45,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginHorizontal: R.fontSize.Size10,
-                        borderWidth: 1,
-                        borderRadius: R.fontSize.Size30,
-                        borderColor: (diableSendIcon || msg=='') ? R.colors.lightWhite : R.colors.appColor,
+                        borderColor:
+                          diableSendIcon || msg == ''
+                            ? R.colors.lightWhite
+                            : R.colors.appColor,
                       },
                     ]}>
                     <Image
                       source={
-                        (diableSendIcon || msg=='')
+                        diableSendIcon || msg == ''
                           ? R.images.lightSentIcon
                           : R.images.sentIcon
                       }
@@ -413,7 +297,6 @@ const ChatScreen = props => {
                   </Pressable>
                 </View>
               </View>
-              {/* </TouchableWithoutFeedback> */}
             </KeyboardAvoidingView>
           </View>
         )}
@@ -428,52 +311,18 @@ const ChatScreen = props => {
               <Pressable
                 onPress={() => props.navigation.goBack()}
                 style={({pressed}) => [
-                  {
-                    flex: 1,
-                    marginVertical: R.fontSize.Size4,
-                    backgroundColor: R.colors.appColor,
-                    height: R.fontSize.Size45,
-                    borderRadius: R.fontSize.Size8,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    opacity: pressed ? 0.5 : 1,
-                    marginHorizontal: R.fontSize.Size10,
-                  },
+                  styles.modelButton,
+                  {opacity: pressed ? 0.5 : 1},
                 ]}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    color: R.colors.white,
-                    fontWeight: '700',
-                    fontSize: R.fontSize.Size16,
-                  }}>
-                  {'Cancel'}
-                </Text>
+                <Text style={styles.modelButtonText}>{'Cancel'}</Text>
               </Pressable>
               <Pressable
                 onPress={() => onCallSubscription()}
                 style={({pressed}) => [
-                  {
-                    flex: 1,
-                    marginVertical: R.fontSize.Size4,
-                    backgroundColor: R.colors.appColor,
-                    height: R.fontSize.Size45,
-                    borderRadius: R.fontSize.Size8,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    opacity: pressed ? 0.5 : 1,
-                    marginHorizontal: R.fontSize.Size10,
-                  },
+                  styles.modelButton,
+                  {opacity: pressed ? 0.5 : 1},
                 ]}>
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    color: R.colors.white,
-                    fontWeight: '700',
-                    fontSize: R.fontSize.Size16,
-                  }}>
-                  {'Proceed'}
-                </Text>
+                <Text style={styles.modelButtonText}>{'Proceed'}</Text>
               </Pressable>
             </View>
           }
@@ -487,7 +336,6 @@ const mapStateToProps = (state, props) => ({
   loading: state.getProfileDetailsRoot.loading,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
-  
 });
 
 export default connect(mapStateToProps) (ChatScreen);
