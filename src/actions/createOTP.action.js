@@ -31,7 +31,7 @@ export const CreateOTPRequest = (
 ) => {
   return dispatch => {
     dispatch(CreateOTP());
-    Api.RequestPostFetch({
+    Api.axiosAuthPost({
       body: data,
       url: Config.createOTPAPI,
     })

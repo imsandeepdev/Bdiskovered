@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   Dimensions,
   Pressable,
-  Modal,
   ScrollView,
   Platform,
   StatusBar,
@@ -35,6 +34,7 @@ import CommonFunctions from '../../utils/CommonFuntions';
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
 import {NativeEventEmitter} from 'react-native';
 import AppContent from '../../utils/Content';
+import { VideoRatingRequest } from '../../actions/videoRating.action';
 const eventEmitter = new NativeEventEmitter('');
 
 const tabBarHeight = screenHeight / 10;
@@ -250,52 +250,80 @@ const onCallShowPostRefresh = () => {
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId,index1,userId,userType) => {
-    setLoading(true)
-    let data1 = {
+    // setLoading(true)
+    let data = {
       id: PostId,
       percentage_like: `${PercentLike}`,
       user_id: userId,
       user_type: userType
     };
-    let headerToken = {
-      token: props.authToken,
-    };
-    console.log('LikeData', data1);
-    console.log(
-      'PERCENT LIKE',
-      PercentLike,
-    );
-    
-    axios({
-      method: 'POST',
-      url: `${Config.API_URL}${Config.videoRatingAPI}`,
-      data: data1,
-      headers: headerToken,
-    }).then(res => {
-      console.log('LIKE RES', res);
-      if (res.data.status == 'success') {
-        setAllVideoPostList([
-          ...allVideoPostList,
-          {
-            total_likes: allVideoPostList[index1].total_likes++,
-            total_rating: allVideoPostList[index1].total_likes + PercentLike,
-          },
-        ]);
-        const dummyData = allVideoPostList;
-        let arr = dummyData.map((item, index) => {
-          if (index1 == index) {
-            item.postInfo = [...item.postInfo,{percentage_like:PercentLike}]
-          }
-          return {...item};
-        });
-        console.log('saved post return', arr);
-        setAllVideoPostList(arr);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        Toast.show(res.data.message, Toast.SHORT);
-      }
-    });
+    // let headerToken = {
+    //   token: props.authToken,
+    // };
+    // console.log('LikeData', data1);
+    // console.log(
+    //   'PERCENT LIKE',
+    //   PercentLike,
+    // );
+    dispatch(VideoRatingRequest(data,response =>{
+      console.log("VIDEO RATING RES ON HOME PAGE =>",response)
+        if (response.status == 'success') {
+          setAllVideoPostList([
+            ...allVideoPostList,
+            {
+              total_likes: allVideoPostList[index1].total_likes++,
+              total_rating: allVideoPostList[index1].total_likes + PercentLike,
+            },
+          ]);
+          const dummyData = allVideoPostList;
+          let arr = dummyData.map((item, index) => {
+            if (index1 == index) {
+              item.postInfo = [
+                ...item.postInfo,
+                {percentage_like: PercentLike},
+              ];
+            }
+            return {...item};
+          });
+          console.log('saved post return', arr);
+          setAllVideoPostList(arr);
+          // setLoading(false);
+        } else {
+          // setLoading(false);
+          Toast.show(response.message, Toast.SHORT);
+        }
+      }))
+
+    // axios({
+    //   method: 'POST',
+    //   url: `${Config.API_URL}${Config.videoRatingAPI}`,
+    //   data: data1,
+    //   headers: headerToken,
+    // }).then(res => {
+    //   console.log('LIKE RES', res);
+    //   if (res.data.status == 'success') {
+    //     setAllVideoPostList([
+    //       ...allVideoPostList,
+    //       {
+    //         total_likes: allVideoPostList[index1].total_likes++,
+    //         total_rating: allVideoPostList[index1].total_likes + PercentLike,
+    //       },
+    //     ]);
+    //     const dummyData = allVideoPostList;
+    //     let arr = dummyData.map((item, index) => {
+    //       if (index1 == index) {
+    //         item.postInfo = [...item.postInfo,{percentage_like:PercentLike}]
+    //       }
+    //       return {...item};
+    //     });
+    //     console.log('saved post return', arr);
+    //     setAllVideoPostList(arr);
+    //     setLoading(false);
+    //   } else {
+    //     setLoading(false);
+    //     Toast.show(res.data.message, Toast.SHORT);
+    //   }
+    // });
   }
 
   const onCallConnectNow = (item) => 
@@ -378,7 +406,7 @@ VideoLink :${videoURL}`,
     let data = {
       post_id: postId
     };
-    setLoading(true)
+    // setLoading(true)
    
     dispatch(SavedPostRequest(data, response =>{
       console.log('Saved Post Response', response);
@@ -393,12 +421,12 @@ VideoLink :${videoURL}`,
          });
         console.log('saved post return', arr);
         setAllVideoPostList(arr);
-         setLoading(false);
+        //  setLoading(false);
       }
       else
       {
         Toast.show(response?.message, Toast.SHORT);
-        setLoading(false);
+        // setLoading(false);
       }
     }))
   }
@@ -407,7 +435,7 @@ VideoLink :${videoURL}`,
     let data = {
       post_id: postId,
     };
-    setLoading(true);
+    // setLoading(true);
     dispatch(
       DeleteSavedPostRequest(data, response => {
         console.log('UnSaved Post Response', response);
@@ -421,11 +449,11 @@ VideoLink :${videoURL}`,
           });
           console.log('saved post return', arr);
           setAllVideoPostList(arr);
-          setLoading(false);
+          // setLoading(false);
 
         } else {
           Toast.show(response?.message, Toast.SHORT);
-          setLoading(false);
+          // setLoading(false);
         }
       }),
     );
@@ -475,7 +503,7 @@ const onCallReportPost = () => {
     let data = {
       blockId: reportUserId,
     };
-    setLoading(true)
+    // setLoading(true)
     dispatch(BlockUserRequest(data, response => {
       console.log("BLOCK USER RESPONSE",response)
       if(response.status == 'success')
@@ -483,14 +511,14 @@ const onCallReportPost = () => {
         // Toast.show(response.message, Toast.SHORT);
         onCallClosedReportDetailModal();
         onCallShowAllPost()
-        setLoading(false);
+        // setLoading(false);
 
       }
       else
       {
         Toast.show(response.message, Toast.SHORT)
         onCallClosedReportDetailModal();
-        setLoading(false)
+        // setLoading(false)
       }
     }))
   }
@@ -499,7 +527,7 @@ const onCallReportPost = () => {
     let data = {
       postId: reportPostId
     };
-    setLoading(true);
+    // setLoading(true);
 
     dispatch(BlockPostRequest(data, response =>{
       console.log('BLOCK POST RESPONSE', response);
@@ -508,28 +536,28 @@ const onCallReportPost = () => {
         // Toast.show(response.message, Toast.SHORT);
         onCallClosedReportDetailModal();
         onCallShowAllPost();
-        setLoading(false);
+        // setLoading(false);
 
       } else {
         Toast.show(response.message, Toast.SHORT);
         onCallClosedReportDetailModal();
-        setLoading(false);
+        // setLoading(false);
       }
     }))
   }
 
-  const onProgress = (data: OnProgressData) => {
-    console.log('OnProgress', data.currentTime);
-  };
+  // const onProgress = (data: OnProgressData) => {
+  //   console.log('OnProgress', data.currentTime);
+  // };
 
  const onLoad = data => {
    console.log('ONLOAD START', data);
  };
 
-  const onSeek = (data: OnSeekData) => {
-    console.log("Seektimem",data.seekTime)
-    videoRef?.seek(data.seekTime);
-  };
+  // const onSeek = (data: OnSeekData) => {
+  //   console.log("Seektimem",data.seekTime)
+  //   videoRef?.seek(data.seekTime);
+  // };
   
   const updateIndex = ({ viewableItems }) => {
   console.log("index",viewableItems[0]?.index)
@@ -1010,7 +1038,10 @@ const mapStateToProps = (state, props) => ({
   loading:
     state.auth.loading ||
     state.getProfileDetailsRoot.loading ||
-    state.savedPostRoot.loading,
+    state.savedPostRoot.loading ||
+    state.videoRateRoot.loading ||
+    state.blockRoot.loading
+    ,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
   userType: state.auth.userType,

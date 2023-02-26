@@ -73,13 +73,11 @@ const SignupScreen = (props) => {
     const [companyMob, setCompanyMob] = useState('')
     const [companyOwnerName, setCompanyOwnerName] = useState('')
     const [companyAddress, setCompanyAddress] = useState('');
-
     const [documentPic, setDocumentPic] = useState([])
     const [documentModalPicker, setDocumentModalPicker] = useState(false);
     const [countyModalPicker, setCountyModalPicker] = useState(false);
     const [countryCode, setCountryCode] = useState('971');
     const [countryFlag, setCountryFlag] = useState('ae');
-
     const [createDeviceToken, setCreateDeviceToken] = useState('')
     const [alartModalPicker, setAlartModalPicker] = useState(false)
     const [alartMessage, setAlartMessage] = useState('')

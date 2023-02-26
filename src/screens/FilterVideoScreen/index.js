@@ -32,6 +32,7 @@ import { DeleteSavedPostRequest, SavedPostListRequest, SavedPostRequest } from '
 import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../actions/block.action';
 import CommonFunctions from '../../utils/CommonFuntions';
 import AppContent from '../../utils/Content';
+import { VideoRatingRequest } from '../../actions/videoRating.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -113,33 +114,69 @@ const FilterVideoScreen = props => {
     console.log('ONLOAD', data);
   };
 
-  const onCallVideoRatingAPI = (PercentLike, PostId) => {
-    setLoading(true);
-    let data1 = {
+  const onCallVideoRatingAPI = (PercentLike, PostId,index1,userId,userType) => {
+    let data = {
       id: PostId,
       percentage_like: `${PercentLike}`,
+      user_id: userId,
+      user_type: userType
     };
-    let headerToken = {
-      token: props.authToken,
-    };
-    axios({
-      method: 'POST',
-      url: `${Config.API_URL}${Config.videoRatingAPI}`,
-      data: data1,
-      headers: headerToken,
-    }).then(res => {
-      console.log('LIKE RES', res);
-      if (res.data.status == 'success') {
-        setVideoList(videoList);
-        setTimeout(() => {
-          setSliderValue(0);
-        }, 2000);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        Toast.show(res.data.message, Toast.SHORT);
-      }
-    });
+    setLoading(true)
+    dispatch(VideoRatingRequest(data,response =>{
+      console.log("VIDEO RATING RES ON HOME PAGE =>",response)
+        if (response.status == 'success') {
+          setVideoList([
+            ...videoList,
+            {
+              total_likes: videoList[index1].total_likes++,
+              total_rating: videoList[index1].total_likes + PercentLike,
+            },
+          ]);
+          const dummyData = videoList;
+          let arr = dummyData.map((item, index) => {
+            if (index1 == index) {
+              item.postInfo = [
+                ...item.postInfo,
+                {percentage_like: PercentLike},
+              ];
+            }
+            return {...item};
+          });
+          console.log('saved post return', arr);
+          setVideoList(arr);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          Toast.show(response.message, Toast.SHORT);
+        }
+      }))
+
+    // setLoading(true);
+    // let data1 = {
+    //   id: PostId,
+    //   percentage_like: `${PercentLike}`,
+    // };
+    // let headerToken = {
+    //   token: props.authToken,
+    // };
+    // axios({
+    //   method: 'POST',
+    //   url: `${Config.API_URL}${Config.videoRatingAPI}`,
+    //   data: data1,
+    //   headers: headerToken,
+    // }).then(res => {
+    //   console.log('LIKE RES', res);
+    //   if (res.data.status == 'success') {
+    //     setVideoList(videoList);
+    //     setTimeout(() => {
+    //       setSliderValue(0);
+    //     }, 2000);
+    //     setLoading(false);
+    //   } else {
+    //     setLoading(false);
+    //     Toast.show(res.data.message, Toast.SHORT);
+    //   }
+    // });
   };
 
   const onCallModal = (item) => {
@@ -476,6 +513,9 @@ const onCallSavePost = postId => {
                             onCallVideoRatingAPI(
                               value.toFixed(0),
                               item?.postID,
+                              index,
+                              item?.user_id,
+                              item?.user_type,
                             );
                           }}
                           customThumb={

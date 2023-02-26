@@ -30,7 +30,7 @@ export const ChangeOwnerShipRequest = (
 ) => {
   return dispatch => {
     dispatch(ChangeOwnerShip());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.changeOwnershipAPI,
     })
       .then(response => {

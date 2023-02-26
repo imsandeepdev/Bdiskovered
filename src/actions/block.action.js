@@ -115,7 +115,7 @@ export const BlockPostRequest = (
 ) => {
   return dispatch => {
     dispatch(BlockPost());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.blockPostAPI,
     })
@@ -137,7 +137,7 @@ export const BlockUserRequest = (
 ) => {
   return dispatch => {
     dispatch(BlockUser());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.blockUserAPI,
     })
@@ -159,7 +159,7 @@ export const ReportPostRequest = (
 ) => {
   return dispatch => {
     dispatch(ReportPost());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.reportPostAPI,
     })
@@ -180,7 +180,7 @@ export const BlockUserListRequest = (
 ) => {
   return dispatch => {
     dispatch(BlockUserList());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.blockUserListAPI,
     })
       .then(response => {
@@ -201,7 +201,7 @@ export const UnblockUserRequest = (
 ) => {
   return dispatch => {
     dispatch(UnblockUser());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.unblockUserAPI,
     })

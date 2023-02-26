@@ -37,13 +37,13 @@ const SavedPostList = (props) => {
     },[props.navigation])
 
     const onCallSavedPostAPI = () => {
-        setLoading(true)
+        // setLoading(true)
         dispatch(SavedPostListRequest(response=>{
-            // console.log('SAVED POST LIST RESPONSE', response?.Post)
+            console.log('SAVED POST LIST RESPONSE', response)
             if(response.status == 'success')
             {
             setSavedVideoList(response?.Post);
-            setLoading(false);
+            // setLoading(false);
             }
         }))
     }
@@ -51,7 +51,7 @@ const SavedPostList = (props) => {
     
 
     return (
-      <StoryScreen loading={loading}>
+      <StoryScreen loading={props.loading}>
         <SafeAreaView style={{flex: 1}}>
           <Header
             onPress={() => props.navigation.goBack()}
@@ -134,4 +134,9 @@ const SavedPostList = (props) => {
     );
 }
 
-export default SavedPostList
+const mapStateToProps = (state, props) => ({
+  loading:state.savedPostRoot.loading
+    
+});
+
+export default connect(mapStateToProps)(SavedPostList)

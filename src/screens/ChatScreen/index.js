@@ -11,6 +11,7 @@ import { Config } from '../../config';
 import {AES,enc} from 'react-native-crypto-js'
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import styles from './styles';
+import { ConnectRequestRequest } from '../../actions/connectRequest.action';
 const algorithm = 'aes-256-cbc';
 const key = 'bdiskovered@_2023_secretkeysecretkey';
 
@@ -98,6 +99,18 @@ const ChatScreen = props => {
       mobile_type: 'ios',
       user_type: props.userProfile?.Profile?.role,
     };
+    // dispatch(ConnectRequestRequest(data, response => {
+    //   console.log('Connection Response', response);
+    //   if (response.status == 'success') {
+    //     console.log('SUCCESS', response);
+    //   } else if (
+    //     response.message == 'You have already sent connection request'
+    //   ) {
+    //     console.log('ERROR', response);
+    //   } else {
+    //     setCustomModalPicker(true);
+    //   }
+    // }))
     console.log('DATA', data);
     const headerAuth = {
       Accept: 'application/json',
@@ -133,8 +146,7 @@ const ChatScreen = props => {
         }
       })
       .catch(error => {
-          setCustomModalPicker(true);
-
+        setCustomModalPicker(true);
         console.log('ERRORONAPI', error);
       });
   }

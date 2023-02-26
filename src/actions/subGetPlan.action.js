@@ -72,7 +72,7 @@ export const SubscriberGetPlanRequest = (
 ) => {
   return dispatch => {
     dispatch(SubscriberGetPlan());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.subscriberGetPlansAPI,
     })
       .then(response => {
@@ -92,7 +92,7 @@ export const GetCustomPlanRequest = (
 ) => {
   return dispatch => {
     dispatch(GetCustomPlan());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.subGetCustomPlanAPI,
     })
       .then(response => {
@@ -113,7 +113,7 @@ export const GetSubscruberGetRequest = (
 ) => {
   return dispatch => {
     dispatch(GetSubscriberGet());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.getsubscriberGetAPI,
     })
       .then(response => {

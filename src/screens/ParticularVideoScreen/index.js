@@ -40,9 +40,10 @@ import Toast from 'react-native-simple-toast';
 import Styles from './styles';
 import { PlayParticularVideoRequest } from '../../actions/showAllPost.action';
 import { BoostPostRequest } from '../../actions/boostPost.action';
-import { SavedPostRequest } from '../../actions/savedPost.action';
+import { DeleteSavedPostRequest, SavedPostRequest } from '../../actions/savedPost.action';
 import { EditPostRequest, PostDeleteRequest } from '../../actions/uploadNewVideo.action';
 import CommonFunctions from '../../utils/CommonFuntions';
+import { VideoRatingRequest } from '../../actions/videoRating.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -142,8 +143,6 @@ const ParticularVideoScreen = props => {
         console.log('VideoListArray', arr);
         setVideoTypeList(arr);
         setVideoTypes(resCategory.split(','));
-
-
         setLoading(false);
         }
         else{
@@ -159,8 +158,7 @@ const ParticularVideoScreen = props => {
       message: `Hey, have you tried Bdiskovered? 
       VideoLink :${videoURL}`,
       url: `${videoURL}`,
-    };
-
+    }
     try {
       const ShareResponse = await Share.open(shareOptions);
       console.log(JSON.stringify(ShareResponse));
@@ -174,61 +172,109 @@ const ParticularVideoScreen = props => {
   };
 
   const onLoad = data => {
+    setLoading(true)
     console.log('ONLOAD', data);
+    setLoading(false)
   };
 
-  const onCallVideoRatingAPI = (PercentLike, PostId) => {
-    setLoading(true);
-    let data1 = {
+  const onCallVideoRatingAPI = (PercentLike, PostId,userId,userType) => {
+    // setLoading(true);
+    let data = {
       id: PostId,
       percentage_like: `${PercentLike}`,
+      user_id: userId,
+      user_type: userType,
     };
-    let headerToken = {
-      token: props.authToken,
-    };
-    axios({
-      method: 'POST',
-      url: `${Config.API_URL}${Config.videoRatingAPI}`,
-      data: data1,
-      headers: headerToken,
-    }).then(res => {
-      console.log('LIKE RES', res);
-      if (res.data.status == 'success') {
-        Toast.show(res.data.message, Toast.SHORT);
-        onCallParticularVideoPostAPI()
-      
+    dispatch(VideoRatingRequest(data,response =>{
+      console.log('LIKE RES', response);
+      if (response.status == 'success') {
+        // Toast.show(response.message, Toast.SHORT);
+        onCallParticularVideoPostAPI();
+
         // setLoading(false);
       } else {
-        setLoading(false);
-        Toast.show(res.data.message, Toast.SHORT);
+        // setLoading(false);
+        Toast.show(response.message, Toast.SHORT);
       }
-    });
+    }))
+    // let headerToken = {
+    //   token: props.authToken,
+    // };
+    // axios({
+    //   method: 'POST',
+    //   url: `${Config.API_URL}${Config.videoRatingAPI}`,
+    //   data: data1,
+    //   headers: headerToken,
+    // }).then(res => {
+    //   console.log('LIKE RES', res);
+    //   if (res.data.status == 'success') {
+    //     Toast.show(res.data.message, Toast.SHORT);
+    //     onCallParticularVideoPostAPI()
+      
+    //     // setLoading(false);
+    //   } else {
+    //     setLoading(false);
+    //     Toast.show(res.data.message, Toast.SHORT);
+    //   }
+    // });
   };
 
-const onCallSavePost = postId => {
+const onCallSavePost = (postId,ind) => {
   let data = {
     post_id: postId,
   };
-  setLoading(true);
+  // setLoading(true);
   dispatch(
     SavedPostRequest(data, response => {
       console.log('Saved Post Response', response);
       if (response.status == 'success') {
-        Toast.show(response?.message, Toast.SHORT);
-        setLoading(false);
+        const dummyData = videoList;
+        let arr = dummyData.map((item, index) => {
+          if (ind == index) {
+            item.post_save = !item.post_save;
+          }
+          return {...item};
+        });
+        console.log('saved post return', arr);
+        setVideoList(arr);
+        // Toast.show(response?.message, Toast.SHORT);
+        // setLoading(false);
       } else {
         Toast.show(response?.message, Toast.SHORT);
-        setLoading(false);
+        // setLoading(false);
       }
     }),
   );
 };
- 
 
- 
-
-  const onPressBoostAPI = (postId) => {
-    setLoading(true)
+const onCallRemoveSavePost = (postId,ind)=>{
+  let data = {
+    post_id: postId,
+  };
+  // setLoading(true);
+  dispatch(
+    DeleteSavedPostRequest(data, response => {
+      console.log('Delete Post Response', response);
+      if (response.status == 'success') {
+        const dummyData = videoList;
+        let arr = dummyData.map((item, index) => {
+          if (ind == index) {
+            item.post_save = !item.post_save;
+          }
+          return {...item};
+        });
+        console.log('delete post return', arr);
+        setVideoList(arr);
+        // Toast.show(response?.message, Toast.SHORT);
+        // setLoading(false);
+      } else {
+        Toast.show(response?.message, Toast.SHORT);
+        // setLoading(false);
+      }
+    }))
+}
+ const onPressBoostAPI = (postId) => {
+    // setLoading(true)
     let data = {
         post_id: postId
     }
@@ -242,16 +288,15 @@ const onCallSavePost = postId => {
             setBoostMsg(response.message);
             setBoostStatus(true);
             // setModalPicker(true);
-            setLoading(false);
+            // setLoading(false);
           }
         else
         {
             // Toast.show(response.message, Toast.SHORT);
             setBoostMsg(response.message);
             setBoostStatus(false);
-            setLoading(false);
+            // setLoading(false);
             setModalPicker(true);
-
         }
       }
     }))
@@ -263,7 +308,7 @@ const onCallSavePost = postId => {
     
   }
 
-      const onDeleteVideoAlart = () => {
+    const onDeleteVideoAlart = () => {
         Alert.alert(
           'Delete Video!',
           'Are you sure want to delete this video?',
@@ -278,9 +323,9 @@ const onCallSavePost = postId => {
           ],
           {
             cancelable: true,
-          },
-        );
-      };
+          }
+        )
+      }
 
       const onCallDeletevideoAPI = () => {
         setLoading(true);
@@ -301,13 +346,12 @@ const onCallSavePost = postId => {
               setEditModalPicker(false);
               setLoading(false);
             }
-          }),
-        );
-      };
+          })
+        )
+      }
 
   const onCallEditVideoModal = () => {
     setEditModalPicker(false)
-
     setPlayVideo(true)
     setEditVideoPicker(true)
   }
@@ -339,17 +383,15 @@ const onCallSavePost = postId => {
 
   const checkValid = () => {
     return (
-     
       CommonFunctions.isBlank(videoTitle.trim(), 'Please Enter Video Title') &&
       CommonFunctions.isBlank(
         videoDesc.trim(),
         'Please Enter Video Description',
       ) &&
       onCheckVideoType()
-    );
-  };
+    )
+  }
 
- 
   const onCheckVideoType = () => {
     if (videoTypes.length == 0) {
       Toast.show('Please Select Video Type', Toast.SHORT);
@@ -362,10 +404,9 @@ const onCallSavePost = postId => {
     if (checkValid()) {
       onCallPostUpdateAPI();
     }
-  };
+  }
 
   const onCallPostUpdateAPI = () => {
-
     let data = {
       post_id:postId,
       title:videoTitle,
@@ -377,12 +418,10 @@ const onCallSavePost = postId => {
     setLoading(true)
     console.log("EDIT VIDEO DATA",data)
     dispatch(EditPostRequest(data, response=>{
-
       console.log("Edit Video Response",response)
       if(response.status)
       {
         Toast.show(response.message, Toast.SHORT);
-
         setLoading(false)
         onCallRequestClose()
         props.navigation.goBack()
@@ -394,7 +433,6 @@ const onCallSavePost = postId => {
         Toast.show(response.message, Toast.SHORT);
       }
     }))
-
   }
 
   const onCallOpenEditVideoModal = (postId) => {
@@ -447,7 +485,17 @@ const onCallSavePost = postId => {
                           }
                           paused={playVideo}
                           reportHidden={true}
-                          onPressSave={() => onCallSavePost(item?.postID)}
+                          onPressSave={() => {
+                            item?.post_save
+                              ? onCallRemoveSavePost(item?.postID, index)
+                              : onCallSavePost(item?.postID, index);
+                          }}
+                          saveIcon={
+                            item?.post_save
+                              ? R.images.removeSavedIcon
+                              : R.images.bookmarkIcon
+                          }
+                          saveTitle={item?.post_save ? '' : 'Save'}
                           onPressShare={() =>
                             myCustomShare(
                               `${Config.API_URL}${item?.post.replace(
@@ -512,6 +560,8 @@ const onCallSavePost = postId => {
                                 onCallVideoRatingAPI(
                                   value.toFixed(0),
                                   item?.postID,
+                                  item?.user_id,
+                                  item?.user_type,
                                 );
                               }}
                               customThumb={
@@ -603,33 +653,31 @@ const onCallSavePost = postId => {
                               : `${sliderValue.toFixed(0)}%`}
                           </Text>
                         </View>
-                        {props.route.params?.from == 'ProfileScreen'
-                        &&
-                        
-                        <Pressable
-                          disabled={
-                            props.route.params?.from == 'ProfileScreen'
-                              ? false
-                              : true
-                          }
-                          onPress={() => onPressBoostAPI(item?.postID)}
-                          style={({pressed}) => [
-                            {
-                              marginHorizontal: R.fontSize.Size8,
-                              alignItems: 'center',
-                              opacity: pressed ? 0.5 : 1,
-                            },
-                          ]}>
-                          <Image
-                            source={R.images.boostIcon}
-                            style={{
-                              height: R.fontSize.Size40,
-                              width: R.fontSize.Size30,
-                              marginBottom: R.fontSize.Size6,
-                            }}
-                            resizeMode={'contain'}
-                          />
-                         
+                        {props.route.params?.from == 'ProfileScreen' && (
+                          <Pressable
+                            disabled={
+                              props.route.params?.from == 'ProfileScreen'
+                                ? false
+                                : true
+                            }
+                            onPress={() => onPressBoostAPI(item?.postID)}
+                            style={({pressed}) => [
+                              {
+                                marginHorizontal: R.fontSize.Size8,
+                                alignItems: 'center',
+                                opacity: pressed ? 0.5 : 1,
+                              },
+                            ]}>
+                            <Image
+                              source={R.images.boostIcon}
+                              style={{
+                                height: R.fontSize.Size40,
+                                width: R.fontSize.Size30,
+                                marginBottom: R.fontSize.Size6,
+                              }}
+                              resizeMode={'contain'}
+                            />
+
                             <Text
                               style={{
                                 fontFamily: R.fonts.regular,
@@ -640,9 +688,8 @@ const onCallSavePost = postId => {
                               numberOfLines={1}>
                               {'Boost'}
                             </Text>
-                          
-                        </Pressable>
-                        }
+                          </Pressable>
+                        )}
                       </View>
                     </View>
                   );
@@ -893,6 +940,13 @@ const onCallSavePost = postId => {
 };
 
 const mapStateToProps = (state, props) => ({
+  loading:
+    state.uploadNewVideoRoot.loading ||
+    state.videoRateRoot.loading ||
+    state.savedPostRoot.loading ||
+    state.getProfileDetailsRoot.loading ||
+    state.blockRoot.loading ||
+    state.boostPostRoot.loading,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
   userType: state.auth.userType,

@@ -31,7 +31,7 @@ export const UserLocationRequest = (
 ) => {
   return dispatch => {
     dispatch(UserLocation());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.userLocationAPI,
     })

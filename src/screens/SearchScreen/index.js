@@ -199,16 +199,14 @@ const SearchScreen = props => {
     );
      props.userProfile?.Profile?.subscription != 0
        ? onCallfilterApply()
-       : props.navigation.navigate('SubscriptionScreen');
+       : props.navigation.navigate('SubscriptionScreen')
   }
 
 
   const onCallfilterApply = () => {
     console.log(filterPrice?.firstValue.trim());
-    
     let CategoryValue = videoTypes.toString()
     let Category = CategoryValue.replaceAll(',', ',');
-
     let data = {
       start_price:
         filterPrice?.firstValue != undefined ? filterPrice?.firstValue : '0',
@@ -237,22 +235,20 @@ const SearchScreen = props => {
       {
         props.navigation.navigate('FilterVideoScreen', {
           videoItems: response?.Post,
-        });
+        })
       }
       else
       {
         props.navigation.navigate('NoResultScreen', {
           from: 'SearchScreen',
-        });
+        })
       }
     }))
-    
-
   }
 
  
   return (
-    <StoryScreen>
+    <StoryScreen loading={props.loading}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.toggleDrawer()}
@@ -564,6 +560,7 @@ const SearchScreen = props => {
 };
 
 const mapStatetoProps = (state, props) => ({
+  loading: state.postFilterRoot.loading,
   authToken: state.auth.authToken,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   userType: state.auth.userType,

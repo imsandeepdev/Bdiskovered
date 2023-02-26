@@ -99,7 +99,7 @@ export const PostDeleteRequest = (
 ) => {
   return dispatch => {
     dispatch(PostDelete());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.postDeleteAPI,
     })
@@ -122,7 +122,7 @@ export const EditPostRequest = (
 ) => {
   return dispatch => {
     dispatch(EditPost());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.editPostAPI,
     })

@@ -277,8 +277,7 @@ const onSaveDeviceToken = async () => {
     }
 
 
-      const onCallResndOTP = () => {
-        
+      const onCallResndOTP = () => {  
         let data =
           props.route.params?.fromScreen == 'SignUpScreen'
             ? {

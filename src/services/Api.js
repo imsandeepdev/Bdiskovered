@@ -36,22 +36,6 @@ const RequestPostFetch = ({url, body, datatype}) =>
       'CONFIG==>',
       config,
     );
-
-    
-  // const axiosbody = datatype == 'formdata' ? body : formBody;
-  // console.log('Request params ==> ', requestUrl, 'BODY==>', axiosbody);
-  // axios
-  //   .post(requestUrl, axiosbody,{headers})
-  //   .then(response => {
-  //     console.log('RESPONSE ON API===>', response);
-  //     let status = response.status == '200' ? 'success' : 'failed';
-  //     if (status) {
-  //       resolve(response.data);
-  //     } else {
-  //       Toast.show(response.message, Toast.SHORT);
-  //       reject(response.data);
-  //     }
-  //   })
     fetch(requestUrl, config)
       .then(response => response.json())
       .then(responseJson => {
@@ -307,6 +291,121 @@ const RequestPostFetch = ({url, body, datatype}) =>
           });
       });
 
+  const axiosAuthPost = ({url, body, datatype}) => 
+  new Promise((resolve, reject) =>
+  {
+      const headerAuth = {
+        Accept: 'application/json',
+        'Content-Type':
+          datatype == 'formdata'
+            ? 'multipart/form-data'
+            : 'application/x-www-form-urlencoded;charset=UTF-8',
+      };
+      const headers = headerAuth;
+      var formBody = [];
+      for (var property in body) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(body[property]);
+        formBody.push(encodedKey + '=' + encodedValue);
+      }
+      formBody = formBody.join('&');
+
+    const requestUrl = Config.API_URL + url;
+    const axiosbody = datatype == 'formdata' ? body : formBody;
+    console.log('Request params ==> ', requestUrl, 'BODY==>', axiosbody);
+    axios
+      .post(requestUrl, axiosbody, {headers})
+      .then(response => {
+        console.log('RESPONSE ON AXIOS AUTH POST ===>', response);
+        let status = response.status == '200' ? 'success' : 'failed';
+        if (status) {
+          resolve(response.data);
+        } else {
+          Toast.show(response.message, Toast.SHORT);
+          reject(response.data);
+        }
+      })
+      .catch(error => {
+        console.log('ERRORONAPI', error);
+        Toast.show('Check Internet Connection', Toast.SHORT);
+      });
+  });
+
+
+  const axiosPost = ({url, body, datatype}) =>
+    new Promise((resolve, reject) => {
+      const {
+        auth: {authToken},
+      } = store.getState();
+      const headerAuth = {
+        Accept: 'application/json',
+        'Content-Type':
+          datatype == 'formdata'
+            ? 'multipart/form-data'
+            : 'application/x-www-form-urlencoded;charset=UTF-8',
+          token: authToken
+      };
+      const headers = headerAuth;
+      var formBody = [];
+      for (var property in body) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(body[property]);
+        formBody.push(encodedKey + '=' + encodedValue);
+      }
+      formBody = formBody.join('&');
+
+      const requestUrl = Config.API_URL + url;
+      const axiosbody = datatype == 'formdata' ? body : formBody;
+      console.log('Request params ==> ', requestUrl, 'BODY==>', axiosbody);
+      axios
+        .post(requestUrl, axiosbody, {headers})
+        .then(response => {
+          console.log('RESPONSE ON AXIOS POST ===>', response);
+          let status = response.status == '200' ? 'success' : 'failed';
+          if (status) {
+            resolve(response.data);
+          } else {
+            Toast.show(response.message, Toast.SHORT);
+            reject(response.data);
+          }
+        })
+        .catch(error => {
+          console.log('ERRORONAPI', error);
+          Toast.show('Check Internet Connection', Toast.SHORT);
+        });
+    });
+
+
+     const axiosGet = ({url, body}) =>
+       new Promise((resolve, reject) => {
+         const {
+           auth: {authToken},
+         } = store.getState();
+         const headers = {
+           Accept: 'application/json',
+           'Content-Type': 'application/json',
+           token: authToken,
+         };
+         const requestUrl = Config.API_URL + url;
+         console.log('Request params ==> ', requestUrl);
+         axios
+           .get(requestUrl, {headers})
+           .then(response => {
+             console.log('RESPONSE ON AXIOS GET  ===>', response);
+             let status = response.status == '200' ? 'success' : 'failed';
+             if (status) {
+               resolve(response.data);
+             } else {
+               Toast.show(response.message, Toast.SHORT);
+               reject(response.data);
+             }
+           })
+           .catch(error => {
+             console.log('ERRORONAPI', error);
+             Toast.show('Check Internet Connection', Toast.SHORT);
+           });
+       });
+
   export default {
     RequestPostFetch,
     getRequest,
@@ -314,4 +413,7 @@ const RequestPostFetch = ({url, body, datatype}) =>
     MultiGetRequest,
     VideoPostFetch,
     OnlyShowAllPostFetch,
+    axiosAuthPost,
+    axiosPost,
+    axiosGet
   };

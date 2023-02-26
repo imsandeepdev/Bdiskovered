@@ -95,7 +95,7 @@ export const PayPaymentRequest = (
 ) => {
   return dispatch => {
     dispatch(PayPayment());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.stripePaymentAPI,
     })
@@ -117,7 +117,7 @@ export const CardListRequest = (
 ) => {
   return dispatch => {
     dispatch(CardList());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.stripePaymentCardListAPI,
     })
       .then(response => {
@@ -138,7 +138,7 @@ export const CardDeleteRequest = (
 ) => {
   return dispatch => {
     dispatch(CardDelete());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.stripePaymentDeleteCardAPI,
     })
@@ -161,7 +161,7 @@ export const SaveCardRequest = (
 ) => {
   return dispatch => {
     dispatch(SaveCard());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.stripePaymentSaveCardAPI,
     })

@@ -81,7 +81,6 @@ const [personalArray, setPersonalArray] = useState([])
 const [profilePic, setProfilePic] = useState([]);
 const [pickerModal, setPickerModal] = useState(false);
 
-
 const [actualName, setActualName] = useState('');
 const [userName, setUserName] = useState('');
 const [userDob, setUserDob] = useState('');
@@ -100,17 +99,13 @@ const [comOwnerName, setComOwnerName] = useState('');
 const [userLocation, setUserLocation] = useState('')
 const [editModalPicker, setEditModalPicker] = useState(false)
 
-
-  useEffect(()=>{
-
+useEffect(()=>{
     console.log("USER TYPE", props.userType)
     const unsubscribe = props.navigation.addListener('focus', () => {
       screenFocus();
     });
     return unsubscribe;
-    
-
-  },[props.navigation])
+},[props.navigation])
 
   const screenFocus = () => {
     Platform.OS === 'android' &&
@@ -193,10 +188,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
         {
         setTalentArray(useTalentArray);
         }
-       
         setTailentPostVideo(response.Profile?.post);
-       
-        
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace(
             'http://localhost:8080/',
@@ -249,52 +241,51 @@ const [editModalPicker, setEditModalPicker] = useState(false)
     }))
   }
 
-    const onDeleteVideoAlart = (postId) => {
-      Alert.alert(
-        'Delete Video!',
-        'Are you sure want to delete this video?',
-        [
-          {
-            text: 'Proceed',
-            onPress: () => onCallDeletevideoAPI(postId),
-          },
-          {
-            text: 'No',
-          },
-        ],
-        {
-          cancelable: true,
-        },
-      );
-    };
+    // const onDeleteVideoAlart = (postId) => {
+    //   Alert.alert(
+    //     'Delete Video!',
+    //     'Are you sure want to delete this video?',
+    //     [
+    //       {
+    //         text: 'Proceed',
+    //         onPress: () => onCallDeletevideoAPI(postId),
+    //       },
+    //       {
+    //         text: 'No',
+    //       },
+    //     ],
+    //     {
+    //       cancelable: true,
+    //     },
+    //   );
+    // };
 
-    const onCallDeletevideoAPI = postId => {
-      setLoading(true)
-      let data ={
-        id: postId
-      }
-      console.log('PostId',data)
-      dispatch(PostDeleteRequest(data, response => {
-        console.log('Postdelete Response', response)
-        if(response.status)
-        {
-        onCallProfileAPI();
-        // setLoading(false);
-        Toast.show(response.message, Toast.SHORT)
-        }
-        else
-        {
-        Toast.show(response.message, Toast.SHORT);
-        setLoading(false);
-        }
-      }))
+    // const onCallDeletevideoAPI = postId => {
+    //   setLoading(true)
+    //   let data ={
+    //     id: postId
+    //   }
+    //   console.log('PostId',data)
+    //   dispatch(PostDeleteRequest(data, response => {
+    //     console.log('Postdelete Response', response)
+    //     if(response.status)
+    //     {
+    //     onCallProfileAPI();
+    //     // setLoading(false);
+    //     Toast.show(response.message, Toast.SHORT)
+    //     }
+    //     else
+    //     {
+    //     Toast.show(response.message, Toast.SHORT);
+    //     setLoading(false);
+    //     }
+    //   }))
   
-    };
+    // };
 
    
 
     const onSelectPicker = params => {
-      
       if (params == 'camera') {
         ImagePicker.openCamera({
           width: 400,
@@ -319,7 +310,7 @@ const [editModalPicker, setEditModalPicker] = useState(false)
           setPickerModal(false);
         });
       }
-    };
+    }
 
     const onCallUpdateBusinessProfile = () => {
       setLoading(true);
@@ -343,8 +334,8 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                   : profilePic.path?.replace('file://', ''),
               type: profilePic.mime,
               name: 'image.jpg',
-            },
-      );
+            }
+      )
       console.log("BUSINESS FORMDATA",formData)
       dispatch(
         ProfileUpdateRequest(formData, dataType, response => {
@@ -371,9 +362,9 @@ const [editModalPicker, setEditModalPicker] = useState(false)
             Toast.show(response.message, Toast.SHORT);
             setLoading(false);
           }
-        }),
-      );
-    };
+        })
+      )
+    }
 
      const onDateChange = date => {
        // setDOB(date)
@@ -393,8 +384,6 @@ const [editModalPicker, setEditModalPicker] = useState(false)
             formData.append('bio', userBio);
             formData.append('mobile', mobNo);
             formData.append('birth',userDob);
-
-
             formData.append(
               'avatar',
               profilePic.path == null ||
@@ -409,8 +398,8 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                     type: profilePic.mime,
                     name: 'image.jpg',
                     // name: profilePic.filename ?? 'image.jpg',
-                  },
-            );
+                  }
+            )
             dispatch(
               ProfileUpdateRequest(formData, dataType, response => {
                 console.log('UpDate Profile RES', response);
@@ -437,9 +426,9 @@ const [editModalPicker, setEditModalPicker] = useState(false)
                   Toast.show(response.message, Toast.SHORT);
                   setLoading(false);
                 }
-              }),
-            );
-          };
+              })
+            )
+          }
 
     const onDeleteAccountAlart = () => {
       Alert.alert(

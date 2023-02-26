@@ -5,7 +5,6 @@ const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
 const Styles = StyleSheet.create({
-  
   modalMainView: {
     flex: 1,
     backgroundColor: R.colors.modelBackground,
@@ -114,6 +113,7 @@ const Styles = StyleSheet.create({
     color: R.colors.white,
     marginLeft: R.fontSize.Size8,
   },
+ 
 });
 
 export default Styles;

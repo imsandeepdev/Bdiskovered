@@ -26,10 +26,10 @@ const BlockUserScreen = props => {
   }, [props.navigation]);
 
   const onBlockUserAPI = () =>{
-    setLoading(true)
+    // setLoading(true)
     dispatch(BlockUserListRequest(response => {
         setBlockUserList(response.data?.block_list);
-        setLoading(false)
+        // setLoading(false)
     }))
   }
 
@@ -56,7 +56,6 @@ const BlockUserScreen = props => {
     let data = {
       blockId: userId
     };
-    setLoading(true);
     dispatch(UnblockUserRequest(data, response => {
         console.log("Unblock Response", response)
         if(response.status == 'success')
@@ -66,13 +65,12 @@ const BlockUserScreen = props => {
         else
         {
             Toast.show(response.message, Toast.SHORT);
-            setLoading(false)
         }
     }))
    }
 
   return (
-    <StoryScreen loading={loading}>
+    <StoryScreen loading={props.loading}>
       
       <Header
         onPress={() => props.navigation.goBack()}
@@ -130,9 +128,7 @@ const BlockUserScreen = props => {
 };
 
 const mapStateToProps = (state, props) => ({
-  userProfile: state.getProfileDetailsRoot.getProfileInit,
-  authToken: state.auth.authToken,
-  userType: state.auth.userType,
+  loading: state.blockRoot.loading,
 });
 
 export default connect(mapStateToProps)(BlockUserScreen);

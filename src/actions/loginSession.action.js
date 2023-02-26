@@ -31,7 +31,7 @@ export const LoginSessionRequest = (
 ) => {
   return dispatch => {
     dispatch(LoginSession());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.loginSessionAPI,
     })

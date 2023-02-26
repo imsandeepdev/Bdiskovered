@@ -30,7 +30,7 @@ export const NotificationListRequest = (
 ) => {
   return dispatch => {
     dispatch(NotificationList());
-    Api.MultiGetRequest({
+    Api.axiosGet({
       url: Config.notificationListAPI,
     })
       .then(response => {

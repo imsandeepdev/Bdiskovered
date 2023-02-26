@@ -26,7 +26,6 @@ import TalentFinishScreen from '../screens/TalentFinishScreen';
 import {connect, useDispatch} from 'react-redux';
 import SplashScreen from '../screens/SplashScreen';
 import UserViewAllScreen from '../screens/UserViewAllScreen';
-import PopularViewAllScreen from '../screens/PopularViewAllScreen';
 import ConnectedProfileScreen from '../screens/ConnectedProfileScreen';
 import { GetProfileDetailsRequest } from '../actions/getProfile.action';
 import SearchScreen from '../screens/SearchScreen';
@@ -278,11 +277,7 @@ const AppNavigator = props => {
           component={UserViewAllScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen
-          name="PopularViewAllScreen"
-          component={PopularViewAllScreen}
-          options={{headerShown: false}}
-        />
+       
         <Stack.Screen
           name="ConnectedProfileScreen"
           component={ConnectedProfileScreen}

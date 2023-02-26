@@ -31,7 +31,7 @@ export const ConnectRequestRequest = (
 ) => {
   return dispatch => {
     dispatch(ConnectRequest());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.connectRequestAPI,
     })

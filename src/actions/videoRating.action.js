@@ -31,7 +31,7 @@ export const VideoRatingRequest = (
 ) => {
   return dispatch => {
     dispatch(VideoRating());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body:data,
       url: Config.videoRatingAPI,
     })

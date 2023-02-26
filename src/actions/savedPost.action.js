@@ -73,7 +73,7 @@ export const SavedPostRequest = (
 ) => {
   return dispatch => {
     dispatch(SavedPost());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.savedPostAPI,
     })
@@ -94,7 +94,7 @@ export const SavedPostListRequest = (
 ) => {
   return dispatch => {
     dispatch(SavedPostList());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.savedPostListAPI,
     })
       .then(response => {
@@ -115,7 +115,7 @@ export const DeleteSavedPostRequest = (
 ) => {
   return dispatch => {
     dispatch(DeleteSavedPost());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.deleteSavedPostAPI,
     })

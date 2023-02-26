@@ -31,7 +31,7 @@ export const BoostPostRequest = (
 ) => {
   return dispatch => {
     dispatch(BoostPost());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.boostPostAPI,
     })

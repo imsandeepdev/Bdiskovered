@@ -54,7 +54,7 @@ export const ShowAllPostRequest = (
 ) => {
   return dispatch => {
     dispatch(ShowAllPost());
-    Api.OnlyShowAllPostFetch({
+    Api.axiosPost({
       body:data,
       url: Config.showAllPostAPI,
     })

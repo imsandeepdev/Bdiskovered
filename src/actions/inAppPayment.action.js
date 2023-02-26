@@ -31,7 +31,7 @@ export const InAppPaymentRequest = (
 ) => {
   return dispatch => {
     dispatch(InAppPayment());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.inAppPurchaseAPI,
     })

@@ -120,7 +120,7 @@ export const SignUpRequest = (
 ) => {
   return dispatch => {
     dispatch(SignUp());
-    Api.RequestPostFetch({
+    Api.axiosAuthPost({
       body: data,
       datatype: dataType,
       url: Config.signUpAPI,
@@ -144,7 +144,7 @@ export const SignInRequest = (
 ) => {
   return dispatch => {
     dispatch(SignIn());
-    Api.RequestPostFetch({
+    Api.axiosAuthPost({
       body: data,
       url: Config.signInAPI,
     })
@@ -189,7 +189,7 @@ export const UserLogoutAllRequest = (
 ) => {
   return dispatch => {
     dispatch(UserLogoutAll());
-    Api.RequestPostFetch({
+    Api.axiosAuthPost({
       body: data,
       url: Config.userLogOutAllAPI,
     })
@@ -206,7 +206,6 @@ export const UserLogoutAllRequest = (
 
 
 export const DeactivateAccountRequest = (
- 
   success?: () => void,
   failed?: () => void,
 ) => {

@@ -12,6 +12,7 @@ import R from '../../res/R';
 import {connect,useDispatch} from 'react-redux';
 import {Config} from '../../config';
 import styles from './styles';
+import { ConnectedUsersRequest } from '../../actions/connectedUser.action';
 
 const ConnectionScreen = props => {
   const dispatch = useDispatch();
@@ -25,36 +26,48 @@ const ConnectionScreen = props => {
   }, [props.navigation]);
 
   const onCallConnectedUserAPI = () => {
-    console.log(`${Config.API_URL}${Config.connectedUsersAPI}`);
-    console.log(props.authToken);
+    setLoading(true);
+    dispatch(ConnectedUsersRequest(response=>{
+      console.log("Connected User List Response",response)
+      if (response.status == 'success') {
+        setLoading(false);
+        setConnectedUserList(response?.result);
+        setMyUserId(props.userProfile?.Profile?.user_id);
+      } else {
+        setLoading(false);
+      }
+    }))
 
-   setLoading(true);
-   let headerAuth = {
-     token: props.authToken,
-   };
+  //   console.log(`${Config.API_URL}${Config.connectedUsersAPI}`);
+  //   console.log(props.authToken);
 
-    const headers = headerAuth;
-    const config = {
-      method: 'POST',
-      headers,
-    };
+  //  setLoading(true);
+  //  let headerAuth = {
+  //    token: props.authToken,
+  //  };
 
-   fetch(`${Config.API_URL}${Config.connectedUsersAPI}`, config)
-     .then(res => res.json())
-     .then(response => {
-       console.log('RES conn', response);
-       if (response.status == 'success') {
-         setLoading(false);
-         setConnectedUserList(response.data?.connected);
-         setMyUserId(response.data?.userId);
-       } else {
-         setLoading(false);
-       }
-     })
-     .catch(error => {
-       console.log('ERRORONAPI', error);
-      setLoading(false);
-     })
+  //   const headers = headerAuth;
+  //   const config = {
+  //     method: 'POST',
+  //     headers,
+  //   };
+
+  //  fetch(`${Config.API_URL}${Config.connectedUsersAPI}`, config)
+  //    .then(res => res.json())
+  //    .then(response => {
+  //      console.log('RES conn', response);
+  //      if (response.status == 'success') {
+  //        setLoading(false);
+  //        setConnectedUserList(response.data?.connected);
+  //        setMyUserId(response.data?.userId);
+  //      } else {
+  //        setLoading(false);
+  //      }
+  //    })
+  //    .catch(error => {
+  //      console.log('ERRORONAPI', error);
+  //     setLoading(false);
+  //    })
   };
 
   return (

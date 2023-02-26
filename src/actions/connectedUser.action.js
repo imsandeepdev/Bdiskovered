@@ -30,7 +30,7 @@ export const ConnectedUsersRequest = (
 ) => {
   return dispatch => {
     dispatch(ConnectedUsers());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       url: Config.connectedUsersAPI,
     })
       .then(response => {

@@ -4,23 +4,15 @@ import {
   View,
   Text,
   Image,
-  SafeAreaView,
-  Dimensions,
-  Pressable,
-  TextInput,
+  SafeAreaView
 } from 'react-native';
 import { StoryScreen, AppButton} from '../../components';
-
 import R from '../../res/R';
 
 const PaymentResultScreen = props => {
 
-    const paymentStatus = true;
-
   useEffect(()=>{
-
     console.log('PAYMENT STATUS', props.route.params?.paymentStatus);
-
   },[props.navigation])
 
   return (

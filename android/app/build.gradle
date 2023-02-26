@@ -130,10 +130,20 @@ def reactNativeArchitectures() {
 }
 
 android {
+    //  flavorDimensions "appstore"
+    //  productFlavors {
+    //    googlePlay {
+    //      dimension "appstore"
+    //      missingDimensionStrategy "store", "play"
+    //    }
+    //    amazon {
+    //      dimension "appstore"
+    //      missingDimensionStrategy "store", "amazon"
+    //    }
+    //  }
+
     ndkVersion rootProject.ext.ndkVersion
-
     compileSdkVersion rootProject.ext.compileSdkVersion
-
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "com.bdiskovered"

@@ -52,7 +52,7 @@ export const TailentProfileCreateRequest = (
 ) => {
   return dispatch => {
     dispatch(TailentProfileCreate());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.tailentProfileCreateAPI,
     })
@@ -75,7 +75,7 @@ export const UserSelectionFinishRequest = (
 ) => {
   return dispatch => {
     dispatch(UserSelectionFinish());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.userSelectionFinishAPI,
     })

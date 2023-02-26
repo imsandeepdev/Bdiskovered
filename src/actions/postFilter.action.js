@@ -31,7 +31,7 @@ export const PostFilterRequest = (
 ) => {
   return dispatch => {
     dispatch(PostFilter());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body: data,
       url: Config.postFilterAPI,
     })

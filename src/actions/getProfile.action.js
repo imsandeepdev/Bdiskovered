@@ -72,7 +72,7 @@ export const GetProfileDetailsRequest = (
 ) => {
   return dispatch => {
     dispatch(GetProfileDetails());
-    Api.MultiGetRequest({
+    Api.axiosGet({
       url: Config.getProfileAPI,
     })
       .then(response => {
@@ -94,7 +94,7 @@ export const ProfileUpdateRequest = (
 ) => {
   return dispatch => {
     dispatch(ProfileUpdate());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body:data,
       datatype: dataType,
       url: Config.profileUpdateAPI,
@@ -117,7 +117,7 @@ export const ConnectTailentProfileRequest = (
 ) => {
   return dispatch => {
     dispatch(ConnectTailentProfile());
-    Api.MultiPostFetch({
+    Api.axiosPost({
       body:data,
       url: Config.getProfileAPI,
     })

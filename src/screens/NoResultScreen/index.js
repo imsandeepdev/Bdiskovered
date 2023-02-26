@@ -33,54 +33,59 @@ const NoResultScreen = props => {
   return (
     <StoryScreen>
       <SafeAreaView style={{flex: 1}}>
+        {
+          props.route.params?.from == 'SearchScreen' &&
+          <Header
+          onPress={() => props.navigation.goBack()}
+          leftSource={R.images.chevronBack}
+        />}
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          {
-            props.route.params?.from == 'SearchScreen' ?
-            <Text
-            style={{
-              fontFamily: R.fonts.regular,
-              fontSize: R.fontSize.Size16,
-              color: R.colors.placeHolderColor,
-              fontWeight: '500',
-              textAlign: 'center',
-            }}>{`No Result Found`}
-            </Text>
-            :
-          <View
-          style={{
-            alignItems:'center',
-            justifyContent:'center',
-            marginHorizontal:R.fontSize.Size20
-          }}
-          >
-            <Image
-              source={R.images.paymentSuccessIcon}
-              style={{height: R.fontSize.Size140, width: R.fontSize.Size140}}
-              resizeMode={'contain'}
-            />
+          {props.route.params?.from == 'SearchScreen' ? (
             <Text
               style={{
-                marginTop:R.fontSize.Size10,
                 fontFamily: R.fonts.regular,
                 fontSize: R.fontSize.Size16,
-                color: R.colors.primaryTextColor,
+                color: R.colors.placeHolderColor,
                 fontWeight: '500',
                 textAlign: 'center',
               }}>
-              {`Your video is sent for review and will be published once approved`}
+              {`No Result Found`}
             </Text>
-          </View>
-            }
+          ) : (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginHorizontal: R.fontSize.Size20,
+              }}>
+              <Image
+                source={R.images.paymentSuccessIcon}
+                style={{height: R.fontSize.Size140, width: R.fontSize.Size140}}
+                resizeMode={'contain'}
+              />
+              <Text
+                style={{
+                  marginTop: R.fontSize.Size10,
+                  fontFamily: R.fonts.regular,
+                  fontSize: R.fontSize.Size16,
+                  color: R.colors.primaryTextColor,
+                  fontWeight: '500',
+                  textAlign: 'center',
+                }}>
+                {`Your video is sent for review and will be published once approved`}
+              </Text>
+            </View>
+          )}
         </View>
-        {
-         props.route.params?.from != 'SearchScreen'   &&  
-        <View style={{paddingVertical: R.fontSize.Size16}}>
-          <AppButton
-            onPress={() => onCallProcess()}
-            marginHorizontal={R.fontSize.Size35}
-            title={'Proceed'}
-          />
-        </View>}
+        {props.route.params?.from != 'SearchScreen' && (
+          <View style={{paddingVertical: R.fontSize.Size16}}>
+            <AppButton
+              onPress={() => onCallProcess()}
+              marginHorizontal={R.fontSize.Size35}
+              title={'Proceed'}
+            />
+          </View>
+        )}
       </SafeAreaView>
     </StoryScreen>
   );

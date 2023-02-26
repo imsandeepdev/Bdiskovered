@@ -30,9 +30,6 @@ const TalentFinishScreen = props => {
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [selected, setSelected] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
   const [selectedTailent, setSelectedTailent] = useState([]);
   const [selectTime, setSelectTime] = useState('Full');
   const [data, setData] = useState([]);
@@ -100,7 +97,7 @@ const onCallFinish = () => {
         console.log('TAILENT FINISH SCREEN CREATE RES', response);
         if (response.status) {
           props.navigation.replace('HomeMenu');
-          Toast.show(response.message, Toast.SHORT);
+          // Toast.show(response.message, Toast.SHORT);
         } else {
           Toast.show(response.message, Toast.SHORT);
         }

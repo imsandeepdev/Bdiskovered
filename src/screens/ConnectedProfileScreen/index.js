@@ -49,7 +49,7 @@ const ConnectedProfileScreen = props => {
   },[props.navigation])
 
   const onCallConnectTailentProfileAPI = (profileId) => {
-    setLoading(true)
+    // setLoading(true)
     let data = {
       id: profileId
     }
@@ -69,13 +69,12 @@ const ConnectedProfileScreen = props => {
               response.Profile?.address != '' ? response.Profile?.address : ''
             }`,
           ]);
-        
         setProfilePic({
           path: `${Config.API_URL}${response.Profile?.avatar.replace('http://localhost:8080/','')}`,
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
-        setLoading(false);
+        // setLoading(false);
       }
     }))
   }
@@ -105,18 +104,18 @@ const onCallMyUserId = () => {
     let data = {
       blockId: profileDetails?.user_id,
     };
-    setLoading(true);
+    // setLoading(true);
     dispatch(
       BlockUserRequest(data, response => {
         console.log('BLOCK USER RESPONSE', response);
         if (response.status == 'success') {
-          setLoading(false);
+          // setLoading(false);
           setblockModalPicker(false);          
           props.navigation.replace('HomeMenu')
         } else {
           Toast.show(response.message, Toast.SHORT);
           setblockModalPicker(false)
-          setLoading(false);
+          // setLoading(false);
         }
       }),
     );
@@ -148,16 +147,16 @@ const onCallMyUserId = () => {
       };
 
       const onCallDeleteAccountAPI = () => {
-        setLoading(true);
+        // setLoading(true);
         setEditModalPicker(false);
         dispatch(
           DeactivateAccountRequest(response => {
             console.log('Delete Account Response', response);
             if (response.status == 'success') {
-              setLoading(false);
+              // setLoading(false);
               props.navigation.replace('LoginScreen');
             } else {
-              setLoading(false);
+              // setLoading(false);
               Toast.show(response.message, Toast.SHORT);
             }
           }),
@@ -165,7 +164,7 @@ const onCallMyUserId = () => {
       };
 
   return (
-    <StoryScreen loading={loading}>
+    <StoryScreen loading={props.loading || loading}>
       <SafeAreaView style={{flex: 1}}>
         <ShadowHeader
           onPress={() => props.navigation.goBack()}
@@ -177,7 +176,11 @@ const onCallMyUserId = () => {
           <View style={styles.mainView}>
             <View style={{alignItems: 'flex-end'}}>
               <Pressable
-                onPress={() => {userProfileId == talentUserId ? setblockModalPicker(true) : setEditModalPicker(true)}}
+                onPress={() => {
+                  userProfileId == talentUserId
+                    ? setblockModalPicker(true)
+                    : setEditModalPicker(true);
+                }}
                 style={({pressed}) => [
                   {
                     opacity: pressed ? 0.5 : 1,
@@ -314,6 +317,7 @@ const onCallMyUserId = () => {
             </View>
             <View style={styles.talentVideoView}>
               {tailentPostVideo.map((item, index) => {
+                console.log("VIDEOITEM",item)
                 return (
                   <View key={index}>
                     <Pressable
@@ -370,6 +374,10 @@ const onCallMyUserId = () => {
 };
 
 const mapStatetoProps = (state, props) => ({
+  loading:
+    state.auth.loading ||
+    state.blockRoot.loading ||
+    state.getProfileDetailsRoot.loading,
   authToken: state.auth.authToken,
   userType: state.auth.userType,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
