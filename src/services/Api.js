@@ -4,6 +4,9 @@ import {store} from '../store';
 import {Config} from '../config';
 import Toast from 'react-native-simple-toast';
 import axios from 'axios';
+import NavigationService from '../navigator/NavigationService';
+import { AlartModal } from '../components';
+import { Alert } from 'react-native';
 
 const RequestPostFetch = ({url, body, datatype}) =>
   new Promise((resolve, reject) => {
@@ -357,13 +360,28 @@ const RequestPostFetch = ({url, body, datatype}) =>
       const requestUrl = Config.API_URL + url;
       const axiosbody = datatype == 'formdata' ? body : formBody;
       console.log('Request params ==> ', requestUrl, 'BODY==>', axiosbody);
+      console.log('Auth Token on Axios ==> ', authToken);
+      console.log('Request params on AXIOS ==> ', requestUrl);
       axios
         .post(requestUrl, axiosbody, {headers})
         .then(response => {
           console.log('RESPONSE ON AXIOS POST ===>', response);
           let status = response.status == '200' ? 'success' : 'failed';
-          if (status) {
+               
+          if (
+            response.status == '200' &&
+            response.data.message != 'Account logged out'
+          ) {
             resolve(response.data);
+          } else if (
+            response.data.message == 'Account logged out' &&
+            response.status == '200'
+          ) {
+            reject(response);
+            onCallAlart(response.data?.message2);
+          } else if (response.status == 401) {
+            NavigationService.reset('LoginScreen');
+            reject(response);
           } else {
             Toast.show(response.message, Toast.SHORT);
             reject(response.data);
@@ -387,14 +405,27 @@ const RequestPostFetch = ({url, body, datatype}) =>
            token: authToken,
          };
          const requestUrl = Config.API_URL + url;
-         console.log('Request params ==> ', requestUrl);
+         console.log('Auth Token on Axios ==> ', authToken);
+         console.log('Request params on AXIOS ==> ', requestUrl);
          axios
            .get(requestUrl, {headers})
            .then(response => {
              console.log('RESPONSE ON AXIOS GET  ===>', response);
              let status = response.status == '200' ? 'success' : 'failed';
-             if (status) {
+             if (
+               response.status == '200' &&
+               response.data.message != 'Account logged out'
+             ) {
                resolve(response.data);
+             } else if (
+               response.data.message == 'Account logged out' &&
+               response.status == '200'
+             ) {
+               reject(response);
+               onCallAlart(response.data?.message2);
+             } else if (response.status == 401) {
+               NavigationService.reset('LoginScreen');
+               reject(response);
              } else {
                Toast.show(response.message, Toast.SHORT);
                reject(response.data);
@@ -405,6 +436,23 @@ const RequestPostFetch = ({url, body, datatype}) =>
              Toast.show('Check Internet Connection', Toast.SHORT);
            });
        });
+
+ 
+  const onCallAlart = (message) => {
+    Alert.alert(
+      'Alert',
+      `${message}`,
+      [
+        {
+          text: 'Proceed',
+          onPress: () => {NavigationService.reset('LoginScreen')},
+        }
+      ],
+      {
+        cancelable: true,
+      },
+    );
+  };
 
   export default {
     RequestPostFetch,

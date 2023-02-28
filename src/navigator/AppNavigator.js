@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {View, TouchableOpacity, Text, PermissionsAndroid,Image} from 'react-native';
-import {navigationRef} from './NavigationService';
+import {View, TouchableOpacity, Text, PermissionsAndroid,Image, Alert} from 'react-native';
+import {navigationRef, navigate} from './NavigationService';
+
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -63,96 +64,124 @@ const AppNavigator = props => {
 
   useEffect(()=>{
     setLoading(true)
-    props.authToken && OnCallStartSessionStatus();
-    if(props.authToken)
-    {
-      dispatch(GetProfileDetailsRequest(response=>{
-        console.log("PROFILE DETAIL ON APP NAVIGATOR",response)
-        AsyncStorage.setItem('MyUserId', response?.Profile?.user_id);
-        AsyncStorage.setItem('MyUserMobile', response?.Profile?.mobile);
+    // if(props.authToken)
+    // {
+    //   dispatch(GetProfileDetailsRequest(response=>{
+    //     console.log("PROFILE DETAIL ON APP NAVIGATOR",response)
+    //     AsyncStorage.setItem('MyUserId', response?.Profile?.user_id);
+    //     AsyncStorage.setItem('MyUserMobile', response?.Profile?.mobile);
+    //     if(response.message == 'Account logged out')
+    //     {
+    //        onCallAlart(response?.message2);
+    //         setInitialRoute('LoginScreen');
+    //     }
+    //     else
+    //     {
+    //       setInitialRoute('HomeMenu');
+    //       setLoading(false); 
 
-      }))
-    }
+    //     }
+        
+    //   }))
+    // }
+    // else
+    // {
+    //   setInitialRoute('LoginScreen');
+    //   setLoading(false); 
+    // }
     console.log("AuthToken", props.authToken)
     const initialRouteName = props.authToken  ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
-    // const interval = setInterval(() => {onCheckSessionStatus()}, 10000);
-    // return () => {
-    //   clearInterval(interval);
-    // },
+   
     setLoading(false); 
 
   },[]);
 
-  const OnCallStartSessionStatus = async()=>{
-      try {
-        await AsyncStorage.setItem('sessionStatus','start');
-      } catch (e) {
-        console.log("ERR",e)
-      }
-  }
-
-   const OnCallEndSessionStatus = async () => {
-     try {
-       await AsyncStorage.setItem('sessionStatus', 'end');
-     } catch (e) {
-       console.log("ERR",e)
-     }
-   };
-
-
-  const onCheckSessionStatus = async() => {
-    let tempSession = await AsyncStorage.getItem('sessionStatus');
-    console.log("TEM SESSION",tempSession)
-    if(tempSession == 'start')
-    {
-      OnCallLoginSession()
-    }
-    else
-    {
-      OnEndLoginSession()
-    }
-  }
-
-  const OnEndLoginSession = () => {
-    console.log('End Session Now');
-  }
-
-  const OnCallLoginSession = async () => {
-    
-    let userFcmToken = await AsyncStorage.getItem('fcmToken')
-    let userMobileNo = await AsyncStorage.getItem('MyUserMobile');
-
-    console.log("USER FCM TOKEN", userFcmToken)
-    console.log('USER MOBILE NO', userMobileNo);
-    onCallLoginSessionAPI(userFcmToken, userMobileNo);
+  const onCallAlart = message => {
+    Alert.alert(
+      'Alert',
+      `${message}`,
+      [
+        {
+          text: 'Proceed',
+          onPress: () => onCallDeviceName()
+        },
+      ],
+      {
+        cancelable: true,
+      },
+    );
   };
 
-    const onCallLoginSessionAPI = (fcmToken,userMobile) => {
-      let data = {
-        mobile: userMobile,
-        device_token: fcmToken,
-      };
-      console.log('DATA', data);
+  // const OnCallStartSessionStatus = async()=>{
+  //     try {
+  //       await AsyncStorage.setItem('sessionStatus','start');
+  //     } catch (e) {
+  //       console.log("ERR",e)
+  //     }
+  // }
 
-      dispatch(
-        LoginSessionRequest(data, response => {
-          console.log('Response Login Session', response?.data);
+  //  const OnCallEndSessionStatus = async () => {
+  //    try {
+  //      await AsyncStorage.setItem('sessionStatus', 'end');
+  //    } catch (e) {
+  //      console.log("ERR",e)
+  //    }
+  //  };
 
-          if (
-            response?.data?._id != undefined &&
-            response?.data?.device_info?.isLoggedIn != 0
-          ) {
-            console.log(response?.data?._id);
-            console.log('Only Call Session ');
 
-          } else {
-            onCallDeviceName();
-          }
+  // const onCheckSessionStatus = async() => {
+  //   let tempSession = await AsyncStorage.getItem('sessionStatus');
+  //   console.log("TEM SESSION",tempSession)
+  //   if(tempSession == 'start')
+  //   {
+  //     OnCallLoginSession()
+  //   }
+  //   else
+  //   {
+  //     OnEndLoginSession()
+  //   }
+  // }
+
+  // const OnEndLoginSession = () => {
+  //   console.log('End Session Now');
+  // }
+
+  // const OnCallLoginSession = async () => {
+    
+  //   let userFcmToken = await AsyncStorage.getItem('fcmToken')
+  //   let userMobileNo = await AsyncStorage.getItem('MyUserMobile');
+
+  //   console.log("USER FCM TOKEN", userFcmToken)
+  //   console.log('USER MOBILE NO', userMobileNo);
+  //   onCallLoginSessionAPI(userFcmToken, userMobileNo);
+  // };
+
+    // const onCallLoginSessionAPI = (fcmToken,userMobile) => {
+    //   let data = {
+    //     mobile: userMobile,
+    //     device_token: fcmToken,
+    //   };
+    //   console.log('DATA', data);
+
+    //   dispatch(
+    //     LoginSessionRequest(data, response => {
+    //       console.log('Response Login Session', response?.data);
+
+    //       if (
+    //         response?.data?._id != undefined &&
+    //         response?.data?.device_info?.isLoggedIn != 0
+    //       ) {
+    //         console.log(response?.data?._id);
+    //         console.log('Only Call Session ');
+
+    //       } else {
+    //         onCallDeviceName();
+    //       }
           
-        }),
-      );
-    };
+    //     }),
+    //   );
+    // };
 
 
      const onCallDeviceName = () => {
@@ -277,7 +306,7 @@ const AppNavigator = props => {
           component={UserViewAllScreen}
           options={{headerShown: false}}
         />
-       
+
         <Stack.Screen
           name="ConnectedProfileScreen"
           component={ConnectedProfileScreen}
@@ -338,7 +367,7 @@ const AppNavigator = props => {
           component={SavedPostList}
           options={{headerShown: false}}
         />
-       
+
         <Stack.Screen
           name="BlockUserScreen"
           component={BlockUserScreen}

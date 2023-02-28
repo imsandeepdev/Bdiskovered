@@ -153,7 +153,7 @@ const goToFirstIndex = () =>{
     setAllVideoPostList([]);
     onCallDeviceName()
     onCallShowPostRefresh();
-    onCallProfile();
+    // onCallProfile();
   };
 
   const onCallModal = (type,item) => {
@@ -164,7 +164,7 @@ const goToFirstIndex = () =>{
       setVideoModalPersonalDetail([
         item?.gender,
         `${moment().diff(item?.birth, 'years')} Year`,
-        `${item?.address != '' ? item?.address : ''}`,
+        `${item?.profile_address != '' ? item?.profile_address : ''}`,
       ]);
       let tempTalentArray = item?.category;
       let useTalentArray = tempTalentArray.split(',');
@@ -190,6 +190,7 @@ const onCallShowPostRefresh = () => {
         setCurrIndex(0);
         setAllVideoPostList(response?.Post);
         setSliderValue(0);
+        onCallProfile();
         setLoading(false);
       } else if (response.status == 'tokenError') {
         setLoading(false);
@@ -622,15 +623,22 @@ const onCallReportPost = () => {
                       ref={ref => {
                         videoRef = ref;
                       }}
+                      onPressUserIcon={() =>
+                        {
+                      props.userProfile?.Profile?.user_id == item.user_id
+                        ? props.navigation.navigate('ConnectedProfileScreen', {
+                            profileId: item?.profileID,
+                            myUserId: props.userProfile?.Profile?.user_id,
+                            tailentPost: item,
+                          })
+                        : onCallModal('videoDetailModal', item);
+                      }
+                      }
                       eyeonPress={() => {
-                        item?.type == 'post_add'
-                          ? console.log('Addon')
-                          : onCallModal('videoDetailModal', item);
+                        item?.type == 'post_add' ? console.log('Addon') : null;
                       }}
                       eyeIcon={
-                        item?.type == 'post_add'
-                          ? R.images.whiteDotIcon
-                          : R.images.eyeIcon
+                        item?.type == 'post_add' ? R.images.whiteDotIcon : null
                       }
                       videoUrl={`${Config.API_URL}${item?.post?.replace(
                         'http://localhost:8080/',
@@ -643,7 +651,9 @@ const onCallReportPost = () => {
                       userName={
                         item?.type == 'post_add' ? item?.title : item?.username
                       }
-                      videoCat={item?.address != '' ? item?.address : ''}
+                      videoCat={
+                        item?.profile_address != '' ? item?.profile_address : ''
+                      }
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={

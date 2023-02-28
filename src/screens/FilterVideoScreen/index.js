@@ -185,7 +185,7 @@ const FilterVideoScreen = props => {
       setVideoModalPersonalDetail([
         `${moment().diff(item?.birth, 'years')} Year`,
         item?.gender,
-        `${item?.address != '' ? item?.address : ''}`,
+        `${item?.profile_address != '' ? item?.profile_address : ''}`,
       ]);
        let tempTalentArray = item?.category;
        let useTalentArray = tempTalentArray.split(',');
@@ -429,16 +429,30 @@ const onCallSavePost = postId => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      eyeonPress={() => {
-                        props.route.params?.fromScreen !=
-                          'SavedPostListScreen' && onCallModal(item);
+                      onPressUserIcon={() => {
+                        props.userProfile?.Profile?.user_id == item.user_id
+                          ? props.navigation.navigate(
+                              'ConnectedProfileScreen',
+                              {
+                                profileId: item?.profileID,
+                                myUserId: props.userProfile?.Profile?.user_id,
+                                tailentPost: item,
+                              },
+                            )
+                          : onCallModal(item);
                       }}
-                      eyeIcon={
-                        props.route.params?.fromScreen !=
-                          'SavedPostListScreen' && R.images.eyeIcon
-                      }
+                      // eyeonPress={() => {
+                      //   props.route.params?.fromScreen !=
+                      //     'SavedPostListScreen' && onCallModal(item);
+                      // }}
+                      // eyeIcon={
+                      //   props.route.params?.fromScreen !=
+                      //     'SavedPostListScreen' && R.images.eyeIcon
+                      // }
                       userName={item?.username}
-                      videoCat={item?.address != '' ? item?.address : ''}
+                      videoCat={
+                        item?.profile_address != '' ? item?.profile_address : ''
+                      }
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={`USD ${item?.amount}`}

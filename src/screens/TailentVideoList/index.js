@@ -98,7 +98,7 @@ const onChangeIndex = ({index}) => {
                         '',
                       )}`}
                       userName={item?.username}
-                      videoCat={item?.address != '' ? item?.address : ''}
+                      videoCat={item?.profile_address != '' ? item?.profile_address : ''}
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}

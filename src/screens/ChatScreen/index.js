@@ -32,8 +32,19 @@ const ChatScreen = props => {
     console.log('TAILENT USER ID', props.route.params?.tailentUserId);
     console.log('USER TYPE', props.userProfile?.Profile?.role);
     onCallProfileAPI();
+    onCheckConnectStatus();
 
   }, [props.navigation]);
+
+  const onCheckConnectStatus = () => {
+    console.log("CONNECTION STATUS",props.route.params?.userItem?.connect_status)
+    setLoading(true);
+    if(!props.route.params?.userItem?.connect_status)
+    {
+      onCallFirstTimeAPI();
+    }
+    setLoading(false);
+  }
   
   const onCallProfileAPI = () => {
     setLoading(true)
@@ -92,6 +103,7 @@ const ChatScreen = props => {
   }
 
   const onCallFirstTimeAPI = () => {
+    // setLoading(true)
     let data = {
       id: props.route.params?.tailentUserId,
       chat_id: props.route.params?.fireID,
@@ -134,7 +146,7 @@ const ChatScreen = props => {
       .then(response => response.json())
       .then(responseJson => {
         console.log('RESPONSEJSON', responseJson);
-
+          setLoading(false);
         if (responseJson.status == 'success') {
           console.log("SUCCESS",responseJson)
         } else if (responseJson.message == 'You have already sent connection request') 
@@ -205,7 +217,7 @@ const ChatScreen = props => {
   }
 
   return (
-    <StoryScreen>
+    <StoryScreen loading={loading}>
       <SafeAreaView style={{flex: 1}}>
         <Header
           onPress={() => props.navigation.goBack()}

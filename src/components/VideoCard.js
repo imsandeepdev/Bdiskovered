@@ -33,7 +33,6 @@ const VideoCard = React.forwardRef((props,ref) => {
         source={{
           uri: props.videoUrl,
         }}
-        
         ref={ref}
         onBuffer={onBuffer}
         onProgress={props.onProgress}
@@ -68,13 +67,17 @@ const VideoCard = React.forwardRef((props,ref) => {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <View
-            style={{
-              height: R.fontSize.Size35,
-              width: R.fontSize.Size35,
-              overflow: 'hidden',
-              borderRadius: R.fontSize.Size20,
-            }}>
+          <Pressable
+          onPress={props.onPressUserIcon}
+            style={({pressed}) => [
+              {
+                opacity:pressed ?0.5:1,
+                height: R.fontSize.Size35,
+                width: R.fontSize.Size35,
+                overflow: 'hidden',
+                borderRadius: R.fontSize.Size20,
+              },
+            ]}>
             <Image
               source={{
                 uri: props.userImage,
@@ -85,7 +88,7 @@ const VideoCard = React.forwardRef((props,ref) => {
               }}
               resizeMode={'cover'}
             />
-          </View>
+          </Pressable>
           <View style={{flex: 1, marginHorizontal: R.fontSize.Size10}}>
             <Text
               style={{
@@ -114,7 +117,7 @@ const VideoCard = React.forwardRef((props,ref) => {
               style={({pressed}) => [
                 {
                   opacity: pressed ? 0.5 : 1,
-                  marginTop: props.eyeMarginTop
+                  marginTop: props.eyeMarginTop,
                 },
               ]}>
               <Image
@@ -155,7 +158,7 @@ const VideoCard = React.forwardRef((props,ref) => {
               flex: 1,
               marginHorizontal: R.fontSize.Size20,
               alignItems: 'baseline',
-              justifyContent:'flex-end'
+              justifyContent: 'flex-end',
             }}>
             <Text
               style={{
@@ -196,80 +199,79 @@ const VideoCard = React.forwardRef((props,ref) => {
                   marginRight: R.fontSize.Size10,
                   alignItems: 'center',
                 }}>
-                {
-                  props.saveHidden ? null : 
-                <View>
-                <Pressable
-                  onPress={props.onPressSave}
-                  style={({pressed}) => [
-                    {
-                      opacity: pressed ? 0.3 : 0.8,
-                      height: R.fontSize.Size50,
-                      width: R.fontSize.Size50,
-                      borderRadius: R.fontSize.Size8,
-                      backgroundColor: R.colors.lightBlack,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    },
-                  ]}>
-                  <Image
-                    source={props.saveIcon ?? R.images.bookmarkIcon}
-                    style={{
-                      height: R.fontSize.Size30,
-                      width: R.fontSize.Size30,
-                    }}
-                    resizeMode={'contain'}
-                  />
-                </Pressable>
-                <Text
-                  style={{
-                    color: R.colors.lightWhite,
-                    fontSize: R.fontSize.Size14,
-                    fontFamily: R.fonts.regular,
-                    fontWeight: '400',
-                    textAlign:'center'
-                  }}>
-                  {props.saveTitle ?? 'Save'}
-                </Text>
-                </View>
-                }
-              {    
-                props.shareHidden ? null :            
-                <View>
-                <Pressable
-                  onPress={props.onPressShare}
-                  style={({pressed}) => [
-                    {
-                      opacity: pressed ? 0.3 : 0.8,
-                      height: R.fontSize.Size50,
-                      width: R.fontSize.Size50,
-                      borderRadius: R.fontSize.Size8,
-                      backgroundColor: R.colors.lightBlack,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: R.fontSize.Size8,
-                    },
-                  ]}>
-                  <Image
-                    source={R.images.shareIcon}
-                    style={{
-                      height: R.fontSize.Size30,
-                      width: R.fontSize.Size30,
-                    }}
-                    resizeMode={'contain'}
-                  />
-                </Pressable>
-                <Text
-                  style={{
-                    color: R.colors.lightWhite,
-                    fontSize: R.fontSize.Size14,
-                    fontFamily: R.fonts.regular,
-                    fontWeight: '400',
-                    textAlign:'center'
-                  }}>
-                  {'Share'}
-                </Text>
-                </View>}
+                {props.saveHidden ? null : (
+                  <View>
+                    <Pressable
+                      onPress={props.onPressSave}
+                      style={({pressed}) => [
+                        {
+                          opacity: pressed ? 0.3 : 0.8,
+                          height: R.fontSize.Size50,
+                          width: R.fontSize.Size50,
+                          borderRadius: R.fontSize.Size8,
+                          backgroundColor: R.colors.lightBlack,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        },
+                      ]}>
+                      <Image
+                        source={props.saveIcon ?? R.images.bookmarkIcon}
+                        style={{
+                          height: R.fontSize.Size30,
+                          width: R.fontSize.Size30,
+                        }}
+                        resizeMode={'contain'}
+                      />
+                    </Pressable>
+                    <Text
+                      style={{
+                        color: R.colors.lightWhite,
+                        fontSize: R.fontSize.Size14,
+                        fontFamily: R.fonts.regular,
+                        fontWeight: '400',
+                        textAlign: 'center',
+                      }}>
+                      {props.saveTitle ?? 'Save'}
+                    </Text>
+                  </View>
+                )}
+                {props.shareHidden ? null : (
+                  <View>
+                    <Pressable
+                      onPress={props.onPressShare}
+                      style={({pressed}) => [
+                        {
+                          opacity: pressed ? 0.3 : 0.8,
+                          height: R.fontSize.Size50,
+                          width: R.fontSize.Size50,
+                          borderRadius: R.fontSize.Size8,
+                          backgroundColor: R.colors.lightBlack,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginTop: R.fontSize.Size8,
+                        },
+                      ]}>
+                      <Image
+                        source={R.images.shareIcon}
+                        style={{
+                          height: R.fontSize.Size30,
+                          width: R.fontSize.Size30,
+                        }}
+                        resizeMode={'contain'}
+                      />
+                    </Pressable>
+                    <Text
+                      style={{
+                        color: R.colors.lightWhite,
+                        fontSize: R.fontSize.Size14,
+                        fontFamily: R.fonts.regular,
+                        fontWeight: '400',
+                        textAlign: 'center',
+                      }}>
+                      {'Share'}
+                    </Text>
+                  </View>
+                )}
                 {props.reportHidden ? null : (
                   <Pressable
                     onPress={props.onPressReport}
