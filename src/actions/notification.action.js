@@ -2,7 +2,10 @@ import {Config} from '../config';
 import {
     notification_List,
     notification_List_success,
-    notification_List_error
+    notification_List_error,
+    notification_Delete,
+    notification_Delete_success,
+    notification_Delete_error
 } from '../constants/common';
 import Api from '../services/Api';
 
@@ -24,6 +27,25 @@ export const NotificationListError = error => {
   };
 };
 
+
+export const NotificationDelete = () => {
+  return {
+    type: notification_Delete,
+  };
+};
+export const NotificationDeleteSuccess = payload => {
+  return {
+    type: notification_Delete_success,
+    payload,
+  };
+};
+export const NotificationDeleteError = error => {
+  return {
+    type: notification_Delete_error,
+    payload: error,
+  };
+};
+
 export const NotificationListRequest = (
   success?: () => void,
   failed?: () => void,
@@ -39,6 +61,29 @@ export const NotificationListRequest = (
       })
       .catch(error => {
         dispatch(NotificationListError(error));
+        failed?.(error);
+      });
+  };
+};
+
+
+export const NotificationDeleteRequest = (
+  data,
+  success?: () => void,
+  failed?: () => void,
+) => {
+  return dispatch => {
+    dispatch(NotificationDelete());
+    Api.axiosPost({
+      body:data,
+      url: Config.notificationDeleteAPI,
+    })
+      .then(response => {
+        dispatch(NotificationDeleteSuccess(response));
+        success?.(response);
+      })
+      .catch(error => {
+        dispatch(NotificationDeleteError(error));
         failed?.(error);
       });
   };

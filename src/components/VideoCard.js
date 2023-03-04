@@ -68,10 +68,10 @@ const VideoCard = React.forwardRef((props,ref) => {
             alignItems: 'center',
           }}>
           <Pressable
-          onPress={props.onPressUserIcon}
+            onPress={props.onPressUserIcon}
             style={({pressed}) => [
               {
-                opacity:pressed ?0.5:1,
+                opacity: pressed ? 0.5 : 1,
                 height: R.fontSize.Size35,
                 width: R.fontSize.Size35,
                 overflow: 'hidden',
@@ -89,7 +89,15 @@ const VideoCard = React.forwardRef((props,ref) => {
               resizeMode={'cover'}
             />
           </Pressable>
-          <View style={{flex: 1, marginHorizontal: R.fontSize.Size10}}>
+          <Pressable
+            onPress={props.onPressUserIcon}
+            style={({pressed}) => [
+              {
+                opacity: pressed ? 0.5 : 1,
+                flex: 1,
+                marginHorizontal: R.fontSize.Size10,
+              },
+            ]}>
             <Text
               style={{
                 fontFamily: R.fonts.regular,
@@ -110,7 +118,7 @@ const VideoCard = React.forwardRef((props,ref) => {
               numberOfLines={1}>
               {props.videoCat}
             </Text>
-          </View>
+          </Pressable>
           <View>
             <Pressable
               onPress={props.eyeonPress}

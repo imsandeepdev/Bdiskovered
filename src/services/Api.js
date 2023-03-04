@@ -320,8 +320,7 @@ const RequestPostFetch = ({url, body, datatype}) =>
       .post(requestUrl, axiosbody, {headers})
       .then(response => {
         console.log('RESPONSE ON AXIOS AUTH POST ===>', response);
-        let status = response.status == '200' ? 'success' : 'failed';
-        if (status) {
+        if (response.status == '200' || response.status == '201') {
           resolve(response.data);
         } else {
           Toast.show(response.message, Toast.SHORT);
@@ -366,11 +365,11 @@ const RequestPostFetch = ({url, body, datatype}) =>
         .post(requestUrl, axiosbody, {headers})
         .then(response => {
           console.log('RESPONSE ON AXIOS POST ===>', response);
-          let status = response.status == '200' ? 'success' : 'failed';
                
           if (
-            response.status == '200' &&
-            response.data.message != 'Account logged out'
+            (response.status == '200' ||
+            response.status == '201') &&
+              response.data.message != 'Account logged out'
           ) {
             resolve(response.data);
           } else if (
@@ -413,8 +412,9 @@ const RequestPostFetch = ({url, body, datatype}) =>
              console.log('RESPONSE ON AXIOS GET  ===>', response);
              let status = response.status == '200' ? 'success' : 'failed';
              if (
-               response.status == '200' &&
-               response.data.message != 'Account logged out'
+               (response.status == '200' ||
+               response.status == '201') &&
+                 response.data.message != 'Account logged out'
              ) {
                resolve(response.data);
              } else if (

@@ -73,6 +73,7 @@ const FilterVideoScreen = props => {
 
   useEffect(() => {
     setLoading(true);
+    console.log('POST INFO', props.route.params?.videoItems);
     console.log('MY PROFILE DETAILS USER ID', props.userProfile?.Profile?.user_id);
     onCheckFromScreen()
     setLoading(false);
@@ -121,6 +122,7 @@ const FilterVideoScreen = props => {
       user_id: userId,
       user_type: userType
     };
+    console.log("VIDEORATE",data)
     setLoading(true)
     dispatch(VideoRatingRequest(data,response =>{
       console.log("VIDEO RATING RES ON HOME PAGE =>",response)
@@ -421,11 +423,11 @@ const onCallSavePost = postId => {
                     <VideoCard
                       fromTop={R.fontSize.Size35}
                       fromLeft={R.fontSize.Size50}
-                      videoUrl={`${Config.API_URL}${item?.post.replace(
+                      videoUrl={`${Config.API_URL}${item?.post?.replace(
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userImage={`${Config.API_URL}${item?.avatar.replace(
+                      userImage={`${Config.API_URL}${item?.avatar?.replace(
                         'http://localhost:8080/',
                         '',
                       )}`}
@@ -486,7 +488,7 @@ const onCallSavePost = postId => {
                       }
                       onPressShare={() =>
                         myCustomShare(
-                          `${Config.API_URL}${item?.post.replace(
+                          `${Config.API_URL}${item?.post?.replace(
                             'http://localhost:8080/',
                             '',
                           )}`,
@@ -502,11 +504,15 @@ const onCallSavePost = postId => {
                       <View>
                         <Slider
                           disabled={
-                            item.postInfo[0]?.percentage_like != null
+                            item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
+                            item?.postInfo[0]?.percentage_like != null
                               ? true
                               : false
                           }
                           value={
+                            item?.postInfo != 'undefined' &&
+                            item?.postInfo != null &&
                             item?.postInfo[0]?.percentage_like != null
                               ? parseInt(item.postInfo[0]?.percentage_like)
                               : sliderValue[index]
@@ -523,9 +529,9 @@ const onCallSavePost = postId => {
                           maximumTrackTintColor={R.colors.white}
                           onValueChange={val => setSliderValue(val)}
                           onSlidingComplete={value => {
-                            console.log('SLIDE COMPLETE', value.toFixed(0));
+                            console.log('SLIDE COMPLETE', value?.toFixed(0));
                             onCallVideoRatingAPI(
-                              value.toFixed(0),
+                              value?.toFixed(0),
                               item?.postID,
                               index,
                               item?.user_id,
@@ -569,9 +575,9 @@ const onCallSavePost = postId => {
                       <Text style={Styles.sliderValueText}>
                         {item?.postInfo != 'undefined' &&
                         item?.postInfo != null &&
-                        item.postInfo[0]?.percentage_like != null
-                          ? `${parseInt(item.postInfo[0]?.percentage_like)}%`
-                          : `${sliderValue.toFixed(0)}%`}
+                        item?.postInfo[0]?.percentage_like != null
+                          ? `${parseInt(item?.postInfo[0]?.percentage_like)}%`
+                          : `${sliderValue?.toFixed(0)}%`}
                       </Text>
                     </View>
 

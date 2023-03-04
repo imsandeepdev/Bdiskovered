@@ -43,7 +43,7 @@ const BlockUserScreen = props => {
            onPress: () => onCallUnblockUserAPI(userId),
          },
          {
-           text: 'CANCEL',
+           text: 'Cancel',
          },
        ], 
        {
@@ -95,7 +95,7 @@ const BlockUserScreen = props => {
                 <View style={styles.imageView}>
                   <Image
                     source={{
-                      uri: `${Config.API_URL}${item?.avatar.replace(
+                      uri: `${Config.API_URL}${item?.avatar?.replace(
                         'http://localhost:8080/',
                         '',
                       )}`,

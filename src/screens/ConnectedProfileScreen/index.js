@@ -136,7 +136,7 @@ const onCallMyUserId = () => {
               onPress: () => onCallDeleteAccountAPI(),
             },
             {
-              text: 'CANCEL',
+              text: 'Cancel',
               onPress: () => setEditModalPicker(false),
             },
           ],

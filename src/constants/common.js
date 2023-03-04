@@ -142,6 +142,11 @@ export const notification_List = 'notification_List';
 export const notification_List_success = 'notification_List_success';
 export const notification_List_error = 'notification_List_error';
 
+// notificationDelete
+export const notification_Delete = 'notification_Delete';
+export const notification_Delete_success = 'notification_Delete_success';
+export const notification_Delete_error = 'notification_Delete_error';
+
 // boostPost
 export const boost_Post = 'boost_Post';
 export const boost_Post_success = 'boost_Post_success';
@@ -211,3 +216,8 @@ export const inApp_Payment_error = 'inApp_Payment_error';
 export const edit_Post = 'edit_Post';
 export const edit_Post_success = 'edit_Post_success';
 export const edit_Post_error = 'edit_Post_error';
+
+// bottomTab
+export const bottom_tab = 'bottom_tab';
+export const bottom_tab_success = 'bottom_tab_success';
+export const bottom_tab_error = 'bottom_tab_error';

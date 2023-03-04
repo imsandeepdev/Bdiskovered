@@ -14,7 +14,7 @@ import R from '../../res/R';
 import {connect, useDispatch} from 'react-redux';
 import {Config} from '../../config';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import { NotificationListRequest } from '../../actions/notification.action';
+import { NotificationDeleteRequest, NotificationListRequest } from '../../actions/notification.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 import Toast from 'react-native-simple-toast';
@@ -29,13 +29,26 @@ const NotificationScreen = props => {
   const [notiList, setNotiList] = useState([])
   const [fcmToken, setFcmToken] = useState('');
   const [newFcmToken, setNewFcmToken] = useState('');
+  const [myUserId, setMyUserId] = useState('');
+
 
 
   useEffect(() => {
-    onCallNotificationList()
-    onCallFCMToken()
-    onCallFCM()
+
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      screenFocus();
+    });
+    return unsubscribe;
+    
+
   }, [props.navigation]);
+
+  const screenFocus = () => {
+    onCallNotificationList();
+    onCallFCMToken();
+    onCallFCM();
+    setMyUserId(props.userProfile?.Profile?.user_id);
+  }
 
 const onCallFCMToken = async () => {
   setLoading(true);
@@ -72,9 +85,57 @@ const onCallNotificationList = () => {
   }))
 }
 
+const onCallDeleteNoti = (item) => {
+
+  console.log("ITEM",item)
+
+  let data = {
+    notification_id: item._id,
+    notification_type: item.type,
+  };
+  console.log("DATA",data)
+  setLoading(true)
+  dispatch(NotificationDeleteRequest(data,response=>{
+    console.log("NOTIFICATION DELETE",response)
+    if(response.status == 'success')
+    {
+      if (item.type == 'Connect')
+      {
+        onConnectChat(item);
+      }
+      else
+      {
+        onCallVideoList(item);
+      }
+    }
+    setLoading(false)
+  }))
+}
+
+const onCallVideoList = (item) => {
+  props.navigation.navigate('ParticularVideoScreen', {
+    videoPostId: item?.id,
+    from: 'ProfileScreen',
+  });
+}
+
+
+const onConnectChat = (item) => {
+
+    props.navigation.navigate('ChatScreen', {
+      tailentUserId: item?.id,
+      MyUserId: myUserId,
+      userName: item?.username,
+      userItem: item,
+      fireID:
+        item?.id > myUserId
+          ? myUserId + '+' + item?.id
+          : item?.id + '+' + myUserId,
+    })
+}
 
   return (
-    <StoryScreen loading={loading}>
+    <StoryScreen loading={loading || props.loading}>
       <Header
         onPress={() => props.navigation.goBack()}
         leftSource={R.images.chevronBack}
@@ -98,16 +159,21 @@ const onCallNotificationList = () => {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({item, index}) => {
             return (
-              <View
+              <Pressable
                 key={index}
-                style={{
-                  paddingVertical: R.fontSize.Size6,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  borderBottomWidth: 1,
-                  borderColor: R.colors.placeholderTextColor,
-                  backgroundColor: R.colors.white,
-                }}>
+                // disabled={item.type == 'Connect' ? false : true}
+                onPress={() => onCallDeleteNoti(item)}
+                style={({pressed}) => [
+                  {
+                    paddingVertical: R.fontSize.Size6,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    borderBottomWidth: 1,
+                    borderColor: R.colors.placeholderTextColor,
+                    backgroundColor: R.colors.white,
+                    opacity: pressed ? 0.5 : 1,
+                  },
+                ]}>
                 <View
                   style={{
                     height: R.fontSize.Size40,
@@ -184,12 +250,12 @@ const onCallNotificationList = () => {
                     ).format('hh:mm:A')}`}
                   </Text>
                 </View>
-              </View>
+              </Pressable>
             );
           }}
           // renderHiddenItem={({item, index}) => (
           //   <Pressable
-          //     onPress={() => console.log('delete')}
+          //     onPress={() => onCallDeleteNoti(item)}
           //     style={({pressed}) => [
           //       {
           //         width: R.fontSize.Size50,
@@ -253,6 +319,8 @@ const onCallNotificationList = () => {
 };
 
 const mapStatetoProps = (state, props) => ({
+  loading: state.notificationRoot.loading,
+  userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
   userType: state.auth.userType,
 });

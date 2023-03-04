@@ -21,6 +21,7 @@ import connectRequestRoot from '../reducers/connectRequest.reducer';
 import savedPostRoot from '../reducers/savedPost.reducer';
 import inAppPaymentRoot from '../reducers/inAppPayment.reducer';
 import blockRoot from '../reducers/block.reducer';
+import bottomTabRoot from '../reducers/bottomtab.reducer';
 
 const authPersistConfig = {
   storage: AsyncStorage,
@@ -47,6 +48,7 @@ loginSessionRoot,
 connectRequestRoot,
 savedPostRoot,
 inAppPaymentRoot,
-blockRoot
+blockRoot,
+bottomTabRoot
 
 });

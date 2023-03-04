@@ -282,6 +282,8 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'com.google.android.material:material:<version>'
     
+    implementation 'com.yqritc:android-scalablevideoview:1.0.4'
+
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 

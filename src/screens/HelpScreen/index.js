@@ -59,7 +59,7 @@ const HelpScreen = (props) => {
           <Header
             onPress={() => props.navigation.goBack()}
             leftSource={R.images.chevronBack}
-            title={'Help Screen'}
+            title={'Help'}
           />
 
           <View style={{flex: 1}}>

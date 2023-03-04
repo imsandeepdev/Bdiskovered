@@ -57,6 +57,11 @@ const HomeScreen = (props) => {
   const listRef = react.useRef(null);
 
    useScrollToTop(listRef);
+  useScrollToTop(
+    react.useRef({
+      scrollToTop: () => ref.current?.scrollToOffset({offset: -100}),
+    }),
+  );
   let videoRef;
   const dispatch = useDispatch()
   const [currIndex, setCurrIndex] = useState(0)
@@ -99,13 +104,18 @@ const HomeScreen = (props) => {
 
 
 
-eventEmitter.addListener('custom-event', event => {
-      goToFirstIndex();
+const subEmitter =  eventEmitter.addListener('custom-event', event => {
+  console.log("EVENT",event)
+  listRef.current.goToFirstIndex();
+  // goToFirstIndex();
+      
   });
 
-const goToFirstIndex = () =>{
-  listRef.current.goToFirstIndex()
-}
+
+// const goToFirstIndex = () =>{
+//   listRef.current.goToFirstIndex()
+  
+// }
   useEffect(() => {
     const blur = props.navigation.addListener('blur', () => {
       setVideoPlayPause(true);
@@ -251,7 +261,7 @@ const onCallShowPostRefresh = () => {
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId,index1,userId,userType) => {
-    // setLoading(true)
+    setLoading(true)
     let data = {
       id: PostId,
       percentage_like: `${PercentLike}`,
@@ -288,9 +298,9 @@ const onCallShowPostRefresh = () => {
           });
           console.log('saved post return', arr);
           setAllVideoPostList(arr);
-          // setLoading(false);
+          setLoading(false);
         } else {
-          // setLoading(false);
+          setLoading(false);
           Toast.show(response.message, Toast.SHORT);
         }
       }))
@@ -736,7 +746,7 @@ const onCallReportPost = () => {
                             disabled={
                               item?.postInfo != 'undefined' &&
                               item?.postInfo != null &&
-                              item.postInfo[0]?.percentage_like != null
+                              item?.postInfo[0]?.percentage_like != null
                                 ? true
                                 : false
                             }
@@ -772,9 +782,9 @@ const onCallReportPost = () => {
                             maximumTrackTintColor={R.colors.white}
                             onValueChange={val => setSliderValue(val)}
                             onSlidingComplete={value => {
-                              console.log('SLIDE COMPLETE', value.toFixed(0));
+                              console.log('SLIDE COMPLETE', value?.toFixed(0));
                               onCallVideoRatingAPI(
-                                value.toFixed(0),
+                                value?.toFixed(0),
                                 item?.postID,
                                 index,
                                 item?.user_id,

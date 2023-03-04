@@ -100,6 +100,7 @@ const [userLocation, setUserLocation] = useState('')
 const [editModalPicker, setEditModalPicker] = useState(false)
 
 useEffect(()=>{
+  
     console.log("USER TYPE", props.userType)
     const unsubscribe = props.navigation.addListener('focus', () => {
       screenFocus();
@@ -114,53 +115,6 @@ useEffect(()=>{
     onCallProfileAPI();
     // OnCallLoginSession()
   };
-
-  // const OnCallLoginSession = async() => {
-  //    AsyncStorage.getItem('fcmToken', (err, result) => {
-  //      console.log('FCM TOKEN SESSION', result);
-  //      onCallLoginSessionAPI(result)
-  //    });
-  // }
-
-  // const onCallLoginSessionAPI = (fcmToken) => {
-  //   let data = {
-  //     mobile: props.userProfile?.Profile?.mobile,
-  //     device_token: fcmToken,
-  //   };
-  //   console.log('DATA', data);
-  //    dispatch(LoginSessionRequest(data, response =>{
-  //     console.log("Response Login Session",response)
-  //    }))
-  // }
-
-  //  const onCallGoogleAPI = (profileDetails) => {
-  //  setLoading(true)
-  //   console.log("PROFILE DETAILS ON GAPI", profileDetails)
-
-     
-  //    fetch(
-  //      `${Config.Google_URL}${profileDetails?.latitude},${profileDetails?.longitude}&key=${Config.GoogleAPIKEY}`,
-  //    )
-  //      .then(res => res.json())
-  //      .then(response => {
-  //        console.log('ADDRESS RESPONSE BY LAT LONG', response?.results);
-  //        let temparray = [];
-  //        temparray = response?.results;
-  //        let tempLength = temparray.length;
-  //        let arrayAdd = temparray[tempLength - 3]?.formatted_address;
-  //        let arrayAddress = arrayAdd.split(',');
-  //        let arrAddLength = arrayAddress.length;
-  //        console.log('FORMAT ADDRESS LENGTH', arrAddLength);
-
-  //        console.log('FORMAT ADDRESS', arrayAddress[arrAddLength - 1]);
-  //        setPersonalArray([
-  //          profileDetails?.gender,
-  //          `${moment().diff(profileDetails?.birth, 'years')} Year`,
-  //          `${arrayAddress[arrAddLength - 3]}`,
-  //        ]);
-  //        setLoading(false);
-  //      });
-  //  };
 
   const onCallProfileAPI = () => {
     setLoading(true)
@@ -240,48 +194,6 @@ useEffect(()=>{
       }
     }))
   }
-
-    // const onDeleteVideoAlart = (postId) => {
-    //   Alert.alert(
-    //     'Delete Video!',
-    //     'Are you sure want to delete this video?',
-    //     [
-    //       {
-    //         text: 'Proceed',
-    //         onPress: () => onCallDeletevideoAPI(postId),
-    //       },
-    //       {
-    //         text: 'No',
-    //       },
-    //     ],
-    //     {
-    //       cancelable: true,
-    //     },
-    //   );
-    // };
-
-    // const onCallDeletevideoAPI = postId => {
-    //   setLoading(true)
-    //   let data ={
-    //     id: postId
-    //   }
-    //   console.log('PostId',data)
-    //   dispatch(PostDeleteRequest(data, response => {
-    //     console.log('Postdelete Response', response)
-    //     if(response.status)
-    //     {
-    //     onCallProfileAPI();
-    //     // setLoading(false);
-    //     Toast.show(response.message, Toast.SHORT)
-    //     }
-    //     else
-    //     {
-    //     Toast.show(response.message, Toast.SHORT);
-    //     setLoading(false);
-    //     }
-    //   }))
-  
-    // };
 
    
 
@@ -440,7 +352,7 @@ useEffect(()=>{
             onPress: () => onCallDeleteAccountAPI(),
           },
           {
-            text: 'CANCEL',
+            text: 'Cancel',
             onPress: ()=> setEditModalPicker(false)
           },
         ],
@@ -481,21 +393,6 @@ useEffect(()=>{
             onPress={() => props.navigation.toggleDrawer()}
             leftSource={R.images.menuIcon}
             headerBottomWidth={0.5}
-            // rightSource={R.images.chatIcon}
-            // rightSourceOnPress={() => console.log('chat')}
-            // marginRightSource={R.fontSize.Size6}
-            // rightTitle={
-            //   <Text
-            //     style={{
-            //       marginRight: R.fontSize.Size10,
-            //       color: R.colors.primaryTextColor,
-            //       fontFamily: R.fonts.regular,
-            //       fontSize: R.fontSize.Size14,
-            //       fontWeight: '700',
-            //     }}>
-            //     {'Send Message'}
-            //   </Text>
-            // }
             rightSource2={R.images.bellIcon}
             rightSourceOnPress2={() =>
               props.navigation.navigate('NotificationScreen')
@@ -544,11 +441,8 @@ useEffect(()=>{
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}>
-                      {console.log('PROFILE PATH', profilePic.path)}
                       {profilePic.path != null &&
-                      profilePic.path !=
-                        'https://bdiskv2.bdiskovered.com/profile/user.png' 
-                      ? (
+                      profilePic.path != `${Config.API_URL}profile/user.png` ? (
                         <Image
                           source={{
                             uri: profilePic?.path,
@@ -792,7 +686,9 @@ useEffect(()=>{
                           borderColor: R.colors.placeHolderColor,
                           backgroundColor: R.colors.lightWhite,
                         }}>
-                        {profilePic?.path != '' || profilePic?.path != null ? (
+                        {profilePic?.path != '' &&
+                        profilePic?.path !=
+                          `${Config.API_URL}profile/user.png` ? (
                           <Image
                             source={{
                               uri: profilePic?.path,
@@ -819,7 +715,7 @@ useEffect(()=>{
                                 fontSize: R.fontSize.Size20,
                               }}>
                               {(
-                                (profileDetails?.name[0] ?? '#') + ''
+                                (profileDetails.name[0] ?? '#') + ''
                               ).toUpperCase()}
                             </Text>
                           </View>

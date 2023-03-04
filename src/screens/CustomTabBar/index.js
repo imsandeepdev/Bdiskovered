@@ -7,17 +7,29 @@ import { Config } from '../../config';
 const screenHeight = Dimensions.get('window').height;
 import {NativeEventEmitter} from 'react-native';
 const tabBarHeight = screenHeight/10
+import {CommonActions} from '@react-navigation/native';
 
 const eventEmitter = new NativeEventEmitter('');
-import {EventEmitter} from 'events';
+import { BottomTabRequest } from '../../actions/bottomtab.action';
 
 const CustomTabBar = props => {
+  
+  const dispatch = useDispatch()
   const [select, setSelect] = useState('HomeScreen');
 
   const navigateToFirstScreen = async() => {
     props.navigation.navigate('HomeScreen');
+
+    dispatch(BottomTabRequest('HomeScreen'));
     console.log("NAVIGATE",props.navigation)
     eventEmitter.emit('custom-event', {data: 'test'});
+
+    // console.log('SCREEN NAME', props.navigatorScreen);
+// props.navigation.dispatch(
+//   CommonActions.navigate({
+//     name: 'HomeScreen'
+//   }),
+// );
 
     setSelect('HomeScreen');
    
@@ -26,15 +38,21 @@ const CustomTabBar = props => {
   const navigateToSecondScreen = () => {
     props.navigation.navigate('SearchScreen');
     setSelect('SearchScreen');
+    dispatch(BottomTabRequest('SearchScreen'));
+
   };
 
   const navigateToThirdScreen = () => {
     props.navigation.navigate('UploadScreen');
     setSelect('UploadScreen');
+    dispatch(BottomTabRequest('UploadScreen'));
+
   };
 
   const navigateToFourScreen = () => {
     props.navigation.navigate('ProfileScreen');
+    dispatch(BottomTabRequest('ProfileScreen'));
+
     setSelect('ProfileScreen');
   };
 
@@ -77,7 +95,7 @@ const CustomTabBar = props => {
           }}>
           <Image
             source={
-              select === 'HomeScreen'
+              props.navigatorScreen === 'HomeScreen'
                 ? R.images.activeHomeIcon
                 : R.images.inActiveHomeIcon
             }
@@ -100,7 +118,7 @@ const CustomTabBar = props => {
           }}>
           <Image
             source={
-              select === 'UploadScreen'
+              props.navigatorScreen === 'UploadScreen'
                 ? R.images.activeAddIcon
                 : R.images.inActiveAddIcon
             }
@@ -123,7 +141,7 @@ const CustomTabBar = props => {
           }}>
           <Image
             source={
-              select === 'SearchScreen'
+              props.navigatorScreen === 'SearchScreen'
                 ? R.images.activeSearchIcon
                 : R.images.inActiveSearchIcon
             }
@@ -155,7 +173,7 @@ const CustomTabBar = props => {
               alignItems: 'center',
               justifyContent: 'center',
               borderColor:
-                select === 'ProfileScreen'
+                props.navigatorScreen === 'ProfileScreen'
                   ? R.colors.appColor
                   : R.colors.placeholderTextColor,
             }}>
@@ -194,6 +212,7 @@ const CustomTabBar = props => {
 };
 
 const mapStateToProps = (state, props) => ({
+  navigatorScreen: state.bottomTabRoot.navigatorName,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
 });
 

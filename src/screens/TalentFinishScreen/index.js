@@ -24,6 +24,7 @@ import { GetTailentRequest } from '../../actions/getTailent.action';
 import { UserSelectionFinishRequest } from '../../actions/tailentProfileCreate.action';
 import CommonFunctions from '../../utils/CommonFuntions';
 import Toast from 'react-native-simple-toast';
+import { BottomTabRequest } from '../../actions/bottomtab.action';
 
 
 const TalentFinishScreen = props => {
@@ -87,6 +88,7 @@ const TalentFinishScreen = props => {
   };
 
 const onCallFinish = () => {
+  onFixedHomeNavigate();
   if (onCheckCondition()) {
     let data = {
       category: selectedTailent.toString()
@@ -106,6 +108,16 @@ const onCallFinish = () => {
   }
 };
 
+const onCallSkip = () => {
+
+  onFixedHomeNavigate();
+  props.navigation.replace('HomeMenu');
+}
+
+const onFixedHomeNavigate = () => {
+  dispatch(BottomTabRequest('HomeScreen'));
+
+}
 
   return (
     <StoryScreen>
@@ -178,12 +190,13 @@ const onCallFinish = () => {
                       marginHorizontal: R.fontSize.Size8,
                     }}>
                     <Pressable
-                    onPress={()=> props.navigation.replace('HomeMenu')}
-                    style={({pressed})=>[{
-                      opacity: pressed?0.5:1
-                      ,padding:R.fontSize.Size8,
-                    }]}
-                    >
+                      onPress={() =>onCallSkip()}
+                      style={({pressed}) => [
+                        {
+                          opacity: pressed ? 0.5 : 1,
+                          padding: R.fontSize.Size8,
+                        },
+                      ]}>
                       <Text
                         style={{
                           fontFamily: R.fonts.regular,

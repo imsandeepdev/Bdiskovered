@@ -251,11 +251,11 @@ const AppNavigator = props => {
           component={TalentScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
           options={{headerShown: false}}
-        />
+        /> */}
         <Stack.Screen
           name="HomeMenu"
           component={Home}
@@ -276,11 +276,11 @@ const AppNavigator = props => {
           component={UpdateProfileScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="ProfileScreen"
           component={ProfileScreen}
           options={{headerShown: false}}
-        />
+        /> */}
         <Stack.Screen
           name="SubscriptionScreen"
           component={SubscriptionScreen}

@@ -112,7 +112,7 @@ const ConnectionScreen = props => {
                 <View style={styles.IconView}>
                   <Image
                     source={{
-                      uri: `${Config.API_URL}${item?.avatar.replace(
+                      uri: `${Config.API_URL}${item?.avatar?.replace(
                         'http://localhost:8080/',
                         '',
                       )}`,

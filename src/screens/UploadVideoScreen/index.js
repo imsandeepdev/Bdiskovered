@@ -41,6 +41,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserSignOutRequest } from '../../actions/signUp.action';
 import { Config } from '../../config';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
+import { BottomTabRequest } from '../../actions/bottomtab.action';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -541,7 +542,9 @@ const onCallDeviceName = () => {
  const onCallClosedCustomModal = () => {
 
   setCustomModalPicker(false)
-  props.navigation.push("HomeMenu")
+  props.navigation.navigate("HomeScreen")
+  dispatch(BottomTabRequest('HomeScreen'));
+  // props.navigation.navigate('CommunityTab', {screen: 'HomeScreen'});
  }
 
 
@@ -635,8 +638,8 @@ const onCallDeviceName = () => {
                       </Text>
                     </Pressable>
                   </View>
-                  <View style={{marginVertical: R.fontSize.Size4}}>
-                    <Text
+                  <View style={{marginVertical: R.fontSize.Size2}}>
+                    {/* <Text
                       style={{
                         fontFamily: R.fonts.regular,
                         fontSize: R.fontSize.Size10,
@@ -644,7 +647,7 @@ const onCallDeviceName = () => {
                         fontWeight: '300',
                       }}>
                       {videoPath?.uri}
-                    </Text>
+                    </Text> */}
                     {/* <View style={{height: R.fontSize.Size80, borderWidth: 1}}>
                       {videoPlayerSource != '' && (
                         <View

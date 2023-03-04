@@ -208,13 +208,13 @@ const onSaveDeviceToken = async () => {
     console.log('SIGNUP',data)
     dispatch(SignUpRequest(data,dataType,response => {
       console.log('ResponseOnTailentViewer', response)
-       if (response.status == 'success') {
+       if (response?.status == 'success') {
          props.navigation.navigate(props.route.params?.userType == 'Viewer' ? 'TalentFinishScreen' : 'TalentScreen');
-        //  Toast.show(response.message, Toast.SHORT);
+         Toast.show(response.message, Toast.SHORT);
           onSaveDeviceToken();
 
        } else {
-         Toast.show(response.message, Toast.SHORT);
+         Toast.show(response , Toast.SHORT);
        }
     }))
 

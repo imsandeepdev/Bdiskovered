@@ -106,9 +106,7 @@ const ChatScreen = props => {
     // setLoading(true)
     let data = {
       id: props.route.params?.tailentUserId,
-      chat_id: props.route.params?.fireID,
       communication_id: props.route.params?.fireID,
-      mobile_type: 'ios',
       user_type: props.userProfile?.Profile?.role,
     };
     // dispatch(ConnectRequestRequest(data, response => {
@@ -145,7 +143,7 @@ const ChatScreen = props => {
     fetch(`${Config.API_URL}${Config.connectRequestAPI}`, config)
       .then(response => response.json())
       .then(responseJson => {
-        console.log('RESPONSEJSON', responseJson);
+        console.log('RESPONSEJSONAPI FIRSTTIME', responseJson);
           setLoading(false);
         if (responseJson.status == 'success') {
           console.log("SUCCESS",responseJson)
