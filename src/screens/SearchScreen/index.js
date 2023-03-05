@@ -104,12 +104,11 @@ const SearchScreen = props => {
       modalType == 'Age' &&
         (setDropDownTitle(modalType),
         setDropDownList([
-          {firstValue: '16', secondValue: '24'},
-          {firstValue: '25', secondValue: '28'},
-          {firstValue: '29', secondValue: '35'},
-          {firstValue: '36', secondValue: '50'},
-          {firstValue: '51', secondValue: '65'},
-          {firstValue: '65', secondValue: ''},
+          {firstValue: '16', secondValue: '29'},
+          {firstValue: '30', secondValue: '39'},
+          {firstValue: '40', secondValue: '49'},
+          {firstValue: '50', secondValue: '59'},
+          {firstValue: '60', secondValue: ''},
         ]));
     }
     {

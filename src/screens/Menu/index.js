@@ -56,7 +56,7 @@ const Menu = (props) => {
   const onLogout = () => {
     Alert.alert(
       '\n',
-      'Do you really want to sign out?',
+      'Are you sure want to sign out?',
       [
         {
           text: 'Yes',

@@ -7,6 +7,7 @@ import {
   Text,
   Dimensions,
   ScrollView,
+  AppState
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
@@ -58,6 +59,19 @@ const FilterVideoScreen = props => {
   const [reportUserId, setReportUserId] = useState('');
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false);
+
+useEffect(() => {
+  const listener = status => {
+    if (status === 'background' || status === 'inactive') {
+      setVideoPlayPause(true);
+      console.log('STOPVIDEO');
+    }
+  };
+  AppState.addEventListener('change', listener);
+  return () => {
+    AppState.removeEventListener('change', listener);
+  };
+}, []);
 
   useEffect(() => {
     const blur = props.navigation.addListener('blur', () => {
@@ -416,10 +430,14 @@ const onCallSavePost = postId => {
                   style={{
                     flex: 1,
                   }}>
-                  <View
-                    style={{
-                      height: screenHeight - R.fontSize.Size100,
-                    }}>
+                  <Pressable
+                    onPress={() => setVideoPlayPause(!videoPlayPause)}
+                    style={({pressed}) => [
+                      {
+                        opacity: pressed ? 0.8 : 1,
+                        height: screenHeight - R.fontSize.Size100,
+                      }
+                    ]}>
                     <VideoCard
                       fromTop={R.fontSize.Size35}
                       fromLeft={R.fontSize.Size50}
@@ -498,7 +516,7 @@ const onCallSavePost = postId => {
                       //   onCallReportModal(item?.postID, item?.user_id)
                       // }
                     />
-                  </View>
+                  </Pressable>
                   <View style={Styles.sliderView}>
                     <View style={{flex: 1}}>
                       <View>

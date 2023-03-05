@@ -10,7 +10,8 @@ import {
   ScrollView,
   Platform,
   StatusBar,
-  Linking
+  Linking,
+  AppState
 } from 'react-native';
 import {StoryScreen, AppButton,ShadowHeader, VideoCard, ReportModal, ReportDetailModal, AlartModal, CustomTimeRow, EyeViewModal} from '../../components';
 import Toast from 'react-native-simple-toast';
@@ -104,6 +105,21 @@ const HomeScreen = (props) => {
 
 
 
+useEffect(() => {
+    const listener = (status) => {
+      if (status === "background" || status === "inactive") {
+        setVideoPlayPause(true);
+        console.log("STOPVIDEO")
+      }
+    };
+    AppState.addEventListener("change", listener);
+    return () => {
+      AppState.removeEventListener("change", listener);
+    };
+  }, []);
+
+  
+
 // const subEmitter =  eventEmitter.addListener('custom-event', event => {
 //   console.log("EVENT",event)
 //   listRef.current.goToFirstIndex();
@@ -115,10 +131,13 @@ const HomeScreen = (props) => {
   
 // }
 
+
  useEffect(() => {
    const subEmitter = eventEmitter.addListener('custom-event', event => {
      console.log('EVENT', event);
-     listRef.current.goToFirstIndex();
+      setAllVideoPostList([]);
+     onCallShowAllPostPullLoading();
+    //  listRef.current.goToFirstIndex();
    });
    return subEmitter;
  }, [eventEmitter.addListener]);
@@ -202,6 +221,7 @@ const onCallShowPostRefresh = () => {
   let data = {
     mobile_type: 'ios',
   };
+ 
   dispatch(
     ShowAllPostRequest(data, response => {
       console.log('SHOW ALL POST RES', response);
@@ -603,7 +623,7 @@ const onCallReportPost = () => {
 
         <View style={{flex: 1}}>
           <SwiperFlatList
-            ref={listRef}
+            // ref={listRef}
             index={currIndex}
             refreshing={pullLoading}
             onRefresh={onCallShowAllPostPullLoading}

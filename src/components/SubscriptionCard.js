@@ -51,62 +51,73 @@ const SubscriptionCard = (props) => {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              <Text
+              <View
                 style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size28,
-                  color: props.priceTextColor ?? R.colors.appColor,
-                  fontWeight: '700',
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                {props.price}
-              </Text>
-              {props.DotValue && (
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size28,
+                    color: props.priceTextColor ?? R.colors.appColor,
+                    fontWeight: '700',
+                  }}>
+                  {props.price}
+                </Text>
+                {props.DotValue && (
+                  <Text
+                    style={{
+                      fontFamily: R.fonts.regular,
+                      fontSize: R.fontSize.Size20,
+                      color: R.colors.placeholderTextColor,
+                      fontWeight: '700',
+                    }}>
+                    {'.'}
+                    <Text
+                      style={{
+                        color: R.colors.appColor,
+                      }}>
+                      {'.'}
+                    </Text>
+                    <Text>{'.'}</Text>
+                  </Text>
+                )}
+                <Text
+                  style={{
+                    marginHorizontal: R.fontSize.Size5,
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size20,
+                    color: props.slashTextColor ?? R.colors.primaryTextColor,
+                    fontWeight: '700',
+                  }}>
+                  {props.slashText}
+                </Text>
                 <Text
                   style={{
                     fontFamily: R.fonts.regular,
                     fontSize: R.fontSize.Size20,
-                    color: R.colors.placeholderTextColor,
+                    color: props.noTextColor ?? R.colors.primaryTextColor,
                     fontWeight: '700',
                   }}>
-                  {'.'}
-                  <Text
-                    style={{
-                      color: R.colors.appColor,
-                    }}>
-                    {'.'}
-                  </Text>
-                  <Text>{'.'}</Text>
+                  {props.noText}
                 </Text>
-              )}
-              <Text
+              </View>
+              <View
                 style={{
-                  marginHorizontal: R.fontSize.Size5,
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size20,
-                  color: props.slashTextColor ?? R.colors.primaryTextColor,
-                  fontWeight: '700',
-                }}>
-                {props.slashText}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size20,
-                  color: props.noTextColor ?? R.colors.primaryTextColor,
-                  fontWeight: '700',
-                }}>
-                {props.noText}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size14,
-                  color: props.monthTextColor ?? R.colors.primaryTextColor,
-                  fontWeight: '500',
+                  alignItems: 'flex-start',
                   flex: 1,
                 }}>
-                {props.month}
-              </Text>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size14,
+                    color: props.monthTextColor ?? R.colors.primaryTextColor,
+                    fontWeight: '500',
+                  }}>
+                  {props.month}
+                </Text>
+              </View>
             </View>
             <View
               style={{

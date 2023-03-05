@@ -15,7 +15,8 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  Alert
+  Alert,
+  AppState
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
@@ -90,21 +91,19 @@ const ParticularVideoScreen = props => {
   const [selectNegotiable, setSelectNegotiable] = useState(false);
 
 
-    
+   useEffect(() => {
+     const listener = status => {
+       if (status === 'background' || status === 'inactive') {
+       setPlayVideo(true);
+       }
+     };
+     AppState.addEventListener('change', listener);
+     return () => {
+       AppState.removeEventListener('change', listener);
+     };
+   }, []); 
 
  
-
-  useEffect(() => {
-    const blur = props.navigation.addListener('blur', () => {
-      setVideoPlayPause(true);
-    });
-
-    const focus = props.navigation.addListener('focus', () => {
-      setVideoPlayPause(false);
-    });
-
-    return blur, focus;
-  }, [props.navigation]);
 
   useEffect(() => {
     console.log('VIDEO POST ID', props.route.params?.videoPostId);
