@@ -153,6 +153,7 @@ const onConnectChat = (item) => {
           flex: 1,
           paddingHorizontal: R.fontSize.Size20,
         }}>
+
         <SwipeListView
           showsVerticalScrollIndicator={false}
           data={notiList}
@@ -253,6 +254,7 @@ const onConnectChat = (item) => {
               </Pressable>
             );
           }}
+          
           // renderHiddenItem={({item, index}) => (
           //   <Pressable
           //     onPress={() => onCallDeleteNoti(item)}
@@ -291,26 +293,26 @@ const onConnectChat = (item) => {
           // )}
           // leftOpenValue={0}
           // rightOpenValue={-55}
-          ListEmptyComponent={()=>{
-             return (
-               <View
-                 style={{
-                   alignItems: 'center',
-                   justifyContent: 'center',
-                   height: screenHeight / 1.2,
-                   width: '100%',
-                 }}>
-                 <Text
-                   style={{
-                     fontFamily: R.fonts.regular,
-                     fontSize: R.fontSize.Size14,
-                     fontWeight: '700',
-                     color: R.colors.placeHolderColor,
-                   }}>
-                   {`Notifications not found`}
-                 </Text>
-               </View>
-             );
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: screenHeight / 1.2,
+                  width: '100%',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    fontSize: R.fontSize.Size14,
+                    fontWeight: '700',
+                    color: R.colors.placeHolderColor,
+                  }}>
+                  {`Notifications not found`}
+                </Text>
+              </View>
+            );
           }}
         />
       </View>

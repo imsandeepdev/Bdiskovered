@@ -282,22 +282,22 @@ const onCallRemoveSavePost = (postId,ind)=>{
         console.log("BOOST POST RES",response)
         if(response.status == 'success')
         {
-          if(response.message == 'boost success')
+          // setBoostMsg(response.message);
+          // setBoostStatus(false);
+          // setModalPicker(true);
+          if(response.message == 'Boost successfully')
           {
             Toast.show(response.message, Toast.SHORT);
             setBoostMsg(response.message);
             setBoostStatus(true);
-            // setModalPicker(true);
-            // setLoading(false);
           }
-        else
-        {
-            // Toast.show(response.message, Toast.SHORT);
-            setBoostMsg(response.message);
-            setBoostStatus(false);
-            // setLoading(false);
-            setModalPicker(true);
-        }
+          else
+          {
+              setPlayVideo(true);
+              setBoostMsg(response.message);
+              setBoostStatus(false);
+              setModalPicker(true);
+          }
       }
     }))
   };
@@ -440,6 +440,11 @@ const onCallRemoveSavePost = (postId,ind)=>{
     setPostId(postId)
   }
 
+  const onCallOkBoost = () => {
+    setPlayVideo(false)
+    setModalPicker(false);
+  }
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 1}}>
@@ -461,10 +466,14 @@ const onCallRemoveSavePost = (postId,ind)=>{
                       style={{
                         flex: 1,
                       }}>
-                      <View
-                        style={{
-                          height: screenHeight - R.fontSize.Size100,
-                        }}>
+                      <Pressable
+                        onPress={() => setPlayVideo(!playVideo)}
+                        style={({pressed}) => [
+                          {
+                            opacity: pressed ? 0.8 :1,
+                            height: screenHeight - R.fontSize.Size100,
+                          },
+                        ]}>
                         <VideoCard
                           videoUrl={`${Config.API_URL}${item?.post.replace(
                             'http://localhost:8080/',
@@ -505,7 +514,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
                             )
                           }
                         />
-                      </View>
+                      </Pressable>
                       <View
                         style={{
                           flexDirection: 'row',
@@ -737,7 +746,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
         customButton={
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Pressable
-              onPress={() => setModalPicker(false)}
+              onPress={() => onCallOkBoost()}
               style={({pressed}) => [
                 {
                   flex: 1,

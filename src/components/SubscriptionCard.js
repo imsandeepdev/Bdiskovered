@@ -54,7 +54,7 @@ const SubscriptionCard = (props) => {
               <Text
                 style={{
                   fontFamily: R.fonts.regular,
-                  fontSize: R.fontSize.Size32,
+                  fontSize: R.fontSize.Size28,
                   color: props.priceTextColor ?? R.colors.appColor,
                   fontWeight: '700',
                 }}>
@@ -103,7 +103,7 @@ const SubscriptionCard = (props) => {
                   fontSize: R.fontSize.Size14,
                   color: props.monthTextColor ?? R.colors.primaryTextColor,
                   fontWeight: '500',
-                  flex: 1
+                  flex: 1,
                 }}>
                 {props.month}
               </Text>

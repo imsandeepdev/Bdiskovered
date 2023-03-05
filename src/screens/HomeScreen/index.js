@@ -54,14 +54,14 @@ const flatListHeightWithOutNotch = screenHeight - withoutNotchflatHeight;
 
 const HomeScreen = (props) => {
 
-  const listRef = react.useRef(null);
+  const listRef = react.useRef();
 
    useScrollToTop(listRef);
-  useScrollToTop(
-    react.useRef({
-      scrollToTop: () => ref.current?.scrollToOffset({offset: -100}),
-    }),
-  );
+  // useScrollToTop(
+  //   react.useRef({
+  //     scrollToTop: () => ref.current?.scrollToOffset({offset: -100}),
+  //   }),
+  // );
   let videoRef;
   const dispatch = useDispatch()
   const [currIndex, setCurrIndex] = useState(0)
@@ -104,18 +104,27 @@ const HomeScreen = (props) => {
 
 
 
-const subEmitter =  eventEmitter.addListener('custom-event', event => {
-  console.log("EVENT",event)
-  listRef.current.goToFirstIndex();
-  // goToFirstIndex();
-      
-  });
+// const subEmitter =  eventEmitter.addListener('custom-event', event => {
+//   console.log("EVENT",event)
+//   listRef.current.goToFirstIndex();
+//   });
 
 
 // const goToFirstIndex = () =>{
 //   listRef.current.goToFirstIndex()
   
 // }
+
+ useEffect(() => {
+   const subEmitter = eventEmitter.addListener('custom-event', event => {
+     console.log('EVENT', event);
+     listRef.current.goToFirstIndex();
+   });
+   return subEmitter;
+ }, [eventEmitter.addListener]);
+
+
+
   useEffect(() => {
     const blur = props.navigation.addListener('blur', () => {
       setVideoPlayPause(true);

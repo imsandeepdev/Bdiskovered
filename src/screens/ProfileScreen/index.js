@@ -128,6 +128,7 @@ useEffect(()=>{
             `${response.Profile?.address != undefined ? response.Profile?.address : ''}`,
           ]);
         setProfileDetails(response.Profile);
+        setActualName(response.Profile?.name);
         let tempTalentArray = response.Profile?.category;
         let tempJson = JSON.stringify(tempTalentArray)
         console.log('ARRAYNEW', tempJson);
@@ -155,7 +156,7 @@ useEffect(()=>{
         setLoading(false);
       } else if (response.status == 'success' && props.userType == 'Business') {
         console.log('BUSINESS');
-        
+        setActualName(response.Profile?.company_name);     
         setCompanyName(response.Profile?.company_name);
         setCompanyAddress(response.Profile?.company_address);
         setCompanyType(response.Profile?.company_type);
@@ -715,7 +716,7 @@ useEffect(()=>{
                                 fontSize: R.fontSize.Size20,
                               }}>
                               {(
-                                (profileDetails.name[0] ?? '#') + ''
+                                (actualName[0] ?? '#') + ''
                               ).toUpperCase()}
                             </Text>
                           </View>
