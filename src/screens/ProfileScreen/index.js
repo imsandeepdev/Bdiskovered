@@ -14,6 +14,8 @@ import CalendarPicker from 'react-native-calendar-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginSessionRequest } from '../../actions/loginSession.action';
 import { DeactivateAccountRequest } from '../../actions/signUp.action';
+import { TravelModeRequest } from '../../actions/travelMode.action';
+import fontSize from '../../res/fontSize';
 
 let currYear = moment().subtract(16, 'years').calendar();
 let maxDate = moment(currYear).format('YYYY-MM-DD');
@@ -82,6 +84,8 @@ const [profilePic, setProfilePic] = useState([]);
 const [pickerModal, setPickerModal] = useState(false);
 
 const [actualName, setActualName] = useState('');
+const [travelModeStatus, setTravelModeStatus] = useState();
+
 const [userName, setUserName] = useState('');
 const [userDob, setUserDob] = useState('');
 const [userMail, setUserMail] = useState('');
@@ -128,6 +132,10 @@ useEffect(()=>{
             `${response.Profile?.address != undefined ? response.Profile?.address : ''}`,
           ]);
         setProfileDetails(response.Profile);
+          setTravelModeStatus(
+            response.Profile?.user_status == 'available' ? true : false,
+          );
+
         setActualName(response.Profile?.name);
         let tempTalentArray = response.Profile?.category;
         let tempJson = JSON.stringify(tempTalentArray)
@@ -386,6 +394,22 @@ useEffect(()=>{
       props.navigation.navigate('BlockUserScreen');
     }
 
+    const onCallTravelMode = () => {
+      console.log("STATUS",travelModeStatus)
+      let data = {
+        user_status: travelModeStatus ? 'unavailable' : 'available',
+      };
+      setLoading(true)
+      console.log("DATA",data)
+      dispatch(TravelModeRequest(data,response=>{
+        console.log("TRAVEL MODE RESPONSE",response)
+        if(response.status == 'success')
+        {
+          setTravelModeStatus(response.data == 'available' ? true : false);
+          setLoading(false)
+        }
+      }))
+    }
 
     return (
       <StoryScreen loading={loading}>
@@ -677,50 +701,79 @@ useEffect(()=>{
                         justifyContent: 'space-around',
                         alignItems: 'center',
                       }}>
-                      <View
-                        style={{
-                          height: R.fontSize.Size50,
-                          width: R.fontSize.Size50,
-                          borderRadius: R.fontSize.Size25,
-                          overflow: 'hidden',
-                          borderWidth: 1,
-                          borderColor: R.colors.placeHolderColor,
-                          backgroundColor: R.colors.lightWhite,
-                        }}>
-                        {profilePic?.path != '' &&
-                        profilePic?.path !=
-                          `${Config.API_URL}profile/user.png` ? (
-                          <Image
-                            source={{
-                              uri: profilePic?.path,
-                            }}
-                            style={{
-                              height: R.fontSize.Size50,
-                              width: R.fontSize.Size50,
-                            }}
-                            resizeMode={'cover'}
-                          />
-                        ) : (
-                          <View
-                            style={{
-                              height: R.fontSize.Size50,
-                              width: R.fontSize.Size50,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            <Text
+                      <View>
+                        <View
+                          style={{
+                            height: R.fontSize.Size50,
+                            width: R.fontSize.Size50,
+                            borderRadius: R.fontSize.Size25,
+                            overflow: 'hidden',
+                            borderWidth: 1,
+                            borderColor: R.colors.placeHolderColor,
+                            backgroundColor: R.colors.lightWhite,
+                          }}>
+                          {profilePic?.path != '' &&
+                          profilePic?.path !=
+                            `${Config.API_URL}profile/user.png` ? (
+                            <Image
+                              source={{
+                                uri: profilePic?.path,
+                              }}
                               style={{
-                                fontFamily: R.fonts.regular,
-                                fontWeight: '700',
-                                color: R.colors.appColor,
-                                fontSize: R.fontSize.Size20,
+                                height: R.fontSize.Size50,
+                                width: R.fontSize.Size50,
+                              }}
+                              resizeMode={'cover'}
+                            />
+                          ) : (
+                            <View
+                              style={{
+                                height: R.fontSize.Size50,
+                                width: R.fontSize.Size50,
+                                alignItems: 'center',
+                                justifyContent: 'center',
                               }}>
-                              {(
-                                (actualName[0] ?? '#') + ''
-                              ).toUpperCase()}
-                            </Text>
-                          </View>
-                        )}
+                              <Text
+                                style={{
+                                  fontFamily: R.fonts.regular,
+                                  fontWeight: '700',
+                                  color: R.colors.appColor,
+                                  fontSize: R.fontSize.Size20,
+                                }}>
+                                {((actualName[0] ?? '#') + '').toUpperCase()}
+                              </Text>
+                            </View>
+                          )}
+                        </View>
+
+                        <View
+                          style={{
+                            position: 'absolute',
+                            bottom: -3,
+                            right: -R.fontSize.Size5,
+                          }}>
+                          <Pressable
+                            onPress={() => onCallTravelMode()}
+                            style={({pressed}) => [
+                              {
+                                opacity: pressed ? 0.4 : 1,
+                                padding: R.fontSize.Size2,
+                              },
+                            ]}>
+                            <View
+                              style={{
+                                height: R.fontSize.Size18,
+                                width: R.fontSize.Size18,
+                                borderRadius: R.fontSize.Size10,
+                                borderWidth: 2,
+                                backgroundColor: travelModeStatus
+                                  ? R.colors.whatsAppColor
+                                  : R.colors.redColor,
+                                borderColor: R.colors.white,
+                              }}
+                            />
+                          </Pressable>
+                        </View>
                       </View>
                       <Text
                         style={{
@@ -808,6 +861,19 @@ useEffect(()=>{
                         {'Edit Profile'}
                       </Text>
                     </Pressable>
+                    {!travelModeStatus && (
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          color: R.colors.lightBlack,
+                          fontWeight: '500',
+                          fontSize: R.fontSize.Size14,
+                          marginTop: R.fontSize.Size4,
+                          textAlign: 'center',
+                        }}>
+                        {'unavailable'}
+                      </Text>
+                    )}
                   </View>
                   {profileDetails?.bio != '' && (
                     <View
@@ -1249,6 +1315,7 @@ useEffect(()=>{
 }
 
 const mapStatetoProps = (state, props) => ({
+  loading: state.getProfileDetailsRoot.loading || state.travelModeRoot.loading,
   userProfile: state.getProfileDetailsRoot.getProfileInit,
   authToken: state.auth.authToken,
   userType: state.auth.userType,

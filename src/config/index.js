@@ -46,6 +46,7 @@ export const Config = {
   deleteSavedPostAPI: 'post/delete-save-post',
   editPostAPI: 'post/update',
   notificationDeleteAPI: 'profile/notification-delete',
+  travelModeAPI:'profile/travel-mode',
 
   blockPostAPI: 'post/block-post',
   blockUserAPI: 'post/block-user',

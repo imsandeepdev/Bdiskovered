@@ -221,3 +221,8 @@ export const edit_Post_error = 'edit_Post_error';
 export const bottom_tab = 'bottom_tab';
 export const bottom_tab_success = 'bottom_tab_success';
 export const bottom_tab_error = 'bottom_tab_error';
+
+// travelMode
+export const travel_mode = 'travel_mode';
+export const travel_mode_success = 'travel_mode_success';
+export const travel_mode_error = 'travel_mode_error';

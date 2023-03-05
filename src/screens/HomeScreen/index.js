@@ -36,6 +36,7 @@ import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../act
 import {NativeEventEmitter} from 'react-native';
 import AppContent from '../../utils/Content';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
+import { BottomTabRequest } from '../../actions/bottomtab.action';
 const eventEmitter = new NativeEventEmitter('');
 
 const tabBarHeight = screenHeight / 10;
@@ -83,6 +84,7 @@ const HomeScreen = (props) => {
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false)
   const [pullLoading, setPullLoading] = useState(false)
+  const [userProfileId, setUserProfileId] = useState('')
   const [tailentList, setTailentList] = useState([
     {
       id: '1',
@@ -179,6 +181,7 @@ useEffect(() => {
    dispatch(
      GetProfileDetailsRequest(response => {
        console.log('PROFILE DETAIL ON APP NAVIGATOR', response);
+       setUserProfileId(response.Profile?.user_id);
      }),
    );
   }
@@ -191,7 +194,7 @@ useEffect(() => {
     setAllVideoPostList([]);
     onCallDeviceName()
     onCallShowPostRefresh();
-    // onCallProfile();
+    onCallProfile();
   };
 
   const onCallModal = (type,item) => {
@@ -380,15 +383,27 @@ const onCallShowPostRefresh = () => {
 
 
   const onPressOrangeAppIcon = (item) => {
+    console.log('USER PROFILE ID==>', userProfileId);
+    // userProfileId == item.user_id && onCallProfileScreen();
     props.userProfile?.Profile?.subscription != 0
-      ? props.navigation.navigate('ConnectedProfileScreen', {
+      ? 
+      (userProfileId == item.user_id) ?onCallProfileScreen():
+      props.navigation.navigate('ConnectedProfileScreen', {
           profileId: item?.profileID,
           myUserId: props.userProfile?.Profile?.user_id,
           tailentPost: item,
         })
-      : props.navigation.navigate('SubscriptionScreen');
+      : onCallSubscriptionScreen() ;
   }
 
+  const onCallSubscriptionScreen = () => {
+        props.navigation.navigate('SubscriptionScreen')
+  }
+
+  const onCallProfileScreen = () => {
+      dispatch(BottomTabRequest('ProfileScreen'));
+      props.navigation.navigate('ProfileScreen');
+  }
 
   const myCustomShare = async (videoURL) => {
     const shareOptions = {
@@ -662,17 +677,19 @@ const onCallReportPost = () => {
                       ref={ref => {
                         videoRef = ref;
                       }}
-                      onPressUserIcon={() =>
-                        {
-                      props.userProfile?.Profile?.user_id == item.user_id
-                        ? props.navigation.navigate('ConnectedProfileScreen', {
-                            profileId: item?.profileID,
-                            myUserId: props.userProfile?.Profile?.user_id,
-                            tailentPost: item,
-                          })
-                        : onCallModal('videoDetailModal', item);
-                      }
-                      }
+                      userStatusBackgroundColor={item?.user_status == 'available' ? R.colors.whatsAppColor: R.colors.redColor}
+                      onPressUserIcon={() => {
+                        props.userProfile?.Profile?.user_id == item.user_id
+                          ? props.navigation.navigate(
+                              'ConnectedProfileScreen',
+                              {
+                                profileId: item?.profileID,
+                                myUserId: props.userProfile?.Profile?.user_id,
+                                tailentPost: item,
+                              },
+                            )
+                          : onCallModal('videoDetailModal', item);
+                      }}
                       eyeonPress={() => {
                         item?.type == 'post_add' ? console.log('Addon') : null;
                       }}

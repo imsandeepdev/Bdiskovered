@@ -377,7 +377,7 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				53FC089BA01712D4B4917CE5 /* [CP] Embed Pods Frameworks */,
+				10B4B58B1E819B564AD8ECC5 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -400,8 +400,8 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				061F6C2F2969E8F700435F54 /* Embed Frameworks */,
-				6983BD60412B566788C13F72 /* [CP] Embed Pods Frameworks */,
 				89DBB4DCE7C086B1432125E7 /* [CP-User] [RNFB] Core Configuration */,
+				3FFAE6D2DE276487BBF6D55C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -510,38 +510,38 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		53FC089BA01712D4B4917CE5 /* [CP] Embed Pods Frameworks */ = {
+		10B4B58B1E819B564AD8ECC5 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered-BdiskoveredTests/Pods-Bdiskovered-BdiskoveredTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered-BdiskoveredTests/Pods-Bdiskovered-BdiskoveredTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered-BdiskoveredTests/Pods-Bdiskovered-BdiskoveredTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered-BdiskoveredTests/Pods-Bdiskovered-BdiskoveredTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered-BdiskoveredTests/Pods-Bdiskovered-BdiskoveredTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered-BdiskoveredTests/Pods-Bdiskovered-BdiskoveredTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6983BD60412B566788C13F72 /* [CP] Embed Pods Frameworks */ = {
+		3FFAE6D2DE276487BBF6D55C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered/Pods-Bdiskovered-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered/Pods-Bdiskovered-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered/Pods-Bdiskovered-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered/Pods-Bdiskovered-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered/Pods-Bdiskovered-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bdiskovered/Pods-Bdiskovered-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		7F90F478B475715A83DAB927 /* [CP] Check Pods Manifest.lock */ = {

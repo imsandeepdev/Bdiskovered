@@ -46,7 +46,7 @@ const NotificationScreen = props => {
   const screenFocus = () => {
     onCallNotificationList();
     onCallFCMToken();
-    onCallFCM();
+    // onCallFCM();
     setMyUserId(props.userProfile?.Profile?.user_id);
   }
 
@@ -58,13 +58,13 @@ const onCallFCMToken = async () => {
   setLoading(false);
 };
 
-const onCallFCM = async() => {
-  setLoading(true)
-  const fcmToken = await firebase.messaging().getToken();
-  setNewFcmToken(fcmToken)
-  setLoading(false);
+// const onCallFCM = async() => {
+//   setLoading(true)
+//   const fcmToken = await firebase.messaging().getToken();
+//   setNewFcmToken(fcmToken)
+//   setLoading(false);
 
-}
+// }
  
 const onCallNotificationList = () => {
   setLoading(true)
@@ -153,7 +153,7 @@ const onConnectChat = (item) => {
           flex: 1,
           paddingHorizontal: R.fontSize.Size20,
         }}>
-
+          {/* <Text>{`FCMTOKEN==>${fcmToken}`}</Text> */}
         <SwipeListView
           showsVerticalScrollIndicator={false}
           data={notiList}

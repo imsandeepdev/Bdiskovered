@@ -67,28 +67,49 @@ const VideoCard = React.forwardRef((props,ref) => {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <Pressable
-            onPress={props.onPressUserIcon}
-            style={({pressed}) => [
-              {
-                opacity: pressed ? 0.5 : 1,
-                height: R.fontSize.Size35,
-                width: R.fontSize.Size35,
-                overflow: 'hidden',
-                borderRadius: R.fontSize.Size20,
-              },
-            ]}>
-            <Image
-              source={{
-                uri: props.userImage,
-              }}
+          <View>
+            <Pressable
+              onPress={props.onPressUserIcon}
+              style={({pressed}) => [
+                {
+                  opacity: pressed ? 0.5 : 1,
+                  height: R.fontSize.Size35,
+                  width: R.fontSize.Size35,
+                  overflow: 'hidden',
+                  borderRadius: R.fontSize.Size20,
+                },
+              ]}>
+              <Image
+                source={{
+                  uri: props.userImage,
+                }}
+                style={{
+                  height: R.fontSize.Size35,
+                  width: R.fontSize.Size35,
+                }}
+                resizeMode={'cover'}
+              />
+            </Pressable>
+            {
+              props.userStatusBackgroundColor &&
+              <View
               style={{
-                height: R.fontSize.Size35,
-                width: R.fontSize.Size35,
-              }}
-              resizeMode={'cover'}
-            />
-          </Pressable>
+                position: 'absolute',
+                bottom: 2,
+                right: -R.fontSize.Size2,
+              }}>
+              <View
+                style={{
+                  height: R.fontSize.Size12,
+                  width: R.fontSize.Size12,
+                  borderRadius: R.fontSize.Size10,
+                  borderWidth: 1,
+                  backgroundColor: props.userStatusBackgroundColor,
+                  borderColor: R.colors.white,
+                }}
+              />
+            </View>}
+          </View>
           <Pressable
             onPress={props.onPressUserIcon}
             style={({pressed}) => [

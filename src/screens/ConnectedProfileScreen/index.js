@@ -197,14 +197,36 @@ const onCallMyUserId = () => {
             </View>
             <View style={styles.topMainView}>
               <View style={styles.topView}>
-                <View style={styles.topProfileView}>
-                  <Image
-                    source={{
-                      uri: profilePic?.path,
-                    }}
-                    style={styles.topProfileImage}
-                    resizeMode={'cover'}
-                  />
+                <View>
+                  <View style={styles.topProfileView}>
+                    <Image
+                      source={{
+                        uri: profilePic?.path,
+                      }}
+                      style={styles.topProfileImage}
+                      resizeMode={'cover'}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      right: -R.fontSize.Size2,
+                    }}>
+                    <View
+                      style={{
+                        height: R.fontSize.Size18,
+                        width: R.fontSize.Size18,
+                        borderRadius: R.fontSize.Size10,
+                        borderWidth: 2,
+                        backgroundColor:
+                          profileDetails?.user_status == 'available'
+                            ? R.colors.whatsAppColor
+                            : R.colors.redColor,
+                        borderColor: R.colors.white,
+                      }}
+                    />
+                  </View>
                 </View>
                 <Text style={styles.topUserText} numberOfLines={1}>
                   {profileDetails?.username}
@@ -221,45 +243,39 @@ const onCallMyUserId = () => {
               </View>
             </View>
             <View style={{marginTop: R.fontSize.Size10}}>
-              {userProfileId == talentUserId ? (
-                <View
-                  style={{
-                    marginTop: R.fontSize.Size10,
-                  }}>
-                  <Pressable
-                    onPress={() =>
-                      props.navigation.navigate('UpdateProfileScreen')
-                    }
-                    style={({pressed}) => [
-                      styles.editPressButton,
-                      {opacity: pressed ? 0.5 : 1},
-                    ]}>
-                    <View style={styles.editViewButton} />
-                    <Text style={styles.editTextButton}>{'Edit Profile'}</Text>
-                  </Pressable>
+              <Pressable
+                disabled={profileDetails?.user_status != 'available' ? true : false}
+                onPress={() => onCallMyUserId()}
+                style={({pressed}) => [
+                  styles.editPressButton,
+                  {
+                    opacity: pressed ? 0.5 : 1,
+                    backgroundColor: profileDetails?.user_status != 'available' ?R.colors.placeholderTextColor : R.colors.appColor,
+                  },
+                ]}>
+                <View style={{justifyContent: 'center'}}>
+                  <Image
+                    source={R.images.chatIconWhite}
+                    style={styles.dotIconImage}
+                    resizeMode={'contain'}
+                  />
                 </View>
-              ) : (
-                <Pressable
-                  onPress={() => onCallMyUserId()}
-                  style={({pressed}) => [
-                    styles.editPressButton,
-                    {
-                      opacity: pressed ? 0.5 : 1,
-                      backgroundColor: R.colors.appColor,
-                    },
-                  ]}>
-                  <View style={{justifyContent: 'center'}}>
-                    <Image
-                      source={R.images.chatIconWhite}
-                      style={styles.dotIconImage}
-                      resizeMode={'contain'}
-                    />
-                  </View>
-                  <Text
-                    style={[styles.editTextButton, {color: R.colors.white}]}>
-                    {'Send Message'}
-                  </Text>
-                </Pressable>
+                <Text style={[styles.editTextButton, {color: R.colors.white}]}>
+                  {'Send Message'}
+                </Text>
+              </Pressable>
+              {profileDetails?.user_status != 'available' && (
+                <Text
+                  style={{
+                    fontFamily: R.fonts.regular,
+                    color: R.colors.lightBlack,
+                    fontWeight: '500',
+                    fontSize: R.fontSize.Size14,
+                    marginTop: R.fontSize.Size4,
+                    textAlign: 'center',
+                  }}>
+                  {'unavailable'}
+                </Text>
               )}
             </View>
             {profileDetails?.bio != '' && (
@@ -317,7 +333,7 @@ const onCallMyUserId = () => {
             </View>
             <View style={styles.talentVideoView}>
               {tailentPostVideo.map((item, index) => {
-                console.log("VIDEOITEM",item)
+                console.log('VIDEOITEM', item);
                 return (
                   <View key={index}>
                     <Pressable
