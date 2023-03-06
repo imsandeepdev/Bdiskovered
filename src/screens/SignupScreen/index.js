@@ -95,8 +95,9 @@ const SignupScreen = (props) => {
             console.log('DEVICE NAME', deviceName);
         });
         var uniqueId = DeviceInfo.getUniqueId();
-        setDeviceId(uniqueId?._3);
-        console.log('DEVICE ID',uniqueId?._3);
+        console.log("DEVICE ID",uniqueId)
+        setDeviceId(uniqueId);
+        console.log('DEVICE ID THREE',uniqueId?._3);
 
     },[props.navigation])
 
@@ -364,11 +365,45 @@ const isBusinessSignUpDetailsValid = () => {
         'Please Enter Valid Email Id',
       ) &&
       CommonFunctions.isBlank(companyMob.trim(), 'Please Enter Mobile No') &&
-      CommonFunctions.isBlank(companyOwnerName.trim(), 'Please Enter Company Owner Name') &&
+      CommonFunctions.isBlank(
+        companyOwnerName.trim(),
+        'Please Enter Company Owner Name',
+      ) &&
       onCheckDocument() 
-     
     );
 }
+
+
+
+
+
+ const onCheckLicenceRegistrationAPI = () => {
+  
+   let LicenceRegAPI = Config.verifyUsernameAPI;
+   let data = {
+     license_number: companytradeNo,
+     company_registration_id: companyRegId,
+     user_type: 'Business',
+   };
+
+  axios({
+     method: 'POST',
+     url: `${Config.API_URL}${LicenceRegAPI}`,
+     data: data,
+   })
+     .then(res => {
+       if (res.data.status == 'success') 
+       {
+         onCallForBusinessCreateOTP();
+       }
+       else
+       {
+        Toast.show(res.data?.message, Toast.SHORT);
+       }
+     })
+    
+ };
+
 
 
 
@@ -386,8 +421,9 @@ const onCheckDocument = () => {
       if (props.route.params?.from == 'Business')
       {
         if (isBusinessSignUpDetailsValid()) {
-          onCallForBusinessCreateOTP();
-          console.log("FOR BUSINESS")
+          onCheckLicenceRegistrationAPI();
+          
+          console.log('FOR BUSINESS');
         }
       }
       else

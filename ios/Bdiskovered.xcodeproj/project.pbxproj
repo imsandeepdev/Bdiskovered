@@ -738,7 +738,7 @@
 				CODE_SIGN_ENTITLEMENTS = Bdiskovered/Bdiskovered.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = R27938QZDV;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Bdiskovered/Info.plist;
@@ -774,7 +774,7 @@
 				CODE_SIGN_ENTITLEMENTS = Bdiskovered/Bdiskovered.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = R27938QZDV;
 				INFOPLIST_FILE = Bdiskovered/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";

@@ -480,7 +480,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
                           )}`}
                           bottomTitle={item?.title}
                           bottomDiscription={item?.description}
-                          usdPrice={`USD ${item?.amount}`}
+                          usdPrice={(item?.amount == '0') ? null : `USD ${item?.amount}`}
                           onLoad={onLoad}
                           eyeMarginTop={R.fontSize.Size40}
                           eyeonPress={() => {

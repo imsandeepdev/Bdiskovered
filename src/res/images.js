@@ -107,6 +107,9 @@ const images = {
   sentIcon: require('./images/sentIcon.png'),
   greySentIcon: require('./images/greySentIcon.png'),
   lightSentIcon: require('./images/lightSentIcon.png'),
+
+  redCircleIcon: require('./images/redCircle.png'),
+  greenCircleIcon: require('./images/greenCircle.png'),
 };
 
 export {images};

@@ -85,6 +85,8 @@ const [pickerModal, setPickerModal] = useState(false);
 
 const [actualName, setActualName] = useState('');
 const [travelModeStatus, setTravelModeStatus] = useState();
+const [travelModeModal, setTravelModeModal] = useState(false);
+
 
 const [userName, setUserName] = useState('');
 const [userDob, setUserDob] = useState('');
@@ -394,10 +396,10 @@ useEffect(()=>{
       props.navigation.navigate('BlockUserScreen');
     }
 
-    const onCallTravelMode = () => {
+    const onCallTravelMode = (value) => {
       console.log("STATUS",travelModeStatus)
       let data = {
-        user_status: travelModeStatus ? 'unavailable' : 'available',
+        user_status: value,
       };
       setLoading(true)
       console.log("DATA",data)
@@ -406,7 +408,9 @@ useEffect(()=>{
         if(response.status == 'success')
         {
           setTravelModeStatus(response.data == 'available' ? true : false);
+          setTravelModeModal(false)
           setLoading(false)
+
         }
       }))
     }
@@ -418,16 +422,14 @@ useEffect(()=>{
             onPress={() => props.navigation.toggleDrawer()}
             leftSource={R.images.menuIcon}
             headerBottomWidth={0.5}
-            rightSource2={R.images.bellIcon}
-            rightSourceOnPress2={() =>
-              props.navigation.navigate('NotificationScreen')
-            }
+            rightSource2={R.images.greyDotsIcon}
+            rightSourceOnPress2={() => setEditModalPicker(true)}
           />
           <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}>
             <View style={{flex: 1}}>
-              <View style={{alignItems: 'flex-end'}}>
+              {/* <View style={{alignItems: 'flex-end'}}>
                 <Pressable
                   onPress={() => setEditModalPicker(true)}
                   style={({pressed}) => [
@@ -446,7 +448,7 @@ useEffect(()=>{
                     resizeMode={'contain'}
                   />
                 </Pressable>
-              </View>
+              </View> */}
               {props.userType != 'Talent' ? (
                 <View
                   style={{
@@ -753,7 +755,7 @@ useEffect(()=>{
                             right: -R.fontSize.Size5,
                           }}>
                           <Pressable
-                            onPress={() => onCallTravelMode()}
+                            onPress={() => setTravelModeModal(true)}
                             style={({pressed}) => [
                               {
                                 opacity: pressed ? 0.4 : 1,
@@ -861,7 +863,7 @@ useEffect(()=>{
                         {'Edit Profile'}
                       </Text>
                     </Pressable>
-                    {!travelModeStatus && (
+                    {/* {!travelModeStatus && (
                       <Text
                         style={{
                           fontFamily: R.fonts.regular,
@@ -873,7 +875,7 @@ useEffect(()=>{
                         }}>
                         {'unavailable'}
                       </Text>
-                    )}
+                    )} */}
                   </View>
                   {profileDetails?.bio != '' && (
                     <View
@@ -1309,6 +1311,18 @@ useEffect(()=>{
           optionThird={true}
           onPress1={() => onCallBlockUserScreen()}
           onPress2={() => onDeleteAccountAlart()}
+        />
+        <ReportModal
+          visible={travelModeModal}
+          onRequestClose={() => setTravelModeModal(false)}
+          closeModal={() => setTravelModeModal(false)}
+          title1={`Available`}
+          title2={`Unavailable`}
+          icon1={R.images.greenCircleIcon}
+          icon2={R.images.redCircleIcon}
+          optionThird={true}
+          onPress1={() => onCallTravelMode('available')}
+          onPress2={() => onCallTravelMode('unavailable')}
         />
       </StoryScreen>
     );

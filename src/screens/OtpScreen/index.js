@@ -187,7 +187,9 @@ const onSaveDeviceToken = async () => {
           onSaveDeviceToken();
 
         } else {
-          Toast.show(response.message, Toast.SHORT);
+          Toast.show(response?.message, Toast.SHORT);
+          Toast.show(response, Toast.SHORT);
+
         }
       }),
     );

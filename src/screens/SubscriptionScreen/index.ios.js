@@ -810,9 +810,7 @@ const SubscriptionScreen = props => {
                       }
                       marginTop={R.fontSize.Size15}
                       price={`${item?.currency} ${item?.price}`}
-                      month={
-                       `${item?.title}`
-                      }
+                      month={item?.title == '1 Boost' ?`${item?.title}` :`${item?.title}s`}
                       onPressAdd={() => onCheckModal(item)}
                     />
                   );

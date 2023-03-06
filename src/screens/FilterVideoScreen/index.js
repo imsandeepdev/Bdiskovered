@@ -34,6 +34,8 @@ import { BlockPostRequest, BlockUserRequest, ReportPostRequest } from '../../act
 import CommonFunctions from '../../utils/CommonFuntions';
 import AppContent from '../../utils/Content';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
+import { BottomTabRequest } from '../../actions/bottomtab.action';
+import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
@@ -59,6 +61,8 @@ const FilterVideoScreen = props => {
   const [reportUserId, setReportUserId] = useState('');
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false);
+  const [userProfileId, setUserProfileId] = useState('');
+
 
 useEffect(() => {
   const listener = status => {
@@ -89,9 +93,20 @@ useEffect(() => {
     setLoading(true);
     console.log('POST INFO', props.route.params?.videoItems);
     console.log('MY PROFILE DETAILS USER ID', props.userProfile?.Profile?.user_id);
+    onCallProfile();
     onCheckFromScreen()
     setLoading(false);
   }, [props.navigation]);
+
+
+const onCallProfile = () => {
+  dispatch(
+    GetProfileDetailsRequest(response => {
+      console.log('PROFILE DETAIL ON APP NAVIGATOR', response);
+      setUserProfileId(response.Profile?.user_id);
+    }),
+  );
+};
 
   const onCheckFromScreen = () => {
     props.route.params?.fromScreen == 'SavedPostListScreen' ?
@@ -234,14 +249,33 @@ useEffect(() => {
     const onPressOrangeAppIcon = (item) => {
       console.log('PROFILESUB', props.userProfile?.Profile?.subscription);
      
-      props.userProfile?.Profile?.subscription != 0
-        ? props.navigation.navigate('ConnectedProfileScreen', {
-            profileId: item.profileID,
-            myUserId: props.userProfile?.Profile?.user_id,
-            tailentPost: item,
-          })
-        : props.navigation.navigate('SubscriptionScreen');
+      // props.userProfile?.Profile?.subscription != 0
+      //   ? props.navigation.navigate('ConnectedProfileScreen', {
+      //       profileId: item.profileID,
+      //       myUserId: props.userProfile?.Profile?.user_id,
+      //       tailentPost: item,
+      //     })
+      //   : props.navigation.navigate('SubscriptionScreen');
+
+         props.userProfile?.Profile?.subscription != 0
+           ? userProfileId == item.user_id
+             ? onCallProfileScreen()
+             : props.navigation.navigate('ConnectedProfileScreen', {
+                 profileId: item?.profileID,
+                 myUserId: props.userProfile?.Profile?.user_id,
+                 tailentPost: item,
+               })
+           : onCallSubscriptionScreen();
     };
+
+     const onCallSubscriptionScreen = () => {
+       props.navigation.navigate('SubscriptionScreen');
+     };
+
+     const onCallProfileScreen = () => {
+       dispatch(BottomTabRequest('ProfileScreen'));
+       props.navigation.navigate('ProfileScreen');
+     };
 
 
 // const onCallReportModal = (postId, userId) => {
@@ -436,11 +470,16 @@ const onCallSavePost = postId => {
                       {
                         opacity: pressed ? 0.8 : 1,
                         height: screenHeight - R.fontSize.Size100,
-                      }
+                      },
                     ]}>
                     <VideoCard
                       fromTop={R.fontSize.Size35}
                       fromLeft={R.fontSize.Size50}
+                      userStatusBackgroundColor={
+                        item?.user_status == 'available'
+                          ? R.colors.whatsAppColor
+                          : R.colors.redColor
+                      }
                       videoUrl={`${Config.API_URL}${item?.post?.replace(
                         'http://localhost:8080/',
                         '',
@@ -450,15 +489,8 @@ const onCallSavePost = postId => {
                         '',
                       )}`}
                       onPressUserIcon={() => {
-                        props.userProfile?.Profile?.user_id == item.user_id
-                          ? props.navigation.navigate(
-                              'ConnectedProfileScreen',
-                              {
-                                profileId: item?.profileID,
-                                myUserId: props.userProfile?.Profile?.user_id,
-                                tailentPost: item,
-                              },
-                            )
+                        userProfileId == item.user_id
+                          ? onCallProfileScreen()
                           : onCallModal(item);
                       }}
                       // eyeonPress={() => {
@@ -475,7 +507,9 @@ const onCallSavePost = postId => {
                       }
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
-                      usdPrice={`USD ${item?.amount}`}
+                      usdPrice={
+                        item?.amount == '0' ? null : `USD ${item?.amount}`
+                      }
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
                       shareHidden={

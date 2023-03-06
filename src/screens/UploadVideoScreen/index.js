@@ -639,7 +639,7 @@ const onCallDeviceName = () => {
                     </Pressable>
                   </View>
                   <View style={{marginVertical: R.fontSize.Size2}}>
-                    {/* <Text
+                    <Text
                       style={{
                         fontFamily: R.fonts.regular,
                         fontSize: R.fontSize.Size10,
@@ -647,7 +647,7 @@ const onCallDeviceName = () => {
                         fontWeight: '300',
                       }}>
                       {videoPath?.uri}
-                    </Text> */}
+                    </Text>
                     {/* <View style={{height: R.fontSize.Size80, borderWidth: 1}}>
                       {videoPlayerSource != '' && (
                         <View

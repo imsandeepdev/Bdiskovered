@@ -169,12 +169,18 @@ const onCallMyUserId = () => {
         <ShadowHeader
           onPress={() => props.navigation.goBack()}
           leftSource={R.images.chevronBack}
+          rightSourceOnPress2={() => {
+            userProfileId == talentUserId
+              ? setblockModalPicker(true)
+              : setEditModalPicker(true);
+          }}
+          rightSource2={R.images.greyDotsIcon}
         />
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
           showsVerticalScrollIndicator={false}>
           <View style={styles.mainView}>
-            <View style={{alignItems: 'flex-end'}}>
+            {/* <View style={{alignItems: 'flex-end'}}>
               <Pressable
                 onPress={() => {
                   userProfileId == talentUserId
@@ -194,7 +200,22 @@ const onCallMyUserId = () => {
                   resizeMode={'contain'}
                 />
               </Pressable>
-            </View>
+            </View> */}
+            {profileDetails?.user_status != 'available' && (
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.appColor,
+                  fontWeight: '500',
+                  fontSize: R.fontSize.Size14,
+                  marginTop: R.fontSize.Size4,
+                  textAlign: 'center',
+                }}
+                numberOfLines={1}
+                >
+                {`${profileDetails?.username} is currently unavailable`}
+              </Text>
+            )}
             <View style={styles.topMainView}>
               <View style={styles.topView}>
                 <View>
@@ -244,13 +265,14 @@ const onCallMyUserId = () => {
             </View>
             <View style={{marginTop: R.fontSize.Size10}}>
               <Pressable
-                disabled={profileDetails?.user_status != 'available' ? true : false}
+                // disabled={profileDetails?.user_status != 'available' ? true : false}
                 onPress={() => onCallMyUserId()}
                 style={({pressed}) => [
                   styles.editPressButton,
                   {
                     opacity: pressed ? 0.5 : 1,
-                    backgroundColor: profileDetails?.user_status != 'available' ?R.colors.placeholderTextColor : R.colors.appColor,
+                    // backgroundColor: profileDetails?.user_status != 'available' ?R.colors.placeholderTextColor : R.colors.appColor,
+                    backgroundColor: R.colors.appColor,
                   },
                 ]}>
                 <View style={{justifyContent: 'center'}}>
@@ -264,19 +286,6 @@ const onCallMyUserId = () => {
                   {'Send Message'}
                 </Text>
               </Pressable>
-              {profileDetails?.user_status != 'available' && (
-                <Text
-                  style={{
-                    fontFamily: R.fonts.regular,
-                    color: R.colors.lightBlack,
-                    fontWeight: '500',
-                    fontSize: R.fontSize.Size14,
-                    marginTop: R.fontSize.Size4,
-                    textAlign: 'center',
-                  }}>
-                  {'unavailable'}
-                </Text>
-              )}
             </View>
             {profileDetails?.bio != '' && (
               <View style={{marginTop: R.fontSize.Size20}}>

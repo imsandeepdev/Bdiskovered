@@ -194,7 +194,6 @@ useEffect(() => {
     setAllVideoPostList([]);
     onCallDeviceName()
     onCallShowPostRefresh();
-    onCallProfile();
   };
 
   const onCallModal = (type,item) => {
@@ -680,14 +679,7 @@ const onCallReportPost = () => {
                       userStatusBackgroundColor={item?.user_status == 'available' ? R.colors.whatsAppColor: R.colors.redColor}
                       onPressUserIcon={() => {
                         props.userProfile?.Profile?.user_id == item.user_id
-                          ? props.navigation.navigate(
-                              'ConnectedProfileScreen',
-                              {
-                                profileId: item?.profileID,
-                                myUserId: props.userProfile?.Profile?.user_id,
-                                tailentPost: item,
-                              },
-                            )
+                          ? onCallProfileScreen()
                           : onCallModal('videoDetailModal', item);
                       }}
                       eyeonPress={() => {
@@ -713,7 +705,7 @@ const onCallReportPost = () => {
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={
-                        item?.type == 'post_add' ? null : `USD ${item?.amount}`
+                        item?.type == 'post_add' ? null : (item?.amount == '0') ? null : `USD ${item?.amount}`
                       }
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}

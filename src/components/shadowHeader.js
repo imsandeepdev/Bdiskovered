@@ -72,7 +72,7 @@ const ShadowHeader = props => {
             ]}>
             <Image
               source={props.rightSource2}
-              style={{height: R.fontSize.Size18, width: R.fontSize.Size18}}
+              style={{height: R.fontSize.Size20, width: R.fontSize.Size20}}
               resizeMode={'contain'}
             />
           </Pressable>
