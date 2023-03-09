@@ -71,6 +71,8 @@ const images = {
   inActiveAddIcon: require('./images/inActiveAddIcon.png'),
   activeAddIcon: require('./images/activeAddIcon.png'),
   inActiveProfileIcon: require('./images/user_placeholder.png'),
+  spinnerIcon: require('./images/spinner.png'),
+  rebootIcon: require('./images/rebootIcon.png'),
 
   // Payment Result
   paymentSuccessIcon: require('./images/paymentSuccessIcon.png'),

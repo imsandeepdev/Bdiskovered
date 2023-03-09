@@ -75,6 +75,7 @@ const ShadowHeader = props => {
               style={{height: R.fontSize.Size20, width: R.fontSize.Size20}}
               resizeMode={'contain'}
             />
+            {props.rightSourceExtraView}
           </Pressable>
         </View>
       </View>

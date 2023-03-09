@@ -19,7 +19,7 @@ const faqList = [
   },
   {
     id: '2',
-    ques: `How can I signup for BDiskovered, and what are the different types of user accounts?`,
+    ques: `How can I sign up for BDiskovered, and what are the different types of user accounts?`,
     ans: `To sign up for BDiskovered, simply download the app and register your interest as a viewer, talent, or business. As a viewer, you can transform your account to a talent if you want to showcase your work on the platform. The different types of user accounts are:\n
 Viewers: Can browse and discover talented individuals, watch their videos, and follow them.
 Talents: Can upload their work and het get discovered.

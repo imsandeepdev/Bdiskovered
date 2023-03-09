@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {TouchableOpacity,Image,View,Text,Dimensions} from 'react-native';
+import {TouchableOpacity,Image,View,Text,Dimensions, Animated, Easing} from 'react-native';
 import R from '../../res/R';
 import { useDispatch, connect } from 'react-redux';
 import { Config } from '../../config';
@@ -16,20 +16,37 @@ const CustomTabBar = props => {
   
   const dispatch = useDispatch()
   const [select, setSelect] = useState('HomeScreen');
+  const [loading , setLoading] = useState(false)
+  const [spinValue, setSpinValue] = useState(new Animated.Value(0));
+  let rotateValueHolder = new Animated.Value(0);
+
+
+   Animated.timing(rotateValueHolder, {
+     toValue: 1,
+     duration: 3000,
+     easing: Easing.linear,
+     useNativeDriver: false,
+   }).start(()=>{
+     rotateValueHolder.setValue(0);   
+     setLoading(false);
+     dispatch(BottomTabRequest('HomeScreen'));
+   })
+  
+
+ const rotateData = rotateValueHolder.interpolate({
+   inputRange: [0, 1],
+   outputRange: ['0deg', '360deg'],
+ });
+
 
   const navigateToFirstScreen = async() => {
+   setLoading(true)
     props.navigation.navigate('HomeScreen');
-
     dispatch(BottomTabRequest('HomeScreen'));
     console.log("NAVIGATE",props.navigation)
     eventEmitter.emit('custom-event', {data: 'test'});
 
-    // console.log('SCREEN NAME', props.navigatorScreen);
-// props.navigation.dispatch(
-//   CommonActions.navigate({
-//     name: 'HomeScreen'
-//   }),
-// );
+    console.log('SPINE VALUE', spinValue?._value);
 
     setSelect('HomeScreen');
    
@@ -68,8 +85,8 @@ const CustomTabBar = props => {
       }}>
       <View
         style={{
-          borderTopWidth:0.2,
-          borderColor:R.colors.placeholderTextColor,
+          borderTopWidth: 0.2,
+          borderColor: R.colors.placeholderTextColor,
           justifyContent: 'space-around',
           height: tabBarHeight,
           flexDirection: 'row',
@@ -93,18 +110,31 @@ const CustomTabBar = props => {
             alignItems: 'center',
             flexGrow: 1,
           }}>
-          <Image
-            source={
-              props.navigatorScreen === 'HomeScreen'
-                ? R.images.activeHomeIcon
-                : R.images.inActiveHomeIcon
-            }
-            resizeMode={'contain'}
-            style={{
-              height: R.fontSize.Size28,
-              width: R.fontSize.Size28,
-            }}
-          />
+         {
+          loading
+          ? <Animated.Image
+              style={{
+                transform: [{rotate: rotateData}],
+                height: R.fontSize.Size28,
+                width: R.fontSize.Size28,
+              }}
+              source={R.images.rebootIcon}
+            />
+         :
+             <Image
+               source={
+                 props.navigatorScreen === 'HomeScreen'
+                   ? R.images.activeHomeIcon
+                   : R.images.inActiveHomeIcon
+               }
+               resizeMode={'contain'}
+               style={{
+                 height: R.fontSize.Size28,
+                 width: R.fontSize.Size28,
+               }}
+             />
+              }
+          
         </TouchableOpacity>
         <TouchableOpacity
           onPress={navigateToThirdScreen}
@@ -177,14 +207,17 @@ const CustomTabBar = props => {
                   ? R.colors.appColor
                   : R.colors.placeholderTextColor,
             }}>
-          {props.userProfile?.Profile?.avatar !=
+            {props.userProfile?.Profile?.avatar !=
               'http://localhost:8080/profile/user.png' &&
             props.userProfile?.Profile?.avatar != '' ? (
               <Image
                 source={{
                   uri: `${
                     Config.API_URL
-                  }${props.userProfile?.Profile?.avatar.replace('http://localhost:8080/','')}`,
+                  }${props.userProfile?.Profile?.avatar.replace(
+                    'http://localhost:8080/',
+                    '',
+                  )}`,
                 }}
                 resizeMode={'cover'}
                 style={{
@@ -193,17 +226,17 @@ const CustomTabBar = props => {
                   borderRadius: R.fontSize.Size20,
                 }}
               />
-            ) : ( 
-            <Image
-              source={R.images.inActiveProfileIcon}
-              resizeMode={'cover'}
-              style={{
-                height: R.fontSize.Size35,
-                width: R.fontSize.Size35,
-                borderRadius: R.fontSize.Size20,
-              }}
-            />
-           )} 
+            ) : (
+              <Image
+                source={R.images.inActiveProfileIcon}
+                resizeMode={'cover'}
+                style={{
+                  height: R.fontSize.Size35,
+                  width: R.fontSize.Size35,
+                  borderRadius: R.fontSize.Size20,
+                }}
+              />
+            )}
           </View>
         </TouchableOpacity>
       </View>

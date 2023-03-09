@@ -523,7 +523,7 @@ const SubscriptionScreen = props => {
                         <Text
                           style={{
                             fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size35,
+                            fontSize: R.fontSize.Size30,
                             color: R.colors.appColor,
                             fontWeight: '700',
                             textAlign: 'center',
@@ -564,7 +564,7 @@ const SubscriptionScreen = props => {
                           style={{
                             fontFamily: R.fonts.regular,
                             textAlign: 'center',
-                            fontSize: R.fontSize.Size30,
+                            fontSize: R.fontSize.Size28,
                             fontWeight: '700',
                             color: R.colors.appColor,
                           }}>
@@ -592,7 +592,7 @@ const SubscriptionScreen = props => {
                             style={{
                               fontFamily: R.fonts.regular,
                               textAlign: 'center',
-                              fontSize: R.fontSize.Size30,
+                              fontSize: R.fontSize.Size28,
                               fontWeight: '700',
                               color: R.colors.appColor,
                             }}>
@@ -615,7 +615,7 @@ const SubscriptionScreen = props => {
                             <View
                               key={index}
                               style={{
-                                width: screenWidth / 2.6,
+                                width: screenWidth / 2.4,
                                 paddingBottom: R.fontSize.Size2,
                               }}>
                               {item != '' && (
@@ -637,7 +637,7 @@ const SubscriptionScreen = props => {
                                       fontFamily: R.fonts.regular,
                                       fontWeight: '400',
                                       color: R.colors.primaryTextColor,
-                                      fontSize: R.fontSize.Size12,
+                                      fontSize: R.fontSize.Size10,
                                       marginLeft: R.fontSize.Size10,
                                     }}
                                     numberOfLines={3}>
@@ -965,7 +965,7 @@ const SubscriptionScreen = props => {
                                   fontFamily: R.fonts.regular,
                                   fontWeight: '400',
                                   color: R.colors.primaryTextColor,
-                                  fontSize: R.fontSize.Size14,
+                                  fontSize: R.fontSize.Size12,
                                   marginLeft: R.fontSize.Size10,
                                 }}
                                 numberOfLines={2}>

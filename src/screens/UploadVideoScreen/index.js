@@ -555,10 +555,10 @@ const onCallDeviceName = () => {
           onPress={() => props.navigation.toggleDrawer()}
           leftSource={R.images.menuIcon}
           headerBottomWidth={0.5}
-          rightSource2={R.images.bellIcon}
-          rightSourceOnPress2={() =>
-            props.navigation.navigate('NotificationScreen')
-          }
+          // rightSource2={R.images.bellIcon}
+          // rightSourceOnPress2={() =>
+          //   props.navigation.navigate('NotificationScreen')
+          // }
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}

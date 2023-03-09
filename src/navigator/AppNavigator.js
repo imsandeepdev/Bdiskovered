@@ -47,6 +47,8 @@ import SavedPostList from '../screens/SavedPostList';
 import BlockUserScreen from '../screens/BlockUserScreen';
 import HelpScreen from '../screens/HelpScreen';
 import FaqScreen from '../screens/FaqScreen';
+import messaging from '@react-native-firebase/messaging';
+
 
 
 const Stack = createStackNavigator();
@@ -93,25 +95,46 @@ const AppNavigator = props => {
     const initialRouteName = props.authToken  ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
    
-    setLoading(false); 
+    // setLoading(false); 
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      navigate('NotificationScreen');
+    });
+
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          setInitialRoute('NotificationScreen');
+        }
+        setLoading(false);
+      });
 
   },[]);
 
-  const onCallAlart = message => {
-    Alert.alert(
-      'Alert',
-      `${message}`,
-      [
-        {
-          text: 'Proceed',
-          onPress: () => onCallDeviceName()
-        },
-      ],
-      {
-        cancelable: true,
-      },
-    );
-  };
+  // const onCallAlart = message => {
+  //   Alert.alert(
+  //     'Alert',
+  //     `${message}`,
+  //     [
+  //       {
+  //         text: 'Proceed',
+  //         onPress: () => onCallDeviceName()
+  //       },
+  //     ],
+  //     {
+  //       cancelable: true,
+  //     },
+  //   );
+  // };
 
   // const OnCallStartSessionStatus = async()=>{
   //     try {
@@ -184,31 +207,31 @@ const AppNavigator = props => {
     // };
 
 
-     const onCallDeviceName = () => {
-       DeviceInfo.getDeviceName().then(deviceName => {
-         console.log('DEVICE NAME', deviceName);
-         onCallLogout(deviceName);
-       });
-     };
+    //  const onCallDeviceName = () => {
+    //    DeviceInfo.getDeviceName().then(deviceName => {
+    //      console.log('DEVICE NAME', deviceName);
+    //      onCallLogout(deviceName);
+    //    });
+    //  };
 
-     const onCallLogout = async deviceName => {
-      setLoading(true)
-      OnCallEndSessionStatus();
-       const value = await AsyncStorage.getItem('deviceAccess_token');
-       console.log('VALUE', value);
-       let data = {
-         device_name: deviceName,
-         device_token: value,
-       };
-       console.log('LOGDATA', data);
-       dispatch(
-         UserSignOutRequest(data, response => {
-           console.log('LOGOUT ON APP NAVIGATOR', response);
-           setInitialRoute('LoginScreen')
-           setLoading(false)
-         }),
-       );
-     };
+    //  const onCallLogout = async deviceName => {
+    //   setLoading(true)
+    //   OnCallEndSessionStatus();
+    //    const value = await AsyncStorage.getItem('deviceAccess_token');
+    //    console.log('VALUE', value);
+    //    let data = {
+    //      device_name: deviceName,
+    //      device_token: value,
+    //    };
+    //    console.log('LOGDATA', data);
+    //    dispatch(
+    //      UserSignOutRequest(data, response => {
+    //        console.log('LOGOUT ON APP NAVIGATOR', response);
+    //        setInitialRoute('LoginScreen')
+    //        setLoading(false)
+    //      }),
+    //    );
+    //  };
   
     if(loading)
     {

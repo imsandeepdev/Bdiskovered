@@ -109,7 +109,56 @@ const ConnectionScreen = props => {
                     opacity: pressed ? 0.5 : 1,
                   },
                 ]}>
-                <View style={styles.IconView}>
+                <View>
+                  <View style={styles.IconView}>
+                    {item?.avatar != '' &&
+                    item?.avatar != `http://localhost:8080/profile/user.png` ? (
+                      <Image
+                        source={{
+                          uri: `${Config.API_URL}${item?.avatar?.replace(
+                            'http://localhost:8080/',
+                            '',
+                          )}`,
+                        }}
+                        style={styles.iconImage}
+                        resizeMode={'cover'}
+                      />
+                    ) : 
+                        <Text
+                          style={{
+                            fontFamily: R.fonts.regular,
+                            fontWeight: '700',
+                            color: R.colors.primaryTextColor,
+                            fontSize: R.fontSize.Size20,
+                          }}>
+                          {((item?.username[0] ?? '#') + '').toUpperCase()}
+                        </Text>
+                    
+                    }
+                  </View>
+
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      right: 0,
+                    }}>
+                    <View
+                      style={{
+                        height: R.fontSize.Size16,
+                        width: R.fontSize.Size16,
+                        borderRadius: R.fontSize.Size10,
+                        borderWidth: 2,
+                        backgroundColor:
+                          item?.user_status == 'available'
+                            ? R.colors.whatsAppColor
+                            : R.colors.redColor,
+                        borderColor: R.colors.white,
+                      }}
+                    />
+                  </View>
+                </View>
+                {/* <View style={styles.IconView}>
                   <Image
                     source={{
                       uri: `${Config.API_URL}${item?.avatar?.replace(
@@ -120,11 +169,9 @@ const ConnectionScreen = props => {
                     style={styles.iconImage}
                     resizeMode={'cover'}
                   />
-                </View>
+                </View> */}
                 <View style={styles.textView}>
-                  <Text style={styles.userNameText}>
-                    {item?.username}
-                  </Text>
+                  <Text style={styles.userNameText}>{item?.username}</Text>
                 </View>
               </Pressable>
             );

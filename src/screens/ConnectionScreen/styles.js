@@ -20,6 +20,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: R.colors.placeholderTextColor,
     overflow: 'hidden',
+    alignItems:'center',
+    justifyContent:'center'
   },
   iconImage: {
     height: R.fontSize.Size55,

@@ -37,6 +37,7 @@ import {NativeEventEmitter} from 'react-native';
 import AppContent from '../../utils/Content';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
 import { BottomTabRequest } from '../../actions/bottomtab.action';
+import { NotificationListRequest } from '../../actions/notification.action';
 const eventEmitter = new NativeEventEmitter('');
 
 const tabBarHeight = screenHeight / 10;
@@ -104,6 +105,7 @@ const HomeScreen = (props) => {
     },
   ]);
   const [allVideoPostList, setAllVideoPostList] = useState([])
+  const [notiList, setNotiList] = useState()
 
 
 
@@ -182,6 +184,7 @@ useEffect(() => {
      GetProfileDetailsRequest(response => {
        console.log('PROFILE DETAIL ON APP NAVIGATOR', response);
        setUserProfileId(response.Profile?.user_id);
+       setNotiList(response?.unreadNotification);
      }),
    );
   }
@@ -192,9 +195,12 @@ useEffect(() => {
     StatusBar.setBarStyle('dark-content', true);
     console.log("SCREEN HEIGHT", screenHeight)
     setAllVideoPostList([]);
-    onCallDeviceName()
+    onCallDeviceName();
     onCallShowPostRefresh();
   };
+
+
+
 
   const onCallModal = (type,item) => {
     setModalPicker(true);
@@ -261,6 +267,7 @@ const onCallShowPostRefresh = () => {
   }
 
     const onCallShowAllPostPullLoading = () => {
+      // setLoading(true)
       setPullLoading(true)
       let data = {
         mobile_type: 'ios',
@@ -271,13 +278,25 @@ const onCallShowPostRefresh = () => {
           if (response.status == 'success') {
             setAllVideoPostList(response?.Post);
             setPullLoading(false)
+            // setLoading(false);
+            // dispatch(BottomTabRequest('HomeScreen'));
+
+
           } else if (response.status == 'tokenError') {
             setPullLoading(false);
+            // setLoading(false);
+            // dispatch(BottomTabRequest('HomeScreen'));
+
+
             props.navigation.replace('LoginScreen');
           }
           else
           {
           setPullLoading(false);
+            // setLoading(false);
+            // dispatch(BottomTabRequest('HomeScreen'));
+
+
           }
         }),
       );
@@ -633,6 +652,25 @@ const onCallReportPost = () => {
           rightSourceOnPress2={() =>
             props.navigation.navigate('NotificationScreen')
           }
+          rightSourceExtraView={
+            notiList > 0 &&
+            <View
+            style={{
+              position:'absolute',
+              top:0,
+              right:0,
+            }}
+            >
+              <Image
+              source={R.images.redCircleIcon}
+              resizeMode={'contain'}
+              style={{
+                height:R.fontSize.Size8,
+                width:R.fontSize.Size8
+              }}
+              />
+            </View>
+          }
         />
 
         <View style={{flex: 1}}>
@@ -676,7 +714,11 @@ const onCallReportPost = () => {
                       ref={ref => {
                         videoRef = ref;
                       }}
-                      userStatusBackgroundColor={item?.user_status == 'available' ? R.colors.whatsAppColor: R.colors.redColor}
+                      userStatusBackgroundColor={
+                        item?.user_status == 'available'
+                          ? R.colors.whatsAppColor
+                          : R.colors.redColor
+                      }
                       onPressUserIcon={() => {
                         props.userProfile?.Profile?.user_id == item.user_id
                           ? onCallProfileScreen()
@@ -705,7 +747,11 @@ const onCallReportPost = () => {
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={
-                        item?.type == 'post_add' ? null : (item?.amount == '0') ? null : `USD ${item?.amount}`
+                        item?.type == 'post_add'
+                          ? null
+                          : item?.amount == '0'
+                          ? null
+                          : `USD ${item?.amount}`
                       }
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
@@ -1039,7 +1085,7 @@ const onCallReportPost = () => {
                       onPress={() => OnCallSelectReport(index, item)}
                       style={({pressed}) => [
                         Styles.reportContentView,
-                        {opacity: pressed ? 0.5 : 1}
+                        {opacity: pressed ? 0.5 : 1},
                       ]}>
                       <Image
                         source={
@@ -1053,8 +1099,7 @@ const onCallReportPost = () => {
                       <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
                         <Text
                           style={Styles.reportContentTitle}
-                          numberOfLines={2}
-                        >
+                          numberOfLines={2}>
                           {item.title}
                         </Text>
                       </View>

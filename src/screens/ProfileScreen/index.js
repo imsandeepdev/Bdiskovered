@@ -955,7 +955,7 @@ useEffect(()=>{
                             alignItems: 'center',
                             marginRight: R.fontSize.Size14,
                             justifyContent: 'center',
-                            paddingHorizontal: R.fontSize.Size20,
+                            paddingHorizontal: R.fontSize.Size6,
                             paddingVertical: R.fontSize.Size6,
                             backgroundColor: R.colors.appColor,
                             borderRadius: R.fontSize.Size8,
