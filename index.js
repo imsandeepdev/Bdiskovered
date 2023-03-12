@@ -10,6 +10,13 @@ import {name as appName} from './app.json';
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 });
+
+messaging().onNotificationOpenedApp(async remoteMessage => {
+  console.log(
+    'Notification caused app to open from background state:',remoteMessage.notification
+  );
+});
+
 // const requestUserPermission = async () => {
 //   const authorizationStatus = await messaging().requestPermission();
 

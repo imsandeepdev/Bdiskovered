@@ -21,6 +21,7 @@ import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebase } from '@react-native-firebase/messaging';
 import moment from 'moment/moment';
+import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 
 
 const NotificationScreen = props => {
@@ -34,7 +35,7 @@ const NotificationScreen = props => {
 
 
   useEffect(() => {
-
+    console.log('Userid', props.userProfile?.Profile?.user_id);
     const unsubscribe = props.navigation.addListener('focus', () => {
       screenFocus();
     });
@@ -46,9 +47,20 @@ const NotificationScreen = props => {
   const screenFocus = () => {
     onCallNotificationList();
     onCallFCMToken();
+    onCallProfile();
     // onCallFCM();
-    setMyUserId(props.userProfile?.Profile?.user_id);
+    // setMyUserId(props.userProfile?.Profile?.user_id);
   }
+
+const onCallProfile = () => {
+  dispatch(
+    GetProfileDetailsRequest(response => {
+      console.log('PROFILE DETAIL ', response);
+      setMyUserId(response.Profile?.user_id);
+    }),
+  );
+};
+
 
 const onCallFCMToken = async () => {
   setLoading(true);
@@ -127,11 +139,8 @@ const onConnectChat = (item) => {
       MyUserId: myUserId,
       userName: item?.username,
       userItem: item,
-      fireID:
-        item?.id > myUserId
-          ? myUserId + '+' + item?.id
-          : item?.id + '+' + myUserId,
-    })
+      fireID: item?.communication_id,
+    });
 }
 
   return (

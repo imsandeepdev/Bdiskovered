@@ -93,10 +93,7 @@ const ConnectionScreen = props => {
                     MyUserId: myUserId,
                     userName: item?.username,
                     userItem: item,
-                    fireID:
-                      item?.user_id > myUserId
-                        ? myUserId + '+' + item?.user_id
-                        : item?.user_id + '+' + myUserId,
+                    fireID: item?.communication_id,
                   })
                 }
                 style={({pressed}) => [
@@ -123,18 +120,17 @@ const ConnectionScreen = props => {
                         style={styles.iconImage}
                         resizeMode={'cover'}
                       />
-                    ) : 
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontWeight: '700',
-                            color: R.colors.primaryTextColor,
-                            fontSize: R.fontSize.Size20,
-                          }}>
-                          {((item?.username[0] ?? '#') + '').toUpperCase()}
-                        </Text>
-                    
-                    }
+                    ) : (
+                      <Text
+                        style={{
+                          fontFamily: R.fonts.regular,
+                          fontWeight: '700',
+                          color: R.colors.primaryTextColor,
+                          fontSize: R.fontSize.Size20,
+                        }}>
+                        {((item?.username[0] ?? '#') + '').toUpperCase()}
+                      </Text>
+                    )}
                   </View>
 
                   <View

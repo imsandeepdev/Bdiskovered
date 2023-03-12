@@ -13,7 +13,8 @@ import {
   KeyboardAvoidingView,TouchableWithoutFeedback,
   Platform,
   Keyboard,
-  Alert
+  Alert,
+  AppState
 } from 'react-native';
 import {
   CustomCardView,
@@ -26,6 +27,8 @@ import {
   CustomLineTextInput,
   AlartModal,
   VideoCompressModal,
+  VideoCard,
+  PlayVideoCard,
 } from '../../components';
 import { connect, useDispatch} from 'react-redux';
 import R from '../../res/R';
@@ -42,6 +45,7 @@ import { UserSignOutRequest } from '../../actions/signUp.action';
 import { Config } from '../../config';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
 import { BottomTabRequest } from '../../actions/bottomtab.action';
+import Video from 'react-native-video';
 
 
 const screenHeight = Dimensions.get('screen').height;
@@ -85,6 +89,8 @@ let videoRef1;
   const [videoPrice, setVideoPrice] = useState('');
   const [videoTypes, setVideoTypes] = useState([])
   const [videoPath, setVideoPath] = useState('')
+  const [playVideoPath, setPlayVideoPath] = useState('');
+
   const [selectNegotiable, setSelectNegotiable] = useState(false)
   const [myLat, setMyLat] = useState('')
   const [myLong, setMyLong] = useState('');
@@ -106,27 +112,37 @@ const [videoUrl, setVideoUrl] = useState('');
 const [videoLoader, setVideoLoader] = useState(false)
 const [videoPlayerSource, setVideoPlayerSource] = useState('');
 const [videoRefStatus, setVideoRefStatus] = useState(true)
+const [videoPlayPause, setVideoPlayPause] = useState(false);
 
 
+ useEffect(() => {
+   const listener = status => {
+     if (status === 'background' || status === 'inactive') {
+       setVideoPlayPause(false);
+     }
+   };
+   AppState.addEventListener('change', listener);
+   return () => {
+     AppState.removeEventListener('change', listener);
+   };
+ }, []); 
 
 useEffect(()=>{
+  const blur = props.navigation.addListener('blur', () => {
+    setVideoPlayPause(false);
+  });
   
  const unsubscribe = props.navigation.addListener('focus', () => {
    screenFocus();
  });
- return unsubscribe;
+ return unsubscribe, blur;
 
 },[props.navigation])
 
 const screenFocus = () => {
+setPlayVideoPath('');
 onCheckUserType();
-// let arr = videoTypeList.map((item, index) => {
-//   item.selected = false;
-//   return {...item};
-// });
 onCallProfileAPI();
-// console.log('VideoListArray', arr);
-// setVideoTypeList(arr);
 onCallLatitudeLongitude();
 }
 
@@ -371,7 +387,7 @@ const TrimVideo = () => {
     startTime: tempStartTime,
     endTime: tempEndVideoTime,
     quality: VideoPlayer.Constants.quality.QUALITY_1280x720, // iOS only
-    saveToCameraRoll: true, // default is false // iOS only
+    saveToCameraRoll: false, // default is false // iOS only
     saveWithCurrentDate: true, // default is false // iOS only
   };
   console.log(`VideoTrimDetails`, options);
@@ -382,6 +398,7 @@ const TrimVideo = () => {
     .then(newSource => {
       console.log('TrimVideoSource', newSource);
       setVideoUrl(newSource);
+      setPlayVideoPath(newSource)
       setVideoPath({
         uri: Platform.OS === 'android' ? newSource : newSource?.replace('file://', ''),
         type: 'mp4',
@@ -547,6 +564,11 @@ const onCallDeviceName = () => {
   // props.navigation.navigate('CommunityTab', {screen: 'HomeScreen'});
  }
 
+ const onCallAddVideo = () =>{
+  setPickerModal(true);
+  setVideoPlayPause(false)
+ }
+
 
   return (
     <StoryScreen loading={loading}>
@@ -605,7 +627,7 @@ const onCallDeviceName = () => {
                   </View>
                   <View style={{marginTop: R.fontSize.Size40}}>
                     <Pressable
-                      onPress={() => setPickerModal(true)}
+                      onPress={() => onCallAddVideo()}
                       style={({pressed}) => [
                         {
                           height: R.fontSize.Size35,
@@ -638,8 +660,8 @@ const onCallDeviceName = () => {
                       </Text>
                     </Pressable>
                   </View>
-                  <View style={{marginVertical: R.fontSize.Size2}}>
-                    <Text
+                  <View style={{marginVertical: R.fontSize.Size6,alignItems:'center'}}>
+                    {/* <Text
                       style={{
                         fontFamily: R.fonts.regular,
                         fontSize: R.fontSize.Size10,
@@ -647,51 +669,28 @@ const onCallDeviceName = () => {
                         fontWeight: '300',
                       }}>
                       {videoPath?.uri}
-                    </Text>
-                    {/* <View style={{height: R.fontSize.Size80, borderWidth: 1}}>
-                      {videoPlayerSource != '' && (
-                        <View
-                          style={{
-                            alignItems: 'center',
-                          }}>
-                          <VideoPlayer
-                            ref={ref => (videoRef.current = ref)}
-                            play={true}
-                            replay={false}
-                            startTime={videoStartTime}
-                            endTime={videoEndTime}
-                            source={videoPlayerSource}
-                            playerWidth={R.fontSize.Size60}
-                            playerHeight={R.fontSize.Size60}
-                            resizeMode={VideoPlayer.Constants.resizeMode.COVER}
-                          />
-                        </View>
-                      )}
+                    </Text> */}
+
+                    {playVideoPath != '' && (
                       <View
                         style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
+                          height: R.fontSize.Size300,
+                          width:R.fontSize.Size260,
+                          borderWidth: 1,
+                          borderColor: R.colors.lightWhite,
+                          borderRadius: 4,
+                          overflow: 'hidden',
                         }}>
-                        <View
-                          style={{
-                            height: R.fontSize.Size70,
-                            backgroundColor: R.colors.white,
-                          }}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size10,
-                              color: R.colors.placeHolderColor,
-                              fontWeight: '300',
-                            }}>
-                            {videoPath?.uri}
-                          </Text>
-                        </View>
+                        <PlayVideoCard
+                          videoUrl={{uri: playVideoPath}}
+                          playIcon={!videoPlayPause ? R.images.playIcon : R.images.pauseIcon}
+                          playPausePress={() =>
+                            setVideoPlayPause(!videoPlayPause)
+                          }
+                          paused={!videoPlayPause ? true : false}
+                        />
                       </View>
-                    </View> */}
+                    )}
                   </View>
                   <View style={{marginTop: R.fontSize.Size20, flex: 1}}>
                     <CustomLineTextInput
@@ -1060,7 +1059,7 @@ const onCallDeviceName = () => {
         // VideoSource={videoSource}
         source={videoSource}
         startTime={videoStartTime}
-        endTime={videoEndTime }
+        endTime={videoEndTime}
         sourceUrl={videoUrl}
         paused={!play}
         onLoadEnd={onLoadEnd}

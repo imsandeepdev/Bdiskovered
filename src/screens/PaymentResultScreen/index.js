@@ -6,14 +6,23 @@ import {
   Image,
   SafeAreaView
 } from 'react-native';
+import { BottomTabRequest } from '../../actions/bottomtab.action';
 import { StoryScreen, AppButton} from '../../components';
 import R from '../../res/R';
+import {useDispatch} from 'react-redux'
 
 const PaymentResultScreen = props => {
 
+  const dispatch  = useDispatch()
   useEffect(()=>{
     console.log('PAYMENT STATUS', props.route.params?.paymentStatus);
   },[props.navigation])
+
+const onCallProceed = () => {
+    props.navigation.navigate('HomeMenu');
+    dispatch(BottomTabRequest('HomeScreen'));
+}
+
 
   return (
     <StoryScreen>
@@ -46,7 +55,7 @@ const PaymentResultScreen = props => {
         </View>
         <View style={{marginHorizontal: R.fontSize.Size20, marginVertical:R.fontSize.Size25}}>
           <AppButton
-            onPress={() => props.navigation.navigate('HomeMenu')}
+            onPress={() => onCallProceed()}
             title={'Proceed'}
           />
         </View>

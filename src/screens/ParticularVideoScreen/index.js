@@ -16,7 +16,9 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
   Alert,
-  AppState
+  AppState,
+  Animated,
+  Easing
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
@@ -47,7 +49,8 @@ import CommonFunctions from '../../utils/CommonFuntions';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
-
+import Lottie from 'lottie-react-native';
+const rocketPath = require('../../res/rocket.json');
 
 
 const ParticularVideoScreen = props => {
@@ -68,6 +71,11 @@ const ParticularVideoScreen = props => {
   const [videoDesc, setVideoDesc] = useState('');
   const [videoPrice, setVideoPrice] = useState('');
   const [videoTypes, setVideoTypes] = useState([]);
+  const [videoLat, setVideoLat] = useState('')
+  const [videoLong, setVideoLong] = useState('');
+  const [videoAdd, setVideoAdd] = useState('');
+
+
   
   const [postId, setPostId] = useState('')
   const [videoTypeList, setVideoTypeList] = useState([
@@ -90,6 +98,17 @@ const ParticularVideoScreen = props => {
   ]);
   const [selectNegotiable, setSelectNegotiable] = useState(false);
 
+const animationProgress = React.useRef(new Animated.Value(0));
+
+const onCallBoostAnimation = () => {
+  Animated.timing(animationProgress.current, {
+    toValue: 1,
+    duration: 5000,
+    easing: Easing.linear,
+    useNativeDriver: true,
+  }).start()
+
+}
 
    useEffect(() => {
      const listener = status => {
@@ -124,7 +143,9 @@ const ParticularVideoScreen = props => {
         setVideoTitle(response.Post[0]?.title);
         setVideoDesc(response.Post[0]?.description);
         setVideoPrice(response.Post[0]?.amount);
-
+        setVideoLat(response.Post[0]?.latitude);
+        setVideoLong(response.Post[0]?.longitude);
+        setVideoAdd(response.Post[0]?.address);
         let resCategory = response.Post[0]?.category;
         console.log('ResCategory', resCategory);
 
@@ -273,7 +294,6 @@ const onCallRemoveSavePost = (postId,ind)=>{
     }))
 }
  const onPressBoostAPI = (postId) => {
-    // setLoading(true)
     let data = {
         post_id: postId
     }
@@ -281,14 +301,13 @@ const onCallRemoveSavePost = (postId,ind)=>{
         console.log("BOOST POST RES",response)
         if(response.status == 'success')
         {
-          // setBoostMsg(response.message);
-          // setBoostStatus(false);
-          // setModalPicker(true);
           if(response.message == 'Boost successfully')
           {
-            Toast.show(response.message, Toast.SHORT);
-            setBoostMsg(response.message);
             setBoostStatus(true);
+            // Toast.show(response.message, Toast.SHORT);
+            setBoostMsg(response.message);
+            onCallBoostAnimation();
+
           }
           else
           {
@@ -407,13 +426,16 @@ const onCallRemoveSavePost = (postId,ind)=>{
 
   const onCallPostUpdateAPI = () => {
     let data = {
-      post_id:postId,
-      title:videoTitle,
-      caption:videoDesc,
-      amount:videoPrice,
-      category:videoTypes.toString(),
-      negotiable:selectNegotiable
-    }
+      post_id: postId,
+      title: videoTitle,
+      caption: videoDesc,
+      amount: videoPrice,
+      category: videoTypes.toString(),
+      negotiable: selectNegotiable,
+      latitude: videoLat,
+      longitude: videoLong,
+      address: videoAdd
+    };
     setLoading(true)
     console.log("EDIT VIDEO DATA",data)
     dispatch(EditPostRequest(data, response=>{
@@ -469,7 +491,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
                         onPress={() => setPlayVideo(!playVideo)}
                         style={({pressed}) => [
                           {
-                            opacity: pressed ? 0.8 :1,
+                            opacity: pressed ? 0.8 : 1,
                             height: screenHeight - R.fontSize.Size100,
                           },
                         ]}>
@@ -480,7 +502,9 @@ const onCallRemoveSavePost = (postId,ind)=>{
                           )}`}
                           bottomTitle={item?.title}
                           bottomDiscription={item?.description}
-                          usdPrice={(item?.amount == '0') ? null : `USD ${item?.amount}`}
+                          usdPrice={
+                            item?.amount == '0' ? null : `USD ${item?.amount}`
+                          }
                           onLoad={onLoad}
                           eyeMarginTop={R.fontSize.Size40}
                           eyeonPress={() => {
@@ -664,7 +688,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
                         {props.route.params?.from == 'ProfileScreen' && (
                           <Pressable
                             disabled={
-                              props.route.params?.from == 'ProfileScreen'
+                              (props.route.params?.from == 'ProfileScreen' && !boostStatus)
                                 ? false
                                 : true
                             }
@@ -704,6 +728,24 @@ const onCallRemoveSavePost = (postId,ind)=>{
                 }}
               />
             </View>
+
+           {
+           boostStatus &&
+           <View
+              style={{
+                position: 'absolute',
+                bottom: R.fontSize.Size100,
+                left:0,
+                height:R.fontSize.Size280,
+                width:screenWidth,
+                alignItems:'center',
+                justifyContent:'center'
+              }}>
+              <Lottie
+                source={rocketPath}
+                progress={animationProgress.current}
+              />
+            </View>}
             <View
               style={{
                 position: 'absolute',

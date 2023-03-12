@@ -27,10 +27,18 @@ const CustomTabBar = props => {
      easing: Easing.linear,
      useNativeDriver: false,
    }).start(()=>{
-     rotateValueHolder.setValue(0);   
+     rotateValueHolder.setValue(0);
+     console.log("animated")   
      setLoading(false);
-     dispatch(BottomTabRequest('HomeScreen'));
    })
+
+
+
+  const onCallStopAnimated = () =>{
+    rotateValueHolder.stopAnimation(({ value }) =>
+      console.log("Final Value: " + value)
+    )
+  } 
   
 
  const rotateData = rotateValueHolder.interpolate({
@@ -56,6 +64,7 @@ const CustomTabBar = props => {
     props.navigation.navigate('SearchScreen');
     setSelect('SearchScreen');
     dispatch(BottomTabRequest('SearchScreen'));
+    onCallStopAnimated();
 
   };
 
@@ -63,12 +72,15 @@ const CustomTabBar = props => {
     props.navigation.navigate('UploadScreen');
     setSelect('UploadScreen');
     dispatch(BottomTabRequest('UploadScreen'));
+    onCallStopAnimated();
+
 
   };
 
   const navigateToFourScreen = () => {
     props.navigation.navigate('ProfileScreen');
     dispatch(BottomTabRequest('ProfileScreen'));
+    onCallStopAnimated();
 
     setSelect('ProfileScreen');
   };

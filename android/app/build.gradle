@@ -281,6 +281,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(':lottie-react-native')
     implementation 'com.google.android.material:material:<version>'
     
     implementation 'com.yqritc:android-scalablevideoview:1.0.4'

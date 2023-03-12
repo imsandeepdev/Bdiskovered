@@ -20,6 +20,7 @@ import VideoCompressModal from './VideoCompressModal';
 import CustomTimeRow from './CustomTimeRow';
 import CustomOpenForRow from './CustomOpenForRow';
 import EyeViewModal from './EyeViewModal';
+import PlayVideoCard from './PlayVideoCard';
 
 export{
     StoryScreen,
@@ -43,5 +44,6 @@ export{
     VideoCompressModal,
     CustomTimeRow,
     CustomOpenForRow,
-    EyeViewModal
+    EyeViewModal,
+    PlayVideoCard
 }

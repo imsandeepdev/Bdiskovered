@@ -267,8 +267,8 @@ const onCallShowPostRefresh = () => {
   }
 
     const onCallShowAllPostPullLoading = () => {
-      // setLoading(true)
-      setPullLoading(true)
+      setLoading(true)
+      // setPullLoading(true)
       let data = {
         mobile_type: 'ios',
       };
@@ -276,15 +276,15 @@ const onCallShowPostRefresh = () => {
         ShowAllPostRequest(data, response => {
           console.log('SHOW ALL POST RES', response);
           if (response.status == 'success') {
-            setAllVideoPostList(response?.Post);
-            setPullLoading(false)
-            // setLoading(false);
+            setAllVideoPostList([...response?.Post]);
+            // setPullLoading(false)
+            setLoading(false);
             // dispatch(BottomTabRequest('HomeScreen'));
 
 
           } else if (response.status == 'tokenError') {
-            setPullLoading(false);
-            // setLoading(false);
+            // setPullLoading(false);
+            setLoading(false);
             // dispatch(BottomTabRequest('HomeScreen'));
 
 
@@ -292,11 +292,11 @@ const onCallShowPostRefresh = () => {
           }
           else
           {
-          setPullLoading(false);
-            // setLoading(false);
+          // setPullLoading(false);
+            setLoading(false);
             // dispatch(BottomTabRequest('HomeScreen'));
 
-
+              
           }
         }),
       );
@@ -307,7 +307,7 @@ const onCallShowPostRefresh = () => {
     setVideoPlayPause(false);
     setCurrIndex(index)
     setSliderValue(0);
-    console.log("AllPostInfo",allVideoPostList)
+    // console.log("AllPostInfo",allVideoPostList)
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId,index1,userId,userType) => {
@@ -633,7 +633,7 @@ const onCallReportPost = () => {
   // };
   
   const updateIndex = ({ viewableItems }) => {
-  console.log("index",viewableItems[0]?.index)
+  console.log("index",viewableItems)
   setCurrIndex(viewableItems[0]?.index);
   }
   
@@ -676,9 +676,9 @@ const onCallReportPost = () => {
         <View style={{flex: 1}}>
           <SwiperFlatList
             // ref={listRef}
-            index={currIndex}
-            refreshing={pullLoading}
-            onRefresh={onCallShowAllPostPullLoading}
+            // index={currIndex}
+            refreshing={loading}
+            // onRefresh={onCallShowAllPostPullLoading}
             vertical={true}
             style={{
               height: DeviceInfo.hasNotch()
