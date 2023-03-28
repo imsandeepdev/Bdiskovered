@@ -32,6 +32,24 @@ import { BottomTabRequest } from '../../actions/bottomtab.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
 
+const VideoTypeList = [
+  {
+    id: '1',
+    name: 'Music',
+  },
+  {
+    id: '2',
+    name: 'Art',
+  },
+  {
+    id: '3',
+    name: 'Dance',
+  },
+  {
+    id: '4',
+    name: 'Fashion',
+  },
+];
 
 const CustomTitle = (props) => {
   return (
@@ -54,24 +72,7 @@ const SearchScreen = props => {
 
   const dispatch = useDispatch()
   const [videoTypes, setVideoTypes] = useState([]);
-   const [tailentList, setTailentList] = useState([
-     {
-       id: '1',
-       name: 'Music',
-     },
-     {
-       id: '2',
-       name: 'Art',
-     },
-     {
-       id: '3',
-       name: 'Dance',
-     },
-     {
-       id: '4',
-       name: 'Fashion',
-     },
-   ]);
+   const [tailentList, setTailentList] = useState(VideoTypeList);
   const [usdToggle, setUsdToggle] = useState(false);
   const [dropDownList, setDropDownList] = useState([]);
   const [dropDownTitle, setDropDownTitle] = useState('');
@@ -97,7 +98,26 @@ const SearchScreen = props => {
 props.userProfile?.Profile?.subscription != 0
   ? setAlartModalPicker(false)
   : setAlartModalPicker(true);
+
+  setFilterLikes()
+  setFilterAge()
+  setFilterLocation()
+  setFilterPrice()
+  setFilterRating()
+  setTailentList()
+  onVideoSelect()
+  setVideoTypes([]);
   }
+
+  const onVideoSelect = () => {
+    const dummyData = tailentList;
+    let arr = dummyData.map((item, index) => {   
+        item.selected = false;
+      return {...item};
+    });
+    console.log('arr return', arr);
+    setTailentList(arr);
+  };
 
 
   const onCallOpenModal = (modalType) => {
@@ -106,12 +126,12 @@ props.userProfile?.Profile?.subscription != 0
     modalType == 'Price' &&
       (setDropDownTitle(modalType),
       setDropDownList([
-        {firstValue: 'USD 0', secondValue: 'USD 10'},
-        {firstValue: 'USD 10', secondValue: 'USD 50'},
-        {firstValue: 'USD 50', secondValue: 'USD 100'},
-        {firstValue: 'USD 100', secondValue: 'USD 200'},
-        {firstValue: 'USD 200', secondValue: 'USD 500'},
-        {firstValue: 'USD 500', secondValue: 'USD 1000'},
+        {firstValue: 'USD 0', secondValue: 'USD 9'},
+        {firstValue: 'USD 10', secondValue: 'USD 49'},
+        {firstValue: 'USD 50', secondValue: 'USD 99'},
+        {firstValue: 'USD 100', secondValue: 'USD 199'},
+        {firstValue: 'USD 200', secondValue: 'USD 499'},
+        {firstValue: 'USD 500', secondValue: 'USD 999'},
         {firstValue: 'USD 1000', secondValue: ''},
       ]));
     }
@@ -223,9 +243,13 @@ props.userProfile?.Profile?.subscription != 0
     let Category = CategoryValue.replaceAll(',', ',');
     let data = {
       start_price:
-        filterPrice?.firstValue != undefined ? filterPrice?.firstValue : '0',
+        filterPrice?.firstValue != undefined
+          ? ((filterPrice?.firstValue).replace('USD','')).trim()
+          : '0',
       end_price:
-        filterPrice?.secondValue != undefined ? filterPrice?.secondValue : '0',
+        filterPrice?.secondValue != undefined
+          ? ((filterPrice?.secondValue).replace('USD','')).trim()
+          : '0',
       start_age:
         filterAge?.firstValue != undefined ? filterAge?.firstValue : '0',
       end_age:
@@ -236,6 +260,10 @@ props.userProfile?.Profile?.subscription != 0
         filterRating?.secondValue != undefined
           ? filterRating?.secondValue
           : '0',
+      start_likes:
+        filterLikes?.firstValue != undefined ? filterLikes?.firstValue : '0',
+      end_likes:
+        filterLikes?.secondValue != undefined ? filterLikes?.secondValue : '0',
       category: `${Category.toString()}`,
       location:
         filterLocation?.firstValue != undefined
@@ -281,257 +309,266 @@ props.userProfile?.Profile?.subscription != 0
           leftSource={R.images.menuIcon}
           headerBottomWidth={0.5}
         />
-        {
-        !alartModalPicker
-        ?
-        
-        <View style={{flex: 1}}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
-            style={{flex: 1}}>
-            <ScrollView
-              contentContainerStyle={{flexGrow: 1}}
-              showsVerticalScrollIndicator={false}>
-              <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
-                  <View style={{flex: 1}}>
-                    <View style={{marginTop: R.fontSize.Size20}}>
-                      <CustomTitle
-                        fontSize={R.fontSize.Size18}
-                        title={'Filter:'}
-                      />
-                    </View>
+        {!alartModalPicker ? (
+          <View style={{flex: 1}}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding:0' : 'height'}
+              style={{flex: 1}}>
+              <ScrollView
+                contentContainerStyle={{flexGrow: 1}}
+                showsVerticalScrollIndicator={false}>
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                  <View style={{flex: 1, paddingHorizontal: R.fontSize.Size20}}>
+                    <View style={{flex: 1}}>
+                      {/* <View style={{marginTop: R.fontSize.Size20}}>
+                        <CustomTitle
+                          fontSize={R.fontSize.Size18}
+                          title={'Filter'}
+                        />
+                      </View> */}
 
-                    <View style={{flex: 1, marginVertical: R.fontSize.Size20}}>
-                      <CustomTitle title={'Price'} />
-                      <CustomCardLine
-                        onPress={() => onCallOpenModal('Price')}
-                        title={
-                          filterPrice != null
-                            ? `${filterPrice?.firstValue}${
-                                filterPrice?.secondValue != '' ? ' - ' : '+'
-                              }${filterPrice?.secondValue}`
-                            : 'Select Price'
-                        }
-                        onPressSecondRight={() => {
-                          filterPrice != null
-                            ? setFilterPrice()
-                            : onCallOpenModal('Price');
-                        }}
-                        rightIcon={
-                          filterPrice != null
-                            ? R.images.cancleIcon
-                            : R.images.chevronDown
-                        }
-                      />
-                      <CustomTitle title={'Country'} />
-                      <CustomCardLine
-                        onPress={() => onCallOpenModal('Country')}
-                        title={
-                          filterLocation?.firstValue != null
-                            ? `${filterLocation?.firstValue}`
-                            : 'Select Country'
-                        }
-                        onPressSecondRight={() => {
-                          filterLocation != null
-                            ? setFilterLocation()
-                            : onCallOpenModal('Country');
-                        }}
-                        rightIcon={
-                          filterLocation != null
-                            ? R.images.cancleIcon
-                            : R.images.chevronDown
-                        }
-                      />
-
-                      <CustomTitle title={'Age'} />
-                      <CustomCardLine
-                        onPress={() => onCallOpenModal('Age')}
-                        title={
-                          filterAge != null
-                            ? `${filterAge?.firstValue}${
-                                filterAge?.secondValue != '' ? ' - ' : '+'
-                              }${filterAge?.secondValue}`
-                            : 'Select Age'
-                        }
-                        onPressSecondRight={() => {
-                          filterAge != null
-                            ? setFilterAge()
-                            : onCallOpenModal('Age');
-                        }}
-                        rightIcon={
-                          filterAge != null
-                            ? R.images.cancleIcon
-                            : R.images.chevronDown
-                        }
-                      />
                       <View
                         style={{
-                          flexWrap: 'wrap',
-                          alignItems: 'center',
-                          justifyContent: 'flex-start',
-                          flexDirection: 'row',
-                          marginLeft: -R.fontSize.Size14,
+                          flex: 1,
+                          marginVertical: R.fontSize.Size20,
+                          marginTop: R.fontSize.Size20,
                         }}>
-                        {tailentList.map((item, index) => {
-                          return (
-                            <Pressable
-                              onPress={() => onCallVideoSelect(item, index)}
-                              key={index}
-                              style={({pressed}) => [
-                                {
-                                  opacity: pressed ? 0.5 : 1,
-                                  width: screenWidth / 3.8,
-                                  marginVertical: R.fontSize.Size8,
-                                  marginLeft: R.fontSize.Size14,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  backgroundColor: item?.selected
-                                    ? R.colors.appColor
-                                    : R.colors.lightWhite,
-                                  paddingVertical: R.fontSize.Size10,
-                                  borderRadius: R.fontSize.Size20,
-                                  borderColor: R.colors.placeHolderColor,
-                                },
-                              ]}>
-                              <Text
-                                style={{
-                                  fontFamily: R.fonts.regular,
-                                  fontSize: R.fontSize.Size14,
-                                  fontWeight: '700',
-                                  color: item?.selected
-                                    ? R.colors.white
-                                    : R.colors.placeHolderColor,
-                                }}
-                                numberOfLines={1}>
-                                {item.name}
-                              </Text>
-                            </Pressable>
-                          );
-                        })}
-                      </View>
-                      <CustomTitle title={'Rating'} />
-                      <CustomCardLine
-                        onPress={() => onCallOpenModal('Rating')}
-                        title={
-                          filterRating != null
-                            ? `${filterRating?.firstValue}${
-                                filterRating?.secondValue != '' ? ' - ' : '+'
-                              }${filterRating?.secondValue}`
-                            : 'Select Rating'
-                        }
-                        onPressSecondRight={() => {
-                          filterRating != null
-                            ? setFilterRating()
-                            : onCallOpenModal('Rating');
-                        }}
-                        rightIcon={
-                          filterRating != null
-                            ? R.images.cancleIcon
-                            : R.images.chevronDown
-                        }
-                      />
+                        <CustomTitle title={'Price'} />
+                        <CustomCardLine
+                          onPress={() => onCallOpenModal('Price')}
+                          title={
+                            filterPrice != null
+                              ? `${filterPrice?.firstValue}${
+                                  filterPrice?.secondValue != '' ? ' - ' : '+'
+                                }${filterPrice?.secondValue}`
+                              : 'Select price range'
+                          }
+                          onPressSecondRight={() => {
+                            filterPrice != null
+                              ? setFilterPrice()
+                              : onCallOpenModal('Price');
+                          }}
+                          rightIcon={
+                            filterPrice != null
+                              ? R.images.cancleIcon
+                              : R.images.chevronDown
+                          }
+                        />
+                        <CustomTitle title={'Country'} />
+                        <CustomCardLine
+                          onPress={() => onCallOpenModal('Country')}
+                          title={
+                            filterLocation?.firstValue != null
+                              ? `${filterLocation?.firstValue}`
+                              : 'Select country'
+                          }
+                          onPressSecondRight={() => {
+                            filterLocation != null
+                              ? setFilterLocation()
+                              : onCallOpenModal('Country');
+                          }}
+                          rightIcon={
+                            filterLocation != null
+                              ? R.images.cancleIcon
+                              : R.images.chevronDown
+                          }
+                        />
 
-                      <CustomTitle title={'Likes'} />
-                      <CustomCardLine
-                        onPress={() => onCallOpenModal('Likes')}
-                        title={
-                          filterLikes != null
-                            ? `${filterLikes?.firstValue}${
-                                filterLikes?.secondValue != '' ? ' - ' : '+'
-                              }${filterLikes?.secondValue}`
-                            : 'Select Likes'
-                        }
-                        onPressSecondRight={() => {
-                          filterLikes != null
-                            ? setFilterLikes()
-                            : onCallOpenModal('Likes');
-                        }}
-                        rightIcon={
-                          filterLikes != null
-                            ? R.images.cancleIcon
-                            : R.images.chevronDown
-                        }
+                        <CustomTitle title={'Age'} />
+                        <CustomCardLine
+                          onPress={() => onCallOpenModal('Age')}
+                          title={
+                            filterAge != null
+                              ? `${filterAge?.firstValue}${
+                                  filterAge?.secondValue != '' ? ' - ' : '+'
+                                }${filterAge?.secondValue}`
+                              : 'Select age range'
+                          }
+                          onPressSecondRight={() => {
+                            filterAge != null
+                              ? setFilterAge()
+                              : onCallOpenModal('Age');
+                          }}
+                          rightIcon={
+                            filterAge != null
+                              ? R.images.cancleIcon
+                              : R.images.chevronDown
+                          }
+                        />
+
+                        <CustomTitle title={'Rating'} />
+                        <CustomCardLine
+                          onPress={() => onCallOpenModal('Rating')}
+                          title={
+                            filterRating != null
+                              ? `${filterRating?.firstValue}${
+                                  filterRating?.secondValue != '' ? ' - ' : '+'
+                                }${filterRating?.secondValue}`
+                              : 'Select rating range'
+                          }
+                          onPressSecondRight={() => {
+                            filterRating != null
+                              ? setFilterRating()
+                              : onCallOpenModal('Rating');
+                          }}
+                          rightIcon={
+                            filterRating != null
+                              ? R.images.cancleIcon
+                              : R.images.chevronDown
+                          }
+                        />
+
+                        <CustomTitle title={'Likes'} />
+                        <CustomCardLine
+                          onPress={() => onCallOpenModal('Likes')}
+                          title={
+                            filterLikes != null
+                              ? `${filterLikes?.firstValue}${
+                                  filterLikes?.secondValue != '' ? ' - ' : '+'
+                                }${filterLikes?.secondValue}`
+                              : 'Select like range'
+                          }
+                          onPressSecondRight={() => {
+                            filterLikes != null
+                              ? setFilterLikes()
+                              : onCallOpenModal('Likes');
+                          }}
+                          rightIcon={
+                            filterLikes != null
+                              ? R.images.cancleIcon
+                              : R.images.chevronDown
+                          }
+                        />
+
+                        <CustomTitle title={'Video Type'} />
+                        <View
+                          style={{
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            flexDirection: 'row',
+                            marginLeft: -R.fontSize.Size14,
+                          }}>
+                          {tailentList.map((item, index) => {
+                            return (
+                              <Pressable
+                                onPress={() => onCallVideoSelect(item, index)}
+                                key={index}
+                                style={({pressed}) => [
+                                  {
+                                    opacity: pressed ? 0.5 : 1,
+                                    width: screenWidth / 3.8,
+                                    marginVertical: R.fontSize.Size8,
+                                    marginLeft: R.fontSize.Size14,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: item?.selected
+                                      ? R.colors.appColor
+                                      : R.colors.lightWhite,
+                                    paddingVertical: R.fontSize.Size10,
+                                    borderRadius: R.fontSize.Size20,
+                                    borderColor: R.colors.placeHolderColor,
+                                  },
+                                ]}>
+                                <Text
+                                  style={{
+                                    fontFamily: R.fonts.regular,
+                                    fontSize: R.fontSize.Size14,
+                                    fontWeight: '700',
+                                    color: item?.selected
+                                      ? R.colors.white
+                                      : R.colors.placeHolderColor,
+                                  }}
+                                  numberOfLines={1}>
+                                  {item.name}
+                                </Text>
+                              </Pressable>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={{paddingVertical: R.fontSize.Size30}}>
+                      <AppButton
+                        onPress={() => onCallCheckSub()}
+                        title={'Apply'}
                       />
                     </View>
                   </View>
-
-                  <View style={{paddingVertical: R.fontSize.Size30}}>
-                    <AppButton
-                      onPress={() => onCallCheckSub()}
-                      title={'Apply'}
-                    />
-                  </View>
+                </TouchableWithoutFeedback>
+              </ScrollView>
+            </KeyboardAvoidingView>
+          </View>
+        ) : (
+          <View
+            style={{flex: 1, backgroundColor: R.colors.placeholderTextColor}}>
+            <AlartModal
+              visible={alartModalPicker}
+              onRequestClose={() => setAlartModalPicker(false)}
+              title={'Advanced search filter requires an active subscription.'}
+              customButton={
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Pressable
+                    onPress={() => onCallCancel()}
+                    style={({pressed}) => [
+                      {
+                        flex: 1,
+                        marginVertical: R.fontSize.Size4,
+                        borderWidth: 2,
+                        borderColor: R.colors.appColor,
+                        height: R.fontSize.Size45,
+                        borderRadius: R.fontSize.Size8,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        opacity: pressed ? 0.5 : 1,
+                        marginHorizontal: R.fontSize.Size10,
+                      },
+                    ]}>
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        color: R.colors.appColor,
+                        fontWeight: '700',
+                        fontSize: R.fontSize.Size16,
+                      }}>
+                      {'Cancel'}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => onCallProceed()}
+                    style={({pressed}) => [
+                      {
+                        flex: 1,
+                        marginVertical: R.fontSize.Size4,
+                        backgroundColor: R.colors.appColor,
+                        height: R.fontSize.Size45,
+                        borderRadius: R.fontSize.Size8,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        opacity: pressed ? 0.5 : 1,
+                        marginHorizontal: R.fontSize.Size10,
+                      },
+                    ]}>
+                    <Text
+                      style={{
+                        fontFamily: R.fonts.regular,
+                        color: R.colors.white,
+                        fontWeight: '700',
+                        fontSize: R.fontSize.Size16,
+                      }}>
+                      {'Proceed'}
+                    </Text>
+                  </Pressable>
                 </View>
-              </TouchableWithoutFeedback>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </View>
-        :
-        <View style={{flex: 1,backgroundColor:R.colors.placeholderTextColor}}>
-          <AlartModal
-            visible={alartModalPicker}
-            onRequestClose={() => setAlartModalPicker(false)}
-            title={'Advanced search filter requires an active subscription.'}
-            customButton={
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Pressable
-                  onPress={() => onCallCancel()}
-                  style={({pressed}) => [
-                    {
-                      flex: 1,
-                      marginVertical: R.fontSize.Size4,
-                      borderWidth: 2,
-                      borderColor: R.colors.appColor,
-                      height: R.fontSize.Size45,
-                      borderRadius: R.fontSize.Size8,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: pressed ? 0.5 : 1,
-                      marginHorizontal: R.fontSize.Size10,
-                    },
-                  ]}>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      color: R.colors.appColor,
-                      fontWeight: '700',
-                      fontSize: R.fontSize.Size16,
-                    }}>
-                    {'Cancel'}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => onCallProceed()}
-                  style={({pressed}) => [
-                    {
-                      flex: 1,
-                      marginVertical: R.fontSize.Size4,
-                      backgroundColor: R.colors.appColor,
-                      height: R.fontSize.Size45,
-                      borderRadius: R.fontSize.Size8,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: pressed ? 0.5 : 1,
-                      marginHorizontal: R.fontSize.Size10,
-                    },
-                  ]}>
-                  <Text
-                    style={{
-                      fontFamily: R.fonts.regular,
-                      color: R.colors.white,
-                      fontWeight: '700',
-                      fontSize: R.fontSize.Size16,
-                    }}>
-                    {'Proceed'}
-                  </Text>
-                </Pressable>
-              </View>
-            }
-          />
-        </View>
-        }
+              }
+            />
+          </View>
+        )}
       </SafeAreaView>
 
       <Modal

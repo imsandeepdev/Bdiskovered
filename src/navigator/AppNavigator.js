@@ -95,15 +95,7 @@ const AppNavigator = props => {
     const initialRouteName = props.authToken  ? 'HomeMenu' : 'LoginScreen';
     setInitialRoute(initialRouteName);
    
-    // setLoading(false); 
-
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
-      navigate('NotificationScreen');
-    });
+   
 
     messaging()
       .getInitialNotification()
@@ -120,118 +112,7 @@ const AppNavigator = props => {
 
   },[]);
 
-  // const onCallAlart = message => {
-  //   Alert.alert(
-  //     'Alert',
-  //     `${message}`,
-  //     [
-  //       {
-  //         text: 'Proceed',
-  //         onPress: () => onCallDeviceName()
-  //       },
-  //     ],
-  //     {
-  //       cancelable: true,
-  //     },
-  //   );
-  // };
-
-  // const OnCallStartSessionStatus = async()=>{
-  //     try {
-  //       await AsyncStorage.setItem('sessionStatus','start');
-  //     } catch (e) {
-  //       console.log("ERR",e)
-  //     }
-  // }
-
-  //  const OnCallEndSessionStatus = async () => {
-  //    try {
-  //      await AsyncStorage.setItem('sessionStatus', 'end');
-  //    } catch (e) {
-  //      console.log("ERR",e)
-  //    }
-  //  };
-
-
-  // const onCheckSessionStatus = async() => {
-  //   let tempSession = await AsyncStorage.getItem('sessionStatus');
-  //   console.log("TEM SESSION",tempSession)
-  //   if(tempSession == 'start')
-  //   {
-  //     OnCallLoginSession()
-  //   }
-  //   else
-  //   {
-  //     OnEndLoginSession()
-  //   }
-  // }
-
-  // const OnEndLoginSession = () => {
-  //   console.log('End Session Now');
-  // }
-
-  // const OnCallLoginSession = async () => {
-    
-  //   let userFcmToken = await AsyncStorage.getItem('fcmToken')
-  //   let userMobileNo = await AsyncStorage.getItem('MyUserMobile');
-
-  //   console.log("USER FCM TOKEN", userFcmToken)
-  //   console.log('USER MOBILE NO', userMobileNo);
-  //   onCallLoginSessionAPI(userFcmToken, userMobileNo);
-  // };
-
-    // const onCallLoginSessionAPI = (fcmToken,userMobile) => {
-    //   let data = {
-    //     mobile: userMobile,
-    //     device_token: fcmToken,
-    //   };
-    //   console.log('DATA', data);
-
-    //   dispatch(
-    //     LoginSessionRequest(data, response => {
-    //       console.log('Response Login Session', response?.data);
-
-    //       if (
-    //         response?.data?._id != undefined &&
-    //         response?.data?.device_info?.isLoggedIn != 0
-    //       ) {
-    //         console.log(response?.data?._id);
-    //         console.log('Only Call Session ');
-
-    //       } else {
-    //         onCallDeviceName();
-    //       }
-          
-    //     }),
-    //   );
-    // };
-
-
-    //  const onCallDeviceName = () => {
-    //    DeviceInfo.getDeviceName().then(deviceName => {
-    //      console.log('DEVICE NAME', deviceName);
-    //      onCallLogout(deviceName);
-    //    });
-    //  };
-
-    //  const onCallLogout = async deviceName => {
-    //   setLoading(true)
-    //   OnCallEndSessionStatus();
-    //    const value = await AsyncStorage.getItem('deviceAccess_token');
-    //    console.log('VALUE', value);
-    //    let data = {
-    //      device_name: deviceName,
-    //      device_token: value,
-    //    };
-    //    console.log('LOGDATA', data);
-    //    dispatch(
-    //      UserSignOutRequest(data, response => {
-    //        console.log('LOGOUT ON APP NAVIGATOR', response);
-    //        setInitialRoute('LoginScreen')
-    //        setLoading(false)
-    //      }),
-    //    );
-    //  };
+  
   
     if(loading)
     {

@@ -192,7 +192,7 @@ const Styles = StyleSheet.create({
     height: R.fontSize.Size50,
     width: R.fontSize.Size50,
     borderRadius: R.fontSize.Size4,
-    backgroundColor: R.colors.modelBackground,
+    // backgroundColor: R.colors.modelBackground,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -21,7 +21,7 @@ const EyeViewModal = (props) => {
                   {
                     padding: R.fontSize.Size6,
                     opacity: pressed ? 0.5 : 1,
-                  }
+                  },
                 ]}>
                 <Image
                   source={R.images.cancleIcon}
@@ -30,58 +30,76 @@ const EyeViewModal = (props) => {
                 />
               </Pressable>
             </View>
-            
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                showsVerticalScrollIndicator={false}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginHorizontal: R.fontSize.Size20,
-                    }}>
-                    <View style={{flex: 1}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <View style={Styles.videoModalMainView}>
-                          <Image
-                            source={props.userProfile}
+
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1}}
+              showsVerticalScrollIndicator={false}>
+              <View
+                style={{
+                  flex: 1,
+                  marginHorizontal: R.fontSize.Size20,
+                }}>
+                <View style={{flex: 1}}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View>
+                      <View style={Styles.videoModalMainView}>
+                        <Image
+                          source={props.userProfile}
+                          style={{
+                            height: R.fontSize.Size60,
+                            width: R.fontSize.Size60,
+                          }}
+                          resizeMode={'cover'}
+                        />
+                      </View>
+                      {props.userStatusBackgroundColor && (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            bottom: R.fontSize.Size2,
+                            right: R.fontSize.Size2,
+                          }}>
+                          <View
                             style={{
-                              height: R.fontSize.Size60,
-                              width: R.fontSize.Size60,
+                              height: R.fontSize.Size14,
+                              width: R.fontSize.Size14,
+                              borderRadius: R.fontSize.Size10,
+                              borderWidth: 1,
+                              backgroundColor: props.userStatusBackgroundColor,
+                              borderColor: R.colors.white,
                             }}
-                            resizeMode={'cover'}
                           />
                         </View>
-                        <Text style={Styles.videoModalTitleText}>
-                          {props.userName}
-                        </Text>
-                      </View>
-                      {props.bio != '' && (
-                        <View style={{marginTop: R.fontSize.Size20}}>
-                          <Text style={Styles.videoModalDescText}>
-                            {props.bio}
-                          </Text>
-                        </View>
                       )}
-                      <View style={Styles.videoModalMapMainView}>
-                        {props.personalList}
-                      </View>
-                      <View style={Styles.videoModalMapMainView}>
-                        {props.talentList}
-                      </View>
-
-                      <View
-                        style={{
-                          flexWrap: 'wrap',
-                          flexDirection: 'row',
-                          marginLeft: -R.fontSize.Size14,
-                          marginTop: R.fontSize.Size20,
-                        }}>
-                        {props.availableList}
-                      </View>
                     </View>
+                    <Text style={Styles.videoModalTitleText}>
+                      {props.userName}
+                    </Text>
                   </View>
-              </ScrollView>
+                  {props.bio != '' && (
+                    <View style={{marginTop: R.fontSize.Size20}}>
+                      <Text style={Styles.videoModalDescText}>{props.bio}</Text>
+                    </View>
+                  )}
+                  <View style={Styles.videoModalMapMainView}>
+                    {props.personalList}
+                  </View>
+                  <View style={Styles.videoModalMapMainView}>
+                    {props.talentList}
+                  </View>
+
+                  <View
+                    style={{
+                      flexWrap: 'wrap',
+                      flexDirection: 'row',
+                      marginLeft: -R.fontSize.Size14,
+                      marginTop: R.fontSize.Size20,
+                    }}>
+                    {props.availableList}
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
             <View style={{paddingVertical: R.fontSize.Size10}}>
               <AppButton
                 onPress={props.connectOnPress}

@@ -10,26 +10,26 @@ const HelpList = [
   {
     id: 1,
     title: 'Contact us',
-    image: R.images.contactIcon,
+    image: R.images.IcCotactusIcon,
     url: Config.TermsNConditions,
    
   },
   {
     id: 2,
-    title: 'Term & Conditions',
-    image: R.images.termIcon,
+    title: 'Terms & Conditions',
+    image: R.images.IcTermIcon,
     url: Config.TermsNConditions,
   },
   {
     id: 3,
-    title: 'Privacy and Policy',
-    image: R.images.privacyIcon1,
+    title: 'Privacy Policy',
+    image: R.images.IcPolicyIcon,
     url: Config.PrivacyPolicy,
   },
   {
     id: 4,
-    title: 'Community Guidlines',
-    image: R.images.guideIcon,
+    title: 'Community Guidelines',
+    image: R.images.IcCommunityIcon,
     url: Config.CommunityURL,
   },
 ];
@@ -60,6 +60,8 @@ const HelpScreen = (props) => {
             onPress={() => props.navigation.goBack()}
             leftSource={R.images.chevronBack}
             title={'Help'}
+            title_justifyContent={'center'}
+            title_marginRight={R.fontSize.Size70}
           />
 
           <View style={{flex: 1}}>
@@ -118,7 +120,6 @@ const HelpScreen = (props) => {
                   </Pressable>
                 );
               }}
-              
             />
           </View>
         </SafeAreaView>

@@ -21,9 +21,17 @@ const ConnectionScreen = props => {
   const [myUserId, setMyUserId] = useState('');
 
   useEffect(() => {
+    
+     const unsubscribe = props.navigation.addListener('focus', () => {
+       screenFocus();
+     });
+     return unsubscribe;
+  }, [props.navigation]);
+
+  const screenFocus = () => {
     console.log('USER ID', props.userProfile?.Profile?.user_id);
     onCallConnectedUserAPI();
-  }, [props.navigation]);
+  }
 
   const onCallConnectedUserAPI = () => {
     setLoading(true);
@@ -38,36 +46,6 @@ const ConnectionScreen = props => {
       }
     }))
 
-  //   console.log(`${Config.API_URL}${Config.connectedUsersAPI}`);
-  //   console.log(props.authToken);
-
-  //  setLoading(true);
-  //  let headerAuth = {
-  //    token: props.authToken,
-  //  };
-
-  //   const headers = headerAuth;
-  //   const config = {
-  //     method: 'POST',
-  //     headers,
-  //   };
-
-  //  fetch(`${Config.API_URL}${Config.connectedUsersAPI}`, config)
-  //    .then(res => res.json())
-  //    .then(response => {
-  //      console.log('RES conn', response);
-  //      if (response.status == 'success') {
-  //        setLoading(false);
-  //        setConnectedUserList(response.data?.connected);
-  //        setMyUserId(response.data?.userId);
-  //      } else {
-  //        setLoading(false);
-  //      }
-  //    })
-  //    .catch(error => {
-  //      console.log('ERRORONAPI', error);
-  //     setLoading(false);
-  //    })
   };
 
   return (
@@ -75,10 +53,12 @@ const ConnectionScreen = props => {
       <Header
         onPress={() => props.navigation.goBack()}
         leftSource={R.images.chevronBack}
-        title={'User Connections'}
+        title={'Connections'}
+        title_justifyContent={'center'}
+        title_marginRight={R.fontSize.Size70}
       />
-      <View style={styles.topLineView}/>
-      <View style={{flex:1}}>
+      {/* <View style={styles.topLineView} /> */}
+      <View style={{flex: 1}}>
         <FlatList
           style={styles.flatView}
           data={connectedUserList}
@@ -93,6 +73,8 @@ const ConnectionScreen = props => {
                     MyUserId: myUserId,
                     userName: item?.username,
                     userItem: item,
+                    connect_status: item?.connect_status,
+                    comm_id:item?.communication_id,
                     fireID: item?.communication_id,
                   })
                 }
@@ -109,7 +91,7 @@ const ConnectionScreen = props => {
                 <View>
                   <View style={styles.IconView}>
                     {item?.avatar != '' &&
-                    item?.avatar != `http://localhost:8080/profile/user.png` ? (
+                    item?.avatar != Config.USER_PROFILE_URL ? (
                       <Image
                         source={{
                           uri: `${Config.API_URL}${item?.avatar?.replace(
@@ -121,15 +103,11 @@ const ConnectionScreen = props => {
                         resizeMode={'cover'}
                       />
                     ) : (
-                      <Text
-                        style={{
-                          fontFamily: R.fonts.regular,
-                          fontWeight: '700',
-                          color: R.colors.primaryTextColor,
-                          fontSize: R.fontSize.Size20,
-                        }}>
-                        {((item?.username[0] ?? '#') + '').toUpperCase()}
-                      </Text>
+                      <Image
+                        source={R.images.inActiveProfileIcon}
+                        style={styles.iconImage}
+                        resizeMode={'contain'}
+                      />
                     )}
                   </View>
 
@@ -168,6 +146,13 @@ const ConnectionScreen = props => {
                 </View> */}
                 <View style={styles.textView}>
                   <Text style={styles.userNameText}>{item?.username}</Text>
+                  <Text
+                    style={[
+                      styles.userNameText,
+                      {fontWeight: '400', color: R.colors.placeholderTextColor},
+                    ]}>
+                    {item?.message}
+                  </Text>
                 </View>
               </Pressable>
             );
@@ -179,7 +164,7 @@ const ConnectionScreen = props => {
                   {'You have no connections'}
                 </Text>
               </View>
-            )
+            );
           }}
         />
       </View>

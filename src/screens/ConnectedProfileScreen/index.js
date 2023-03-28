@@ -30,6 +30,8 @@ const ConnectedProfileScreen = props => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [profileDetails, setProfileDetails] = useState({});
+  const [chatDetails, setChatDetails] = useState({});
+
   const [tailentPostVideo, setTailentPostVideo] = useState([]);
   const [taletArray, setTalentArray] = useState([]);
   const [personalArray, setPersonalArray] = useState([]);
@@ -57,6 +59,7 @@ const ConnectedProfileScreen = props => {
       console.log('Get Profile Res', response)
       if (response.status == 'success') {
         setProfileDetails(response.Profile);
+        setChatDetails(response)
         let tempTalentArray = response.Profile?.category;
          let useTalentArray = tempTalentArray.split(',');
          console.log('useTalentArray', useTalentArray);
@@ -93,12 +96,18 @@ const onCallMyUserId = () => {
          MyUserId: userProfileId,
          userName: profileDetails?.name,
          userItem: profileDetails,
+         connect_status: chatDetails?.connect_status,
+         comm_id: chatDetails?.communication_id,
          fireID:
-           profileDetails?.user_id > userProfileId
-             ? userProfileId + '+' + profileDetails?.user_id
+           chatDetails?.communication_id != ''
+             ? chatDetails?.communication_id
              : profileDetails?.user_id + '+' + userProfileId,
        });
   }
+
+  // ((profileDetails?.user_id > userProfileId)
+  //            ? userProfileId + '+' + profileDetails?.user_id
+  //            : profileDetails?.user_id + '+' + userProfileId),
 
   const onCallBlockUser = () => {
     let data = {
@@ -175,32 +184,12 @@ const onCallMyUserId = () => {
               : setEditModalPicker(true);
           }}
           rightSource2={R.images.greyDotsIcon}
+          headerBottomWidth={1}
         />
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
           showsVerticalScrollIndicator={false}>
           <View style={styles.mainView}>
-            {/* <View style={{alignItems: 'flex-end'}}>
-              <Pressable
-                onPress={() => {
-                  userProfileId == talentUserId
-                    ? setblockModalPicker(true)
-                    : setEditModalPicker(true);
-                }}
-                style={({pressed}) => [
-                  {
-                    opacity: pressed ? 0.5 : 1,
-                    padding: R.fontSize.Size4,
-                    paddingHorizontal: R.fontSize.Size2,
-                  },
-                ]}>
-                <Image
-                  source={R.images.greyDotsIcon}
-                  style={styles.dotIconImage}
-                  resizeMode={'contain'}
-                />
-              </Pressable>
-            </View> */}
             {profileDetails?.user_status != 'available' && (
               <Text
                 style={{
@@ -211,8 +200,7 @@ const onCallMyUserId = () => {
                   marginTop: R.fontSize.Size4,
                   textAlign: 'center',
                 }}
-                numberOfLines={1}
-                >
+                numberOfLines={1}>
                 {`${profileDetails?.username} is currently unavailable`}
               </Text>
             )}
@@ -220,13 +208,22 @@ const onCallMyUserId = () => {
               <View style={styles.topView}>
                 <View>
                   <View style={styles.topProfileView}>
-                    <Image
-                      source={{
-                        uri: profilePic?.path,
-                      }}
-                      style={styles.topProfileImage}
-                      resizeMode={'cover'}
-                    />
+                    {profilePic.path != null &&
+                    profilePic.path != `${Config.API_URL}profile/user.png` ? (
+                      <Image
+                        source={{
+                          uri: profilePic?.path,
+                        }}
+                        style={styles.topProfileImage}
+                        resizeMode={'cover'}
+                      />
+                    ) : (
+                      <Image
+                        source={R.images.inActiveProfileIcon}
+                        style={styles.topProfileImage}
+                        resizeMode={'cover'}
+                      />
+                    )}
                   </View>
                   <View
                     style={{
@@ -377,7 +374,8 @@ const onCallMyUserId = () => {
         onRequestClose={() => setEditModalPicker(false)}
         closeModal={() => setEditModalPicker(false)}
         title2={`Block`}
-        icon2={R.images.blockIcon}
+        blockTitleColor={R.colors.blockRedColor}
+        icon2={R.images.banUserIcon}
         optionFirst={true}
         optionThird={true}
         onPress2={() => onCallBlockUser()}
@@ -386,8 +384,8 @@ const onCallMyUserId = () => {
         visible={blockModalPicker}
         onRequestClose={() => setblockModalPicker(false)}
         closeModal={() => setblockModalPicker(false)}
-        title1={`Blocked Users`}
-        title2={`Delete Account`}
+        title1={`Blocked users`}
+        title2={`Delete account`}
         icon1={R.images.blockIcon}
         icon2={R.images.grayDeleteIcon}
         optionThird={true}

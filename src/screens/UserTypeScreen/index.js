@@ -6,6 +6,9 @@ import R from '../../res/R';
 import Styles from './styles';
 import Toast from 'react-native-simple-toast';
 import { Config } from '../../config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CommonFunctions from '../../utils/CommonFuntions';
+import DeviceInfo from 'react-native-device-info';
 
 const AccountType = [
     {id:'1', title:'Business'},
@@ -16,35 +19,86 @@ const AccountType = [
 
 const UserTypeScreen = (props) => {
 
+
+    useEffect(()=>{
+      // DeviceInfo.getUniqueId();
+      // console.log('device info on usertype ', DeviceInfo.getUniqueId());
+      // onCallLatitudeLongitude();
+    },[props.navigation])
+
     const [selectedUser, setSelectedUser] = useState('')
     const [acceptTerms, setAcceptTerms] = useState(false)
     const [userType, setUserType] = useState('')
 
+
+
+    // const onCallLatitudeLongitude = async() => {
+    //   await AsyncStorage.getItem('userLatLong', (err, result) => {
+    //     console.log('RESULT LONGITUDE', result);
+    //     const myArray = result.split(',');
+    //     console.log('Result1', myArray[0]);
+    //     console.log('Result2', myArray[1]);
+    //     // setMyLat(myArray[0]);
+    //     // setMyLong(myArray[1]);
+    //   });
+    // };
+
     const onCallUserSelect = (item) => {
 
-        let tempValue = item?.id
-        if(tempValue == item.id)
-        {
+        console.log("ITEM",item)
             setSelectedUser(item?.id)
             setUserType(item?.title)
-        }
+        
     }
 
-    
+      const onCallCreateDeviceToken = async () => {
+        await AsyncStorage.getItem('fcmToken', (err, result) => {
+          console.log('FCM TOKEN', result);
+          if (result != null) {
+            onCallProcess(result);
+          } else {
+            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            const charLength = characters.length;
+            let result = ' ';
+            for (let i = 0; i < 45; i++) {
+              result += characters.charAt(
+                Math.floor(Math.random() * charLength),
+              );
+            }
+            console.log('CUSTOM FCM TOKEN', result);
+            onCallSetCustomFcmToken(result);
+            onCallProcess(result);
+           
+          }
+        });
+      };
 
-    const onCallProcess = () => {
-      //  notificationListner()
-      if (userType == '') {
-        Toast.show('Please Select Account Type', Toast.SHORT);
-      }
-      else if(!acceptTerms){
-        Toast.show('Please Agree Terms and Condition', Toast.SHORT);
-      }
-      else
+       const onCallSetCustomFcmToken = async result => {
+         await AsyncStorage.setItem('fcmToken', result);
+       };
+
+
+    const onCheckCondition = () => {
+      return (
+        CommonFunctions.isBlank(
+          userType.trim(),
+          'Please Select Account Type',
+        ) &&
+        CommonFunctions.isFalse(
+          acceptTerms,
+          'Please Agree Terms and Condition',
+        )
+      );
+    }
+
+
+    const onCallProcess = (deviceToken) => {
+      if(onCheckCondition())
       {
-      props.navigation.navigate('SignupScreen', {
-        from: userType,
-      });
+        props.navigation.navigate('SignupScreen', {
+          from: userType,
+          device_token: deviceToken
+        });
       }
     }
 
@@ -54,6 +108,7 @@ const UserTypeScreen = (props) => {
           <Header
             onPress={() => props.navigation.goBack()}
             leftSource={R.images.chevronBack}
+            // title={'usertype'}
           />
           <ScrollView
             contentContainerStyle={{flexGrow: 1}}
@@ -110,22 +165,20 @@ const UserTypeScreen = (props) => {
                       onPress={() =>
                         props.navigation.navigate('WebViewScreen', {
                           from: 'Terms & Conditions',
-                          for:'terms',
-                          url: Config.TermsNConditions
+                          for: 'terms',
+                          url: Config.TermsNConditions,
                         })
                       }
                       style={{color: R.colors.appColor}}>
                       {'Terms & Conditions'}
                     </Text>
-                    <Text style={[Styles.termsText]}>
-                      {' & '}
-                    </Text>
+                    <Text style={[Styles.termsText]}>{' & '}</Text>
                     <Text
                       onPress={() =>
                         props.navigation.navigate('WebViewScreen', {
                           from: 'Privacy Policy',
-                          for:'policy',
-                          url: Config.PrivacyPolicy
+                          for: 'policy',
+                          url: Config.PrivacyPolicy,
                         })
                       }
                       style={{color: R.colors.appColor}}>
@@ -164,7 +217,7 @@ const UserTypeScreen = (props) => {
           </ScrollView>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
-              onPress={() => onCallProcess()}
+              onPress={() => onCallCreateDeviceToken()}
               marginHorizontal={R.fontSize.Size55}
               title={'Proceed'}
             />

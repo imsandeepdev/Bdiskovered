@@ -1,4 +1,6 @@
 export const Config = {
+
+  USER_PROFILE_URL :'http://localhost:8080/profile/user.png',
   TermsNConditions: 'https://bdiskovered.com/Terms/',
   PrivacyPolicy: 'https://bdiskovered.com/privacy/',
   CommunityURL: 'https://bdiskovered.com/community/',

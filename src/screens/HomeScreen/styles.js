@@ -169,9 +169,9 @@ const Styles = StyleSheet.create({
 
   reportContentView: {
     marginVertical: R.fontSize.Size4,
-    borderBottomWidth: 0.5,
-    borderColor: R.colors.lightWhite,
-    height: R.fontSize.Size40,
+    borderBottomWidth: 0.3,
+    borderColor: R.colors.lightBlack,
+    height: R.fontSize.Size35,
     borderRadius: R.fontSize.Size8,
     alignItems: 'center',
     flexDirection: 'row',

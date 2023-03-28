@@ -25,22 +25,23 @@ const ChatScreen = props => {
   const [loading, setLoading] = useState(false);
   const [connReqStatus, setConReqStatus] = useState(false);
   const [diableSendIcon, setDiableSendIcon] = useState(true)
+  const [fire_Id, setFire_Id] = useState(props.route.params?.fireID);
 
   useEffect(() => {
     setConReqStatus(false);
     console.log('FIREBASE CHAT ID', props.route.params?.fireID);
-    console.log('TAILENT USER ID', props.route.params?.tailentUserId);
-    console.log('USER TYPE', props.userProfile?.Profile?.role);
+    setFire_Id(props.route.params?.fireID);
+    console.log('COMM ID', props.route.params?.userItem?.comm_id);
+    // console.log('USER ITEMS', props.route.params?.userItem);
     onCallProfileAPI();
     onCheckConnectStatus();
 
   }, [props.navigation]);
 
   const onCheckConnectStatus = () => {
-    console.log("CONNECTION STATUS",props.route.params?.userItem?.connect_status)
+    console.log('CONNECTION STATUS', props.route.params?.connect_status);
     setLoading(true);
-    if(!props.route.params?.userItem?.connect_status)
-    {
+    if (!props.route.params?.userItem?.connect_status && props.route.params?.userItem?.comm_id =='') {
       onCallFirstTimeAPI();
     }
     setLoading(false);
@@ -52,49 +53,32 @@ const ChatScreen = props => {
       console.log('Get Profile Res', response)
       setProfileDetail(response?.Profile)
       setLoading(false);
-
     }))
     }
 
   useEffect(() => {
     const onValueChange = database()
-      .ref(`/one_to_one/${props.route.params?.fireID}`)
+      .ref(`/one_to_one/${fire_Id}`)
       .on('child_added', snapshot => {
         console.log('User data: ', snapshot.val());
-        // let bytes = snapshot.val().chat_message;
-        // let decryptMsg =  AES.decrypt(bytes, key);
-        // const msg = decryptMsg.toString(enc.Utf8);
-       
-        // let msgData = {
-        //   chat_message: msg,
-        //   chatSenderId: snapshot.val().chatSenderId,
-        //   chatReceiverId: snapshot.val().chatReceiverId,
-        //   chat_receiver: snapshot.val().chat_receiver,
-        //   chat_receiver_img: snapshot.val().chat_receiver_img,
-        //   chat_sender: snapshot.val().chat_sender,
-        //   chat_sender_img: snapshot.val().chat_sender_img,
-        //   type: 'text',
-        //   chat_time: snapshot.val().chat_time,
-        // };
-        // console.log("MESSAGEDATA",msgData)
         setAllChat(state => [snapshot.val(), ...state]);
       });
-    return () => database().ref(`/one_to_one/${props.route.params?.fireID}`).off('child_added', onValueChange);
-  }, [props.route.params?.fireID]);
+    return () => database().ref(`/one_to_one/${fire_Id}`).off('child_added', onValueChange);
+  }, [fire_Id]);
 
 
   
-  const onCallAfterChat = () => {
-  database().ref(`/one_to_one/${props.route.params?.fireID}`)
+  const onCallAfterChat = (fire_id) => {
+    console.log('after chat id',fire_id)
+  database().ref(`/one_to_one/${fire_id}`)
       .on('value', snapshot => {
-        console.log('Chat Data after Message ', snapshot.val());
+        console.log('Chat Data after Message ==> ', snapshot.val());
         if (snapshot.val() != null)
         {
           let MsgLength = Object.keys(snapshot.val()).length
-          console.log('Chat Length Length : ', MsgLength);
+          console.log('Chat Length ==> ', MsgLength);
           if(MsgLength == 1)
           {
-            console.log("LENGTH",MsgLength)
             onCallFirstTimeAPI()
           }
         }
@@ -106,21 +90,10 @@ const ChatScreen = props => {
     // setLoading(true)
     let data = {
       id: props.route.params?.tailentUserId,
-      communication_id: props.route.params?.fireID,
+      communication_id: fire_Id,
       user_type: props.userProfile?.Profile?.role,
     };
-    // dispatch(ConnectRequestRequest(data, response => {
-    //   console.log('Connection Response', response);
-    //   if (response.status == 'success') {
-    //     console.log('SUCCESS', response);
-    //   } else if (
-    //     response.message == 'You have already sent connection request'
-    //   ) {
-    //     console.log('ERROR', response);
-    //   } else {
-    //     setCustomModalPicker(true);
-    //   }
-    // }))
+   
     console.log('DATA', data);
     const headerAuth = {
       Accept: 'application/json',
@@ -173,27 +146,46 @@ const ChatScreen = props => {
       type: 'text',
       chat_time: moment().format(),
     };
-      // const docid =
-      //   props.route.params?.tailentUserId > props.route.params?.MyUserId
-      //     ? props.route.params?.MyUserId + "+" + props.route.params?.tailentUserId
-      //     : props.route.params?.tailentUserId + "+" + props.route.params?.MyUserId 
 
-      console.log('FIRE ID', props.route.params?.fireID);
+      console.log('FIRE ID', fire_Id);
       const newRef = database()
-        .ref(`/one_to_one/${props.route.params?.fireID}`)
+        .ref(`/one_to_one/${fire_Id}`)
         .push();
         mymsg.id = newRef.key
         console.log('RefKey', newRef.key);
         newRef.set(mymsg)
         .then(snapshot => {
           console.log('USER SNAPSHOT', snapshot);
-          onCallAfterChat()
+          onUpdateLastMessage(msg);
+          onCallAfterChat(fire_Id);
           setMsg('')
         })
         .catch(err => {
           console.log('Error on Snap', err);
         });
   };
+
+  const onUpdateLastMessage = (last_Message) => {
+
+    const updatemsg = {
+      created_At: moment().format(),
+      latest_message: last_Message,
+      user_id: props.route.params?.MyUserId,
+    };
+
+    console.log("UPDATE DATA",updatemsg)
+
+      database()
+        .ref(`/latestMessage/${fire_Id}`)
+        .update(updatemsg)
+        .then(()=>{
+          console.log("latest message updated")
+        })
+        .catch(err => {
+          console.log('Error on Snap', err);
+        });
+
+  }
 
   const onCallSubscription = () => {
     setCustomModalPicker(false)
@@ -222,19 +214,48 @@ const ChatScreen = props => {
           leftSource={R.images.chevronBack}
           title={props.route.params?.userName}
           headIcon={
-            <View style={styles.headerView}>
-              <Image
-                source={{
-                  uri: `${
-                    Config.API_URL
-                  }${props.route.params?.userItem?.avatar?.replace(
-                    'http://localhost:8080/',
-                    '',
-                  )}`,
-                }}
-                resizeMode={'cover'}
-                style={styles.headerViewImage}
-              />
+            <View>
+              <View style={styles.headerView}>
+                <Image
+                  source={
+                    (props.route.params?.userItem?.avatar != '' &&
+                    props.route.params?.userItem?.avatar != Config.USER_PROFILE_URL )
+                    ?
+                    {
+                    uri: `${
+                      Config.API_URL
+                    }${props.route.params?.userItem?.avatar?.replace(
+                      'http://localhost:8080/',
+                      '',
+                    )}`,
+                  }
+                  :
+                  R.images.inActiveProfileIcon
+                }
+                  resizeMode={'cover'}
+                  style={styles.headerViewImage}
+                />
+              </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: R.fontSize.Size6,
+                }}>
+                <View
+                  style={{
+                    height: R.fontSize.Size14,
+                    width: R.fontSize.Size14,
+                    borderRadius: R.fontSize.Size10,
+                    borderWidth: 2,
+                    backgroundColor:
+                      props.route.params?.userItem?.user_status == 'available'
+                        ? R.colors.whatsAppColor
+                        : R.colors.redColor,
+                    borderColor: R.colors.white,
+                  }}
+                />
+              </View>
             </View>
           }
         />

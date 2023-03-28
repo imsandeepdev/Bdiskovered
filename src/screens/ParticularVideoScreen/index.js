@@ -108,6 +108,11 @@ const onCallBoostAnimation = () => {
     useNativeDriver: true,
   }).start()
 
+  setTimeout(() => {
+    setBoostStatus(false);
+    animationProgress.current.setValue(0);
+  }, 5000);
+
 }
 
    useEffect(() => {
@@ -208,35 +213,12 @@ const onCallBoostAnimation = () => {
     dispatch(VideoRatingRequest(data,response =>{
       console.log('LIKE RES', response);
       if (response.status == 'success') {
-        // Toast.show(response.message, Toast.SHORT);
         onCallParticularVideoPostAPI();
-
-        // setLoading(false);
       } else {
-        // setLoading(false);
         Toast.show(response.message, Toast.SHORT);
       }
     }))
-    // let headerToken = {
-    //   token: props.authToken,
-    // };
-    // axios({
-    //   method: 'POST',
-    //   url: `${Config.API_URL}${Config.videoRatingAPI}`,
-    //   data: data1,
-    //   headers: headerToken,
-    // }).then(res => {
-    //   console.log('LIKE RES', res);
-    //   if (res.data.status == 'success') {
-    //     Toast.show(res.data.message, Toast.SHORT);
-    //     onCallParticularVideoPostAPI()
-      
-    //     // setLoading(false);
-    //   } else {
-    //     setLoading(false);
-    //     Toast.show(res.data.message, Toast.SHORT);
-    //   }
-    // });
+   
   };
 
 const onCallSavePost = (postId,ind) => {
@@ -503,7 +485,11 @@ const onCallRemoveSavePost = (postId,ind)=>{
                           bottomTitle={item?.title}
                           bottomDiscription={item?.description}
                           usdPrice={
-                            item?.amount == '0' ? null : `USD ${item?.amount}`
+                            item?.amount == '0'
+                              ? null
+                              : `USD ${item?.amount} ${
+                                  item.negotiable == 'Yes' ? '(Negotiable)' : ''
+                                }`
                           }
                           onLoad={onLoad}
                           eyeMarginTop={R.fontSize.Size40}
@@ -524,10 +510,10 @@ const onCallRemoveSavePost = (postId,ind)=>{
                           }}
                           saveIcon={
                             item?.post_save
-                              ? R.images.removeSavedIcon
+                              ? R.images.orangeSaveIcon1
                               : R.images.bookmarkIcon
                           }
-                          saveTitle={item?.post_save ? '' : 'Save'}
+                          // saveTitle={item?.post_save ? '' : 'Save'}
                           onPressShare={() =>
                             myCustomShare(
                               `${Config.API_URL}${item?.post.replace(
@@ -652,14 +638,13 @@ const onCallRemoveSavePost = (postId,ind)=>{
                                 fontWeight: '700',
                                 color: R.colors.placeHolderColor,
                               }}>
-                              {'Average Like '}
+                              {'Average Like'}
                               <Text style={{color: R.colors.appColor}}>
                                 {item?.total_rating != '0' &&
                                 item?.total_rating != null
-                                  ? `${(
-                                      item?.total_rating /
-                                      (item?.total_likes * 20)
-                                    ).toFixed(1)}%`
+                                  ? `${parseInt(
+                                      item?.total_rating / item?.total_likes,
+                                    )}%`
                                   : '0%'}
                               </Text>
                             </Text>
@@ -688,7 +673,8 @@ const onCallRemoveSavePost = (postId,ind)=>{
                         {props.route.params?.from == 'ProfileScreen' && (
                           <Pressable
                             disabled={
-                              (props.route.params?.from == 'ProfileScreen' && !boostStatus)
+                              props.route.params?.from == 'ProfileScreen' &&
+                              !boostStatus
                                 ? false
                                 : true
                             }
@@ -759,7 +745,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
                     height: R.fontSize.Size50,
                     width: R.fontSize.Size50,
                     borderRadius: R.fontSize.Size4,
-                    backgroundColor: R.colors.modelBackground,
+                    // backgroundColor: R.colors.modelBackground,
                     alignItems: 'center',
                     justifyContent: 'center',
                     opacity: pressed ? 0.5 : 1,
@@ -877,7 +863,7 @@ const onCallRemoveSavePost = (postId,ind)=>{
               <CustomLineTextInput
                 value={videoPrice}
                 onChangeText={price => setVideoPrice(price)}
-                placeholder={'Price in USD'}
+                placeholder={'Enter price in USD'}
                 keyboardType={'number-pad'}
               />
 

@@ -119,7 +119,7 @@ const Menu = (props) => {
           <CustomMenuButton
             onPress={() => props.navigation.navigate('SavedPostListScreen')}
             leftSource={R.images.greySaveIcon}
-            title={'Saved Post'}
+            title={'Saved Posts'}
           />
           <CustomMenuButton
             onPress={() =>
@@ -134,19 +134,19 @@ const Menu = (props) => {
           />
           <CustomMenuButton
             onPress={() =>
-              props.navigation.navigate('FaqScreen',{from: 'FAQ'})
+              props.navigation.navigate('FaqScreen',{from: 'FAQs'})
             }
             leftSource={
               props.userType == 'Business'
                 ? R.images.helpIconNew
                 : R.images.faqIcon
             }
-            title={'FAQ'}
+            title={'FAQs'}
           />
           <CustomMenuButton
             onPress={() => onLogout()}
             leftSource={R.images.signoutIcon}
-            title={'Sign Out'}
+            title={'Sign out'}
           />
         </View>
         <View style={{height: R.fontSize.Size80, justifyContent: 'center'}}>

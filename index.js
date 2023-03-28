@@ -6,16 +6,20 @@ import App from './App';
 import messaging from '@react-native-firebase/messaging';
 
 import {name as appName} from './app.json';
+import { Alert } from 'react-native';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
 });
 
-messaging().onNotificationOpenedApp(async remoteMessage => {
-  console.log(
-    'Notification caused app to open from background state:',remoteMessage.notification
-  );
-});
+
+// messaging().onMessage(async remoteMessage => {
+//   console.log('Message handled in the foreground!', remoteMessage);
+//   Alert.alert("OKNotification foreground");
+
+// });
+
+
 
 // const requestUserPermission = async () => {
 //   const authorizationStatus = await messaging().requestPermission();

@@ -18,18 +18,20 @@ const WebViewScreen = (props) => {
           onPress={() => props.navigation.goBack()}
           leftSource={R.images.chevronBack}
           title={(props.route.params?.from).toUpperCase()}
+          title_justifyContent={'center'}
+          title_marginRight={R.fontSize.Size70}
         />
-        <View
+        {/* <View
           style={{
             height: R.fontSize.Size2,
             backgroundColor: R.colors.placeholderTextColor,
             width: '100%',
           }}
-        />
+        /> */}
 
         <WebView
           source={{
-            uri: props.route.params?.url
+            uri: props.route.params?.url,
           }}
         />
       </StoryScreen>

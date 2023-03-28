@@ -71,13 +71,14 @@ const BlockUserScreen = props => {
 
   return (
     <StoryScreen loading={props.loading}>
-      
       <Header
         onPress={() => props.navigation.goBack()}
         leftSource={R.images.chevronBack}
-        title={'Blocked Users'} 
+        title={'Blocked Users'}
+        title_justifyContent={'center'}
+        title_marginRight={R.fontSize.Size70}
       />
-      <View style={styles.mainView}/>
+      {/* <View style={styles.mainView} /> */}
       <View style={{flex: 1}}>
         <FlatList
           style={styles.flatStyle}
@@ -90,7 +91,7 @@ const BlockUserScreen = props => {
                 onPress={() => onUnblockAlart(item?._id)}
                 style={({pressed}) => [
                   styles.pressView,
-                  {opacity: pressed ? 0.5 : 1}
+                  {opacity: pressed ? 0.5 : 1},
                 ]}>
                 <View style={styles.imageView}>
                   <Image
@@ -105,9 +106,7 @@ const BlockUserScreen = props => {
                   />
                 </View>
                 <View style={styles.textView}>
-                  <Text style={styles.text}>
-                    {item?.name}
-                  </Text>
+                  <Text style={styles.text}>{item?.name}</Text>
                 </View>
               </Pressable>
             );
@@ -115,11 +114,9 @@ const BlockUserScreen = props => {
           ListEmptyComponent={() => {
             return (
               <View style={styles.emptyView}>
-                <Text style={styles.emptyText}>
-                  {'No blocked users'}
-                </Text>
+                <Text style={styles.emptyText}>{'No blocked users'}</Text>
               </View>
-            )
+            );
           }}
         />
       </View>

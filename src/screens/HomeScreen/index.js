@@ -37,7 +37,6 @@ import {NativeEventEmitter} from 'react-native';
 import AppContent from '../../utils/Content';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
 import { BottomTabRequest } from '../../actions/bottomtab.action';
-import { NotificationListRequest } from '../../actions/notification.action';
 const eventEmitter = new NativeEventEmitter('');
 
 const tabBarHeight = screenHeight / 10;
@@ -84,6 +83,8 @@ const HomeScreen = (props) => {
   const [reportUserId, setReportUserId] = useState('');
   const [reportDesc, setReportDesc] = useState('');
   const [reportOkModal, setReportOkModal] = useState(false)
+  const [notInterestedOkModal, setNotInterestedOkModal] = useState(false);
+
   const [pullLoading, setPullLoading] = useState(false)
   const [userProfileId, setUserProfileId] = useState('')
   const [tailentList, setTailentList] = useState([
@@ -106,6 +107,7 @@ const HomeScreen = (props) => {
   ]);
   const [allVideoPostList, setAllVideoPostList] = useState([])
   const [notiList, setNotiList] = useState()
+  const [addLike,setAddLike] = useState(0)
 
 
 
@@ -122,18 +124,7 @@ useEffect(() => {
     };
   }, []);
 
-  
 
-// const subEmitter =  eventEmitter.addListener('custom-event', event => {
-//   console.log("EVENT",event)
-//   listRef.current.goToFirstIndex();
-//   });
-
-
-// const goToFirstIndex = () =>{
-//   listRef.current.goToFirstIndex()
-  
-// }
 
 
  useEffect(() => {
@@ -173,12 +164,12 @@ useEffect(() => {
   },[props.navigation])
 
 
-  const onCallDeviceName = () => {
-    setLoading(true)
-     let deviceName = DeviceInfo.getModel();
-     let MaxPosition = deviceName.search('Max');
-     setLoading(false)
-  }
+  // const onCallDeviceName = () => {
+  //   setLoading(true)
+  //    let deviceName = DeviceInfo.getModel();
+  //    let MaxPosition = deviceName.search('Max');
+  //    setLoading(false)
+  // }
   const onCallProfile = () => {
    dispatch(
      GetProfileDetailsRequest(response => {
@@ -195,7 +186,7 @@ useEffect(() => {
     StatusBar.setBarStyle('dark-content', true);
     console.log("SCREEN HEIGHT", screenHeight)
     setAllVideoPostList([]);
-    onCallDeviceName();
+    // onCallDeviceName();
     onCallShowPostRefresh();
   };
 
@@ -225,7 +216,7 @@ useEffect(() => {
   }
 
 const onCallShowPostRefresh = () => {
-  setLoading(true)
+  // setLoading(true)
   let data = {
     mobile_type: 'ios',
   };
@@ -238,15 +229,15 @@ const onCallShowPostRefresh = () => {
         setAllVideoPostList(response?.Post);
         setSliderValue(0);
         onCallProfile();
-        setLoading(false);
+        // setLoading(false);
       } else if (response.status == 'tokenError') {
-        setLoading(false);
+        // setLoading(false);
         props.navigation.replace('LoginScreen');
       }
-      else
-      {
-        setLoading(false)
-      }
+      // else
+      // {
+      //   setLoading(false)
+      // }
     }),
   );
 };
@@ -267,7 +258,7 @@ const onCallShowPostRefresh = () => {
   }
 
     const onCallShowAllPostPullLoading = () => {
-      setLoading(true)
+      // setLoading(true)
       // setPullLoading(true)
       let data = {
         mobile_type: 'ios',
@@ -278,13 +269,13 @@ const onCallShowPostRefresh = () => {
           if (response.status == 'success') {
             setAllVideoPostList([...response?.Post]);
             // setPullLoading(false)
-            setLoading(false);
+            // setLoading(false);
             // dispatch(BottomTabRequest('HomeScreen'));
 
 
           } else if (response.status == 'tokenError') {
             // setPullLoading(false);
-            setLoading(false);
+            // setLoading(false);
             // dispatch(BottomTabRequest('HomeScreen'));
 
 
@@ -293,7 +284,7 @@ const onCallShowPostRefresh = () => {
           else
           {
           // setPullLoading(false);
-            setLoading(false);
+            // setLoading(false);
             // dispatch(BottomTabRequest('HomeScreen'));
 
               
@@ -311,34 +302,23 @@ const onCallShowPostRefresh = () => {
   }
 
   const onCallVideoRatingAPI = (PercentLike,PostId,index1,userId,userType) => {
-    setLoading(true)
+    // setLoading(true)
     let data = {
       id: PostId,
       percentage_like: `${PercentLike}`,
       user_id: userId,
       user_type: userType
     };
-    // let headerToken = {
-    //   token: props.authToken,
-    // };
-    // console.log('LikeData', data1);
-    // console.log(
-    //   'PERCENT LIKE',
-    //   PercentLike,
-    // );
+    
     dispatch(VideoRatingRequest(data,response =>{
-      console.log("VIDEO RATING RES ON HOME PAGE =>",response)
+      
         if (response.status == 'success') {
-          setAllVideoPostList([
-            ...allVideoPostList,
-            {
-              total_likes: allVideoPostList[index1].total_likes++,
-              total_rating: allVideoPostList[index1].total_likes + PercentLike,
-            },
-          ]);
-          const dummyData = allVideoPostList;
-          let arr = dummyData.map((item, index) => {
-            if (index1 == index) {
+          let tempDoc = allVideoPostList;
+          let arr = tempDoc.map((item, index) => {
+            if (index == index1) {
+              item.total_likes = parseInt(item.total_likes) + parseInt(1);
+              item.total_rating =
+                parseInt(item.total_rating) + parseInt(PercentLike);
               item.postInfo = [
                 ...item.postInfo,
                 {percentage_like: PercentLike},
@@ -346,45 +326,14 @@ const onCallShowPostRefresh = () => {
             }
             return {...item};
           });
-          console.log('saved post return', arr);
           setAllVideoPostList(arr);
+          console.log('UPdate state', allVideoPostList);
           setLoading(false);
         } else {
           setLoading(false);
           Toast.show(response.message, Toast.SHORT);
         }
-      }))
-
-    // axios({
-    //   method: 'POST',
-    //   url: `${Config.API_URL}${Config.videoRatingAPI}`,
-    //   data: data1,
-    //   headers: headerToken,
-    // }).then(res => {
-    //   console.log('LIKE RES', res);
-    //   if (res.data.status == 'success') {
-    //     setAllVideoPostList([
-    //       ...allVideoPostList,
-    //       {
-    //         total_likes: allVideoPostList[index1].total_likes++,
-    //         total_rating: allVideoPostList[index1].total_likes + PercentLike,
-    //       },
-    //     ]);
-    //     const dummyData = allVideoPostList;
-    //     let arr = dummyData.map((item, index) => {
-    //       if (index1 == index) {
-    //         item.postInfo = [...item.postInfo,{percentage_like:PercentLike}]
-    //       }
-    //       return {...item};
-    //     });
-    //     console.log('saved post return', arr);
-    //     setAllVideoPostList(arr);
-    //     setLoading(false);
-    //   } else {
-    //     setLoading(false);
-    //     Toast.show(res.data.message, Toast.SHORT);
-    //   }
-    // });
+      }));
   }
 
   const onCallConnectNow = (item) => 
@@ -448,7 +397,7 @@ VideoLink :${videoURL}`,
   const onCallReportModalPress1 = (reportType) => {
     setReportModalPicker(false)
     setSelectTypeReport(reportType)
-    setReportDetailModalPicker(true)
+    setNotInterestedOkModal(true);
   }
   const onCallReportModalPress2 = (reportType )=> {
     setReportModalPicker(false);
@@ -546,30 +495,27 @@ const onCallReportPost = () => {
   }
 }
 
-  const onCallReportPostAPI = () => {
+  const onCallReportPostAPI = (reportTitle) => {
     let data = {
-        user_id: reportUserId,
-        post_id:reportPostId,
-        descritpion: reportDesc
-    }
-    console.log('ReportData', data)
-    dispatch(ReportPostRequest(data, response => {
-      console.log("Report Response",response)
-      if(response.status == 'success')
-      {
-        // Toast.show(response.message, Toast.SHORT)
-        onCallClosedReportDetailModal()
-        onCallShowAllPost();
-        setReportDesc('')
-        setReportOkModal(true)
-      }
-      else
-      {
-        Toast.show(response.message, Toast.SHORT);
-        setReportDesc('');
-      }
-    }))
-  }
+      user_id: reportUserId,
+      post_id: reportPostId,
+      descritpion: reportTitle,
+    };
+    console.log('ReportData', data);
+    dispatch(
+      ReportPostRequest(data, response => {
+        console.log('Report Response', response);
+        if (response.status == 'success') {
+          // Toast.show(response.message, Toast.SHORT)
+          onCallClosedReportDetailModal();
+          onCallShowAllPost();
+          setReportOkModal(true);
+        } else {
+          Toast.show(response.message, Toast.SHORT);
+        }
+      }),
+    );
+  };
 
 
   const onCallBlockUser = () => {
@@ -600,21 +546,15 @@ const onCallReportPost = () => {
     let data = {
       postId: reportPostId
     };
-    // setLoading(true);
-
     dispatch(BlockPostRequest(data, response =>{
       console.log('BLOCK POST RESPONSE', response);
 
       if (response.status == 'success') {
-        // Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
+        setNotInterestedOkModal(false);
         onCallShowAllPost();
-        // setLoading(false);
-
       } else {
         Toast.show(response.message, Toast.SHORT);
-        onCallClosedReportDetailModal();
-        // setLoading(false);
+        setNotInterestedOkModal(false);
       }
     }))
   }
@@ -653,23 +593,23 @@ const onCallReportPost = () => {
             props.navigation.navigate('NotificationScreen')
           }
           rightSourceExtraView={
-            notiList > 0 &&
-            <View
-            style={{
-              position:'absolute',
-              top:0,
-              right:0,
-            }}
-            >
-              <Image
-              source={R.images.redCircleIcon}
-              resizeMode={'contain'}
-              style={{
-                height:R.fontSize.Size8,
-                width:R.fontSize.Size8
-              }}
-              />
-            </View>
+            notiList > 0 && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                }}>
+                <Image
+                  source={R.images.redCircleIcon}
+                  resizeMode={'contain'}
+                  style={{
+                    height: R.fontSize.Size8,
+                    width: R.fontSize.Size8,
+                  }}
+                />
+              </View>
+            )
           }
         />
 
@@ -677,7 +617,7 @@ const onCallReportPost = () => {
           <SwiperFlatList
             // ref={listRef}
             // index={currIndex}
-            refreshing={loading}
+            refreshing={props.loading}
             // onRefresh={onCallShowAllPostPullLoading}
             vertical={true}
             style={{
@@ -734,10 +674,16 @@ const onCallReportPost = () => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userImage={`${Config.API_URL}${item?.avatar?.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
+                      userImage={
+                        item?.avatar != Config.USER_PROFILE_URL
+                          ? {
+                              uri: `${Config.API_URL}${item?.avatar?.replace(
+                                'http://localhost:8080/',
+                                '',
+                              )}`,
+                            }
+                          : R.images.inActiveProfileIcon
+                      }
                       userName={
                         item?.type == 'post_add' ? item?.title : item?.username
                       }
@@ -751,7 +697,9 @@ const onCallReportPost = () => {
                           ? null
                           : item?.amount == '0'
                           ? null
-                          : `USD ${item?.amount}`
+                          : `USD ${item?.amount} ${
+                              item.negotiable == 'Yes' ? '(Negotiable)' : ''
+                            }`
                       }
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
@@ -762,10 +710,10 @@ const onCallReportPost = () => {
                       }}
                       saveIcon={
                         item?.post_save
-                          ? R.images.removeSavedIcon
+                          ? R.images.orangeSaveIcon1
                           : R.images.bookmarkIcon
                       }
-                      saveTitle={item?.post_save ? '' : 'Save'}
+                      // saveTitle={item?.post_save ? '' : 'Save'}
                       onPressShare={() =>
                         myCustomShare(
                           `${Config.API_URL}${item?.post.replace(
@@ -932,10 +880,7 @@ const onCallReportPost = () => {
                             <Text style={{color: R.colors.appColor}}>
                               {item?.total_rating != '' &&
                               item?.total_rating != '0'
-                                ? `${(
-                                    item?.total_rating /
-                                    (item?.total_likes * 20)
-                                  ).toFixed(1)}%`
+                                ? `${parseInt(item?.total_rating/item?.total_likes)}%`
                                 : '0%'}
                             </Text>
                           </Text>
@@ -1000,13 +945,24 @@ const onCallReportPost = () => {
         visible={modalPicker}
         onRequestClose={() => setModalPicker(false)}
         cancelOnPress={() => setModalPicker(false)}
-        userProfile={{
+        userProfile={
+          (videoModalDetail?.avatar != Config.USER_PROFILE_URL && videoModalDetail?.avatar != null)
+          ?
+          {
           uri: `${Config.API_URL}${videoModalDetail?.avatar.replace(
             'http://localhost:8080/',
             '',
           )}`,
-        }}
+        }
+        :
+        R.images.inActiveProfileIcon
+      }
         userName={videoModalDetail?.username}
+        userStatusBackgroundColor={
+          videoModalDetail?.user_status == 'available'
+            ? R.colors.whatsAppColor
+            : R.colors.redColor
+        }
         bio={videoModalDetail?.bio}
         personalList={videoModalPersonalDetail.map((item, index) => {
           return (
@@ -1051,6 +1007,7 @@ const onCallReportPost = () => {
         onPress1={() => onCallReportModalPress1('cutVideo')}
         onPress2={() => onCallReportModalPress2('dontRecommend')}
         onPress3={() => onCallReportModalPress3('report')}
+        blockTitleColor={R.colors.blockRedColor}
       />
       <ReportDetailModal
         visible={reportDetailModalPicker}
@@ -1058,55 +1015,64 @@ const onCallReportPost = () => {
         closeModal={() => onCallClosedReportDetailModal()}
         onPressCancel={() => onCallClosedReportDetailModal()}
         onPressReport={() => {
-          selectTypeReport == 'report'
-            ? onCallReportPost()
-            : selectTypeReport == 'dontRecommend'
+          selectTypeReport == 'dontRecommend'
             ? onCallBlockUser()
             : onCallBlockPost();
         }}
+        modaljustifyContent={'flex-end'}
+        buttonHidden={selectTypeReport == 'report' ? true : false}
         reportTitle={selectTypeReport == 'report' ? 'Proceed' : 'Proceed'}
-        title={
-          selectTypeReport == 'report'
-            ? 'Why are you reporting this post? '
-            : selectTypeReport == 'dontRecommend'
-            ? 'Are you sure you want to block?'
-            : 'Are you sure to Hide this video?'
-        }
+        title={selectTypeReport == 'report' ? 'Report Post' : ''}
         ReportContent={
           <View>
             {selectTypeReport == 'report' && (
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                showsVerticalScrollIndicator={false}>
-                {AppContent.ReportList.map((item, index) => {
-                  return (
-                    <Pressable
-                      key={index}
-                      onPress={() => OnCallSelectReport(index, item)}
-                      style={({pressed}) => [
-                        Styles.reportContentView,
-                        {opacity: pressed ? 0.5 : 1},
-                      ]}>
-                      <Image
-                        source={
-                          selectReport == index
-                            ? R.images.checkRadioIcon
-                            : R.images.unCheckRadioIcon
-                        }
-                        style={Styles.reportContentCheckIcon}
-                        resizeMode={'contain'}
-                      />
-                      <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
-                        <Text
-                          style={Styles.reportContentTitle}
-                          numberOfLines={2}>
-                          {item.title}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
+              <View>
+                {/* <Text
+                  style={[Styles.dontRecText, {fontSize: R.fontSize.Size14}]}>
+                  {'Report Post'}
+                </Text> */}
+                <Text
+                  style={[
+                    Styles.dontRecText,
+                    {
+                      color: R.colors.placeHolderColor,
+                      fontSize: R.fontSize.Size14,
+                    },
+                  ]}>
+                  {'Why are you reporting this post? '}
+                </Text>
+                <ScrollView
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    marginTop: R.fontSize.Size4,
+                  }}
+                  showsVerticalScrollIndicator={false}>
+                  {AppContent.ReportList.map((item, index) => {
+                    return (
+                      <Pressable
+                        key={index}
+                        onPress={() => onCallReportPostAPI(item.title)}
+                        style={({pressed}) => [
+                          Styles.reportContentView,
+                          {opacity: pressed ? 0.5 : 1},
+                        ]}>
+                        <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
+                          <Text
+                            style={Styles.reportContentTitle}
+                            numberOfLines={2}>
+                            {item.title}
+                          </Text>
+                        </View>
+                        <Image
+                          source={R.images.chevronRightIcon}
+                          style={Styles.reportContentCheckIcon}
+                          resizeMode={'contain'}
+                        />
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              </View>
             )}
             {selectTypeReport == 'cutVideo' && (
               <View style={Styles.cutVideoView}>
@@ -1118,6 +1084,16 @@ const onCallReportPost = () => {
             {selectTypeReport == 'dontRecommend' && (
               <View style={Styles.dontRecView}>
                 <Text style={Styles.dontRecText}>
+                  {'Are you sure you want to block?'}
+                </Text>
+                <Text
+                  style={[
+                    Styles.dontRecText,
+                    {
+                      color: R.colors.placeHolderColor,
+                      marginTop: R.fontSize.Size4,
+                    },
+                  ]}>
                   {AppContent.dontRecContent}
                 </Text>
               </View>
@@ -1133,16 +1109,25 @@ const onCallReportPost = () => {
         title={AppContent.reportOkContent}
         onPress={() => setReportOkModal(false)}
       />
+      <AlartModal
+        visible={notInterestedOkModal}
+        onRequestClose={() => setNotInterestedOkModal(false)}
+        icon={R.images.checkOrangeIcon}
+        marginHorizontalModal={R.fontSize.Size35}
+        title={AppContent.cutVideoContent}
+        onPress={() => onCallBlockPost()}
+      />
     </StoryScreen>
   );
 };
 
 const mapStateToProps = (state, props) => ({
   loading:
+    state.showAllPostRoot.loading ||
     state.auth.loading ||
     state.getProfileDetailsRoot.loading ||
-    state.savedPostRoot.loading ||
-    state.videoRateRoot.loading ||
+    // state.savedPostRoot.loading ||
+    // state.videoRateRoot.loading ||
     state.blockRoot.loading
     ,
   userProfile: state.getProfileDetailsRoot.getProfileInit,

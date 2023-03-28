@@ -31,7 +31,7 @@ const CustomRow = (props) => {
           <Text
             style={{
               fontFamily: R.fonts.regular,
-              color: R.colors.lightBlack,
+              color: props.titleColor ?? R.colors.lightBlack,
               fontWeight: '700',
               fontSize: R.fontSize.Size14,
             }}>
@@ -95,7 +95,7 @@ const ReportModal = props => {
             {props.optionFirst ? null : (
               <CustomRow
                 onPress={props.onPress1}
-                Icon={props.icon1 ?? R.images.disLikeIcon}
+                Icon={props.icon1 ?? R.images.IcDislikeIcon}
                 title={props.title1 ?? 'Not Interested'}
                 // title={props.title1 ?? 'Cut this video'}
               />
@@ -104,14 +104,15 @@ const ReportModal = props => {
             {props.optionThird ? null : (
               <CustomRow
                 onPress={props.onPress3}
-                Icon={R.images.reportIcon}
+                Icon={R.images.IcreportIcon}
                 title={'Report'}
               />
             )}
             <CustomRow
               onPress={props.onPress2}
-              Icon={props.icon2 ?? R.images.blockIcon}
+              Icon={props.icon2 ?? R.images.banUserIcon}
               title={props.title2 ?? `Block`}
+              titleColor={props.blockTitleColor}
               // title={props.title2 ?? `Don't recommend this channel`}
             />
           </View>

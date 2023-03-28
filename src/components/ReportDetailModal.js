@@ -1,6 +1,8 @@
 import * as React from 'react';
-import {View, Pressable, Text, Modal, Image, ScrollView} from 'react-native';
+import {View, Pressable, Text, Modal, Image, ScrollView,Dimensions} from 'react-native';
 import R from '../res/R';
+
+const screenHeight = Dimensions.get('screen').height;
 
 const ReportDetailModal = props => {
   return (
@@ -12,14 +14,16 @@ const ReportDetailModal = props => {
         style={{
           flex: 1,
           backgroundColor: R.colors.modelBackground,
-          justifyContent: 'center',
+          justifyContent: props.modaljustifyContent ?? 'center',
         }}>
         <View
           style={{
             backgroundColor: R.colors.white,
             borderRadius: R.fontSize.Size8,
             paddingBottom: R.fontSize.Size20,
-            marginHorizontal: R.fontSize.Size15,
+            minHeight:R.fontSize.Size200,
+            maxHeight: screenHeight/1.5
+            // marginHorizontal: R.fontSize.Size15,
           }}>
           <View
             style={{
@@ -61,41 +65,7 @@ const ReportDetailModal = props => {
             }}>
             <View>
               {props.ReportContent}
-              {/* <Pressable
-                        onPress={props.onPress}
-                        style={({pressed}) => [
-                        {
-                            marginVertical: R.fontSize.Size4,
-                            borderBottomWidth: 0.5,
-                            borderColor: R.colors.placeHolderColor,
-                            height: R.fontSize.Size40,
-                            borderRadius: R.fontSize.Size8,
-                            alignItems: 'center',
-                            opacity: pressed ? 0.5 : 1,
-                            flexDirection: 'row',
-                        },
-                        ]}>
-                        <Image
-                        source={props.Icon}
-                        style={{
-                            height: R.fontSize.Size18,
-                            width: R.fontSize.Size18,
-                            paddingHorizontal: R.fontSize.Size20,
-                        }}
-                        resizeMode={'contain'}
-                        />
-                        <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
-                        <Text
-                            style={{
-                            fontFamily: R.fonts.regular,
-                            color: R.colors.lightBlack,
-                            fontWeight: '700',
-                            fontSize: R.fontSize.Size14,
-                            }}>
-                            {props.title}
-                        </Text>
-                        </View>
-                    </Pressable> */}
+              
             </View>
             {
               props.buttonHidden ? null
@@ -104,8 +74,9 @@ const ReportDetailModal = props => {
             <View
               style={{
                 flexDirection: 'row',
-                marginTop: R.fontSize.Size15,
-                justifyContent: 'flex-end',
+                alignItems:'center',
+                justifyContent:'center',
+                paddingVertical:R.fontSize.Size10
               }}>
               <Pressable
                 onPress={props.onPressCancel}
@@ -113,7 +84,7 @@ const ReportDetailModal = props => {
                   {
                     opacity: pressed ? 0.5 : 1,
                     borderWidth: 1,
-                    width: R.fontSize.Size100,
+                    width: R.fontSize.Size150,
                     height: R.fontSize.Size35,
                     borderRadius: R.fontSize.Size4,
                     borderColor: R.colors.appColor,
@@ -139,7 +110,7 @@ const ReportDetailModal = props => {
                   {
                     opacity: pressed ? 0.5 : 1,
                     borderWidth: 1,
-                    width: R.fontSize.Size100,
+                    width: R.fontSize.Size150,
                     height: R.fontSize.Size35,
                     borderRadius: R.fontSize.Size4,
                     borderColor: R.colors.appColor,

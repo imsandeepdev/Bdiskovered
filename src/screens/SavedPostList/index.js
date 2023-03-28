@@ -56,78 +56,85 @@ const SavedPostList = (props) => {
           <Header
             onPress={() => props.navigation.goBack()}
             leftSource={R.images.chevronBack}
-            title={'Saved Post'}
+            title={'Saved Posts'}
+            title_justifyContent={'center'}
+            title_marginRight={R.fontSize.Size70}
           />
-          <View style={{flex: 1,paddingHorizontal:R.fontSize.Size10,alignItems:'flex-start',justifyContent:'center'}}>
-           
-              <FlatList    
-                style={{ flex:1,}}
-                numColumns={3}
-                data={savedVideoList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) => {
-                  return (
-                    <View
+          <View
+            style={{
+              flex: 1,
+              paddingHorizontal: R.fontSize.Size10,
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+            }}>
+            <FlatList
+              style={{flex: 1}}
+              numColumns={3}
+              data={savedVideoList}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => {
+                return (
+                  <View
+                    style={{
+                      marginHorizontal: R.fontSize.Size2,
+                      marginTop: R.fontSize.Size4,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    key={index}>
+                    <Pressable
+                      onPress={() =>
+                        props.navigation.navigate('FilterVideoScreen', {
+                          playIndex: index,
+                          videoItems: savedVideoList,
+                          fromScreen: 'SavedPostListScreen',
+                        })
+                      }
+                      style={({pressed}) => [
+                        {
+                          opacity: pressed ? 0.5 : 1,
+                          width: screenWidth / 3.6,
+                          height: screenWidth / 3,
+                          borderRadius: R.fontSize.Size5,
+                          margin: R.fontSize.Size5,
+                          overflow: 'hidden',
+                        },
+                      ]}>
+                      <VideoCard
+                        videoUrl={`${Config.API_URL}${item?.post.replace(
+                          'http://localhost:8080/',
+                          '',
+                        )}`}
+                        paused={true}
+                        shareFiled={true}
+                        playButtonVisible={true}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              }}
+              ListEmptyComponent={() => {
+                return (
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      height: screenHeight / 1.2,
+                      width: screenWidth,
+                      alignItems: 'center',
+                    }}>
+                    <Text
                       style={{
-                        marginHorizontal: R.fontSize.Size2,
-                        marginTop: R.fontSize.Size4,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                      key={index}>
-                      <Pressable
-                        onPress={() =>
-                          props.navigation.navigate('FilterVideoScreen', {
-                            playIndex: index,
-                            videoItems: savedVideoList,
-                            fromScreen: 'SavedPostListScreen',
-                          })
-                        }
-                        style={({pressed}) => [
-                          {
-                            opacity: pressed ? 0.5 : 1,
-                            width: screenWidth / 3.6,
-                            height: screenWidth / 3,
-                            borderRadius: R.fontSize.Size5,
-                            margin: R.fontSize.Size5,
-                            overflow: 'hidden',
-                          },
-                        ]}>
-                        <VideoCard
-                          videoUrl={`${Config.API_URL}${item?.post.replace(
-                            'http://localhost:8080/',
-                            '',
-                          )}`}
-                          paused={true}
-                          shareFiled={true}
-                          playButtonVisible={true}
-                        />
-                      </Pressable>
-                    </View>
-                  );
-                }}
-                ListEmptyComponent={()=>{
-                    return (
-                      <View
-                        style={{
-                          justifyContent: 'center',
-                          height: screenHeight / 1.2,
-                          width: screenWidth,
-                          alignItems:'center'
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: R.fonts.regular,
-                            fontSize: R.fontSize.Size12,
-                            color: R.colors.placeHolderColor,
-                            fontWeight: '500',
-                          }}>
-                          {'You have no saved post'}
-                        </Text>
-                      </View>
-                    );
-                }}
-              />
+                        fontFamily: R.fonts.regular,
+                        fontSize: R.fontSize.Size12,
+                        color: R.colors.placeHolderColor,
+                        fontWeight: '500',
+                      }}>
+                      {'You have no saved posts'}
+                    </Text>
+                  </View>
+                );
+              }}
+            />
           </View>
         </SafeAreaView>
       </StoryScreen>

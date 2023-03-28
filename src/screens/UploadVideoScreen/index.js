@@ -183,16 +183,22 @@ const onCheckUserType = () => {
 
 }
 
- const onCallLatitudeLongitude = () => {
-   AsyncStorage.getItem('userLatLong', (err, result) => {
-     console.log('RESULT LONGITUDE', result);
-     const myArray = result.split(',');
-     console.log('Result1', myArray[0]);
-     console.log('Result2', myArray[1]);
-     setMyLat(myArray[0]);
-     setMyLong(myArray[1]);
-     onCallUserLocation(myArray[0], myArray[1]);
-   });
+ const onCallLatitudeLongitude = async() => {
+  //  AsyncStorage.getItem('userLatLong', (err, result) => {
+  //    console.log('RESULT LONGITUDE', result);
+  //    const myArray = result.split(',');
+  //    console.log('Result1', myArray[0]);
+  //    console.log('Result2', myArray[1]);
+  //    setMyLat(myArray[0]);
+  //    setMyLong(myArray[1]);
+  //    onCallUserLocation(myArray[0], myArray[1]);
+  //  });
+    let tempLat = await AsyncStorage.getItem('userLat')
+      console.log('temp user LAT', tempLat);
+      setMyLat(tempLat)
+    let tempLong = await AsyncStorage.getItem('userLong');
+     console.log('temp user LONG', tempLong);
+     setMyLong(tempLong)
  };
 
   const onCallUserLocation = (lat, long) => {
@@ -641,7 +647,7 @@ const onCallDeviceName = () => {
                         },
                       ]}>
                       <Image
-                        source={R.images.activeAddIcon}
+                        source={R.images.plusIconOrage}
                         style={{
                           height: R.fontSize.Size10,
                           width: R.fontSize.Size10,
@@ -706,7 +712,7 @@ const onCallDeviceName = () => {
                     <CustomLineTextInput
                       value={videoPrice}
                       onChangeText={price => setVideoPrice(price)}
-                      placeholder={'Price in USD'}
+                      placeholder={'Enter price in USD'}
                       keyboardType={'number-pad'}
                     />
 

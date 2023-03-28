@@ -23,6 +23,8 @@ const images = {
 
   // Home
   menuIcon: require('./images/menuIcon.png'),
+  chevronRightIcon: require('./images/chevron-right.png'),
+
   filterIcon: require('./images/filterIcon.png'),
   bellIcon: require('./images/Bell.png'),
   cancleIcon: require('./images/cancle.png'),
@@ -47,7 +49,6 @@ const images = {
   orangeSaveIcon1: require('./images/orangeShareIcon1.png'),
   removeSavedIcon: require('./images/removeSaved.png'),
   whiteDotIcon: require('./images/whitedotsIcon.png'),
-  reportIcon: require('./images/reportIcon.png'),
   bookmarkIcon: require('./images/bookmarkIcon.png'),
   removebookmarkIcon: require('./images/removebookmark.png'),
   disLikeIcon: require('./images/unlikeIcon.png'),
@@ -112,6 +113,15 @@ const images = {
 
   redCircleIcon: require('./images/redCircle.png'),
   greenCircleIcon: require('./images/greenCircle.png'),
+
+  banUserIcon: require('./images/ic_banuser.png'),
+  IcreportIcon: require('./images/ic_report.png'),
+  IcDislikeIcon: require('./images/ic_dislike.png'),
+
+  IcCommunityIcon: require('./images/ic_communityg.png'),
+  IcCotactusIcon: require('./images/ic_contact_us.png'),
+  IcPolicyIcon: require('./images/ic_privacy_policy.png'),
+  IcTermIcon: require('./images/ic_term_and_cond.png'),
 };
 
 export {images};

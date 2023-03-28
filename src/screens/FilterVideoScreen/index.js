@@ -7,7 +7,8 @@ import {
   Text,
   Dimensions,
   ScrollView,
-  AppState
+  AppState,
+  Animated
 } from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {
@@ -36,9 +37,12 @@ import AppContent from '../../utils/Content';
 import { VideoRatingRequest } from '../../actions/videoRating.action';
 import { BottomTabRequest } from '../../actions/bottomtab.action';
 import { GetProfileDetailsRequest } from '../../actions/getProfile.action';
+import { BoostPostRequest } from '../../actions/boostPost.action';
 const screenHeight = Dimensions.get('screen').height;
 const screenWidth = Dimensions.get('screen').width;
-
+import Lottie from 'lottie-react-native';
+import { Easing } from 'react-native';
+const rocketPath = require('../../res/rocket.json');
 
 
 const FilterVideoScreen = props => {
@@ -49,20 +53,19 @@ const FilterVideoScreen = props => {
   const [videoList, setVideoList] = useState([]);
   const [sliderValue, setSliderValue] = useState(0); 
   const [modalPicker, setModalPicker] = useState(false);
+  const [boostStatus, setBoostStatus] = useState(false);
+  const [boostMsg, setBoostMsg] = useState('');
+
+
+  const [alartModalPicker, setAlartModalPicker] = useState(false);
+
   const [videoModalDetail, setVideoModalDetail] = useState();
   const [videoModalPersonalDetail, setVideoModalPersonalDetail] = useState([]);
   const [videoModalTalentDetail, setVideoModalTalentDetail] = useState([]);
   const [videoModalAvailableDetail, setVideoModalAvailableDetail] = useState([]);
-  const [reportModalPicker, setReportModalPicker] = useState(false);
-  const [reportDetailModalPicker, setReportDetailModalPicker] = useState(false);
-  const [selectReport, setSelectReport] = useState();
-  const [selectTypeReport, setSelectTypeReport] = useState('');
-  const [reportPostId, setReportPostId] = useState('');
-  const [reportUserId, setReportUserId] = useState('');
-  const [reportDesc, setReportDesc] = useState('');
-  const [reportOkModal, setReportOkModal] = useState(false);
   const [userProfileId, setUserProfileId] = useState('');
 
+  const animationProgress = React.useRef(new Animated.Value(0));
 
 useEffect(() => {
   const listener = status => {
@@ -152,20 +155,20 @@ const onCallProfile = () => {
       user_type: userType
     };
     console.log("VIDEORATE",data)
+
+    
+
+
     setLoading(true)
     dispatch(VideoRatingRequest(data,response =>{
       console.log("VIDEO RATING RES ON HOME PAGE =>",response)
         if (response.status == 'success') {
-          setVideoList([
-            ...videoList,
-            {
-              total_likes: videoList[index1].total_likes++,
-              total_rating: videoList[index1].total_likes + PercentLike,
-            },
-          ]);
-          const dummyData = videoList;
-          let arr = dummyData.map((item, index) => {
-            if (index1 == index) {
+         
+          let tempDoc = videoList;
+          let arr = tempDoc.map((item, index) => {
+            if (index == index1) {
+              item.total_likes = parseInt(item.total_likes) + parseInt(1);
+              item.total_rating = parseInt(item.total_rating) + parseInt(PercentLike);
               item.postInfo = [
                 ...item.postInfo,
                 {percentage_like: PercentLike},
@@ -173,7 +176,6 @@ const onCallProfile = () => {
             }
             return {...item};
           });
-          console.log('saved post return', arr);
           setVideoList(arr);
           setLoading(false);
         } else {
@@ -182,32 +184,6 @@ const onCallProfile = () => {
         }
       }))
 
-    // setLoading(true);
-    // let data1 = {
-    //   id: PostId,
-    //   percentage_like: `${PercentLike}`,
-    // };
-    // let headerToken = {
-    //   token: props.authToken,
-    // };
-    // axios({
-    //   method: 'POST',
-    //   url: `${Config.API_URL}${Config.videoRatingAPI}`,
-    //   data: data1,
-    //   headers: headerToken,
-    // }).then(res => {
-    //   console.log('LIKE RES', res);
-    //   if (res.data.status == 'success') {
-    //     setVideoList(videoList);
-    //     setTimeout(() => {
-    //       setSliderValue(0);
-    //     }, 2000);
-    //     setLoading(false);
-    //   } else {
-    //     setLoading(false);
-    //     Toast.show(res.data.message, Toast.SHORT);
-    //   }
-    // });
   };
 
   const onCallModal = (item) => {
@@ -277,43 +253,7 @@ const onCallProfile = () => {
        props.navigation.navigate('ProfileScreen');
      };
 
-
-// const onCallReportModal = (postId, userId) => {
-//   setReportPostId(postId);
-//   setReportUserId(userId);
-//   setReportModalPicker(true);
-// };
-
-// const onCallReportModalPress1 = reportType => {
-//   setReportModalPicker(false);
-//   setSelectTypeReport(reportType);
-//   setReportDetailModalPicker(true);
-// };
-// const onCallReportModalPress2 = reportType => {
-//   setReportModalPicker(false);
-//   setSelectTypeReport(reportType);
-//   setReportDetailModalPicker(true);
-// };
-// const onCallReportModalPress3 = reportType => {
-//   setReportModalPicker(false);
-//   setSelectTypeReport(reportType);
-//   setReportDetailModalPicker(true);
-// };
-
-// const OnCallSelectReport = (index, item) => {
-//   setSelectReport(index);
-//   setReportDesc(item.title);
-//   console.log('ReportDetail', item.title);
-//   console.log('ReportIndex', index);
-// };
-
-// const onCallClosedReportDetailModal = () => {
-//   setSelectTypeReport('');
-//   setReportDetailModalPicker(false);
-//   setSelectReport('');
-// };
-
-const onCallSavePost = postId => {
+const onCallSavePost = (postId,ind) => {
   let data = {
     post_id: postId,
   };
@@ -322,6 +262,16 @@ const onCallSavePost = postId => {
     SavedPostRequest(data, response => {
       console.log('Saved Post Response', response);
       if (response.status == 'success') {
+        const dummyData = videoList;
+        let arr = dummyData.map((item, index) => {
+          if (ind == index) {
+            item.post_save = !item.post_save;
+          }
+          return {...item};
+        });
+        console.log('saved post return', arr);
+        setVideoList(arr);
+        setCurrIndex(ind);
         setLoading(false);
       } else {
         Toast.show(response?.message, Toast.SHORT);
@@ -335,7 +285,7 @@ const onCallSavePost = postId => {
 
 
 
- const onCallRemoveSavePost = postId => {
+ const onCallRemoveSavePost = (postId,ind) => {
    let data = {
      post_id: postId,
    };
@@ -344,7 +294,18 @@ const onCallSavePost = postId => {
      DeleteSavedPostRequest(data, response => {
        console.log('Saved Post Response', response);
        if (response.status == 'success') {
-         onCallSavedPostAPI();
+         const dummyData = videoList;
+         let arr = dummyData.map((item, index) => {
+           if (ind == index) {
+             item.post_save = !item.post_save;
+           }
+           return {...item};
+         });
+         console.log('saved post return', arr);
+          setVideoList(arr);
+          setCurrIndex(ind);
+         setLoading(false);
+
        } else {
          Toast.show(response?.message, Toast.SHORT);
          setLoading(false);
@@ -365,85 +326,55 @@ const onCallSavePost = postId => {
    );
  };
 
-// const onCallReportPostValidation = () => {
-//   return CommonFunctions.isBlank(reportDesc.trim(), 'Select any report reason');
-// };
 
-// const onCallReportPost = () => {
-//   if (onCallReportPostValidation()) {
-//     onCallReportPostAPI();
-//   }
-// };
+const onCallSubScription = () => {
+    setAlartModalPicker(false);
+    props.navigation.navigate('SubscriptionScreen');
+};
 
-// const onCallReportPostAPI = () => {
-//   let data = {
-//     user_id: reportUserId,
-//     post_id: reportPostId,
-//     descritpion: reportDesc,
-//   };
-//   console.log('ReportData', data);
-//   dispatch(
-//     ReportPostRequest(data, response => {
-//       console.log('Report Response', response);
-//       if (response.status == 'success') {
-//         Toast.show(response.message, Toast.SHORT);
-//         onCallClosedReportDetailModal();
-//         setReportDesc('');
-//         setReportOkModal(true);
-//       } else {
-//         Toast.show(response.message, Toast.SHORT);
-//         setReportDesc('');
-//       }
-//     }),
-//   );
-// };
+const onCallOkBoost = () => {
+  setVideoPlayPause(false);
+  setAlartModalPicker(false);
+};
 
-// const onCallBlockUser = () => {
-//   let data = {
-//     blockId: reportUserId,
-//   };
-//   setLoading(true);
-//   dispatch(
-//     BlockUserRequest(data, response => {
-//       console.log('BLOCK USER RESPONSE', response);
-//       if (response.status == 'success') {
-//         Toast.show(response.message, Toast.SHORT);
-//         onCallClosedReportDetailModal();
-//         props.navigation.replace('HomeMenu');
+ const onPressBoostAPI = postId => {
+   let data = {
+     post_id: postId,
+   };
 
-//       } else {
-//         Toast.show(response.message, Toast.SHORT);
-//         onCallClosedReportDetailModal();
-//         setLoading(false);
-//       }
-//     }),
-//   );
-// };
-
-// const onCallBlockPost = () => {
-//   let data = {
-//     postId: reportPostId,
-//   };
-//   setLoading(true);
-
-//   dispatch(
-//     BlockPostRequest(data, response => {
-//       console.log('BLOCK POST RESPONSE', response);
-
-//       if (response.status == 'success') {
-//         Toast.show(response.message, Toast.SHORT);
-//         onCallClosedReportDetailModal();
-//         props.navigation.replace('HomeMenu')
-//       } else {
-//         Toast.show(response.message, Toast.SHORT);
-//         onCallClosedReportDetailModal();
-//         setLoading(false);
-//       }
-//     }),
-//   );
-// };
+   dispatch(
+     BoostPostRequest(data, response => {
+       console.log('BOOST POST RES', response);
+       if (response.status == 'success') {
+         if (response.message == 'Boost successfully') {
+           setBoostStatus(true);
+           setBoostMsg(response.message);
+           onCallBoostAnimation();
+         } else {
+           setVideoPlayPause(true);
+           setBoostMsg(response.message);
+           setBoostStatus(false);
+           setAlartModalPicker(true);
+         }
+       }
+     }),
+   );
+ };
 
 
+ const onCallBoostAnimation = () => {
+   Animated.timing(animationProgress.current, {
+     toValue: 1,
+     duration: 5000,
+     easing: Easing.linear,
+     useNativeDriver: true,
+   }).start();
+   setTimeout(()=>{
+    setBoostStatus(false)
+    animationProgress.current.setValue(0)
+   },5000)
+   
+ };
 
   return (
     <View style={{flex: 1}}>
@@ -474,7 +405,7 @@ const onCallSavePost = postId => {
                     ]}>
                     <VideoCard
                       fromTop={R.fontSize.Size35}
-                      fromLeft={R.fontSize.Size50}
+                      fromLeft={R.fontSize.Size40}
                       userStatusBackgroundColor={
                         item?.user_status == 'available'
                           ? R.colors.whatsAppColor
@@ -484,10 +415,16 @@ const onCallSavePost = postId => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userImage={`${Config.API_URL}${item?.avatar?.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
+                      userImage={
+                        item?.avatar != Config.USER_PROFILE_URL
+                          ? {
+                              uri: `${Config.API_URL}${item?.avatar?.replace(
+                                'http://localhost:8080/',
+                                '',
+                              )}`,
+                            }
+                          : R.images.inActiveProfileIcon
+                      }
                       onPressUserIcon={() => {
                         userProfileId == item.user_id
                           ? onCallProfileScreen()
@@ -508,7 +445,11 @@ const onCallSavePost = postId => {
                       bottomTitle={item?.title}
                       bottomDiscription={item?.description}
                       usdPrice={
-                        item?.amount == '0' ? null : `USD ${item?.amount}`
+                        item?.amount == '0'
+                          ? null
+                          : `USD ${item?.amount} ${
+                              item.negotiable == 'Yes' ? '(Negotiable)' : ''
+                            }`
                       }
                       onLoad={onLoad}
                       paused={currIndex !== index || videoPlayPause}
@@ -524,13 +465,13 @@ const onCallSavePost = postId => {
                           : true
                       }
                       onPressSave={() =>
-                        props.route.params?.fromScreen == 'SavedPostListScreen'
-                          ? onCallRemoveSavePost(item?.postID)
-                          : onCallSavePost(item?.postID)
+                        item?.post_save
+                          ? onCallRemoveSavePost(item?.postID, index)
+                          : onCallSavePost(item?.postID, index)
                       }
                       saveIcon={
-                        props.route.params?.fromScreen == 'SavedPostListScreen'
-                          ? R.images.removeSavedIcon
+                        item?.post_save
+                          ? R.images.orangeSaveIcon1
                           : R.images.bookmarkIcon
                       }
                       saveTitle={
@@ -614,10 +555,7 @@ const onCallSavePost = postId => {
                           <Text style={{color: R.colors.appColor}}>
                             {item?.total_rating != '' &&
                             item?.total_rating != '0'
-                              ? `${(
-                                  item?.total_rating /
-                                  (item?.total_likes * 20)
-                                ).toFixed(1)}%`
+                              ? `${parseInt(item?.total_rating / item?.total_likes)}%`
                               : '0%'}
                           </Text>
                         </Text>
@@ -634,7 +572,11 @@ const onCallSavePost = postId => {
                     </View>
 
                     <Pressable
-                      onPress={() => onPressOrangeAppIcon(item)}
+                      onPress={() => {
+                        userProfileId == item.user_id
+                          ? onPressBoostAPI(item?.postID)
+                          : onPressOrangeAppIcon(item);
+                      }}
                       style={({pressed}) => [
                         {
                           marginHorizontal: R.fontSize.Size8,
@@ -643,12 +585,16 @@ const onCallSavePost = postId => {
                         },
                       ]}>
                       <Image
-                        source={R.images.orangeAppIcon}
+                        source={
+                          userProfileId == item.user_id
+                            ? R.images.boostIcon
+                            : R.images.orangeAppIcon
+                        }
                         style={Styles.orangeAppIcon}
                         resizeMode={'contain'}
                       />
                       <Text style={Styles.connectText} numberOfLines={1}>
-                        {'Connect'}
+                        {userProfileId == item.user_id ? 'Boost' : 'Connect'}
                       </Text>
                     </Pressable>
                   </View>
@@ -657,6 +603,20 @@ const onCallSavePost = postId => {
             }}
           />
         </View>
+        {boostStatus && (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: R.fontSize.Size100,
+              left: 0,
+              height: R.fontSize.Size280,
+              width: screenWidth,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Lottie source={rocketPath} progress={animationProgress.current} />
+          </View>
+        )}
         <View style={Styles.backButtonView}>
           <Pressable
             onPress={() => props.navigation.goBack()}
@@ -676,12 +636,24 @@ const onCallSavePost = postId => {
         visible={modalPicker}
         onRequestClose={() => setModalPicker(false)}
         cancelOnPress={() => setModalPicker(false)}
-        userProfile={{
-          uri: `${Config.API_URL}${videoModalDetail?.avatar.replace(
-            'http://localhost:8080/',
-            '',
-          )}`,
-        }}
+        userProfile={
+          (
+            videoModalDetail?.avatar != Config.USER_PROFILE_URL &&
+              videoModalDetail?.avatar != null
+          )
+            ? {
+                uri: `${Config.API_URL}${videoModalDetail?.avatar.replace(
+                  'http://localhost:8080/',
+                  '',
+                )}`,
+              }
+            : R.images.inActiveProfileIcon
+        }
+        userStatusBackgroundColor={
+          videoModalDetail?.user_status == 'available'
+            ? R.colors.whatsAppColor
+            : R.colors.redColor
+        }
         userName={videoModalDetail?.username}
         bio={videoModalDetail?.bio}
         personalList={videoModalPersonalDetail.map((item, index) => {
@@ -721,95 +693,65 @@ const onCallSavePost = postId => {
         }}
       />
 
-      {/* <ReportModal
-        visible={reportModalPicker}
-        onRequestClose={() => setReportModalPicker(false)}
-        closeModal={() => setReportModalPicker(false)}
-        onPress1={() => onCallReportModalPress1('cutVideo')}
-        onPress2={() => onCallReportModalPress2('dontRecommend')}
-        onPress3={() => onCallReportModalPress3('report')}
-      />
-      <ReportDetailModal
-        visible={reportDetailModalPicker}
-        onRequestClose={() => onCallClosedReportDetailModal()}
-        closeModal={() => onCallClosedReportDetailModal()}
-        onPressCancel={() => onCallClosedReportDetailModal()}
-        onPressReport={() => {
-          selectTypeReport == 'report'
-            ? onCallReportPost()
-            : selectTypeReport == 'dontRecommend'
-            ? onCallBlockUser()
-            : onCallBlockPost();
-        }}
-        reportTitle={selectTypeReport == 'report' ? 'Proceed' : 'Proceed'}
-        title={
-          selectTypeReport == 'report'
-            ? 'Why are you reporting this post? '
-            : selectTypeReport == 'dontRecommend'
-            ? 'Are you sure you want to block?'
-            : 'Are you sure to Hide this video?'
-        }
-        ReportContent={
-          <View>
-            {selectTypeReport == 'report' && (
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                showsVerticalScrollIndicator={false}>
-                {AppContent.ReportList.map((item, index) => {
-                  return (
-                    <Pressable
-                      key={index}
-                      onPress={() => OnCallSelectReport(index, item)}
-                      style={({pressed}) => [
-                        Styles.reportContentView,
-                        {opacity: pressed ? 0.5 : 1},
-                      ]}>
-                      <Image
-                        source={
-                          selectReport == index
-                            ? R.images.checkRadioIcon
-                            : R.images.unCheckRadioIcon
-                        }
-                        style={Styles.reportContentCheckIcon}
-                        resizeMode={'contain'}
-                      />
-                      <View style={{flex: 1, marginLeft: R.fontSize.Size10}}>
-                        <Text
-                          style={Styles.reportContentTitle}
-                          numberOfLines={2}>
-                          {item.title}
-                        </Text>
-                      </View>
-                    </Pressable>
-                  );
-                })}
-              </ScrollView>
-            )}
-            {selectTypeReport == 'cutVideo' && (
-              <View style={Styles.cutVideoView}>
-                <Text style={Styles.cutVideoText}>
-                  {AppContent.cutVideoContent}
-                </Text>
-              </View>
-            )}
-            {selectTypeReport == 'dontRecommend' && (
-              <View style={Styles.dontRecView}>
-                <Text style={Styles.dontRecText}>
-                  {AppContent.dontRecContent}
-                </Text>
-              </View>
-            )}
+      <AlartModal
+        visible={alartModalPicker}
+        onRequestClose={() => setAlartModalPicker(false)}
+        title={boostMsg}
+        customButton={
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Pressable
+              onPress={() => onCallOkBoost()}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  backgroundColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.white,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Cancel'}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => onCallSubScription()}
+              style={({pressed}) => [
+                {
+                  flex: 1,
+                  marginVertical: R.fontSize.Size4,
+                  backgroundColor: R.colors.appColor,
+                  height: R.fontSize.Size45,
+                  borderRadius: R.fontSize.Size8,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pressed ? 0.5 : 1,
+                  marginHorizontal: R.fontSize.Size10,
+                },
+              ]}>
+              <Text
+                style={{
+                  fontFamily: R.fonts.regular,
+                  color: R.colors.white,
+                  fontWeight: '700',
+                  fontSize: R.fontSize.Size16,
+                }}>
+                {'Proceed'}
+              </Text>
+            </Pressable>
           </View>
         }
       />
-      <AlartModal
-        visible={reportOkModal}
-        onRequestClose={() => setReportOkModal(false)}
-        icon={R.images.checkOrangeIcon}
-        marginHorizontalModal={R.fontSize.Size35}
-        title={AppContent.reportOkContent}
-        onPress={() => setReportOkModal(false)}
-      /> */}
     </View>
   );
 };

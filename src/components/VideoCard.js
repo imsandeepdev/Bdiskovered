@@ -80,9 +80,7 @@ const VideoCard = React.forwardRef((props,ref) => {
                 },
               ]}>
               <Image
-                source={{
-                  uri: props.userImage,
-                }}
+                source={props.userImage}
                 style={{
                   height: R.fontSize.Size35,
                   width: R.fontSize.Size35,
@@ -252,7 +250,7 @@ const VideoCard = React.forwardRef((props,ref) => {
                         resizeMode={'contain'}
                       />
                     </Pressable>
-                    <Text
+                    {/* <Text
                       style={{
                         color: R.colors.lightWhite,
                         fontSize: R.fontSize.Size14,
@@ -261,7 +259,7 @@ const VideoCard = React.forwardRef((props,ref) => {
                         textAlign: 'center',
                       }}>
                       {props.saveTitle ?? 'Save'}
-                    </Text>
+                    </Text> */}
                   </View>
                 )}
                 {props.shareHidden ? null : (
@@ -289,7 +287,7 @@ const VideoCard = React.forwardRef((props,ref) => {
                         resizeMode={'contain'}
                       />
                     </Pressable>
-                    <Text
+                    {/* <Text
                       style={{
                         color: R.colors.lightWhite,
                         fontSize: R.fontSize.Size14,
@@ -298,7 +296,7 @@ const VideoCard = React.forwardRef((props,ref) => {
                         textAlign: 'center',
                       }}>
                       {'Share'}
-                    </Text>
+                    </Text> */}
                   </View>
                 )}
                 {props.reportHidden ? null : (

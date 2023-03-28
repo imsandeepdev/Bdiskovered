@@ -62,7 +62,12 @@ export const RequestLocationPermission = async () => {
              AsyncStorage.setItem(
                'userLatLong',
                `${position.coords.latitude},${position.coords.longitude}`,
+               
              );
+              AsyncStorage.setItem(
+               'userLat',`${position.coords.latitude}`
+             );
+             AsyncStorage.setItem('userLong', `${position.coords.longitude}`);
              
            },
            error => {

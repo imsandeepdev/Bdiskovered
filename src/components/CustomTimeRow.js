@@ -58,7 +58,7 @@ const CustomTimeRow = props => {
             fontFamily: R.fonts.regular,
             fontSize: R.fontSize.Size14,
             fontWeight: '700',
-            color: R.colors.black,
+            color: R.colors.primaryTextColor,
           }}>
           {props.rightText}
         </Text>

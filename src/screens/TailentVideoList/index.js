@@ -93,12 +93,17 @@ const onChangeIndex = ({index}) => {
                         'http://localhost:8080/',
                         '',
                       )}`}
-                      userImage={`${Config.API_URL}${item?.post.replace(
-                        'http://localhost:8080/',
-                        '',
-                      )}`}
+                      userImage={
+                        item?.post != Config.USER_PROFILE_URL ?{uri:`${
+                          Config.API_URL
+                        }${item?.post?.replace('http://localhost:8080/', '')}`}
+                        :
+                        R.images.inActiveProfileIcon
+                      }
                       userName={item?.username}
-                      videoCat={item?.profile_address != '' ? item?.profile_address : ''}
+                      videoCat={
+                        item?.profile_address != '' ? item?.profile_address : ''
+                      }
                       bottomTitle={item?.title}
                       bottomDiscription={item?.bio}
                       usdPrice={`USD ${item?.amount}`}

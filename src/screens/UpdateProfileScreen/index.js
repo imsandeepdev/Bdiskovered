@@ -335,7 +335,9 @@ const UpdateProfileScreen = (props) => {
           <Header
             onPress={() => props.navigation.goBack()}
             leftSource={R.images.chevronBack}
-            title={'Update Profile'}
+            title={'Edit Profile'}
+            title_justifyContent={'center'}
+            title_marginRight={R.fontSize.Size70}
           />
 
           <ScrollView
@@ -519,7 +521,7 @@ const UpdateProfileScreen = (props) => {
                         fontFamily: R.fonts.regular,
                         fontWeight: '900',
                         fontSize: R.fontSize.Size15,
-                        color: R.colors.black,
+                        color: R.colors.primaryTextColor,
                       }}>
                       {'Open For'}
                     </Text>
@@ -591,7 +593,7 @@ const UpdateProfileScreen = (props) => {
                       fontFamily: R.fonts.regular,
                       fontWeight: '900',
                       fontSize: R.fontSize.Size15,
-                      color: R.colors.black,
+                      color: R.colors.primaryTextColor,
                     }}>
                     {'Video Type'}
                   </Text>

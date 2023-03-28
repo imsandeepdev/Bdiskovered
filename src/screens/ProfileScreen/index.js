@@ -123,7 +123,7 @@ useEffect(()=>{
   };
 
   const onCallProfileAPI = () => {
-    setLoading(true)
+    // setLoading(true)
     dispatch(GetProfileDetailsRequest(response => {
       console.log('Get Profile Res', response)
       if (response.status == 'success' && props.userType == 'Talent') {
@@ -163,7 +163,7 @@ useEffect(()=>{
           filename: 'profile.jpeg',
         });
 
-        setLoading(false);
+        // setLoading(false);
       } else if (response.status == 'success' && props.userType == 'Business') {
         console.log('BUSINESS');
         setActualName(response.Profile?.company_name);     
@@ -182,7 +182,7 @@ useEffect(()=>{
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
-        setLoading(false);
+        // setLoading(false);
       } else if (response.status == 'success' && props.userType == 'Viewer') {
         setActualName(response.Profile?.name);
         setUserName(response.Profile?.username);
@@ -198,9 +198,9 @@ useEffect(()=>{
           mime: 'profile/jpeg',
           filename: 'profile.jpeg',
         });
-        setLoading(false);
+        // setLoading(false);
       } else {
-        setLoading(false);
+        // setLoading(false);
         Toast.show(response.message, Toast.SHORT);
       }
     }))
@@ -416,7 +416,7 @@ useEffect(()=>{
     }
 
     return (
-      <StoryScreen loading={loading}>
+      <StoryScreen loading={props.loading ||  loading}>
         <SafeAreaView style={{flex: 1}}>
           <ShadowHeader
             onPress={() => props.navigation.toggleDrawer()}
@@ -484,27 +484,38 @@ useEffect(()=>{
                           resizeMode={'cover'}
                         />
                       ) : (
-                        <View
+                        <Image
+                          source={R.images.inActiveProfileIcon}
                           style={{
                             height: R.fontSize.Size100,
                             width: R.fontSize.Size100,
                             borderRadius: R.fontSize.Size50,
                             borderWidth: 2,
                             borderColor: R.colors.appColor,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: R.colors.lightWhite,
-                          }}>
-                          <Text
-                            style={{
-                              fontFamily: R.fonts.regular,
-                              fontSize: R.fontSize.Size50,
-                              fontWeight: '900',
-                              color: R.colors.appColor,
-                            }}>
-                            {((actualName[0] ?? '#') + '').toUpperCase()}
-                          </Text>
-                        </View>
+                          }}
+                          resizeMode={'contain'}
+                        />
+                        // <View
+                        //   style={{
+                        //     height: R.fontSize.Size100,
+                        //     width: R.fontSize.Size100,
+                        //     borderRadius: R.fontSize.Size50,
+                        //     borderWidth: 2,
+                        //     borderColor: R.colors.appColor,
+                        //     alignItems: 'center',
+                        //     justifyContent: 'center',
+                        //     backgroundColor: R.colors.lightWhite,
+                        //   }}>
+                        //   <Text
+                        //     style={{
+                        //       fontFamily: R.fonts.regular,
+                        //       fontSize: R.fontSize.Size50,
+                        //       fontWeight: '900',
+                        //       color: R.colors.appColor,
+                        //     }}>
+                        //     {((actualName[0] ?? '#') + '').toUpperCase()}
+                        //   </Text>
+                        // </View>
                       )}
                       <View
                         style={{
@@ -728,23 +739,31 @@ useEffect(()=>{
                               resizeMode={'cover'}
                             />
                           ) : (
-                            <View
+                            <Image
+                              source={R.images.inActiveProfileIcon}
                               style={{
                                 height: R.fontSize.Size50,
                                 width: R.fontSize.Size50,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}>
-                              <Text
-                                style={{
-                                  fontFamily: R.fonts.regular,
-                                  fontWeight: '700',
-                                  color: R.colors.appColor,
-                                  fontSize: R.fontSize.Size20,
-                                }}>
-                                {((actualName[0] ?? '#') + '').toUpperCase()}
-                              </Text>
-                            </View>
+                              }}
+                              resizeMode={'contain'}
+                            />
+                            // <View
+                            //   style={{
+                            //     height: R.fontSize.Size50,
+                            //     width: R.fontSize.Size50,
+                            //     alignItems: 'center',
+                            //     justifyContent: 'center',
+                            //   }}>
+                            //   <Text
+                            //     style={{
+                            //       fontFamily: R.fonts.regular,
+                            //       fontWeight: '700',
+                            //       color: R.colors.appColor,
+                            //       fontSize: R.fontSize.Size20,
+                            //     }}>
+                            //     {((actualName[0] ?? '#') + '').toUpperCase()}
+                            //   </Text>
+                            // </View>
                           )}
                         </View>
 
@@ -1304,8 +1323,8 @@ useEffect(()=>{
           visible={editModalPicker}
           onRequestClose={() => setEditModalPicker(false)}
           closeModal={() => setEditModalPicker(false)}
-          title1={`Blocked Users`}
-          title2={`Delete Account`}
+          title1={`Blocked users`}
+          title2={`Delete account`}
           icon1={R.images.blockIcon}
           icon2={R.images.grayDeleteIcon}
           optionThird={true}

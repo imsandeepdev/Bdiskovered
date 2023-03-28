@@ -18,6 +18,7 @@ const colors = {
   cardColor: '#292C46',
   cardColor1: '#00AE99',
   redColor: '#FF0000',
+  blockRedColor: '#F81100'
 };
 
 export {colors};

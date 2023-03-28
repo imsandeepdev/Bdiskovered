@@ -8,6 +8,8 @@ import NavigationService from '../navigator/NavigationService';
 import { AlartModal } from '../components';
 import { Alert } from 'react-native';
 
+
+
 const RequestPostFetch = ({url, body, datatype}) =>
   new Promise((resolve, reject) => {
     const headerAuth = {
@@ -453,6 +455,10 @@ const RequestPostFetch = ({url, body, datatype}) =>
       },
     );
   };
+
+
+
+ 
 
   export default {
     RequestPostFetch,

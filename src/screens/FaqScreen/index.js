@@ -78,39 +78,32 @@ const FaqScreen = props => {
         onPress={() => props.navigation.goBack()}
         leftSource={R.images.chevronBack}
         title={props.route.params?.from}
+        title_justifyContent={'center'}
+        title_marginRight={R.fontSize.Size70}
       />
-      <View style={styles.topLineView}/>
+      {/* <View style={styles.topLineView}/> */}
       <View style={styles.mainView}>
-        {props.route.params?.from == 'FAQ' ? (   
-          <ScrollView 
-          contentContainerStyle={{flexWrap:1}}
-          showsVerticalScrollIndicator={false}
-          >
-            {
-              faqList.map((item,index)=>{
-                return (
-                  <View key={index}>
-                    <Text style={styles.quesText}>
-                      {`${item.id}. ${item.ques}`}
-                    </Text>
-                    <Text style={styles.ansText}>
-                      {`${item.ans}`}
-                    </Text>
-                  </View>
-                )
-              })
-            }
+        {props.route.params?.from == 'FAQs' ? (
+          <ScrollView
+            contentContainerStyle={{flexWrap: 1}}
+            showsVerticalScrollIndicator={false}>
+            {faqList.map((item, index) => {
+              return (
+                <View key={index}>
+                  <Text style={styles.quesText}>
+                    {`${item.id}. ${item.ques}`}
+                  </Text>
+                  <Text style={styles.ansText}>{`${item.ans}`}</Text>
+                </View>
+              );
+            })}
           </ScrollView>
         ) : (
           <View style={styles.mainView1}>
-            <Text style={styles.contactText}>
-              {'Contact us via'}
-            </Text>
-            <Text style={styles.infoText}>
-              {'info@bdiskovered.com'}
-            </Text>
+            <Text style={styles.contactText}>{'Contact us via'}</Text>
+            <Text style={styles.infoText}>{'info@bdiskovered.com'}</Text>
             <Text style={styles.addressText}>
-              {'Lavel 1, Gate Avenue, South Zone, DIFC, Dubai, UAE'}
+              {'Level 1, Gate Avenue, South Zone, DIFC, Dubai, UAE'}
             </Text>
           </View>
         )}

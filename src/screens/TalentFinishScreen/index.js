@@ -34,6 +34,7 @@ const TalentFinishScreen = props => {
   const [selectedTailent, setSelectedTailent] = useState([]);
   const [selectTime, setSelectTime] = useState('Full');
   const [data, setData] = useState([]);
+  const [selected, setSelected] = useState(false)
 
  useEffect(() => {
    onCallGetTailentAPI();
@@ -75,6 +76,7 @@ const TalentFinishScreen = props => {
     }
     console.log(tempArray);
     setSelectedTailent(tempArray);
+    console.log(selectedTailent.length)
     setData(arr);
   };
 
@@ -180,7 +182,7 @@ const onFixedHomeNavigate = () => {
                   />
                 );
               }}
-              ListFooterComponent={()=>{
+              ListFooterComponent={() => {
                 return (
                   <View
                     style={{
@@ -190,7 +192,7 @@ const onFixedHomeNavigate = () => {
                       marginHorizontal: R.fontSize.Size8,
                     }}>
                     <Pressable
-                      onPress={() =>onCallSkip()}
+                      onPress={() => onCallSkip()}
                       style={({pressed}) => [
                         {
                           opacity: pressed ? 0.5 : 1,
@@ -210,13 +212,19 @@ const onFixedHomeNavigate = () => {
                   </View>
                 );
               }}
-
             />
           </View>
           <View style={{paddingVertical: R.fontSize.Size16}}>
             <AppButton
               onPress={() => onCallFinish()}
+              disabled={selectedTailent.length < 1 ? true : false}
               marginHorizontal={R.fontSize.Size35}
+              backgroundColor={
+                selectedTailent.length < 1
+                  ? R.colors.placeholderTextColor
+                  : R.colors.appColor
+              }
+              textColor={selectedTailent.length < 1 ? R.colors.placeHolderColor : R.colors.white}
               title={'Finish'}
             />
           </View>

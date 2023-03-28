@@ -139,6 +139,8 @@ const onConnectChat = (item) => {
       MyUserId: myUserId,
       userName: item?.username,
       userItem: item,
+      connect_status: item?.connect_status,
+      comm_id: item?.communication_id,
       fireID: item?.communication_id,
     });
 }
@@ -149,20 +151,16 @@ const onConnectChat = (item) => {
         onPress={() => props.navigation.goBack()}
         leftSource={R.images.chevronBack}
         title={'Notifications'}
+        title_justifyContent={'center'}
+        title_marginRight={R.fontSize.Size70}
       />
-      <View
-        style={{
-          height: R.fontSize.Size2,
-          backgroundColor: R.colors.placeholderTextColor,
-          width: '100%',
-        }}
-      />
+
       <View
         style={{
           flex: 1,
           paddingHorizontal: R.fontSize.Size20,
         }}>
-          {/* <Text>{`FCMTOKEN==>${fcmToken}`}</Text> */}
+        {/* <Text>{`FCMTOKEN==>${fcmToken}`}</Text> */}
         <SwipeListView
           showsVerticalScrollIndicator={false}
           data={notiList}
@@ -263,7 +261,6 @@ const onConnectChat = (item) => {
               </Pressable>
             );
           }}
-          
           // renderHiddenItem={({item, index}) => (
           //   <Pressable
           //     onPress={() => onCallDeleteNoti(item)}

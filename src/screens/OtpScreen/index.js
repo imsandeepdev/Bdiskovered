@@ -238,19 +238,34 @@ const onSaveDeviceToken = async () => {
         // auto focus to next InputText if value is not blank
         if (value !== '') {
         
-          if (index === 0) {
-            secondTextInputRef.current.focus();
-          } else if (index === 1) {
-            thirdTextInputRef.current.focus();
-          } else if (index === 2) {
-            fourthTextInputRef.current.focus();
-          } else if (index === 3) {
-            fifthTextInputRef.current.focus();
-          } else if (index === 4) {
-            sixTextInputRef.current.focus();
-          }
+          index === 0 && secondTextInputRef.current.focus(),
+          index === 1 && thirdTextInputRef.current.focus(),
+          index === 2 && fourthTextInputRef.current.focus(),
+          index === 3 && fifthTextInputRef.current.focus();
+          index === 4 && sixTextInputRef.current.focus();
         }
       };
+    };
+
+    const handleKeyPress = ({nativeEvent: {key: keyValue}}, index) => {
+      console.log(keyValue);
+      console.log('Index', index);
+
+      if (keyValue == 'Backspace') {
+          setOtpArray([]);
+
+          index === 5 && fifthTextInputRef.current.focus(),
+          index === 4 && fourthTextInputRef.current.focus(),
+          index === 3 && thirdTextInputRef.current.focus(),
+          index === 2 && secondTextInputRef.current.focus(),
+          index === 1 && firstTextInputRef.current.focus();
+      } else {
+          index === 0 && secondTextInputRef.current.focus(),
+          index === 1 && thirdTextInputRef.current.focus(),
+          index === 2 && fourthTextInputRef.current.focus(),
+          index === 3 && fifthTextInputRef.current.focus();
+          index === 4 && sixTextInputRef.current.focus();
+      }
     };
 
 
@@ -298,7 +313,9 @@ const onSaveDeviceToken = async () => {
               console.log('RESPONSE RESND OTP', response);
               if (response.status == 'success') {
                 Toast.show(response.OTP, Toast.LONG);
+                firstTextInputRef.current.focus();
                 setOtpArray(response.OTP);
+
               } else {
                 Toast.show(response.message, Toast.SHORT);
               }
@@ -403,6 +420,7 @@ const onSaveDeviceToken = async () => {
                             autoFocus={index === 0 ? true : undefined}
                             ref={textInputRef}
                             onChangeText={onOtpChange(index)}
+                            onKeyPress={e => handleKeyPress(e, index)}
                           />
                         </View>
                       ))}
@@ -469,8 +487,8 @@ const onSaveDeviceToken = async () => {
                 paddingHorizontal: R.fontSize.Size20,
                 backgroundColor: R.colors.white,
                 paddingBottom: R.fontSize.Size2,
-                marginHorizontal:R.fontSize.Size15,
-                borderRadius:R.fontSize.Size8
+                marginHorizontal: R.fontSize.Size15,
+                borderRadius: R.fontSize.Size8,
               }}>
               <View
                 style={{alignItems: 'center', marginBottom: R.fontSize.Size5}}>

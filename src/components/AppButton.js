@@ -12,6 +12,7 @@ const AppButton = (props) => {
           paddingHorizontal: props.paddingHorizontal 
         }}>
         <Pressable
+          disabled={props.disabled}
           onPress={props.onPress}
           style={({pressed}) => [
             {

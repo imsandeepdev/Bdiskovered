@@ -5,7 +5,10 @@ import R from '../res/R';
 const Header = (props) => {
     return(
         <View
-        style={{flexDirection:'row', height:R.fontSize.Size50,alignItems:'center',paddingHorizontal:R.fontSize.Size2}}
+        style={{flexDirection:'row', height:R.fontSize.Size50,alignItems:'center',paddingHorizontal:R.fontSize.Size2,
+        borderBottomWidth:1,
+        borderColor:R.colors.placeholderTextColor
+    }}
         >
             <Pressable
             onPress={props.onPress}
@@ -25,8 +28,8 @@ const Header = (props) => {
                 />
             </Pressable>
             <View
-            style={{flex:1, marginHorizontal:R.fontSize.Size20,alignItems:'center',flexDirection:'row'}}
-            >   
+            style={{flex:1, marginHorizontal:R.fontSize.Size20,alignItems:'center',flexDirection:'row', justifyContent: props.title_justifyContent,marginRight:props.title_marginRight}}
+            > 
                 {props.headIcon}
                 <Text 
                 style={{fontFamily:R.fonts.regular,
