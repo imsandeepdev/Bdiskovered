@@ -10,7 +10,7 @@ import { notificationListner } from './src/helper/notificationServices';
 import { requestUserPermission } from './src/helper/notificationServices';
 import messaging from '@react-native-firebase/messaging';
 import PushNotificationIos from '@react-native-community/push-notification-ios';
-import { makeLocalNotification, requestUserPermissionNoti, subscribeForgroundNotification } from './src/helper/notification';
+import {   subscribeForgroundNotification } from './src/helper/notification';
 import { Alert } from 'react-native';
 import notifee from '@notifee/react-native';
 

@@ -5,7 +5,7 @@ import notifee, {AuthorizationStatus} from '@notifee/react-native';
 
 async function requestUserPermissionNoti() {
 
-const settings = await notifee.requestPermission();
+// const settings = await notifee.requestPermission();
 
 // if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
 //   console.log('Permission settings:', settings);
@@ -45,18 +45,18 @@ async function subscribeForgroundNotification() {
   );
 }
 
-async function makeLocalNotification(remoteMessage) {
-   await notifee.displayNotification({
-     id: remoteMessage.messageId,
-     title: remoteMessage.notification.title,
-     body: remoteMessage.notification.body,
+// async function makeLocalNotification(remoteMessage) {
+//    await notifee.displayNotification({
+//      id: remoteMessage.messageId,
+//      title: remoteMessage.notification.title,
+//      body: remoteMessage.notification.body,
      
-   });
-}
+//    });
+// }
 
 export {
   requestUserPermissionNoti,
   getToken,
   subscribeForgroundNotification,
-  makeLocalNotification,
+  // makeLocalNotification,
 };
